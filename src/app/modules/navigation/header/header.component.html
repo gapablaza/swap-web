@@ -1,0 +1,14 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="onToggleSidenav()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <a routerLink="/">SWAP</a>
+  <span class="example-spacer"></span>
+  <ul class="navigation-items">
+    <li *ngIf="!isAuth"><a routerLink="/signup">Signup</a></li>
+    <li *ngIf="!isAuth"><a routerLink="/login">Login</a></li>
+    <li *ngIf="isAuth">
+      <a style="cursor:pointer" (click)="onLogout()">Logout</a>
+    </li>
+  </ul>
+</mat-toolbar>

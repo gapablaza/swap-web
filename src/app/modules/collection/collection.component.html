@@ -1,0 +1,31 @@
+<!-- <header class="collection-header">
+  <div class="header-bg">
+    <div class="header-bg-img"
+      [style]="'background-image: url(' + collection?.image + ');'"></div>
+    <div class="header-bg-preview"></div>
+    <div class="header-bg-gradient"></div>
+  </div>
+  <img class="collection-header-image" [src]="collection?.image" [alt]="collection?.name">
+  <div class="collection-header-content">
+    <h2>{{ collection?.name }}</h2>
+    <ul>
+      <li>Publicado por <strong>{{ collection?.publisher?.data?.name }}</strong> el <strong>{{ collection?.year }}</strong> </li>
+      <li>Tiene <strong>{{ collection?.items }}</strong> ítems (láminas | stickers | figuritas | estampas | cromos)</li>
+      <li>Hay <strong>{{ collection?.totalCollecting }}</strong> usuarios que lo coleccionan</li>
+      <li>Se han agregado <strong>{{ collection?.totalMedia}}</strong> elementos multimedia</li>
+    </ul>
+    <p [innerHTML]="collection?.description | sanitizeHtml"></p>
+    <button mat-raised-button color="primary">Agregar a mi Colección</button>
+  </div>
+</header>
+
+<nav mat-tab-nav-bar>
+  <a mat-tab-link *ngFor="let link of navLinks" [routerLink]="link.link" routerLinkActive #rla="routerLinkActive"
+    [active]="rla.isActive">
+    {{ link.label }}
+  </a>
+</nav> -->
+
+<div class="content-inside-tabs">
+  <router-outlet></router-outlet>
+</div>

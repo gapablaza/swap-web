@@ -1,0 +1,78 @@
+<section class="collection">
+  <div class="collection-visual">
+    <div class="collection-imagen-container">
+      <img class="collection-image" [src]="collection?.image" [alt]="collection?.name">
+    </div>
+    <a class="btn" mat-raised-button color="accent"><mat-icon inline="true">add</mat-icon> Agregar a mi Colección</a>
+  </div>
+  <div class="collection-info">
+    <h1>{{ collection?.name }}</h1>
+    <h2>{{ collection?.publisher?.data?.name }}, {{ collection?.year }}</h2>
+    <p class="collection-description" [innerHTML]="collection?.description | sanitizeHtml"></p>
+    <div class="collection-tags">
+      <mat-chip-list aria-label="Etiquetas de la colección">
+        <mat-chip>Tag #1</mat-chip>
+        <mat-chip>Tag #2</mat-chip>
+        <mat-chip>Tag ...</mat-chip>
+        <mat-chip>Tag #N</mat-chip>
+      </mat-chip-list>
+    </div>
+
+    <!-- <hr /> -->
+
+    <mat-card *ngIf="!collection?.collecting" class="card-resalted">
+      <mat-card-title>Resumen - Tus listados</mat-card-title>
+      <!-- <mat-card-subtitle>Dog Breed</mat-card-subtitle> -->
+      <mat-card-content>
+        <p>
+          Estás buscando <strong>{{ collection?.wishing }}</strong> ítems:
+          <span *ngFor="let item of userWishing; last as isLast">
+            <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span>
+            <span *ngIf="!isLast">, </span>
+          </span>
+        </p>
+        <p>
+          Tienes <strong>{{ collection?.trading }}</strong> ítems para cambiar:
+          <span *ngFor="let item of userTrading; last as isLast">
+            <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span>
+            <span *ngIf="!isLast">, </span>
+          </span>
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-stroked-button color="primary">Editar Detalle</button>
+        <button mat-stroked-button color="primary">Editar Listados</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- <hr /> -->
+
+    <h3>Acceso a secciones</h3>
+    <mat-nav-list>
+      <a mat-list-item [routerLink]="['./items']">
+        <div mat-line>
+          Tiene <strong>{{ collection?.items }}</strong> ítems (láminas | stickers | figuritas | estampas | cromos)
+        </div>
+        <mat-icon>navigate_next</mat-icon>
+      </a>
+      <a mat-list-item [routerLink]="['./users']">
+        <div mat-line>
+          <strong>{{ collection?.totalCollecting }}</strong> usuarios lo coleccionan
+        </div>
+        <mat-icon>navigate_next</mat-icon>
+      </a>
+      <a mat-list-item [routerLink]="['./media']">
+        <div mat-line>
+          Se han agregado <strong>{{ collection?.totalMedia}}</strong> elementos multimedia
+        </div>
+        <mat-icon>navigate_next</mat-icon>
+      </a>
+    </mat-nav-list>
+
+    <hr />
+
+    <div class="collection-publisher">
+      <p>{{ collection?.publisher?.data?.name }}</p>
+    </div>
+  </div>
+</section>

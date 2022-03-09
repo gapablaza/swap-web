@@ -1,0 +1,56 @@
+@use '@angular/material' as mat;
+
+.horizontal-card-grid {
+  padding: 3rem 0 3rem 2rem;
+  margin: 0;
+  display: flex;
+  column-gap: 1.5rem;
+  overflow-x: scroll;
+}
+
+.horizontal-card {
+  // @include mat.elevation-transition();
+  @include mat.elevation(2);
+
+  height: 250px;
+  // box-shadow: -2rem 0 3rem -2rem #000;
+  border-radius: 0 10px 10px 0;
+  // background: linear-gradient(85deg,#434343,#262626);
+  background: #fff;
+  margin: 0 0 10px;
+  display: flex;
+  transition: .2s;
+
+  &:hover {
+    @include mat.elevation(8);
+  }
+
+  a {
+    text-decoration: none;
+    color: var(--text-default);
+  }
+}
+
+.horizontal-card-image {
+  width: auto;
+  height: 100%;
+  // border-radius: 10px 0 0 10px;
+}
+
+.horizontal-card-content {
+  width: 250px;
+  padding: 0.5rem 1rem;
+  // background: #000;
+  // background: linear-gradient(85deg,#434343,#262626);
+  // color: white;
+  border-radius: 0 10px 10px 0;
+}
+
+.horizontal-card-title {
+  font-size: 1.2rem;
+  margin: 0.5rem 0.5rem 1rem;
+}
+
+.horizontal-card-info {
+  margin: 0rem 0.5rem 1rem;
+}

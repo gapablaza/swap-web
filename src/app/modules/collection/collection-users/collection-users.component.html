@@ -1,0 +1,63 @@
+<section class="collection collection-section">
+  <div class="collection-visual">
+    <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+      <mat-icon inline="true">arrow_back</mat-icon> Volver
+    </a>
+    <div class="collection-imagen-container">
+      <img class="collection-image" [src]="collection?.image" [alt]="collection?.name">
+    </div>
+  </div>
+  <div class="collection-info">
+    <h1>{{ collection.totalCollecting }} usuarios con esta colección</h1>
+    <div class="list-std">
+      <div class="list-std-controls">
+        <mat-form-field class="controls-search" appearance="fill">
+          <mat-label>Filtrar usuarios por nombre, ID o ubicación</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
+          <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="searchText=''">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <div *ngFor="let user of showedUsers; trackBy: trackByUsers"
+        class="list-std-item mat-elevation-z2"
+        [ngClass]="{'pro-account': user.accountTypeId == 2}">
+        <img [src]="user.image" alt="" class="list-std-image">
+
+        <div class="list-std-content">
+          <div class="list-std-data">
+            <div class="list-std-identification">
+              <div class="list-std-title">
+                <a [routerLink]="['/user', user.id]">
+                  {{ user.displayName }} <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
+                </a>
+              </div>
+              <div class="list-std-subtitle">
+                <span>ID {{ user.id }}</span>
+                <span>{{ user.location || 'Sin especificar' }}</span>
+                <span>Actualizado hace {{ user.summary?.daysSinceUpdate }} días</span>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="user?.bio" class="list-std-desc">
+            <p [innerHTML]="user?.bio | sanitizeHtml"></p>
+          </div>
+        </div>
+
+        <div class="list-std-statics">
+          <div>
+            <span class="number">{{ user.summary?.collectionWishing }}</span>
+            <span>Busca</span>
+            <!-- <mat-icon>search</mat-icon> -->
+          </div>
+          <div>
+            <span class="number">{{ user.summary?.collectionTrading }}</span>
+            <span>Cambia</span>
+            <!-- <mat-icon>view_carousel</mat-icon> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

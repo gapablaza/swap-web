@@ -1,0 +1,129 @@
+@use "@angular/material" as mat;
+
+.list-of-images {
+}
+
+.images-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2rem 1rem;
+  justify-content: space-between;
+}
+
+.images-grid::after {
+  content: "";
+  flex: auto;
+}
+
+/* Single column display for phones */
+@media (max-width: 459px) {
+  .images-grid {
+    flex-direction: column;
+  }
+}
+
+.images-grid-card {
+  border-radius: 0 0 10px 10px;
+  background-color: #fff;
+
+  transition: 0.2s;
+  @include mat.elevation(2);
+
+  &:hover {
+    @include mat.elevation(8);
+  }
+}
+
+.images-grid-image {
+  display: inherit;
+  margin: 0 auto;
+}
+
+.images-grid-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.images-grid-desc {
+  max-width: 220px;
+  margin-right: 10px;
+  color: var(--text-secondary);
+}
+
+.images-grid-title {
+}
+
+.images-grid-author {
+  font-style: italic;
+  font-size: small;
+  margin-bottom: 0;
+
+  a {
+    color: var(--text-default);
+    text-decoration: none;
+  }
+}
+
+.images-grid-likes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+// .mini-card-grid {
+//   padding: 3rem 0 3rem 2rem;
+//   margin: 0;
+//   display: flex;
+//   column-gap: 1.5rem;
+//   overflow-x: scroll;
+// }
+
+// .mini-card {
+//   // @include mat.elevation-transition();
+//   @include mat.elevation(2);
+
+//   border-radius: 10px;
+//   background: #fff;
+//   display: flex;
+//   flex-direction: column;
+//   transition: 0.2s;
+//   margin: 0 0 10px;
+
+//   &:hover {
+//     @include mat.elevation(8);
+//   }
+
+//   a {
+//     text-decoration: none;
+//     color: var(--text-default);
+//   }
+// }
+
+// .mini-card-image {
+//   height: 250px;
+// }
+
+// .mini-card-title {
+//   font-size: 1.1rem;
+//   margin: 0.5rem 0.5rem 1rem;
+
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+//   display: -webkit-box;
+//   -webkit-line-clamp: 2;
+//   -webkit-box-orient: vertical;
+// }
+
+// .mini-card-info {
+//   margin: 0rem 0.5rem 1rem;
+// }
+
+// .mini-card:hover {
+//   transform: translateY(-1rem) rotate(2deg);
+// }
+
+// // .mini-card:first-child:hover {
+// //   transform: translate(-0.5rem,-1rem) rotate(3deg);
+// // }
