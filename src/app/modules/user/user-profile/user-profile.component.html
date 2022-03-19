@@ -1,1 +1,51 @@
-<p>user-profile works!</p>
+<mat-spinner *ngIf="!isLoaded"></mat-spinner>
+<section *ngIf="isLoaded" class="user">
+  <div class="user-visual">
+    <div class="user-imagen-container">
+      <img class="user-image" [src]="user?.image" [alt]="user?.displayName">
+    </div>
+    <div class="user-indicators">
+      <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
+      <span *ngIf="(user.positives || 0) > 0" class="positives-label">+{{ user.positives }}</span>
+      <span *ngIf="(user.negatives || 0) > 0" class="negatives-label">-{{ user.negatives }}</span>
+    </div>
+    <a class="btn" mat-raised-button color="accent"><mat-icon inline="true">add</mat-icon> Conversar</a>
+  </div>
+  <div class="user-info">
+    <h1>{{ user?.displayName }}</h1>
+    <h2>Desde {{ user?.location_city }}, {{ user?.location_country }}</h2>
+    <p>Inicio sesión por última vez el <strong>{{ user.lastLogin | date:'dd/MM/YYYY' }}</strong> (hace <strong>{{ user.daysSinceLogin }}</strong> días)</p>
+    <p *ngIf="user.bio"  class="user-description" [innerHTML]="user.bio | sanitizeHtml"></p>
+
+    <h3>Acceso a secciones</h3>
+    <mat-nav-list>
+      <a mat-list-item [routerLink]="['./evaluation']">
+        <div mat-line>
+          Evaluaciones registradas&nbsp;
+          <span *ngIf="(user.positives || 0) > 0" class="positives-label">+{{ user.positives }}</span>
+          <span *ngIf="(user.negatives || 0) > 0" class="negatives-label">-{{ user.negatives }}</span>
+        </div>
+        <mat-icon>navigate_next</mat-icon>
+      </a>
+      <a mat-list-item [routerLink]="['./collection']">
+        <div mat-line>
+          Tiene <strong>{{ user.collections | number:'':'es' }}</strong> colecciones, <strong>{{ user.completedCollections | number:'':'es' }}</strong> completadas
+        </div>
+        <mat-icon>navigate_next</mat-icon>
+      </a>
+      <a mat-list-item [routerLink]="['./media']">
+        <div mat-line>
+          Ha agregado <strong>{{ user.contributions || 0 }}</strong> elemento(s) multimedia
+        </div>
+        <mat-icon>navigate_next</mat-icon>
+      </a>
+    </mat-nav-list>
+
+    <hr />
+
+    <div class="user-publisher">
+      <p>Busca <strong>{{ user.wishing | number:'':'es' }}</strong> ítems, cambia <strong>{{ user.trading | number:'':'es' }}</strong> ítems</p>
+      <p>Cuenta creada el {{ user.registration | date:'dd/MM/YYYY' }}</p>
+    </div>
+  </div>
+</section>

@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs';
+
 import { User, UserService } from 'src/app/core';
+import { UserOnlyService } from './user-only.service';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
+  styleUrls: ['./user.component.scss'],
+  providers: [UserOnlyService],
 })
 export class UserComponent implements OnInit {
   userId: number = 0;
@@ -15,10 +18,11 @@ export class UserComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private userSrv: UserService,
+    private userOnlySrv: UserOnlyService,
   ) { }
 
   ngOnInit(): void {
-    // this.colOnlySrv.cleanCurrentCollection();
+    this.userOnlySrv.cleanCurrentUser();
     this.route.paramMap
       .pipe(
         switchMap(paramMap => {
@@ -28,7 +32,7 @@ export class UserComponent implements OnInit {
       )
       .subscribe(user => {
         console.log('from UserComponent', user);
-        // this.colOnlySrv.setCurrentCollection(col);
+        this.userOnlySrv.setCurrentUser(user);
         this.user = user;
       });
   }
