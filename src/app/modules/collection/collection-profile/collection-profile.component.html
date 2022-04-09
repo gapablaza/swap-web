@@ -1,11 +1,14 @@
-<section class="collection">
+<div *ngIf="!isLoaded" class="loading-indicator">
+  <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="collection">
   <div class="collection-visual">
     <div class="collection-imagen-container">
       <img class="collection-image" [src]="collection?.image" [alt]="collection?.name">
     </div>
     <a class="btn" mat-raised-button color="accent"><mat-icon inline="true">add</mat-icon> Agregar a mi Colección</a>
   </div>
-  <div class="collection-info">
+  <div class="collection-info card">
     <h1>{{ collection?.name }}</h1>
     <h2>{{ collection?.publisher?.data?.name }}, {{ collection?.year }}</h2>
     <p class="collection-description" [innerHTML]="collection?.description | sanitizeHtml"></p>
@@ -20,7 +23,7 @@
 
     <!-- <hr /> -->
 
-    <mat-card *ngIf="!collection?.collecting" class="card-resalted">
+    <mat-card *ngIf="collection.collecting" class="card-resalted">
       <mat-card-title>Resumen - Tus listados</mat-card-title>
       <!-- <mat-card-subtitle>Dog Breed</mat-card-subtitle> -->
       <mat-card-content>
@@ -40,8 +43,8 @@
         </p>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-stroked-button color="primary">Editar Detalle</button>
-        <button mat-stroked-button color="primary">Editar Listados</button>
+        <button mat-stroked-button color="accent">Editar Detalle</button>
+        <button mat-stroked-button color="accent">Editar Listados</button>
       </mat-card-actions>
     </mat-card>
 

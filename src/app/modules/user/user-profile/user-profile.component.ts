@@ -11,7 +11,7 @@ import { UserOnlyService } from '../user-only.service';
   styleUrls: ['./user-profile.component.scss']
 })
 export class UserProfileComponent implements OnInit {
-  user: User = {} as User;
+  user!: User;
   isLoaded = false;
 
   constructor(
@@ -23,10 +23,11 @@ export class UserProfileComponent implements OnInit {
     registerLocaleData( es );
     this.userOnlySrv.user$
       .subscribe(user => {
-        this.user = user;
-        this.isLoaded = true;
+        if (user.id) {
+          this.user = user;
+          this.isLoaded = true;
+        }
       });
     console.log('from UserProfileComponent', this.user);
   }
-
 }

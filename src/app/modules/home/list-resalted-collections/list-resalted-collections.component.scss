@@ -1,7 +1,11 @@
 @use '@angular/material' as mat;
 
+.list-of-collections {
+  margin-bottom: var(--gap);
+}
+
 .horizontal-card-grid {
-  padding: 3rem 0 3rem 2rem;
+  padding: 0;
   margin: 0;
   display: flex;
   column-gap: 1.5rem;

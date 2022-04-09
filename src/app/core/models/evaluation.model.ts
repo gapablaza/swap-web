@@ -12,7 +12,8 @@ export class Evaluation {
     public evaluationTypeName: string; //OK
     public id: number; //OK
     public previousEvaluationsCounter?: number; //OK
-    public previousEvaluationsData?: any; //OK - OBJ CON KEYS NUMERICAS
+    // public previousEvaluationsData?: any; //OK - OBJ CON KEYS NUMERICAS
+    public previousEvaluationsData?: Evaluation[]; //OK - CONVERTIR OBJ A ARRAY
     public user: { //OK
         data: User;
     };

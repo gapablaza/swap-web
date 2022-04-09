@@ -1,7 +1,11 @@
 @use "@angular/material" as mat;
 
+.list-of-collections {
+  margin-bottom: var(--gap);
+}
+
 .mini-card-grid {
-  padding: 3rem 0 3rem 2rem;
+  padding: 0;
   margin: 0;
   display: flex;
   column-gap: 1.5rem;
@@ -10,18 +14,18 @@
 
 .mini-card {
   // @include mat.elevation-transition();
-  @include mat.elevation(2);
+  // @include mat.elevation(2);
 
   border-radius: 10px;
-  background: #fff;
+  // background: #fff;
   display: flex;
   flex-direction: column;
   transition: 0.2s;
   margin: 0 0 10px;
 
-  &:hover {
-    @include mat.elevation(8);
-  }
+  // &:hover {
+  //   @include mat.elevation(8);
+  // }
 
   a {
     text-decoration: none;
@@ -30,12 +34,18 @@
 }
 
 .mini-card-image {
+  @include mat.elevation(2);
   height: 250px;
+  transition: .2s;
+
+  &:hover {
+    @include mat.elevation(8);
+  }
 }
 
 .mini-card-title {
   font-size: 1.1rem;
-  margin: 0.5rem 0.5rem 1rem;
+  margin: 0.5rem;
 
   overflow: hidden;
   text-overflow: ellipsis;
@@ -48,9 +58,9 @@
   margin: 0rem 0.5rem 1rem;
 }
 
-.mini-card:hover {
-  transform: translateY(-1rem) rotate(2deg);
-}
+// .mini-card:hover {
+//   transform: translateY(-1rem) rotate(2deg);
+// }
 
 // .mini-card:first-child:hover {
 //   transform: translate(-0.5rem,-1rem) rotate(3deg);

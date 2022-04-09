@@ -19,28 +19,28 @@ export class CollectionService {
   ) { }
 
   get(collectionId: number): Observable<Collection> {
-    // return this.apiSrv.get('/collections/' + collectionId + '?include=publisher')
-    return of(EXAMPLE_RAW_COLLECTION)
+    return this.apiSrv.get('/collections/' + collectionId + '?include=publisher')
+    // return of(EXAMPLE_RAW_COLLECTION)
       .pipe(map((data: { data: Collection }) => data.data));
   }
 
   getItems(collectionId: number): Observable<Item[]> {
-    // return this.apiSrv.get('/collections/' + collectionId + '/items')
-    return of(EXAMPLE_RAW_COLLECTION_ITEMS)
+    return this.apiSrv.get('/collections/' + collectionId + '/items')
+    // return of(EXAMPLE_RAW_COLLECTION_ITEMS)
       .pipe(map((data: { data: Item[] }) => data.data));
   }
 
   getMedia(collectionId: number): Observable<Media[]> {
-    // return this.apiSrv.get('/collections/' + collectionId + '/medias?include=user')
-    return of(EXAMPLE_RAW_COLLECTION_MEDIA)
+    return this.apiSrv.get('/collections/' + collectionId + '/medias?include=user')
+    // return of(EXAMPLE_RAW_COLLECTION_MEDIA)
       .pipe(map((data: { data: Media[], total: number }) => {
         return data.data
       }));
   }
 
   getUsers(collectionId: number): Observable<User[]> {
-    // return this.apiSrv.get('/collections/' + collectionId + '/users')
-    return of(EXAMPLE_RAW_COLLECTION_USERS)
+    return this.apiSrv.get('/collections/' + collectionId + '/users')
+    // return of(EXAMPLE_RAW_COLLECTION_USERS)
       .pipe(map((data: { data: User[] }) => data.data));
   }
 

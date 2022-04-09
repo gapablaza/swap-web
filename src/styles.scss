@@ -47,6 +47,10 @@ $my-theme: mat.define-light-theme((
 .swap-theme {
   // @include mat.core-theme($my-theme);
   @include mat.all-component-themes($my-theme);
+
+  .mat-drawer-container {
+    background-color: inherit;
+  }
 }
 
 // html,
@@ -59,7 +63,8 @@ html {
   -ms-text-size-adjust: 100%;
 
   --bg-card: #ffffff;
-  --bg-default: #f1f5f9;
+  // --bg-default: #f1f5f9;
+  --bg-default: rgb(245, 245, 248);
   --bg-dialog: #ffffff;
   --bg-hover: rgba(148, 163, 184, 0.12);
   --text-default: #1e293b;
@@ -74,11 +79,14 @@ html {
   --gap: 3rem;
   --gap-vertical: 1.5rem;
   --bg-blend-mode: overlay;
+
+  --elevation-z8: 0px 5px 5px -3px rgba(82, 63, 104, .06), 0px 8px 10px 1px rgba(82, 63, 104, .042), 0px 3px 14px 2px rgba(82, 63, 104, .036);
 }
 
 html {
   font-family: 'Inter', 'sans-serif';
-  font-size: clamp(12px,.8rem + .25vw,20px);
+  // font-size: clamp(12px, .8rem + .25vw, 20px);
+  font-size: clamp(12px, .8rem + .25vw, 16px);
   font-weight: 400;
   line-height: 1.7;
 
@@ -111,17 +119,21 @@ ul {
 }
 
 .h1, h1 {
-  font-size: clamp(2rem,2rem + 1.2vw,3rem);
+  // font-size: clamp(2rem, 2rem + 1.2vw, 3rem);
+  font-size: clamp(1.6rem, 1.6rem + 1.2vw, 2.4rem);
 }
 .h2, h2 {
-  font-size: clamp(1.8rem,1.8rem + .2vw,3rem);
+  // font-size: clamp(1.8rem, 1.8rem + .2vw, 3rem);
+  font-size: clamp(1.44rem, 1.44rem + .2vw, 2.4rem);
 }
 .h3, h3 {
-  font-size: 2rem;
+  // font-size: 2rem;
+  font-size: 1.3rem;
   letter-spacing: .03rem;
 }
 .h4, h4 {
-  font-size: 1.5rem;
+  // font-size: 1.5rem;
+  font-size: 1.1rem;
   margin: 0 0 0.8rem;
 }
 
@@ -135,6 +147,10 @@ table.mat-table {
   width: 100%;
 }
 
+.flex-full {
+  flex-grow: 1;
+}
+
 main {
   position: relative;
   z-index: 1;
@@ -144,43 +160,60 @@ main {
   margin: 0 0 var(--gap);
 }
 
-span.pro-label {
-  font-size: 80%;
-  background-color: #191e28;
-  color: #fff;
-  padding: 1px 4px;
-  // height: 11px;
-  // line-height: 11px;
-  border-radius: 3px;
-  top: -5px;
-  // left: -6px;
-  position: relative;
+/* Absolute Center Spinner */
+.loading-indicator {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-span.positives-label {
-  font-size: 80%;
-  background-color: rgba(70,190,156,.5);
-  color: #fff;
-  padding: 1px 4px;
-  // height: 11px;
-  // line-height: 11px;
-  border-radius: 3px;
-  top: -5px;
-  // left: -6px;
-  position: relative;
+/* Transparent Overlay */
+// .loading-indicator:before {
+//   content: '';
+//   display: block;
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100%;
+//   background-color: rgba(0,0,0,0.3);
+// }
+
+.card {
+  border-radius: 0.25rem;
+  background-color: var(--bg-card);
+  --tw-shadow: var(--elevation-z8);
+  // --tw-shadow-colored: var(--elevation-z8);
+  box-shadow: 0 0 #0000,0 0 #0000,var(--tw-shadow);
+  // box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow);
+  padding: 1.5rem;
 }
 
+span.pro-label,
+span.positives-label,
 span.negatives-label {
-  font-size: 80%;
-  background-color: rgba(221,76,57,.5);
+  font-size: 70%;
   color: #fff;
-  padding: 1px 4px;
+  padding: 1px 6px;
+  margin-right: 2px;
   // height: 11px;
   // line-height: 11px;
   border-radius: 3px;
-  top: -5px;
+  top: -7px;
   // left: -6px;
   position: relative;
+}
+
+span.pro-label {
+  background-color: #191e28;
+}
+span.positives-label {
+  background-color: rgba(70,190,156,.5);
+}
+span.negatives-label {
+  background-color: rgba(221,76,57,.5);
 }
 
 span.item-difficulty-0 {
@@ -201,6 +234,26 @@ span.item-difficulty-4 {
 }
 span.item-difficulty-5 {
   color: #c34c35;
+}
+
+.custom-separator {
+
+  span {
+      margin-right: 0.25em;
+  
+      &:not(:first-child):before {
+        position: relative;
+        display: inline-block;
+        height: 1em;
+        margin: 0 0.45em 0 0.25em;
+        top: -0.15em;
+        overflow: hidden;
+        line-height: 1.1em;
+        vertical-align: middle;
+        pointer-events: none;
+        content: "\2022";
+      }
+    }
 }
 
 // Estilos para las páginas de las COLECCIONES
@@ -234,7 +287,7 @@ section.collection {
     }
 
     .card-resalted {
-      background-color: #f2f2f2;
+      background-color: #a8dab545;
       // color: white;
     }
 
@@ -283,10 +336,12 @@ section.user {
 
     .user-imagen-container {
       margin-bottom: var(--gap-vertical);
+      width: 200px;
     }
 
     .user-image {
       width: 200px;
+      border-radius: 10px;
     }
 
     .user-indicators {
@@ -338,4 +393,174 @@ section.user {
       width: 200px;
     }
   }
+}
+
+
+// ESTILOS BASE PARA LAS LISTAS ESTANDAR
+ul.list-std {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  li.list-std-item {
+      border-top: solid 1px #f1f2f4;
+      padding: 14px 20px;
+      position: relative;
+      display: flex;
+      column-gap: 20px;
+
+      .list-item-title,
+      .list-item-title a {
+        font-size: 1.2rem;
+        font-weight: bold;
+        text-decoration: none;
+        color: var(--text-default);
+      }
+    
+      .list-item-meta {
+          color: var(--text-secondary);
+          font-size: 0.9rem;
+      }
+    
+      .list-item-desc {
+          border: 1px solid #fafafa;
+          border-radius: 8px;
+          padding: 4px 10px;
+          margin: 4px 0px;
+          font-size: 0.9rem;
+          font-style: italic;
+          color: var(--text-secondary);
+          background-color: #fafafa;
+          // background-color: #f9f9f9cc;
+          display: inline-block;
+          // display: block;
+    
+          p {
+              margin: 0;
+          }
+
+          &.evaluation-positive {
+              background-color: rgba(70,190,156,.15);
+          }
+    
+          &.evaluation-negative {
+              background-color: rgba(221,76,57,.15);
+          }
+      }
+
+      &.pro-account {
+        background-color: rgba(131,141,148,.1);
+      }
+  }
+
+  .list-item-image {
+    width: 50px;
+
+    img {
+      width: 50px;
+      border-radius: 50%;
+      margin-top: 4px;
+    }
+  }
+
+  .list-item-content {
+      z-index: 10;
+      position: relative;
+  }
+
+  .list-item-bg {
+      display: block;
+      height: 100%;
+      width: 235px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      opacity: .7;
+      background-size: 235px auto;
+      background-repeat: no-repeat;
+      border-top-right-radius: 4px;
+
+      div {
+          background: -webkit-gradient(linear,left top,right top,color-stop(0,#fff),color-stop(50%,rgba(255,255,255,.25)),to(rgba(255,255,255,0)));
+          background: linear-gradient(to right,#fff 0,rgba(255,255,255,.25) 50%,rgba(255,255,255,0) 100%);
+          width: 100%;
+          height: 100%;
+      }
+  }
+
+  .list-item-progress {
+      height: 2px;
+      position: absolute;
+      bottom: 0;
+      background-color: #46be9c;
+      -webkit-transition: all 1s ease-in-out;
+      transition: all 1s ease-in-out;
+  }
+
+  .list-item-statics {
+    display: flex;
+    column-gap: 10px;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+    }
+  }
+}
+
+.ribbon {
+  $default-right: 14px;
+  $default-top: -14px;
+  $default-color: #46be9c;
+  $default-width: 32px;
+  $default-height: 36px;
+  
+  position: absolute;
+  right: var(--right, $default-right);
+  top: var(--top, $default-top);
+  
+  filter: drop-shadow(2px 3px 2px rgba(black, 0.5));
+  
+  > .content {
+    color: white;
+    font-size: 1.25rem;
+    text-align: center;
+    font-weight: 400;
+    background: var(--color, $default-color) linear-gradient(45deg, rgba(black, 0) 0%, rgba(white, 0.25) 100%);
+    padding: 8px 2px 4px;
+    
+    
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 100%, 0 100%);
+    
+    width: var(--width, $default-width);
+    min-height: var(--height, $default-height);
+    
+    transition: clip-path 1s, padding 1s, background 1s;
+  }
+  
+  &.slant-up > .content {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), 50% calc(100% - 6px), 0 100%);
+  }
+  
+  &.slant-down > .content {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 6px), 0 calc(100% - 12px));
+  }
+  
+  &.down > .content {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), 50% 100%, 0 calc(100% - 8px));
+  }
+  
+  &.up > .content {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 8px), 0 100%);
+  }
+  
+  &.check > .content {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), 40% 100%, 0 calc(100% - 12px));
+  }
+}
+
+.ribbon.evaluation-negative .content {
+  background-color: #dd4c39;
 }

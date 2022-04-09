@@ -56,8 +56,8 @@ export class SearchService {
     //   }
 
     getHomeData(): Observable<{ added: Collection[], moreItems: User[], moreMedia: User[], popular: Collection[], published: Collection[], users: User[] }> {
-      // return this.apiSrv.get('/home')
-      return of(EXAMPLE_RAW_HOME)
+      return this.apiSrv.get('/home')
+      // return of(EXAMPLE_RAW_HOME)
         .pipe(map((data: any) => {
           return {
             added: data.data.added.data as Collection[],

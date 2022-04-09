@@ -1,1 +1,70 @@
-<p>user-collections works!</p>
+<div *ngIf="!isLoaded" class="loading-indicator">
+  <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="user user-section">
+  <div class="user-visual">
+    <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+      <mat-icon inline="true">arrow_back</mat-icon> Volver
+    </a>
+    <div class="user-imagen-container">
+      <img class="user-image" [src]="user.image || '/assets/img/profile_user.png'" [alt]="user.displayName">
+    </div>
+  </div>
+  <div class="user-collections flex-full">
+    <h1>{{ collections.length }} colecciones agregadas</h1>
+    <div class="list-std card">
+      <!-- <div class="list-std-controls">
+          <mat-form-field class="controls-search" appearance="fill">
+            <mat-label>Filtrar usuarios por nombre, ID o ubicación</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
+            <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="searchText=''">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </div> -->
+
+      <ul class="list-std">
+        <li *ngFor="let col of collections; trackBy: trackByCollection" class="list-std-item"
+          [ngClass]="{'completed': col.completed}">
+          <div class="list-item-content flex-full">
+            <div class="list-item-title">
+              <a [routerLink]="['/c', col.name | slugify, col.id]">
+                {{ col.name }}
+              </a>
+            </div>
+            <div class="list-item-meta custom-separator">
+              <span>{{ col.year }}</span>
+              <span>{{ col.items || '???' }} ítems</span>
+              <span>{{ col.publisher.data.name }}</span>
+            </div>
+            <div class="list-item-meta custom-separator">
+              <span>Busca {{ col.summary?.wishing }} ítems</span>
+              <span>Cambia {{ col.summary?.trading }} ítems</span>
+            </div>
+            <div *ngIf="user?.bio" class="list-item-desc">
+              <p [innerHTML]="user?.bio | sanitizeHtml"></p>
+            </div>
+
+            <div *ngIf="col.summary?.completed" class="ribbon up">
+              <div class="content">
+                <svg width="24px" height="24px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check"
+                  class="svg-inline--fa fa-check fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512">
+                  <path fill="currentColor"
+                    d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z">
+                  </path>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="list-item-bg" [style]="'background-image: url('+ col.image + ');'">
+            <div></div>
+          </div>
+          <div class="list-item-progress" [style]="'width: ' + col.summary?.progress + '%;'"></div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</section>

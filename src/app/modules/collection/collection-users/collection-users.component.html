@@ -1,4 +1,7 @@
-<section class="collection collection-section">
+<div *ngIf="!isLoaded" class="loading-indicator">
+  <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="collection collection-section">
   <div class="collection-visual">
     <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
       <mat-icon inline="true">arrow_back</mat-icon> Volver
@@ -7,10 +10,10 @@
       <img class="collection-image" [src]="collection?.image" [alt]="collection?.name">
     </div>
   </div>
-  <div class="collection-info">
+  <div class="collection-info flex-full">
     <h1>{{ collection.totalCollecting }} usuarios con esta colección</h1>
-    <div class="list-std">
-      <div class="list-std-controls">
+    <div class="card">
+      <!-- <div class="list-std-controls">
         <mat-form-field class="controls-search" appearance="fill">
           <mat-label>Filtrar usuarios por nombre, ID o ubicación</mat-label>
           <mat-icon matPrefix>search</mat-icon>
@@ -19,45 +22,49 @@
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
-      </div>
-      <div *ngFor="let user of showedUsers; trackBy: trackByUsers"
-        class="list-std-item mat-elevation-z2"
-        [ngClass]="{'pro-account': user.accountTypeId == 2}">
-        <img [src]="user.image" alt="" class="list-std-image">
+      </div> -->
 
-        <div class="list-std-content">
-          <div class="list-std-data">
-            <div class="list-std-identification">
-              <div class="list-std-title">
-                <a [routerLink]="['/user', user.id]">
-                  {{ user.displayName }} <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
-                </a>
-              </div>
-              <div class="list-std-subtitle">
-                <span>ID {{ user.id }}</span>
-                <span>{{ user.location || 'Sin especificar' }}</span>
-                <span>Actualizado hace {{ user.summary?.daysSinceUpdate }} días</span>
-              </div>
+      <ul class="list-std">
+        <li class="list-std-item" *ngFor="let user of showedUsers; trackBy: trackByUsers"
+          [ngClass]="{'pro-account': user.accountTypeId == 2}">
+          <div class="list-item-image">
+            <a [routerLink]="['/user', user.id]">
+              <img [src]="user.image || '/assets/img/profile_user.png'" alt="">
+            </a>
+          </div>
+
+          <div class="list-item-content flex-full">
+            <div class="list-item-title">
+              <a [routerLink]="['/user', user.id]">
+                {{ user.displayName }}
+                <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
+                <span *ngIf="user.positives" class="positives-label">+{{ user.positives }}</span>
+                <span *ngIf="user.negatives" class="negatives-label">-{{ user.negatives }}</span>
+              </a>
+            </div>
+            <div class="list-item-meta custom-separator">
+              <span>ID {{ user.id }}</span>
+              <span>{{ user.location || 'Sin especificar' }}</span>
+              <span>Actualizado hace {{ user.summary?.daysSinceUpdate }} días</span>
+            </div>
+            <div *ngIf="user?.bio" class="list-item-desc">
+              <p [innerHTML]="user?.bio | sanitizeHtml"></p>
             </div>
           </div>
-          <div *ngIf="user?.bio" class="list-std-desc">
-            <p [innerHTML]="user?.bio | sanitizeHtml"></p>
-          </div>
-        </div>
 
-        <div class="list-std-statics">
-          <div>
-            <span class="number">{{ user.summary?.collectionWishing }}</span>
-            <span>Busca</span>
-            <!-- <mat-icon>search</mat-icon> -->
+          <div class="list-item-statics">
+            <div>
+              <span class="list-item-title">{{ user.summary?.collectionWishing }}</span>
+              <span class="list-item-meta">Busca</span>
+            </div>
+            <div>
+              <span class="list-item-title">{{ user.summary?.collectionTrading }}</span>
+              <span class="list-item-meta">Cambia</span>
+            </div>
           </div>
-          <div>
-            <span class="number">{{ user.summary?.collectionTrading }}</span>
-            <span>Cambia</span>
-            <!-- <mat-icon>view_carousel</mat-icon> -->
-          </div>
-        </div>
-      </div>
+        </li>
+      </ul>
+
     </div>
   </div>
 </section>

@@ -1,6 +1,11 @@
-<section class="collection collection-section">
+<div *ngIf="!isLoaded" class="loading-indicator">
+  <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="collection collection-section">
   <div class="collection-visual">
-    <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']"><mat-icon inline="true">arrow_back</mat-icon> Volver</a>
+    <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+      <mat-icon inline="true">arrow_back</mat-icon> Volver
+    </a>
     <div class="collection-imagen-container">
       <img class="collection-image" [src]="collection?.image" [alt]="collection?.name">
     </div>
@@ -26,6 +31,5 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-
   </div>
 </section>

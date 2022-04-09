@@ -41,9 +41,21 @@ export class UserService {
     return this.apiSrv.get('/users/' + userId + '/evaluations?include=user')
       .pipe(map((data: any) => {
         const evals: Evaluation[] = [];
+
+        // converts object with array form to array
         Object.keys(data.list).forEach(item => {
-          const model = new Evaluation();
+          let model = new Evaluation();
           Object.assign(model, data.list[item]);
+
+          // converts object with prevEvals to array
+          if (data.list[item].previousEvaluationsCounter) {
+            let prevEvalArray: Evaluation[] = [];
+            Object.keys(data.list[item].previousEvaluationsData).forEach((key) => {
+              prevEvalArray.push(data.list[item].previousEvaluationsData[key] as Evaluation);
+            });
+            model = { ...model, previousEvaluationsData: prevEvalArray };
+          }
+
           evals.push(model);
         });
        return evals;

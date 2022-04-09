@@ -1,4 +1,7 @@
-<section class="collection collection-section">
+<div *ngIf="!isLoaded" class="loading-indicator">
+  <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="collection collection-section">
   <div class="collection-visual">
     <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
       <mat-icon inline="true">arrow_back</mat-icon> Volver
@@ -10,7 +13,6 @@
   <div class="collection-info">
     <h1>Elementos multimedia</h1>
     <h2>Imágenes ({{ showedImages.length }})</h2>
-
 
     <div class="list-of-images">
       <!-- <div class="list-std-controls">
@@ -25,22 +27,20 @@
   </div> -->
 
       <div class="images-grid">
-        <div *ngFor="let image of showedImages; trackBy: trackByImage" class="images-grid-card">
-          <img [src]="baseImageUrl + image.id + '.jpg'" alt="" class="images-grid-image">
-          <div class="images-grid-info">
-            <div class="images-grid-desc">
-              <p class="images-grid-title">
-                {{ image.description }}
-              </p>
-              <p class="images-grid-author">
-                por <a href="">{{ image.user.data.displayName }}</a> el {{ image.created * 1000 | date:'dd/MM/yy' }}
-              </p>
-            </div>
+        <div *ngFor="let image of showedImages; let i = index; trackBy: trackByImage" class="images-grid-card">
+          <div class="images-grid-content">
+            <img [src]="baseImageUrl + image.id + '.jpg'" alt="" class="images-grid-image">
+            <p class="images-grid-author">
+              por <a href="">{{ image.user.data.displayName }}</a> el {{ image.created * 1000 | date:'dd/MM/yy' }}
+            </p>
             <div class="images-grid-likes">
               <mat-icon aria-hidden="false" aria-label="Number of likes">favorite</mat-icon>
               <span>{{ image.totalLikes }}</span>
             </div>
           </div>
+          <p class="images-grid-title">
+            #{{ i + 1 }} - {{ image.description }}
+          </p>
         </div>
       </div>
     </div>
