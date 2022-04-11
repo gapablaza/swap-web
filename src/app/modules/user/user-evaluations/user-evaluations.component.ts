@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { concatMap, map, of } from 'rxjs';
+import { orderBy } from 'lodash';
+
 import { Evaluation, User, UserService } from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
 
@@ -12,6 +14,10 @@ export class UserEvaluationsComponent implements OnInit {
   user: User = {} as User;
   evaluations: Evaluation[] = [];
   showedEvaluations: Evaluation[] = [];
+
+  searchText = '';
+  typeSelected = "0";
+  
   isLoaded = false;
 
   constructor(
@@ -32,11 +38,7 @@ export class UserEvaluationsComponent implements OnInit {
         })
       )
       .subscribe(evaluations => {
-        // console.log(evaluations);
         this.evaluations = evaluations
-          .sort((a, b) => {
-            return (a.epochCreationTime || 0) < (b.epochCreationTime || 0) ? 1 : -1;
-          })
           .map(e => {
             if (e.previousEvaluationsCounter) {
               let prevEvalArray = e.previousEvaluationsData?.sort((pa, pb) => {
@@ -48,6 +50,7 @@ export class UserEvaluationsComponent implements OnInit {
             }
           });
         this.showedEvaluations = [...this.evaluations];
+        this.sortShowedEvaluations();
         if (this.user.id) {
           this.isLoaded = true;
         }
@@ -57,5 +60,62 @@ export class UserEvaluationsComponent implements OnInit {
 
   trackByEvaluation(index: number, item: Evaluation): number {
     return item.id;
+  }
+
+  onFilter() {
+    this.filterShowedEvaluations();
+  }
+
+  onClearFilter() {
+    this.searchText = '';
+    this.filterShowedEvaluations();
+  }
+
+  onTypeFilter() {
+    this.onFilter();
+  }
+
+  sortShowedEvaluations() {
+    this.showedEvaluations = orderBy(
+      [...this.showedEvaluations],
+      ['creationTime'],
+      ['desc']
+    );
+  }
+
+  filterShowedEvaluations() {
+    let tempEvaluations = this.evaluations;
+    let type = parseInt(this.typeSelected);
+    // 1.- check filter by text
+    // check at least 2 chars for search
+    if (this.searchText.length > 1) {
+      tempEvaluations = [
+        ...this.evaluations.filter((elem: Evaluation) => {
+          return (
+            elem.description
+              .toLocaleLowerCase()
+              .indexOf(this.searchText.toLocaleLowerCase()) !== -1 ||
+            elem.user.data.displayName
+              .toLocaleLowerCase()
+              .indexOf(this.searchText.toLocaleLowerCase()) !== -1 ||
+            elem.user.data.id.toString().indexOf(this.searchText.toLocaleLowerCase()) !==
+              -1
+          );
+        }),
+      ];
+    }
+
+    // 2.- check filter by evaluation type
+    if (type) {
+      tempEvaluations = [
+        ...tempEvaluations.filter((elem) => {
+          return elem.evaluationTypeId == type;
+        }),
+      ];
+    }
+
+    this.showedEvaluations = [...tempEvaluations];
+    // 3.- sorting
+    this.sortShowedEvaluations();
   }
 }

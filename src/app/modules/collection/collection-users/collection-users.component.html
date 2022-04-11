@@ -11,18 +11,31 @@
     </div>
   </div>
   <div class="collection-info flex-full">
-    <h1>{{ collection.totalCollecting }} usuarios con esta colección</h1>
+    <h1>
+      <span class="color-accent" *ngIf="showedUsers.length != users.length">
+        {{ showedUsers.length }} de 
+      </span>
+      {{ collection.totalCollecting }} usuarios con esta colección
+    </h1>
     <div class="card">
-      <!-- <div class="list-std-controls">
-        <mat-form-field class="controls-search" appearance="fill">
-          <mat-label>Filtrar usuarios por nombre, ID o ubicación</mat-label>
+      <div class="controls-std">
+        <mat-form-field class="controls-search" appearance="outline">
+          <mat-label>Filtrar por nombre, ID, ciudad o descripción</mat-label>
           <mat-icon matPrefix>search</mat-icon>
           <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
-          <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="searchText=''">
+          <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
-      </div> -->
+        <mat-form-field appearance="outline">
+          <mat-label>Ordenar por</mat-label>
+          <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
+            <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
+              {{ option.selectName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
 
       <ul class="list-std">
         <li class="list-std-item" *ngFor="let user of showedUsers; trackBy: trackByUsers"

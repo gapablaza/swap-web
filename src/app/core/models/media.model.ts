@@ -1,3 +1,4 @@
+import { Collection } from './collection.model';
 import { User } from './user.model';
 
 export class Media {
@@ -12,9 +13,12 @@ export class Media {
     public totalLikes?: number | null;
     public updated?: number | null;
     public url?: string | null;
-    public user: {
+    public user?: { // solo cuando se consultan las medias asociadas a una colección
         data: User;
     };
+    public collection?: { // solo cuando se consultan las medias subidas por un usuario
+      data: Collection;
+    }
 
     constructor() {
       this.created = 0;
@@ -28,6 +32,6 @@ export class Media {
       this.totalLikes = null;
       this.updated = null;
       this.url = null;
-      this.user = { data: {} as User };
+      // this.user = { data: {} as User };
     }
 }

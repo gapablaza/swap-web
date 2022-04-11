@@ -3,7 +3,7 @@ import { HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Collection, Evaluation, User } from '../models';
+import { Collection, Evaluation, Media, User } from '../models';
 import { ApiService } from './api.service';
 // import { EXAMPLE_USER, EXAMPLE_USER_COLLECTION, EXAMPLE_USER_COLLECTIONS } from './example-user.service';
 
@@ -74,6 +74,12 @@ export class UserService {
       comment: commentText
     })
       .pipe(map((data: { message: string }) => data.message));
+  }
+
+  getMedia(userId: number): Observable<Media[]> {
+    return this.apiSrv.get('/users/' + userId + '/medias?include=collection.publisher')
+      .pipe(map(data => data.data));
+    // return of({ collections: EXAMPLE_USER_COLLECTIONS, trades: false });
   }
 
   getTradesWithAuthUser(userId: number): Observable<any> {

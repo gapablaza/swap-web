@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { concatMap, of } from 'rxjs';
+import { orderBy } from 'lodash';
 
 import { Collection, CollectionService, User } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
@@ -13,7 +14,29 @@ export class CollectionUsersComponent implements OnInit {
   collection: Collection = {} as Collection;
   users: User[] = [];
   showedUsers: User[] = [];
+
   searchText = '';
+  sortOptionSelected = 'update';
+  sortOptions = [
+    {
+      selectName: 'Última actualización',
+      selectValue: 'update',
+      arrayFields: ['summary.daysSinceUpdate', 'positives'],
+      arrayOrders: ['asc', 'desc'],
+    },
+    {
+      selectName: 'Más positivas',
+      selectValue: 'positives',
+      arrayFields: ['positives', 'displayName'],
+      arrayOrders: ['desc', 'asc'],
+    },
+    {
+      selectName: 'Nombre',
+      selectValue: 'name',
+      arrayFields: ['displayName'],
+      arrayOrders: ['asc'],
+    },
+  ];
   isLoaded = false;
 
   constructor(
@@ -34,14 +57,10 @@ export class CollectionUsersComponent implements OnInit {
         })
       )
       .subscribe((users) => {
-        this.users = users.sort((a, b) => {
-          return (a.summary?.daysSinceUpdate || 0) >
-            (b.summary?.daysSinceUpdate || 0)
-            ? 1
-            : -1;
-        });
+        this.users = users;
         this.showedUsers = [...this.users];
-        console.log(this.showedUsers);
+        this.sortShowedUsers();
+
         if (this.collection.id) {
           this.isLoaded = true;
         }
@@ -53,22 +72,55 @@ export class CollectionUsersComponent implements OnInit {
   }
 
   onFilter() {
+    this.filterShowedUsers();
+  }
+
+  onClearFilter() {
+    this.searchText = '';
+    this.filterShowedUsers();
+  }
+
+  onSort() {
+    this.sortShowedUsers();
+  }
+
+  sortShowedUsers() {
+    let sortParams = this.sortOptions.find(
+      (e) => e.selectValue == this.sortOptionSelected
+    );
+    this.showedUsers = orderBy(
+      [...this.showedUsers],
+      sortParams?.arrayFields,
+      sortParams?.arrayOrders as ['asc' | 'desc']
+    );
+  }
+
+  filterShowedUsers() {
+    let tempCollections = this.users;
+    // 1.- check filter by text
     // check at least 2 chars for search
     if (this.searchText.length > 1) {
-      this.showedUsers = this.users.filter((user: User) => {
-        return (
-          user.displayName
-            .toLowerCase()
-            .indexOf(this.searchText.toLowerCase()) !== -1 ||
-          (user.location || '')
-            .toLowerCase()
-            .indexOf(this.searchText.toLowerCase() || '') !== -1 ||
-          user.id
-            .toString()
-            .toLowerCase()
-            .indexOf(this.searchText.toLowerCase()) !== -1
-        );
-      });
+      tempCollections = [
+        ...this.users.filter((elem: User) => {
+          return (
+            elem.displayName
+              .toLocaleLowerCase()
+              .indexOf(this.searchText.toLocaleLowerCase()) !== -1 ||
+            (elem.location || '')
+              .toLocaleLowerCase()
+              .indexOf(this.searchText.toLocaleLowerCase()) !== -1 ||
+            (elem.bio || '')
+              .toLocaleLowerCase()
+              .indexOf(this.searchText.toLocaleLowerCase()) !== -1 ||
+            elem.id.toString().indexOf(this.searchText.toLocaleLowerCase()) !==
+              -1
+          );
+        }),
+      ];
     }
+
+    this.showedUsers = [...tempCollections];
+    // 3.- sorting
+    this.sortShowedUsers();
   }
 }

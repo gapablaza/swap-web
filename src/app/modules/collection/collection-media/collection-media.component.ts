@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { concatMap, of } from 'rxjs';
+import { orderBy } from 'lodash';
 
 import { Collection, CollectionService, Media } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
@@ -11,11 +12,45 @@ import { CollectionOnlyService } from '../collection-only.service';
 })
 export class CollectionMediaComponent implements OnInit {
   collection: Collection = {} as Collection;
-  media: Media[] = [];
+  medias: Media[] = [];
   showedImages: Media[] = [];
-  searchText = '';
   baseImageUrl =
     'https://res.cloudinary.com/cambialaminas/image/upload/c_scale,q_auto,h_280/c_scale,e_grayscale,g_south_east,l_base:icono-logo-watermark-white,o_40,w_35,x_5,y_5/v1/prod/collectionMedia/';
+  
+  searchText = '';
+  sortOptionSelected = 'likes';
+  sortOptions = [
+    {
+      selectName: 'Más "Me Gusta"',
+      selectValue: 'likes',
+      arrayFields: ['totalLikes', 'created'],
+      arrayOrders: ['desc', 'asc'],
+    },
+    {
+      selectName: 'Últimos subidos',
+      selectValue: 'created-',
+      arrayFields: ['created'],
+      arrayOrders: ['desc'],
+    },
+    {
+      selectName: 'Primeros subidos',
+      selectValue: 'created',
+      arrayFields: ['created'],
+      arrayOrders: ['asc'],
+    },
+    {
+      selectName: 'Descripción',
+      selectValue: 'description',
+      arrayFields: ['description', 'user.data.id'],
+      arrayOrders: ['asc', 'asc'],
+    },
+    {
+      selectName: 'Usuario',
+      selectValue: 'user',
+      arrayFields: ['user.data.display'],
+      arrayOrders: ['asc'],
+    },
+  ];
   isLoaded = false;
 
   constructor(
@@ -36,17 +71,12 @@ export class CollectionMediaComponent implements OnInit {
         })
       )
       .subscribe((data) => {
-        // media array is ordered by total Likes
-        this.media = data.sort((a, b) => {
-          return (a.totalLikes || 0) < (b.totalLikes || 0) ? 1 : -1;
-        });
-
         // new array with only approved images
-        this.showedImages = this.media.filter((elem: Media) => {
-          return elem.mediaTypeId == 1 && elem.mediaStatusId == 2
-            ? true
-            : false;
+        this.medias = data.filter((elem: Media) => {
+          return elem.mediaTypeId == 1 && elem.mediaStatusId == 2;
         });
+        this.showedImages = [...this.medias];
+        this.sortShowedImages();
 
         if (this.collection.id) {
           this.isLoaded = true;
@@ -59,24 +89,52 @@ export class CollectionMediaComponent implements OnInit {
   }
 
   onFilter() {
+    this.filterShowedImages();
+  }
+
+  onClearFilter() {
+    this.searchText = '';
+    this.filterShowedImages();
+  }
+
+  onSort() {
+    this.sortShowedImages();
+  }
+
+  sortShowedImages() {
+    let sortParams = this.sortOptions.find(
+      (e) => e.selectValue == this.sortOptionSelected
+    );
+    this.showedImages = orderBy(
+      [...this.showedImages],
+      sortParams?.arrayFields,
+      sortParams?.arrayOrders as ['asc' | 'desc']
+    );
+  }
+
+  filterShowedImages() {
+    let tempImages = this.medias;
+
     // check at least 2 chars for search
     if (this.searchText.length > 1) {
-      this.showedImages = this.media
-        .filter((elem: Media) => {
-          return elem.mediaTypeId == 1 && elem.mediaStatusId == 2
-            ? true
-            : false;
-        })
-        .filter((elem: Media) => {
+      tempImages = [
+        ...this.medias.filter((elem: Media) => {
           return (
             elem.description
-              .toLowerCase()
-              .indexOf(this.searchText.toLowerCase()) !== -1 ||
-            elem.user.data.displayName
-              .toLowerCase()
-              .indexOf(this.searchText.toLowerCase()) !== -1
+              .toLocaleLowerCase()
+              .indexOf(this.searchText.toLocaleLowerCase()) !== -1 ||
+            elem.user?.data.displayName
+              .toLocaleLowerCase()
+              .indexOf(this.searchText.toLocaleLowerCase()) !== -1 ||
+            elem.user?.data.id
+              .toString()
+              .indexOf(this.searchText.toLocaleLowerCase()) !== -1
           );
-        });
+        }),
+      ];
     }
+
+    this.showedImages = [...tempImages];
+    this.sortShowedImages();
   }
 }

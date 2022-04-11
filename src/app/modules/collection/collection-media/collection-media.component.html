@@ -12,26 +12,38 @@
   </div>
   <div class="collection-info">
     <h1>Elementos multimedia</h1>
-    <h2>Imágenes ({{ showedImages.length }})</h2>
+    <h2>
+      Imágenes (<span class="color-accent" *ngIf="showedImages.length != medias.length">
+        {{ showedImages.length }} de 
+      </span>{{ medias.length }})
+    </h2>
+    <div class="card">
 
-    <div class="list-of-images">
-      <!-- <div class="list-std-controls">
-    <mat-form-field class="controls-search" appearance="fill">
-      <mat-label>Buscar media por descripción o nombre del publicador</mat-label>
-      <mat-icon matPrefix>search</mat-icon>
-      <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
-      <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="searchText=''">
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
-  </div> -->
+      <div class="controls-std">
+        <mat-form-field class="controls-search" appearance="outline">
+          <mat-label>Filtrar por descripción o usuario (nombre / ID)</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
+          <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Ordenar por</mat-label>
+          <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
+            <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
+              {{ option.selectName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
 
       <div class="images-grid">
         <div *ngFor="let image of showedImages; let i = index; trackBy: trackByImage" class="images-grid-card">
           <div class="images-grid-content">
             <img [src]="baseImageUrl + image.id + '.jpg'" alt="" class="images-grid-image">
             <p class="images-grid-author">
-              por <a href="">{{ image.user.data.displayName }}</a> el {{ image.created * 1000 | date:'dd/MM/yy' }}
+              por <a href="">{{ image.user?.data?.displayName }}</a> el {{ image.created * 1000 | date:'dd/MM/yy' }}
             </p>
             <div class="images-grid-likes">
               <mat-icon aria-hidden="false" aria-label="Number of likes">favorite</mat-icon>
