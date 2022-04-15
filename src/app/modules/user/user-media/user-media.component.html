@@ -1,61 +1,63 @@
 <div *ngIf="!isLoaded" class="loading-indicator">
-    <mat-spinner></mat-spinner>
+  <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="user user-section">
+  <div class="user-visual">
+    <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+      <mat-icon inline="true">arrow_back</mat-icon> Volver
+    </a>
+    <div class="user-imagen-container">
+      <img class="user-image" [src]="user.image || '/assets/img/profile_user.png'" [alt]="user.displayName">
+    </div>
   </div>
-  <section *ngIf="isLoaded" class="user user-section">
-    <div class="user-visual">
-      <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
-        <mat-icon inline="true">arrow_back</mat-icon> Volver
-      </a>
-      <div class="user-imagen-container">
-        <img class="user-image" [src]="user.image || '/assets/img/profile_user.png'" [alt]="user.displayName">
+  <div class="user-medias flex-full">
+    <h1>Elementos multimedia</h1>
+    <h2>
+      Imágenes (<span class="color-accent" *ngIf="showedImages.length != medias.length">
+        {{ showedImages.length }} de
+      </span>{{ medias.length }})
+    </h2>
+    <div class="card">
+
+      <div class="controls-std">
+        <mat-form-field class="controls-search" appearance="outline">
+          <mat-label>Filtrar por descripción o colección (nombre / ID)</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
+          <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Ordenar por</mat-label>
+          <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
+            <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
+              {{ option.selectName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
-    </div>
-    <div class="user-medias flex-full">
-      <h1>Elementos multimedia</h1>
-      <h2>
-        Imágenes (<span class="color-accent" *ngIf="showedImages.length != medias.length">
-          {{ showedImages.length }} de  
-        </span>{{ medias.length }})
-      </h2>
-      <div class="card">
 
-        <div class="controls-std">
-          <mat-form-field class="controls-search" appearance="outline">
-            <mat-label>Filtrar por descripción o colección (nombre / ID)</mat-label>
-            <mat-icon matPrefix>search</mat-icon>
-            <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
-            <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
-              <mat-icon>close</mat-icon>
-            </button>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Ordenar por</mat-label>
-            <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
-              <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
-                {{ option.selectName }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-        <div class="images-grid">
-          <div *ngFor="let image of showedImages; let i = index; trackBy: trackByImage" class="images-grid-card">
-            <div class="images-grid-content">
-              <img [src]="baseImageUrl + image.id + '.jpg'" alt="" class="images-grid-image">
-              <p class="images-grid-author">
-                publicado en <a [routerLink]="['/c', image.collection?.data?.name | slugify, image.collection?.data?.id]">{{ image.collection?.data?.name }}</a> el {{ image.created * 1000 | date:'dd/MM/yy' }}
-              </p>
-              <div class="images-grid-likes">
-                <mat-icon aria-hidden="false" aria-label="Number of likes">favorite</mat-icon>
-                <span>{{ image.totalLikes }}</span>
-              </div>
-            </div>
-            <p class="images-grid-title">
-              #{{ i + 1 }} - {{ image.description }}
+      <div class="images-grid">
+        <div *ngFor="let image of showedImages; let i = index; trackBy: trackByImage" class="images-grid-card">
+          <div class="images-grid-content">
+            <img [src]="baseImageUrl + image.id + '.jpg'" alt="" class="images-grid-image">
+            <p class="images-grid-author">
+              publicado en <a
+                [routerLink]="['/c', image.collection?.data?.name | slugify, image.collection?.data?.id]">{{
+                image.collection?.data?.name }}</a> el {{ image.created * 1000 | date:'dd/MM/yy' }}
             </p>
+            <div class="images-grid-likes">
+              <mat-icon aria-hidden="false" aria-label="Number of likes">favorite</mat-icon>
+              <span>{{ image.totalLikes }}</span>
+            </div>
           </div>
+          <p class="images-grid-title">
+            #{{ i + 1 }} - {{ image.description }}
+          </p>
         </div>
       </div>
-  
     </div>
-  </section>
+
+  </div>
+</section>

@@ -28,7 +28,12 @@ export class SearchService {
         // }
     }
 
-    searchByText(query: string): Observable<any> {
+    searchByText(query: string): Observable<{
+      users: User[],
+      totalUsers: number,
+      collections: Collection[],
+      totalCollections: number
+    }> {
         return this.apiSrv.get('/search?q=' + query)
           .pipe(map(data => data.data));
         // return of(EXAMPLE_SEARCH);

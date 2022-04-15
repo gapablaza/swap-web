@@ -1,0 +1,117 @@
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="search" style="padding-top: 20px;">
+    <h1>Resultados búsqueda: "{{ searchTxt }}"</h1>
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <span [matBadge]="collections.length" matBadgeOverlap="false">Colecciones</span>
+            </ng-template>
+
+            <div class="controls-std card">
+                <mat-form-field class="controls-search" appearance="outline">
+                    <mat-label>Filtrar colecciones</mat-label>
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput type="text" [(ngModel)]="colFilterText" (ngModelChange)="onCollectionFilter()">
+                    <button *ngIf="colFilterText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearCollectionFilter()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Ordenar por</mat-label>
+                    <mat-select (selectionChange)="onCollectionSort()" [(value)]="colSortOptionSelected">
+                        <mat-option *ngFor="let option of colSortOptions" [value]="option.selectValue">
+                            {{ option.selectName }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <ul class="list-std card">
+                <li *ngFor="let col of showedCollections ; trackBy: trackByCollection" class="list-std-item"
+                    [ngClass]="{'completed': col.completed}">
+                    <div class="list-item-content flex-full">
+                        <div class="list-item-title">
+                            <a [routerLink]="['/c', col.name | slugify, col.id]">
+                                {{ col.name }}
+                            </a>
+                        </div>
+                        <div class="list-item-meta custom-separator">
+                            <span>{{ col.year }}</span>
+                            <span>{{ col.items || '???' }} ítems</span>
+                            <span>{{ col.publisher.data.name }}</span>
+                        </div>
+                    </div>
+                    <div class="list-item-bg" [style]="'background-image: url('+ col.image + ');'">
+                        <div></div>
+                    </div>
+                </li>
+            </ul>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <span [matBadge]="users.length" matBadgeOverlap="false">Usuarios</span>
+            </ng-template>
+
+            <div class="controls-std card">
+                <mat-form-field class="controls-search" appearance="outline">
+                    <mat-label>Filtrar usuarios</mat-label>
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput type="text" [(ngModel)]="userFilterText" (ngModelChange)="onUserFilter()">
+                    <button *ngIf="userFilterText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearUserFilter()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Ordenar por</mat-label>
+                    <mat-select (selectionChange)="onUserSort()" [(value)]="userSortOptionSelected">
+                        <mat-option *ngFor="let option of userSortOptions" [value]="option.selectValue">
+                            {{ option.selectName }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <ul class="list-std card">
+                <li class="list-std-item" *ngFor="let user of showedUsers; trackBy: trackByUsers"
+                    [ngClass]="{'pro-account': user.accountTypeId == 2}">
+                    <div class="list-item-image">
+                        <a [routerLink]="['/user', user.id]">
+                            <img [src]="user.image || '/assets/img/profile_user.png'" alt="">
+                        </a>
+                    </div>
+
+                    <div class="list-item-content flex-full">
+                        <div class="list-item-title">
+                            <a [routerLink]="['/user', user.id]">
+                                {{ user.displayName }}
+                                <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
+                                <span *ngIf="user.positives" class="positives-label">+{{ user.positives }}</span>
+                                <span *ngIf="user.negatives" class="negatives-label">-{{ user.negatives }}</span>
+                            </a>
+                        </div>
+                        <div class="list-item-meta custom-separator">
+                            <span>ID {{ user.id }}</span>
+                            <span>{{ user.location || 'Sin especificar' }}</span>
+                            <span>Visto hace {{ user.daysSinceLogin }} días</span>
+                        </div>
+                        <div *ngIf="user?.bio" class="list-item-desc">
+                            <p [innerHTML]="user?.bio | sanitizeHtml"></p>
+                        </div>
+                    </div>
+                    <div class="list-item-statics">
+                        <div>
+                            <span class="list-item-title">{{ user.wishing }}</span>
+                            <span class="list-item-meta">Busca</span>
+                        </div>
+                        <div>
+                            <span class="list-item-title">{{ user.trading }}</span>
+                            <span class="list-item-meta">Cambia</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </mat-tab>
+    </mat-tab-group>
+</section>

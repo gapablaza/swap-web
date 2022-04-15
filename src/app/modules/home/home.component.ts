@@ -8,7 +8,7 @@ import { Collection, User } from '../../core/models';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  user: User = {} as User;
+  // user: User = {} as User;
   added: Collection[] = [];
   moreItems: User[] = [];
   moreMedia: User[] = [];
@@ -28,11 +28,24 @@ export class HomeComponent implements OnInit {
     // });
 
     this.searchSrv.getHomeData().subscribe(data => {
-      this.added = data.added;
+      this.added = data.added
+        .sort((a, b) => {
+          return a.id < b.id ? 1 : -1; 
+        });
+
       this.moreItems = data.moreItems;
       this.moreMedia = data.moreMedia;
-      this.popular = data.popular;
-      this.published = data.published;
+
+      this.popular = data.popular
+        .sort((a, b) => {
+          return (a.recentCollecting || 0) < (b.recentCollecting || 0) ? 1 : -1; 
+        });
+
+      this.published = data.published
+        .sort((a, b) => {
+          return a.release < b.release ? 1 : -1; 
+        });
+        
       this.users = data.users;
     });
   }

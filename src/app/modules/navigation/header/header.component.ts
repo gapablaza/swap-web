@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { AuthService } from '../../auth/auth.service';
@@ -12,8 +13,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @Output() sidenavToggle = new EventEmitter<void>();
   isAuth = false;
   authSubscription!: Subscription;
+  searchTxt = '';
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.authSubscription =  this.authService.authChange.subscribe(authStatus => {
@@ -27,6 +32,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onLogout() {
     this.authService.logout();
+  }
+
+  onSearch() {
+    if (this.searchTxt.trim().length == 0) return;
+
+    this.router.navigate(['/search'], {
+      queryParams: {
+        q: this.searchTxt,
+      }
+    })
   }
 
   ngOnDestroy() {

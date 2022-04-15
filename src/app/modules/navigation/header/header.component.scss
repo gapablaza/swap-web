@@ -19,3 +19,41 @@ mat-toolbar a {
   display: flex;
   column-gap: 2rem;
 }
+
+.main-search-form {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  min-width: 150px;
+  height: 100%;
+  margin-right: 16px;
+  position: relative;
+
+  input {
+    border: none;
+    border-radius: 100px;
+    // padding: 5px 3rem 5px 16px;
+    padding: 5px 12px 5px 16px;
+    margin-left: 8px;
+    width: 240px;
+    max-width: 300px;
+    line-height: normal;
+    height: 50%;
+    -webkit-appearance: none;
+
+    color: #444;
+    background-color: #fff;
+  }
+  
+  mat-icon {
+    position: absolute;
+    color: black;
+    right: 0.7rem;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
