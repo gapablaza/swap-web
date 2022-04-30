@@ -1,3 +1,5 @@
+import { registerLocaleData } from '@angular/common';
+import es from '@angular/common/locales/es';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { orderBy } from 'lodash';
@@ -58,20 +60,20 @@ export class SearchComponent implements OnInit {
     {
       selectName: 'Mejor resultado',
       selectValue: 'relevance',
-      arrayFields: ['relevance', 'displayName'],
-      arrayOrders: ['desc', 'asc'],
+      arrayFields: ['relevance', 'positives', 'displayName'],
+      arrayOrders: ['desc', 'desc', 'asc'],
     },
     {
       selectName: 'Nombre',
       selectValue: 'name',
-      arrayFields: ['displayName'],
-      arrayOrders: ['asc'],
+      arrayFields: ['displayName', 'positives'],
+      arrayOrders: ['asc', 'desc'],
     },
     {
       selectName: 'Vistos ultimamente',
       selectValue: 'last-login',
-      arrayFields: ['daysSinceLogin', 'displayName'],
-      arrayOrders: ['asc', 'asc'],
+      arrayFields: ['daysSinceLogin', 'positives', 'displayName'],
+      arrayOrders: ['asc', 'desc', 'asc'],
     },
     {
       selectName: 'Más positivas',
@@ -88,6 +90,8 @@ export class SearchComponent implements OnInit {
     ) {}
 
   ngOnInit(): void {
+    registerLocaleData( es );
+    
     this.route.queryParams
       .pipe(
         concatMap((params) => {
@@ -108,7 +112,7 @@ export class SearchComponent implements OnInit {
 
           this.users = result.users;
           this.showedUsers = [...result.users];
-          this.sortShowedUsers;
+          this.sortShowedUsers();
 
           this.isLoaded = true;
         },

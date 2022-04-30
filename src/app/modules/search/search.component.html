@@ -94,7 +94,7 @@
                         <div class="list-item-meta custom-separator">
                             <span>ID {{ user.id }}</span>
                             <span>{{ user.location || 'Sin especificar' }}</span>
-                            <span>Visto hace {{ user.daysSinceLogin }} días</span>
+                            <span appDaysSinceLogin="{{ user.daysSinceLogin }}"></span>
                         </div>
                         <div *ngIf="user?.bio" class="list-item-desc">
                             <p [innerHTML]="user?.bio | sanitizeHtml"></p>
@@ -102,11 +102,11 @@
                     </div>
                     <div class="list-item-statics">
                         <div>
-                            <span class="list-item-title">{{ user.wishing }}</span>
+                            <span class="list-item-title">{{ user.wishing | number:'':'es' }}</span>
                             <span class="list-item-meta">Busca</span>
                         </div>
                         <div>
-                            <span class="list-item-title">{{ user.trading }}</span>
+                            <span class="list-item-title">{{ user.trading | number:'':'es' }}</span>
                             <span class="list-item-meta">Cambia</span>
                         </div>
                     </div>

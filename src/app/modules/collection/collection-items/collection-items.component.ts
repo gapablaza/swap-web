@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { concatMap, of } from 'rxjs';
 
-import { Collection, CollectionService, Item } from 'src/app/core';
+import { Collection, CollectionService, DEFAULT_COLLECTION_IMG, Item } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
 
 @Component({
@@ -11,6 +11,7 @@ import { CollectionOnlyService } from '../collection-only.service';
 })
 export class CollectionItemsComponent implements OnInit {
   collection: Collection = {} as Collection;
+  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   items: Item[] = [];
   displayedColumns: string[] = ['name', 'description', 'difficulty'];
   isLoaded = false;

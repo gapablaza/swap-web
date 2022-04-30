@@ -2,7 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { concatMap, of } from 'rxjs';
 import { orderBy } from 'lodash';
 
-import { Collection, CollectionService, User } from 'src/app/core';
+import { 
+  Collection, 
+  CollectionService, 
+  DEFAULT_COLLECTION_IMG, 
+  DEFAULT_USER_PROFILE_IMG, 
+  User } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
 
 @Component({
@@ -12,6 +17,8 @@ import { CollectionOnlyService } from '../collection-only.service';
 })
 export class CollectionUsersComponent implements OnInit {
   collection: Collection = {} as Collection;
+  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
+  defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   users: User[] = [];
   showedUsers: User[] = [];
 

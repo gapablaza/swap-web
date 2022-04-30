@@ -2,7 +2,7 @@ import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, OnInit } from '@angular/core';
 
-import { User, UserService } from 'src/app/core';
+import { DEFAULT_USER_PROFILE_IMG, User, UserService } from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
 
 @Component({
@@ -11,7 +11,8 @@ import { UserOnlyService } from '../user-only.service';
   styleUrls: ['./user-profile.component.scss']
 })
 export class UserProfileComponent implements OnInit {
-  user!: User;
+  user: User = {} as User;
+  defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   isLoaded = false;
 
   constructor(

@@ -1,0 +1,38 @@
+// https://github.com/KittyGiraudel/sass-boilerplate/blob/master/stylesheets/abstracts/_variables.scss
+
+// -----------------------------------------------------------------------------
+// This file contains all application-wide Sass variables.
+// -----------------------------------------------------------------------------
+
+
+$primary: #455a64;
+$accent: #00695c;
+
+$max-width: 1600px;
+
+html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  
+    --bg-card: #ffffff;
+    // --bg-default: #f1f5f9;
+    --bg-default: rgb(245, 245, 248);
+    --bg-dialog: #ffffff;
+    --bg-hover: rgba(148, 163, 184, 0.12);
+    --text-default: #1e293b;
+    --text-secondary: #64748b;
+    --text-hint: #94a3b8;
+    --text-disabled: #94a3b8;
+    --color-primary: #455a64;
+    --color-accent: #00695c;
+    --border: #e2e8f0;
+    --divider: #e2e8f0;
+    --icon: #64748b;
+    --mat-icon: #64748b;
+    --maxWidth: 1600px;
+    --gap: 3rem;
+    --gap-vertical: 1.5rem;
+    --bg-blend-mode: overlay;
+  
+    // --elevation-z8: 0px 5px 5px -3px rgba(82, 63, 104, .06), 0px 8px 10px 1px rgba(82, 63, 104, .042), 0px 3px 14px 2px rgba(82, 63, 104, .036);
+  }

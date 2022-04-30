@@ -4,7 +4,7 @@
 <section *ngIf="isLoaded" class="user">
   <div class="user-visual">
     <div class="user-imagen-container">
-      <img class="user-image" [src]="user?.image || '/assets/img/profile_user.png'" [alt]="user?.displayName">
+      <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage" [alt]="user.displayName">
     </div>
     <div class="user-indicators">
       <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
@@ -15,7 +15,23 @@
   </div>
   <div class="user-info card">
     <h1>{{ user?.displayName }}</h1>
-    <h2>Desde {{ user?.location_city }}, {{ user?.location_country }}</h2>
+    <h2 *ngIf="user.location">Desde {{ user?.location_city }}, {{ user?.location_country }}</h2>
+    <h2 *ngIf="!user.location">Desde <i>Sin información</i></h2>
+
+    <div *ngIf="user.disabled" class="alert">
+      <div class="alert-container" style="opacity: 1;">
+        <div class="alert-icon">
+          <div class="alert-default-icon">
+            <mat-icon>error_outline</mat-icon>
+          </div>
+        </div>
+        <div class="alert-content">
+          <div class="alert-title">Atención</div>
+          <div class="alert-message">Este usuario tiene activado el modo "Incógnito" por lo que no es considerado en los posibles cambios, no puede registrar evaluaciones ni puede enviar/recibir mensajes</div>
+        </div>
+      </div>
+    </div>
+
     <p>ID de usuario: <strong>{{ user.id }}</strong></p>
     <p>Inició sesión por última vez el <strong>{{ user.lastLogin | date:'dd/MM/YYYY' }}</strong> (hace <strong>{{ user.daysSinceLogin }}</strong> días)</p>
     <p *ngIf="user.bio"  class="user-description" [innerHTML]="user.bio | sanitizeHtml"></p>

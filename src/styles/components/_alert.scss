@@ -1,0 +1,61 @@
+.alert {
+    margin: 16px 0;
+
+    .alert-container {
+        border-radius: 6px;
+
+        position: relative;
+        display: flex;
+        padding: 16px;
+        // font-size: 14px;
+        line-height: 1;
+
+        background-color: #475569;
+    }
+
+    .alert-icon {
+        display: flex;
+        align-items: flex-start;
+        color: white;
+
+        .alert-default-icon {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+
+            display: flex;
+            margin-right: 12px;
+
+            .mat-icon {
+                width: 1.25rem;
+                height: 1.25rem;
+                min-width: 1.25rem;
+                min-height: 1.25rem;
+                font-size: 1.25rem;
+                line-height: 1.25rem;
+            }
+        }
+    }
+
+    .alert-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        line-height: 1;
+
+        .alert-title {
+            font-weight: 600;
+            line-height: 20px;
+            color: white;
+        }
+
+        .alert-message {
+            margin-top: 4px;
+            line-height: 20px;
+            color: #f1f5f9;
+        }
+    }
+
+
+}

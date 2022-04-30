@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { Collection } from 'src/app/core';
+import { Collection, DEFAULT_COLLECTION_IMG } from 'src/app/core';
 
 @Component({
   selector: 'app-list-resalted-collections',
@@ -9,6 +9,7 @@ import { Collection } from 'src/app/core';
 })
 export class ListResaltedCollectionsComponent implements OnInit {
   @Input() collections: Collection[] = [] ;
+  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
 
   constructor() { }
 

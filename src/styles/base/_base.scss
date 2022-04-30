@@ -1,0 +1,252 @@
+// -----------------------------------------------------------------------------
+// This file contains very basic styles.
+// -----------------------------------------------------------------------------
+
+body,
+dd,
+dl,
+html,
+menu,
+ol,
+ul {
+  margin: 0;
+}
+
+body, html {
+  height: 100%;
+}
+
+html {
+  font-family: 'Inter', 'sans-serif';
+  // font-size: clamp(12px, .8rem + .25vw, 20px);
+  font-size: clamp(12px, .8rem + .25vw, 16px);
+  font-weight: 400;
+  line-height: 1.7;
+
+  padding: 0;
+  scrollbar-color: #666 #201c29;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--text-default);
+  background-color: var(--bg-default);
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  mat-sidenav-container.mat-sidenav-container {
+    flex-grow: 1;
+  }
+}
+
+mat-sidenav-content.mat-drawer-content.mat-sidenav-content {
+  display: flex;
+  flex-direction: column;
+
+  .page-outer-wrap {
+    flex-grow: 1;
+  }
+}
+
+.h1,
+h1,
+.h2,
+h2,
+.h3,
+h3,
+.h4,
+h4 {
+  font-family: 'Lato', serif;
+  font-style: normal;
+  font-weight: 700;
+  margin: 0 0 1.5rem;
+  line-height: 1.1;
+}
+
+.h1,
+h1 {
+  // font-size: clamp(2rem, 2rem + 1.2vw, 3rem);
+  font-size: clamp(1.6rem, 1.6rem + 1.2vw, 2.4rem);
+}
+
+.h2,
+h2 {
+  // font-size: clamp(1.8rem, 1.8rem + .2vw, 3rem);
+  font-size: clamp(1.44rem, 1.44rem + .2vw, 2.4rem);
+}
+
+.h3,
+h3 {
+  // font-size: 2rem;
+  font-size: 1.3rem;
+  letter-spacing: .03rem;
+}
+
+.h4,
+h4 {
+  // font-size: 1.5rem;
+  font-size: 1.1rem;
+  margin: 0 0 0.8rem;
+}
+
+.color-primary {
+  color: var(--color-primary) !important;
+}
+
+.color-accent {
+  color: var(--color-accent) !important;
+}
+
+.color-warn {
+  color: var(--color-warn) !important;
+}
+
+.page-wrap {
+  max-width: var(--maxWidth);
+  margin: 0 auto;
+  padding: 0 var(--gap);
+}
+
+table.mat-table {
+  width: 100%;
+}
+
+.flex-full {
+  flex-grow: 1;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.mt-base {
+  margin-top: var(--gap);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+}
+
+.page-header {
+  margin: 0 0 var(--gap);
+}
+
+/* Absolute Center Spinner */
+.loading-indicator {
+  // height: 100vh;
+  min-height: 200px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+span.pro-label,
+span.positives-label,
+span.negatives-label {
+  font-size: 70%;
+  color: #fff;
+  padding: 1px 6px;
+  margin-right: 2px;
+  // height: 11px;
+  // line-height: 11px;
+  border-radius: 3px;
+  top: -7px;
+  // left: -6px;
+  position: relative;
+}
+
+span.pro-label {
+  background-color: #191e28;
+}
+
+span.positives-label {
+  background-color: rgba(70, 190, 156, .5);
+}
+
+span.negatives-label {
+  background-color: rgba(221, 76, 57, .5);
+}
+
+span.item-difficulty-0 {
+  color: #727a8e;
+  font-style: italic;
+}
+
+span.item-difficulty-1 {
+  color: #687385;
+}
+
+span.item-difficulty-2 {
+  color: #09815d;
+}
+
+span.item-difficulty-3 {
+  color: #586ada;
+}
+
+span.item-difficulty-4 {
+  color: #a44fb5;
+}
+
+span.item-difficulty-5 {
+  color: #c34c35;
+}
+
+.danger {
+  color: #ce4844;
+}
+
+.warning {
+  color: #aa6708;
+}
+
+.success {
+  color: #46be9c;
+}
+
+.custom-separator {
+
+  >span {
+    margin-right: 0.25em;
+
+    &:not(:first-child):before {
+      position: relative;
+      display: inline-block;
+      height: 1em;
+      margin: 0 0.45em 0 0.25em;
+      top: -0.15em;
+      overflow: hidden;
+      line-height: 1.1em;
+      vertical-align: middle;
+      pointer-events: none;
+      content: "\2022";
+    }
+  }
+}
+
+.empty-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 40px;
+
+  h2 {
+    font-size: 5rem;
+    color: gray;
+  }
+
+  a {
+    margin-top: 20px;
+  }
+}
+
+img.ng-lazyloaded {
+  transition: all 0.5s;
+}

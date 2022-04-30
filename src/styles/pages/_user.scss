@@ -1,0 +1,116 @@
+// ESTILOS PARA LAS PÁGINAS DE LOS USUARIOS
+section.user {
+  display: flex;
+  column-gap: 100px;
+
+  margin-top: var(--gap-vertical);
+  margin-bottom: var(--gap-vertical);
+
+  .user-visual {
+    width: 200px;
+    flex-shrink: 0;
+
+    button,
+    .btn {
+      width: 100%;
+      margin-bottom: var(--gap-vertical);
+    }
+
+    .user-imagen-container {
+      margin-bottom: var(--gap-vertical);
+      width: 200px;
+    }
+
+    .user-image {
+      width: 200px;
+      border-radius: 10px;
+    }
+
+    .user-indicators {
+      display: flex;
+      column-gap: 10px;
+      text-align: center;
+      justify-content: center;
+      margin-bottom: var(--gap-vertical);
+    }
+
+    span.pro-label,
+    span.positives-label,
+    span.negatives-label {
+      font-size: 100%;
+      padding: 4px 8px;
+    }
+
+    span.pro-label {
+      flex-grow: 2;
+    }
+  }
+
+  .user-info {
+    width: 100%;
+
+    .user-description {
+      background-color: #f2f2f2;
+      padding: 20px 40px;
+      border-radius: 6px;
+    }
+
+    .user-help {
+      color: #4f4f4d;
+    }
+  }
+
+  hr {
+    margin: var(--gap-vertical) 0;
+  }
+
+  h3 {
+    margin-top: 40px;
+    margin-bottom: 0;
+    font-weight: bold;
+  }
+
+  &.user-section {
+    column-gap: 40px;
+
+    .user-image {
+      width: 200px;
+    }
+  }
+}
+
+
+.user-collection-modal {
+  padding: 1rem 0;
+  background-size: 230px;
+  background-repeat: no-repeat;
+  background-position: right 1rem;
+
+  .user-collection-modal-content {
+    margin-right: 250px;
+  }
+
+  .h2 {
+    font-weight: 400;
+  }
+
+  .user-collection-modal-wishing {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin: 0;
+    padding: 0.5rem 1rem;
+  }
+
+  .user-collection-modal-trading {
+    margin: 0;
+    padding: 0.5rem 1rem;
+  }
+
+  .user-collection-modal-udpate {
+    text-align: right;
+    font-style: italic;
+    font-size: 0.9rem;
+    margin-right: 1rem;
+    color: var(--text-secondary);
+  }
+}

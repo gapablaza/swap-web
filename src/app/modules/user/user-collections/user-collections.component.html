@@ -7,7 +7,7 @@
       <mat-icon inline="true">arrow_back</mat-icon> Volver
     </a>
     <div class="user-imagen-container">
-      <img class="user-image" [src]="user.image || '/assets/img/profile_user.png'" [alt]="user.displayName">
+      <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage" [alt]="user.displayName">
     </div>
   </div>
   <div class="user-collections flex-full">
@@ -18,7 +18,14 @@
       {{ collections.length }} colecciones agregadas
     </h1>
     <div class="card">
-      <div class="controls-std">
+      <div class="empty-content" *ngIf="!collections.length">
+        <h2>(@.@)</h2>
+        <p>Todavía no ha agregado ninguna colección...</p>
+        <!-- <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
+          <mat-icon inline="true">library_books</mat-icon> Agregar Evaluación
+        </a> -->
+      </div>
+      <div class="controls-std" *ngIf="collections.length">
         <mat-form-field class="controls-search" appearance="outline">
           <mat-label>Filtrar por nombre, ID o editorial</mat-label>
           <mat-icon matPrefix>search</mat-icon>
@@ -44,7 +51,7 @@
           [ngClass]="{'completed': col.completed}">
           <div class="list-item-content flex-full">
             <div class="list-item-title">
-              <a [routerLink]="['/c', col.name | slugify, col.id]">
+              <a [routerLink]="['./']" (click)="onOpenDetails(col)">
                 {{ col.name }}
               </a>
             </div>
@@ -73,7 +80,7 @@
               </div>
             </div>
           </div>
-          <div class="list-item-bg" [style]="'background-image: url('+ col.image + ');'">
+          <div class="list-item-bg" [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image">
             <div></div>
           </div>
           <div class="list-item-progress" [style]="'width: ' + col.summary?.progress + '%;'"></div>

@@ -1,0 +1,9 @@
+.card {
+    border-radius: 0.25rem;
+    background-color: var(--bg-card);
+    --tw-shadow: var(--elevation-z8);
+    // --tw-shadow-colored: var(--elevation-z8);
+    box-shadow: 0 0 #0000,0 0 #0000,var(--tw-shadow);
+    // box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow);
+    padding: 1.5rem;
+  }

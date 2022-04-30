@@ -1,12 +1,26 @@
-<header class="page-header">
+<div *ngIf="!isLoaded" class="loading-indicator">
+  <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="home mt-base">
+  <!-- <header class="page-header">
   <h1 class="page-title">Home</h1>
-</header>
+</header> -->
 
-<h2>Populares</h2>
-<app-list-resalted-collections [collections]="popular"></app-list-resalted-collections>
+  <h2>Populares</h2>
+  <app-list-resalted-collections [collections]="popular"></app-list-resalted-collections>
 
-<h2>Recientemente publicados</h2>
-<app-list-collections [collections]="published"></app-list-collections>
+  <h2>Con más elementos multimedia</h2>
+  <app-list-users [users]="moreMedia" [type]="'media'"></app-list-users>
 
-<h2>Últimas incorporaciones a nuestro catálogo</h2>
-<app-list-collections [collections]="added"></app-list-collections>
+  <h2>Recientemente publicados</h2>
+  <app-list-collections [collections]="published"></app-list-collections>
+
+  <h2>Con más ítems listados</h2>
+  <app-list-users [users]="moreItems" [type]="'item'"></app-list-users>
+
+  <h2>Últimas incorporaciones a nuestro catálogo</h2>
+  <app-list-collections [collections]="added"></app-list-collections>
+
+  <h2>Últimos en registrarse</h2>
+  <app-list-users [users]="users"></app-list-users>
+</section>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { concatMap, of } from 'rxjs';
 import { orderBy } from 'lodash';
 
-import { Media, User, UserService } from 'src/app/core';
+import { DEFAULT_USER_PROFILE_IMG, Media, User, UserService } from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
 
 @Component({
@@ -12,6 +12,7 @@ import { UserOnlyService } from '../user-only.service';
 })
 export class UserMediaComponent implements OnInit {
   user: User = {} as User;
+  defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   medias: Media[] = [];
   showedImages: Media[] = [];
   baseImageUrl =

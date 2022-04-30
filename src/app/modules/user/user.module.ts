@@ -24,6 +24,9 @@ import { UserCollectionDetailsComponent } from './user-collection-details/user-c
   imports: [
     SharedModule,
     UserRoutingModule,
-  ]
+  ],
+  entryComponents: [
+    UserCollectionDetailsComponent,
+  ],
 })
 export class UserModule { }

@@ -9,11 +9,13 @@
     <!-- <header>
       <app-header (sidenavToggle)="sidenav.toggle()"></app-header>
     </header> -->
-    <div class="page-wrap">
-      <main #maincontent>
-        <router-outlet></router-outlet>
-      </main>
+    <div class="page-outer-wrap">
+      <div class="page-wrap">
+        <main #maincontent>
+          <router-outlet></router-outlet>
+        </main>
+      </div>
     </div>
-    <footer>Footer PENDIENTE</footer>
+    <footer>&copy;2015+ IntercambiaLáminas</footer>
   </mat-sidenav-content>
 </mat-sidenav-container>

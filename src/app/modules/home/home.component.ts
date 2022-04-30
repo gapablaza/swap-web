@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit {
   popular: Collection[] = [];
   published: Collection[] = [];
   users: User[] = [];
+  isLoaded = false;
 
   constructor(
     private userSrv: UserService,
@@ -22,19 +23,21 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // this.userSrv.get(1).subscribe(data => {
-    //   this.user = data;
-    //   console.log(this.user);
-    // });
-
     this.searchSrv.getHomeData().subscribe(data => {
       this.added = data.added
         .sort((a, b) => {
           return a.id < b.id ? 1 : -1; 
         });
 
-      this.moreItems = data.moreItems;
-      this.moreMedia = data.moreMedia;
+      this.moreItems = data.moreItems
+        .sort((a, b) => {
+          return (a.totalItems || 0) < (b.totalItems || 0) ? 1 : -1; 
+        });
+
+      this.moreMedia = data.moreMedia
+        .sort((a, b) => {
+          return (a.contributions || 0) < (b.contributions || 0) ? 1 : -1; 
+        });
 
       this.popular = data.popular
         .sort((a, b) => {
@@ -46,7 +49,12 @@ export class HomeComponent implements OnInit {
           return a.release < b.release ? 1 : -1; 
         });
         
-      this.users = data.users;
+      this.users = data.users
+        .sort((a, b) => {
+          return a.id < b.id ? 1 : -1; 
+        });
+
+      this.isLoaded = true;
     });
   }
 

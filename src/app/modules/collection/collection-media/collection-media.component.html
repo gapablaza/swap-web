@@ -7,19 +7,25 @@
       <mat-icon inline="true">arrow_back</mat-icon> Volver
     </a>
     <div class="collection-imagen-container">
-      <img class="collection-image" [src]="collection.image" [alt]="collection.name">
+      <img class="collection-image" [defaultImage]="defaultCollectionImage" [lazyLoad]="collection.image" [alt]="collection.name">
     </div>
   </div>
   <div class="collection-info">
     <h1>Elementos multimedia</h1>
-    <h2>
+    <h2 *ngIf="showedImages.length">
       Imágenes (<span class="color-accent" *ngIf="showedImages.length != medias.length">
         {{ showedImages.length }} de 
       </span>{{ medias.length }})
     </h2>
     <div class="card">
-
-      <div class="controls-std">
+      <div class="empty-content" *ngIf="!showedImages.length">
+        <h2>(｡◕‿‿◕｡)</h2>
+        <p>Nadie ha publicado un elemento multimedia... Quieres ser el primero?</p>
+        <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
+          <mat-icon inline="true">add_a_photo</mat-icon> Agregar multimedia
+        </a>
+      </div>
+      <div class="controls-std" *ngIf="showedImages.length">
         <mat-form-field class="controls-search" appearance="outline">
           <mat-label>Filtrar por descripción o usuario (nombre / ID)</mat-label>
           <mat-icon matPrefix>search</mat-icon>
@@ -41,7 +47,7 @@
       <div class="images-grid">
         <div *ngFor="let image of showedImages; let i = index; trackBy: trackByImage" class="images-grid-card">
           <div class="images-grid-content">
-            <img [src]="baseImageUrl + image.id + '.jpg'" alt="" class="images-grid-image">
+            <img [lazyLoad]="baseImageUrl + image.id + '.jpg'" alt="" class="images-grid-image">
             <p class="images-grid-author">
               por <a href="">{{ image.user?.data?.displayName }}</a> el {{ image.created * 1000 | date:'dd/MM/yy' }}
             </p>

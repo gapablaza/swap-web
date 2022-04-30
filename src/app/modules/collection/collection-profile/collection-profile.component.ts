@@ -2,7 +2,7 @@ import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, OnInit } from '@angular/core';
 
-import { Collection, CollectionService, Item } from 'src/app/core';
+import { Collection, CollectionService, DEFAULT_COLLECTION_IMG, Item } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
 
 @Component({
@@ -12,6 +12,7 @@ import { CollectionOnlyService } from '../collection-only.service';
 })
 export class CollectionProfileComponent implements OnInit {
   collection: Collection = {} as Collection;
+  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   userWishing: Item[] = [];
   userTrading: Item[] = [];
   isLoaded = false;

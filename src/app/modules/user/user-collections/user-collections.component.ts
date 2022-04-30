@@ -1,10 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { concatMap, map, of } from 'rxjs';
 import { orderBy } from 'lodash';
 
-import { Collection, User, UserService } from 'src/app/core';
+import { 
+  Collection, 
+  DEFAULT_COLLECTION_IMG, 
+  DEFAULT_USER_PROFILE_IMG, 
+  User, 
+  UserService 
+} from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
+import { UserCollectionDetailsComponent } from '../user-collection-details/user-collection-details.component';
 
 @Component({
   selector: 'app-user-collections',
@@ -13,6 +21,8 @@ import { UserOnlyService } from '../user-only.service';
 })
 export class UserCollectionsComponent implements OnInit {
   user: User = {} as User;
+  defaultUserImage = DEFAULT_USER_PROFILE_IMG;
+  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   collections: Collection[] = [];
   showedCollections: Collection[] = [];
 
@@ -55,7 +65,8 @@ export class UserCollectionsComponent implements OnInit {
 
   constructor(
     private userSrv: UserService,
-    private userOnlySrv: UserOnlyService
+    private userOnlySrv: UserOnlyService,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -84,6 +95,25 @@ export class UserCollectionsComponent implements OnInit {
         }
       });
     console.log('from UserCollectionsComponent');
+  }
+
+  onOpenDetails(col: Collection) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.panelClass = ['user-collection'];
+    dialogConfig.width = '80%';
+    dialogConfig.maxWidth = '1280px';
+
+    dialogConfig.data = {
+      user: this.user,
+      collection: col,
+    }
+
+    this.dialog.open(
+      UserCollectionDetailsComponent, dialogConfig
+    );
   }
 
   trackByCollection(index: number, item: Collection): number {

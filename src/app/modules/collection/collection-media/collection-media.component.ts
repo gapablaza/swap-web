@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { concatMap, of } from 'rxjs';
 import { orderBy } from 'lodash';
 
-import { Collection, CollectionService, Media } from 'src/app/core';
+import { Collection, CollectionService, DEFAULT_COLLECTION_IMG, Media } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
 
 @Component({
@@ -12,6 +12,7 @@ import { CollectionOnlyService } from '../collection-only.service';
 })
 export class CollectionMediaComponent implements OnInit {
   collection: Collection = {} as Collection;
+  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   medias: Media[] = [];
   showedImages: Media[] = [];
   baseImageUrl =

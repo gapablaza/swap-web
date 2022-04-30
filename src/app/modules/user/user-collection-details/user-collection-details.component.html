@@ -1,1 +1,36 @@
-<p>user-collection-details works!</p>
+<mat-dialog-content>
+    <div *ngIf="!isLoaded" class="loading-indicator">
+        <mat-spinner></mat-spinner>
+    </div>
+
+    <div *ngIf="isLoaded" class="user-collection-modal"
+        [style]="'background-image: url(' + collection.image + ');'">
+        <div class="user-collection-modal-content">
+            <p class="h2">Listados de <strong>{{ user.displayName }}</strong> en<br/><strong>{{ collection.name }}</strong></p>
+            <p class="user-collection-modal-wishing">
+                Está buscando <strong>{{ collection?.wishing }}</strong> ítems:
+                <span *ngFor="let item of userWishing; last as isLast">
+                    <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span>
+                    <span *ngIf="!isLast">, </span>
+                </span>
+            </p>
+            <p class="user-collection-modal-trading">
+                Tiene <strong>{{ collection?.trading }}</strong> ítems para cambiar:
+                <span *ngFor="let item of userTrading; last as isLast">
+                    <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span>
+                    <span *ngIf="!isLast">, </span>
+                </span>
+            </p>
+            <p class="user-collection-modal-udpate">
+                Actualizado el {{ collection.updated | date:'dd/MM/YYYY \'a las\' HH:mm \'hrs.\'' }}
+            </p>
+        </div>
+        <!-- <div class="user-collection-modal-image">
+            <img class="" [src]="collection.image" [alt]="collection.name">
+        </div> -->
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="onClose()">Cerrar</button>
+</mat-dialog-actions>

@@ -7,7 +7,7 @@
       <mat-icon inline="true">arrow_back</mat-icon> Volver
     </a>
     <div class="collection-imagen-container">
-      <img class="collection-image" [src]="collection?.image" [alt]="collection?.name">
+      <img class="collection-image" [defaultImage]="defaultCollectionImage" [lazyLoad]="collection.image" [alt]="collection.name">
     </div>
   </div>
   <div class="collection-info flex-full">
@@ -18,7 +18,14 @@
       {{ collection.totalCollecting }} usuarios con esta colección
     </h1>
     <div class="card">
-      <div class="controls-std">
+      <div class="empty-content" *ngIf="!showedUsers.length">
+        <h2>(¬‿¬)</h2>
+        <p>Todavía no hay nadie con esta colección... serás el primero?</p>
+        <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
+          <mat-icon inline="true">add</mat-icon> Agregar colección
+        </a>
+      </div>
+      <div *ngIf="showedUsers.length" class="controls-std">
         <mat-form-field class="controls-search" appearance="outline">
           <mat-label>Filtrar por nombre, ID, ciudad o descripción</mat-label>
           <mat-icon matPrefix>search</mat-icon>
@@ -42,7 +49,7 @@
           [ngClass]="{'pro-account': user.accountTypeId == 2}">
           <div class="list-item-image">
             <a [routerLink]="['/user', user.id]">
-              <img [src]="user.image || '/assets/img/profile_user.png'" alt="">
+              <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage" alt="">
             </a>
           </div>
 
@@ -58,7 +65,7 @@
             <div class="list-item-meta custom-separator">
               <span>ID {{ user.id }}</span>
               <span>{{ user.location || 'Sin especificar' }}</span>
-              <span>Actualizado hace {{ user.summary?.daysSinceUpdate }} días</span>
+              <span appDaysSinceLogin="{{ user.summary?.daysSinceUpdate }}" [preText]="'Actualizado '"></span>
             </div>
             <div *ngIf="user?.bio" class="list-item-desc">
               <p [innerHTML]="user?.bio | sanitizeHtml"></p>

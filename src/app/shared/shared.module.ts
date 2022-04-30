@@ -6,12 +6,15 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
 
 import { MaterialModule } from './material.module';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { SanitizeHtmlPipe, SlugifyPipe } from './pipes';
+import { DaysSinceLoginDirective } from './directives/days-since-login.directive';
 
 @NgModule({
   declarations: [
     SanitizeHtmlPipe,
     SlugifyPipe,
+    DaysSinceLoginDirective,
   ],
   imports: [
     CommonModule,
@@ -19,7 +22,8 @@ import { SanitizeHtmlPipe, SlugifyPipe } from './pipes';
     HttpClientModule,
     RouterModule,
     MaterialModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    LazyLoadImageModule,
   ],
   exports: [
     CommonModule,
@@ -28,8 +32,10 @@ import { SanitizeHtmlPipe, SlugifyPipe } from './pipes';
     RouterModule,
     MaterialModule,
     FlexLayoutModule,
+    LazyLoadImageModule,
     SanitizeHtmlPipe,
     SlugifyPipe,
+    DaysSinceLoginDirective,
   ]
 })
 export class SharedModule { }

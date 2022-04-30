@@ -1,16 +1,21 @@
 <mat-toolbar color="primary">
-  <button mat-icon-button (click)="onToggleSidenav()">
-    <mat-icon>menu</mat-icon>
-  </button>
-  <a routerLink="/">SWAP</a>
-  
+  <div class="logo">
+    <button mat-icon-button (click)="onToggleSidenav()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <a routerLink="/">
+      <img src="/assets/img/logo-icon-40x40.svg" alt="">
+      <span>Intercambia</span>
+    </a>
+  </div>
+
   <form (ngSubmit)="onSearch()" class="main-search-form">
-    <input type="search" aria-label="search" placeholder="Buscar" autocomplete="off"
-      name="search" [(ngModel)]="searchTxt" required>
+    <input type="search" aria-label="search" placeholder="Buscar" autocomplete="off" name="search"
+      [(ngModel)]="searchTxt" required>
     <!-- <mat-icon role="img" class="mat-icon material-icons2" 
       aria-hidden="true" data-mat-icon-type="font"> close </mat-icon> -->
   </form>
-  
+
   <span class="example-spacer"></span>
   <ul class="navigation-items">
     <li *ngIf="!isAuth"><a routerLink="/signup">Signup</a></li>

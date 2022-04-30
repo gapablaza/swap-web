@@ -3,7 +3,7 @@ import { HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Collection, Evaluation, Media, User } from '../models';
+import { Collection, Evaluation, Item, Media, User } from '../models';
 import { ApiService } from './api.service';
 // import { EXAMPLE_USER, EXAMPLE_USER_COLLECTION, EXAMPLE_USER_COLLECTIONS } from './example-user.service';
 
@@ -29,12 +29,13 @@ export class UserService {
     // return of({ collections: EXAMPLE_USER_COLLECTIONS, trades: false });
   }
 
-  getCollectionInfo(userId: number, collectionId: number): Observable<Object> {
+  getCollectionInfo(userId: number, collectionId: number): Observable<{ info: Collection, tradelist: Item[], wishlist: Item[] }> {
     return this.apiSrv.get('/users/' + userId + '/collections/' + collectionId + '?include=publisher')
-      // .pipe(map((data: { info: Collection, tradelist: Item[], wishlist: Item[] }) => (
-      //   { info: data.info, tradelist: data.tradelist, wishlist: data.wishlist }
-      // )));
-      .pipe(map(data => data.data));
+      .pipe(map(
+        (data: any) => {
+          return { info: data.data.info, tradelist: data.data.tradelist, wishlist: data.data.wishlist };
+        }));
+      // .pipe(map(data => data.data));
   }
 
   getEvaluations(userId: number): Observable<Evaluation[]> {

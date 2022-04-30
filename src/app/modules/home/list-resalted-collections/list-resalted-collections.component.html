@@ -5,7 +5,7 @@
   <div class="horizontal-card-grid">
     <div *ngFor="let col of collections" class="horizontal-card module">
       <a [routerLink]="['/c', col.name | slugify, col.id]">
-        <img [src]="col.image" alt="" class="horizontal-card-image">
+        <img [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image" alt="" class="horizontal-card-image">
       </a>
       <div class="horizontal-card-content">
         <div class="horizontal-card-info">

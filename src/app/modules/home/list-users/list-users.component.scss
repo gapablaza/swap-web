@@ -1,67 +1,126 @@
 @use "@angular/material" as mat;
 
-.list-of-collections {
-  margin-bottom: var(--gap);
-}
-
-.mini-card-grid {
-  padding: 0;
+.user-card-list {
   margin: 0;
+  margin-bottom: var(--gap);
+  padding: 0;
   display: flex;
   column-gap: 1.5rem;
   overflow-x: scroll;
 }
 
-.mini-card {
-  // @include mat.elevation-transition();
-  // @include mat.elevation(2);
-
-  border-radius: 10px;
-  // background: #fff;
+.user-card {
   display: flex;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
   flex-direction: column;
-  transition: 0.2s;
-  margin: 0 0 10px;
-
-  // &:hover {
-  //   @include mat.elevation(8);
-  // }
+  min-width: 12rem;
+  max-width: 20rem;
+  margin-bottom: 10px;
+  transition: .2s;
+  @include mat.elevation(2);
 
   a {
     text-decoration: none;
-    color: var(--text-default);
-  }
-}
+    color: black;
 
-.mini-card-image {
-  @include mat.elevation(2);
-  height: 250px;
-  transition: .2s;
+    .user-card-image {
+      border-radius: 9999px;
+      width: 8rem;
+      height: 8rem;
+
+    }
+  }
+
+  .user-card-title {
+    margin-bottom: 0.75rem;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .user-card-subtitle {
+    margin: 0 0 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  hr {
+    width: 100%;
+    border-top: 1px solid #e2e8f0;
+  }
 
   &:hover {
     @include mat.elevation(8);
   }
 }
 
-.mini-card-title {
-  font-size: 1.1rem;
-  margin: 0.5rem;
 
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-.mini-card-info {
-  margin: 0rem 0.5rem 1rem;
-}
-
-// .mini-card:hover {
-//   transform: translateY(-1rem) rotate(2deg);
+// .list-of-collections {
+//   margin-bottom: var(--gap);
 // }
 
-// .mini-card:first-child:hover {
-//   transform: translate(-0.5rem,-1rem) rotate(3deg);
+// .mini-card-grid {
+//   padding: 0;
+//   margin: 0;
+//   display: flex;
+//   column-gap: 1.5rem;
+//   overflow-x: scroll;
 // }
+
+// .mini-card {
+//   // @include mat.elevation-transition();
+//   // @include mat.elevation(2);
+
+//   border-radius: 10px;
+//   // background: #fff;
+//   display: flex;
+//   flex-direction: column;
+//   transition: 0.2s;
+//   margin: 0 0 10px;
+
+//   // &:hover {
+//   //   @include mat.elevation(8);
+//   // }
+
+//   a {
+//     text-decoration: none;
+//     color: var(--text-default);
+//   }
+// }
+
+// .mini-card-image {
+//   @include mat.elevation(2);
+//   height: 250px;
+//   transition: .2s;
+
+//   &:hover {
+//     @include mat.elevation(8);
+//   }
+// }
+
+// .mini-card-title {
+//   font-size: 1.1rem;
+//   margin: 0.5rem;
+
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+//   display: -webkit-box;
+//   -webkit-line-clamp: 2;
+//   -webkit-box-orient: vertical;
+// }
+
+// .mini-card-info {
+//   margin: 0rem 0.5rem 1rem;
+// }
+
+// // .mini-card:hover {
+// //   transform: translateY(-1rem) rotate(2deg);
+// // }
+
+// // .mini-card:first-child:hover {
+// //   transform: translate(-0.5rem,-1rem) rotate(3deg);
+// // }

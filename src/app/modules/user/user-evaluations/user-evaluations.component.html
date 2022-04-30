@@ -7,7 +7,7 @@
       <mat-icon inline="true">arrow_back</mat-icon> Volver
     </a>
     <div class="user-imagen-container">
-      <img class="user-image" [src]="user.image || '/assets/img/profile_user.png'" [alt]="user.displayName">
+      <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage" [alt]="user.displayName">
     </div>
   </div>
   <div class="user-collections flex-full">
@@ -18,7 +18,14 @@
       {{ evaluations.length }} evaluaciones recibidas
     </h1>
     <div class="card">
-      <div class="controls-std">
+      <div class="empty-content" *ngIf="!showedEvaluations.length">
+        <h2>(>_<)</h2>
+        <p>Todavía no hay evaluaciones, quién será el primero?</p>
+        <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
+          <mat-icon inline="true">library_books</mat-icon> Agregar Evaluación
+        </a>
+      </div>
+      <div class="controls-std" *ngIf="showedEvaluations.length">
         <mat-form-field class="controls-search" appearance="outline">
           <mat-label>Filtrar por evaluador (nombre/ID) o detalle</mat-label>
           <mat-icon matPrefix>search</mat-icon>
@@ -40,7 +47,7 @@
         <li *ngFor="let evaluation of showedEvaluations; trackBy: trackByEvaluation" class="list-std-item">
           <div class="list-item-image">
             <a [routerLink]="['/user', evaluation.user.data.id]">
-              <img [src]="evaluation.user.data.image || '/assets/img/profile_user.png'" alt="">
+              <img [defaultImage]="defaultUserImage" [lazyLoad]="evaluation.user.data.image || defaultUserImage" alt="">
             </a>
           </div>
           <div class="list-item-content flex-full">

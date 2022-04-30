@@ -7,19 +7,25 @@
       <mat-icon inline="true">arrow_back</mat-icon> Volver
     </a>
     <div class="user-imagen-container">
-      <img class="user-image" [src]="user.image || '/assets/img/profile_user.png'" [alt]="user.displayName">
+      <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage" [alt]="user.displayName">
     </div>
   </div>
   <div class="user-medias flex-full">
     <h1>Elementos multimedia</h1>
-    <h2>
+    <h2 *ngIf="showedImages.length">
       Imágenes (<span class="color-accent" *ngIf="showedImages.length != medias.length">
         {{ showedImages.length }} de
       </span>{{ medias.length }})
     </h2>
     <div class="card">
-
-      <div class="controls-std">
+      <div class="empty-content" *ngIf="!showedImages.length">
+        <h2>(u_u)</h2>
+        <p>Todavía no ha aportado con ningún elemento multimedia...</p>
+        <!-- <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
+          <mat-icon inline="true">library_books</mat-icon> Agregar Evaluación
+        </a> -->
+      </div>
+      <div class="controls-std" *ngIf="showedImages.length">
         <mat-form-field class="controls-search" appearance="outline">
           <mat-label>Filtrar por descripción o colección (nombre / ID)</mat-label>
           <mat-icon matPrefix>search</mat-icon>
@@ -41,7 +47,7 @@
       <div class="images-grid">
         <div *ngFor="let image of showedImages; let i = index; trackBy: trackByImage" class="images-grid-card">
           <div class="images-grid-content">
-            <img [src]="baseImageUrl + image.id + '.jpg'" alt="" class="images-grid-image">
+            <img [lazyLoad]="baseImageUrl + image.id + '.jpg'" alt="" class="images-grid-image">
             <p class="images-grid-author">
               publicado en <a
                 [routerLink]="['/c', image.collection?.data?.name | slugify, image.collection?.data?.id]">{{

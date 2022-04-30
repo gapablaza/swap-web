@@ -1,0 +1,18 @@
+// ESTILOS BASE PARA LOS FILTROS ESTANDAR
+.controls-std {
+    display: flex;
+    align-items: center;
+  
+    mat-form-field.mat-form-field,
+    mat-slide-toggle.mat-slide-toggle {
+      font-size: 0.85rem;
+    }
+  
+    .mat-form-field {
+      margin-right: 6px;
+    }
+  
+    .controls-search {
+      width: 360px;
+    }
+  }

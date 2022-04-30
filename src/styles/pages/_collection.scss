@@ -1,0 +1,58 @@
+// ESTILOS PARA LAS PÁGINAS DE LAS COLECCIONES
+section.collection {
+    display: flex;
+    column-gap: 100px;
+  
+    margin-top: var(--gap-vertical);
+    margin-bottom: var(--gap-vertical);
+  
+    .collection-visual {
+      button, .btn {
+        width: 100%;
+        margin-bottom: var(--gap-vertical);
+      }
+  
+      .collection-imagen-container {
+        margin-bottom: var(--gap-vertical);
+      }
+  
+      .collection-image {
+        width: 300px;
+      }
+    }
+  
+    .collection-info {
+      width: 100%;
+  
+      .collection-tags {
+        margin-bottom: 40px;
+      }
+  
+      .card-resalted {
+        background-color: #a8dab545;
+        // color: white;
+      }
+  
+      .collection-help {
+        color: #4f4f4d;
+      }
+    }
+  
+    hr {
+      margin: var(--gap-vertical) 0;
+    }
+  
+    h3 {
+      margin-top: 40px;
+      margin-bottom: 0;
+      font-weight: bold;
+    }
+  
+    &.collection-section {
+      column-gap: 40px;
+  
+      .collection-image {
+        width: 200px;
+      }
+    }
+  }

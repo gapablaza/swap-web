@@ -4,7 +4,7 @@
 <section *ngIf="isLoaded" class="collection">
   <div class="collection-visual">
     <div class="collection-imagen-container">
-      <img class="collection-image" [src]="collection?.image" [alt]="collection?.name">
+      <img class="collection-image" [defaultImage]="defaultCollectionImage" [lazyLoad]="collection.image" [alt]="collection.name">
     </div>
     <a class="btn" mat-raised-button color="accent"><mat-icon inline="true">add</mat-icon> Agregar a mi Colección</a>
   </div>
@@ -54,7 +54,10 @@
     <mat-nav-list>
       <a mat-list-item [routerLink]="['./items']">
         <div mat-line>
-          Tiene <strong>{{ collection?.items }}</strong> ítems (láminas | stickers | figuritas | estampas | cromos)
+          Tiene 
+          <strong *ngIf="collection.items">{{ collection?.items }}</strong> 
+          <strong *ngIf="!collection.items">???</strong> 
+          ítems (láminas | stickers | figuritas | estampas | cromos)
         </div>
         <mat-icon>navigate_next</mat-icon>
       </a>
