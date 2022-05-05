@@ -1,0 +1,15 @@
+<div class="collection-visual">
+    <a *ngIf="showBackButton" class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+        <mat-icon inline="true">arrow_back</mat-icon> Volver
+    </a>
+    <div class="collection-imagen-container">
+        <img class="collection-image" [defaultImage]="defaultCollectionImage" [lazyLoad]="collection.image"
+            [alt]="collection.name">
+    </div>
+    <a class="btn" mat-raised-button color="accent">
+        <mat-icon inline="true">add</mat-icon> Agregarlo
+    </a>
+    <a class="btn" mat-stroked-button (click)="onShare()">
+        <mat-icon inline="true">share</mat-icon> Compartir
+    </a>
+</div>

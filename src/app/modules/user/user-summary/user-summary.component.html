@@ -1,0 +1,20 @@
+<div class="user-visual">
+    <a *ngIf="showBackButton" class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+        <mat-icon inline="true">arrow_back</mat-icon> Volver
+    </a>
+    <div class="user-imagen-container">
+        <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
+            [alt]="user.displayName">
+    </div>
+    <div class="user-indicators">
+        <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
+        <span *ngIf="(user.positives || 0) > 0" class="positives-label">+{{ user.positives }}</span>
+        <span *ngIf="(user.negatives || 0) > 0" class="negatives-label">-{{ user.negatives }}</span>
+    </div>
+    <a class="btn" mat-raised-button color="accent">
+        <mat-icon inline="true">add</mat-icon> Conversar
+    </a>
+    <a class="btn" mat-stroked-button (click)="onShare()">
+        <mat-icon inline="true">share</mat-icon> Compartir
+    </a>
+</div>

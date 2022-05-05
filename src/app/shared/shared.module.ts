@@ -8,13 +8,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material.module';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { SanitizeHtmlPipe, SlugifyPipe } from './pipes';
-import { DaysSinceLoginDirective } from './directives/days-since-login.directive';
+import { DaysSinceLoginDirective } from './directives';
+import { ShareUrlComponent } from './components/share-url/share-url.component';
 
 @NgModule({
   declarations: [
     SanitizeHtmlPipe,
     SlugifyPipe,
     DaysSinceLoginDirective,
+    ShareUrlComponent,
   ],
   imports: [
     CommonModule,
@@ -36,6 +38,7 @@ import { DaysSinceLoginDirective } from './directives/days-since-login.directive
     SanitizeHtmlPipe,
     SlugifyPipe,
     DaysSinceLoginDirective,
+    ShareUrlComponent,
   ]
 })
 export class SharedModule { }

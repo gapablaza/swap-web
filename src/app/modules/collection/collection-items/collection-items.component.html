@@ -2,14 +2,7 @@
   <mat-spinner></mat-spinner>
 </div>
 <section *ngIf="isLoaded" class="collection collection-section">
-  <div class="collection-visual">
-    <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
-      <mat-icon inline="true">arrow_back</mat-icon> Volver
-    </a>
-    <div class="collection-imagen-container">
-      <img class="collection-image" [defaultImage]="defaultCollectionImage" [lazyLoad]="collection.image" [alt]="collection.name">
-    </div>
-  </div>
+  <app-collection-summary [showBackButton]="true"></app-collection-summary>
   <div class="collection-info">
     <h1>Itemizado</h1>
     <div class="empty-content card" *ngIf="!items.length">

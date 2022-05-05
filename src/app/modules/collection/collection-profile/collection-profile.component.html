@@ -2,12 +2,13 @@
   <mat-spinner></mat-spinner>
 </div>
 <section *ngIf="isLoaded" class="collection">
-  <div class="collection-visual">
+  <app-collection-summary></app-collection-summary>
+  <!-- <div class="collection-visual">
     <div class="collection-imagen-container">
       <img class="collection-image" [defaultImage]="defaultCollectionImage" [lazyLoad]="collection.image" [alt]="collection.name">
     </div>
     <a class="btn" mat-raised-button color="accent"><mat-icon inline="true">add</mat-icon> Agregar a mi Colección</a>
-  </div>
+  </div> -->
   <div class="collection-info card">
     <h1>{{ collection?.name }}</h1>
     <h2>{{ collection?.publisher?.data?.name }}, {{ collection?.year }}</h2>

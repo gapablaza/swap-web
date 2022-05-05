@@ -2,17 +2,7 @@
   <mat-spinner></mat-spinner>
 </div>
 <section *ngIf="isLoaded" class="user">
-  <div class="user-visual">
-    <div class="user-imagen-container">
-      <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage" [alt]="user.displayName">
-    </div>
-    <div class="user-indicators">
-      <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
-      <span *ngIf="(user.positives || 0) > 0" class="positives-label">+{{ user.positives }}</span>
-      <span *ngIf="(user.negatives || 0) > 0" class="negatives-label">-{{ user.negatives }}</span>
-    </div>
-    <a class="btn" mat-raised-button color="accent"><mat-icon inline="true">add</mat-icon> Conversar</a>
-  </div>
+  <app-user-summary></app-user-summary>
   <div class="user-info card">
     <h1>{{ user?.displayName }}</h1>
     <h2 *ngIf="user.location">Desde {{ user?.location_city }}, {{ user?.location_country }}</h2>
@@ -33,7 +23,11 @@
     </div>
 
     <p>ID de usuario: <strong>{{ user.id }}</strong></p>
-    <p>Inició sesión por última vez el <strong>{{ user.lastLogin | date:'dd/MM/YYYY' }}</strong> (hace <strong>{{ user.daysSinceLogin }}</strong> días)</p>
+    <p>
+      Inició sesión por última vez el 
+      <strong>{{ user.lastLogin | date:'dd/MM/YYYY' }}</strong> 
+      (<span appDaysSinceLogin="{{ user.daysSinceLogin }}" [preText]="''"></span>)
+    </p>
     <p *ngIf="user.bio"  class="user-description" [innerHTML]="user.bio | sanitizeHtml"></p>
 
     <h3>Acceso a secciones</h3>

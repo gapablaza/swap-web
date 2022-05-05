@@ -104,7 +104,8 @@ $my-theme: mat.define-light-theme((
   'styles/components/card',  
   'styles/components/controls-std',
   'styles/components/images-grid',
-  'styles/components/list-std';
+  'styles/components/list-std',
+  'styles/components/snackbar';
 
 // 6. Page-specific styles
 @import

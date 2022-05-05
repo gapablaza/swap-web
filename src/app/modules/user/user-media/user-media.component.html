@@ -2,14 +2,7 @@
   <mat-spinner></mat-spinner>
 </div>
 <section *ngIf="isLoaded" class="user user-section">
-  <div class="user-visual">
-    <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
-      <mat-icon inline="true">arrow_back</mat-icon> Volver
-    </a>
-    <div class="user-imagen-container">
-      <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage" [alt]="user.displayName">
-    </div>
-  </div>
+  <app-user-summary [showBackButton]="true"></app-user-summary>
   <div class="user-medias flex-full">
     <h1>Elementos multimedia</h1>
     <h2 *ngIf="showedImages.length">
