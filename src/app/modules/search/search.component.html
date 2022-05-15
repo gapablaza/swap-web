@@ -43,7 +43,7 @@
                             <span>{{ col.publisher.data.name }}</span>
                         </div>
                     </div>
-                    <div class="list-item-bg" [style]="'background-image: url('+ col.image + ');'">
+                    <div class="list-item-bg" [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image">
                         <div></div>
                     </div>
                 </li>
@@ -78,7 +78,7 @@
                     [ngClass]="{'pro-account': user.accountTypeId == 2}">
                     <div class="list-item-image">
                         <a [routerLink]="['/user', user.id]">
-                            <img [src]="user.image || '/assets/img/profile_user.png'" alt="">
+                            <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage" alt="">
                         </a>
                     </div>
 

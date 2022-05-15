@@ -3,24 +3,18 @@
 </div>
 <section *ngIf="isLoaded" class="collection">
   <app-collection-summary></app-collection-summary>
-  <!-- <div class="collection-visual">
-    <div class="collection-imagen-container">
-      <img class="collection-image" [defaultImage]="defaultCollectionImage" [lazyLoad]="collection.image" [alt]="collection.name">
-    </div>
-    <a class="btn" mat-raised-button color="accent"><mat-icon inline="true">add</mat-icon> Agregar a mi Colección</a>
-  </div> -->
   <div class="collection-info card">
     <h1>{{ collection?.name }}</h1>
     <h2>{{ collection?.publisher?.data?.name }}, {{ collection?.year }}</h2>
     <p class="collection-description" [innerHTML]="collection?.description | sanitizeHtml"></p>
-    <div class="collection-tags">
+    <!-- <div class="collection-tags">
       <mat-chip-list aria-label="Etiquetas de la colección">
         <mat-chip>Tag #1</mat-chip>
         <mat-chip>Tag #2</mat-chip>
         <mat-chip>Tag ...</mat-chip>
         <mat-chip>Tag #N</mat-chip>
       </mat-chip-list>
-    </div>
+    </div> -->
 
     <!-- <hr /> -->
 

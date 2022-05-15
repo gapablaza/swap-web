@@ -1,0 +1,70 @@
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="explore explore-section">
+    <div class="collection-info flex-full">
+        <h1>
+            Colecciones <span class="text-secondary">({{ paginator.total | number:'':'es' }})</span>
+        </h1>
+        <div class="card">
+            <div *ngIf="collections.length" class="controls-std">
+                <!-- <mat-form-field class="controls-search" appearance="outline">
+                    <mat-label>Filtrar por nombre, ID, ciudad o descripción</mat-label>
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
+                    <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field> -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Ordenar por</mat-label>
+                    <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
+                        <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
+                            {{ option.selectName }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <p>
+                    Registros {{ paginator.from | number:'':'es' }} a {{ paginator.to | number:'':'es' }}
+                </p>
+            </div>
+
+            <div class="list-of-collections">
+                <div class="horizontal-card-grid">
+                    <app-collection-item *ngFor="let col of collections" [collection]="col">
+                    </app-collection-item>
+                </div>
+            </div>
+
+            <div class="pagination-wrapper">
+                <ul class="pagination">
+                    <li class="pagination-prev">
+                        <a role="button" 
+                            (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))" 
+                            [disabled]="pageSelected == 1"
+                            class="btn" mat-raised-button tabindex="-1">
+                            <mat-icon inline="true">navigate_before</mat-icon>
+                        </a>
+                    </li>
+                    <li>
+                        <select name="" (change)="onPageChange(selectPage.value)" #selectPage>
+                            <option 
+                                *ngFor="let item of [].constructor(paginator.last_page); index as i" 
+                                [value]="i+1" [selected]="(i+1) == pageSelected">
+                                Página {{ i+1 }} de {{ paginator.last_page }}
+                            </option>
+                        </select>
+                    </li>
+                    <li class="pagination-next">
+                        <a role="button" 
+                            (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
+                            [disabled]="pageSelected == paginator.last_page" 
+                            class="btn" mat-raised-button>
+                            <mat-icon inline="true">navigate_next</mat-icon>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>

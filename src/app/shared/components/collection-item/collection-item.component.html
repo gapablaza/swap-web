@@ -1,0 +1,19 @@
+<div class="row-item collection-item">
+    <div class="row-item-image">
+        <a [routerLink]="['/c', collection.name | slugify, collection.id]" class="row-item-image-url">
+            <img [defaultImage]="defaultCollectionImage" [lazyLoad]="collection.image" [alt]="collection.name"
+                [title]="collection.name">
+        </a>
+    </div>
+    <div class="row-item-text">
+        <h3 class="meta-title">
+            <a [routerLink]="['/c', collection.name | slugify, collection.id]">
+                {{ collection.name }}
+            </a>
+        </h3>
+        <p class="meta-subtitle">
+            <a href="">{{ collection.publisher.data.name }}</a>
+            <span>, {{ collection.year }}</span>
+        </p>
+    </div>
+</div>

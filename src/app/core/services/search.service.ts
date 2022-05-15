@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Collection, User } from '../models';
+import { Collection, Pagination, User } from '../models';
 import { EXAMPLE_RAW_HOME } from '../constants';
 import { ApiService } from './api.service';
 // import { StorageService } from './storage.service';
@@ -55,15 +56,17 @@ export class SearchService {
     //     this._searches.next([]);
     // }
 
-    // getHomeData(): Observable<any> {
-    //     return this.apiSrv.get('/home')
-    //       .pipe(map(data => data.data));
-    //   }
-
-    getHomeData(): Observable<{ added: Collection[], moreItems: User[], moreMedia: User[], popular: Collection[], published: Collection[], users: User[] }> {
+    getHomeData(): Observable<{ 
+      added: Collection[], 
+      moreItems: User[], 
+      moreMedia: User[], 
+      popular: Collection[], 
+      published: Collection[], 
+      users: User[] 
+    }> {
       return this.apiSrv.get('/home')
       // return of(EXAMPLE_RAW_HOME)
-        .pipe(map((data: any) => {
+        .pipe(map(data => {
           return {
             added: data.data.added.data as Collection[],
             moreItems: data.data.moreItems.data as User[],
@@ -71,6 +74,26 @@ export class SearchService {
             popular: data.data.popular.data as Collection[],
             published: data.data.published.data as Collection[],
             users: data.data.users.data as User[]
+          };
+        }));
+    }
+
+    exploreCollections(options: { page?: number, perPage?: number, sortBy?: string }): Observable<{
+      paginator: Pagination,
+      collections: Collection[]
+    }> {
+      return this.apiSrv.get(
+          '/explore/collections',
+          new HttpParams({ fromObject: { 
+            page: options.page || 1, 
+            perPage: options.perPage || 100,
+            sortBy: options.sortBy || 'published-DESC',
+          } })
+        )
+        .pipe(map(data => {
+          return {
+            paginator: data.paginator,
+            collections: data.collections,
           };
         }));
     }

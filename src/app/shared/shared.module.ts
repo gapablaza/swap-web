@@ -10,6 +10,7 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { SanitizeHtmlPipe, SlugifyPipe } from './pipes';
 import { DaysSinceLoginDirective } from './directives';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
+import { CollectionItemComponent } from './components/collection-item/collection-item.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { ShareUrlComponent } from './components/share-url/share-url.component';
     SlugifyPipe,
     DaysSinceLoginDirective,
     ShareUrlComponent,
+    CollectionItemComponent,
   ],
   imports: [
     CommonModule,
@@ -38,6 +40,7 @@ import { ShareUrlComponent } from './components/share-url/share-url.component';
     SanitizeHtmlPipe,
     SlugifyPipe,
     DaysSinceLoginDirective,
+    CollectionItemComponent,
     ShareUrlComponent,
   ]
 })

@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { orderBy } from 'lodash';
 import { concatMap, of, throwError } from 'rxjs';
 
-import { Collection, SearchService, User } from 'src/app/core';
+import { Collection, DEFAULT_COLLECTION_IMG, DEFAULT_USER_PROFILE_IMG, SearchService, User } from 'src/app/core';
 
 @Component({
   selector: 'app-search',
@@ -15,7 +15,9 @@ import { Collection, SearchService, User } from 'src/app/core';
 export class SearchComponent implements OnInit {
   users: User[] = [];
   showedUsers: User[] = [];
+  defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   collections: Collection[] = [];
+  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   showedCollections: Collection[] = [];
 
   searchTxt = '';

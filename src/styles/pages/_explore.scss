@@ -1,0 +1,23 @@
+section.explore {
+  margin-top: var(--gap-vertical);
+  margin-bottom: var(--gap-vertical);
+
+  .controls-std {
+    align-items: baseline;
+    justify-content: space-between;
+
+    p {
+      color: var(--text-secondary);
+    }
+  }
+}
+
+.list-of-collections {
+  margin-bottom: var(--gap);
+}
+
+.horizontal-card-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-gap: 20px;
+}

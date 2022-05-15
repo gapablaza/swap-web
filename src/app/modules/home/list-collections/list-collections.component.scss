@@ -10,37 +10,41 @@
   display: flex;
   column-gap: 1.5rem;
   overflow-x: scroll;
+
+  // display: grid;
+  // grid-template-columns: repeat(6, 1fr);
+  // grid-gap: 20px;
 }
 
 .mini-card {
-  // @include mat.elevation-transition();
-  // @include mat.elevation(2);
-
   border-radius: 10px;
-  // background: #fff;
   display: flex;
   flex-direction: column;
   transition: 0.2s;
   margin: 0 0 10px;
 
-  // &:hover {
-  //   @include mat.elevation(8);
-  // }
-
   a {
     text-decoration: none;
     color: var(--text-default);
+
+    &:hover {
+      color: var(--color-accent);
+
+      .mini-card-image {
+        transform: translate3d(0,-10px,0);
+      }
+    }
   }
 }
 
 .mini-card-image {
-  @include mat.elevation(2);
+  // @include mat.elevation(2);
+  box-shadow: 0 26px 24px -16px rgb(0 0 0 / 40%);
   height: 250px;
-  transition: .2s;
-
-  &:hover {
-    @include mat.elevation(8);
-  }
+  min-width: 190px;
+  margin-top: 10px;
+  margin-bottom: 1rem;
+  transition: all .17s ease-in-out;
 }
 
 .mini-card-title {

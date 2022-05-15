@@ -19,6 +19,10 @@ const routes: Routes = [
     loadChildren: () => import('./modules/search/search.module').then(m => m.SearchModule),
   },
   {
+    path: 'explore',
+    loadChildren: () => import('./modules/explore/explore.module').then(m => m.ExploreModule),
+  },
+  {
     path: 'training',
     loadChildren: () => import('./modules/training/training.module').then(m => m.TrainingModule),
     canLoad: [AuthGuard]

@@ -105,11 +105,13 @@ $my-theme: mat.define-light-theme((
   'styles/components/controls-std',
   'styles/components/images-grid',
   'styles/components/list-std',
+  'styles/components/pagination',
   'styles/components/snackbar';
 
 // 6. Page-specific styles
 @import
   'styles/pages/collection',
+  'styles/pages/explore',
   'styles/pages/user';
 
 // 7. Themes

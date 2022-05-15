@@ -3,6 +3,7 @@
     <h2 class="header-card-title">Populares</h2>
   </div> -->
   <div class="mini-card-grid">
+    <!-- <app-collection-item *ngFor="let col of collections" [collection]="col"></app-collection-item> -->
     <div *ngFor="let col of collections" class="mini-card module">
       <a [routerLink]="['/c', col.name | slugify, col.id]">
         <img [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image" alt="" class="mini-card-image">
@@ -11,10 +12,6 @@
       <div class="mini-card-info">
         <a href="">{{ col.publisher.data.name }}</a>
         <span>, {{ col.year }}</span>
-        <!-- <mat-chip-list aria-label="Year">
-          <mat-chip>{{ col.publisher.data.name }}</mat-chip>
-          <mat-chip>{{ col.year }}</mat-chip>
-        </mat-chip-list> -->
       </div>
     </div>
   </div>

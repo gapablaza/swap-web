@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { provideAuth, getAuth } from '@angular/fire/auth';
+// import { provideAuth, getAuth } from '@angular/fire/auth';
 
 import { AuthRoutingModule } from './auth-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -14,7 +14,7 @@ import { LoginComponent } from './login/login.component';
   ],
   imports: [
     ReactiveFormsModule,
-    provideAuth(() => getAuth()),
+    // provideAuth(() => getAuth()),
     SharedModule,
     AuthRoutingModule,
   ]
