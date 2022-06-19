@@ -2,14 +2,17 @@
     <a *ngIf="showBackButton" class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
         <mat-icon inline="true">arrow_back</mat-icon> Volver
     </a>
+    <h1 *ngIf="!showBackButton" class="d-sm-none">{{ user?.displayName }}</h1>
+    <h2 *ngIf="!showBackButton && user.location" class="d-sm-none" >Desde {{ user?.location_city }}, {{ user?.location_country }}</h2>
+    <h2 *ngIf="!showBackButton && !user.location" class="d-sm-none" >Desde <i>Sin información</i></h2>
     <div class="user-imagen-container">
         <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
             [alt]="user.displayName">
     </div>
-    <div class="user-indicators">
-        <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
-        <span *ngIf="(user.positives || 0) > 0" class="positives-label">+{{ user.positives }}</span>
-        <span *ngIf="(user.negatives || 0) > 0" class="negatives-label">-{{ user.negatives }}</span>
+    <div *ngIf="user.accountTypeId == 2" class="user-indicators">
+        <span class="pro-label">PRO</span>
+        <!-- <span *ngIf="(user.positives || 0) > 0" class="positives-label">+{{ user.positives }}</span>
+        <span *ngIf="(user.negatives || 0) > 0" class="negatives-label">-{{ user.negatives }}</span> -->
     </div>
     <a class="btn" mat-raised-button color="accent">
         <mat-icon inline="true">add</mat-icon> Conversar

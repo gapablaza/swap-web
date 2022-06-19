@@ -1,28 +1,38 @@
 // ESTILOS PARA LAS PÁGINAS DE LAS COLECCIONES
 section.collection {
     display: flex;
-    column-gap: 100px;
+    flex-direction: column;
+    // flex-wrap: wrap;
+    // column-gap: 40px;
   
     margin-top: var(--gap-vertical);
     margin-bottom: var(--gap-vertical);
   
     .collection-visual {
+      padding: 0 1.5rem;
+
       button, .btn {
         width: 100%;
+        max-width: 350px;
+        display: block;
         margin-bottom: var(--gap-vertical);
       }
   
       .collection-imagen-container {
         margin-bottom: var(--gap-vertical);
+        max-width: 350px;
       }
   
       .collection-image {
-        width: 300px;
+        // width: 300px;
+        min-width: 200px;
+        max-width: 350px;
       }
     }
   
     .collection-info {
-      width: 100%;
+      // width: 100%;
+      flex: 0 0 100%;
   
       .collection-tags {
         margin-bottom: 40px;
@@ -47,12 +57,61 @@ section.collection {
       margin-bottom: 0;
       font-weight: bold;
     }
+
+    @media (min-width: 768px) {
+      column-gap: 60px;
+      flex-direction: row;
+      padding: 0 1.5rem;
+      // flex-wrap: nowrap;
+
+      .collection-info {
+        flex: auto;
+      }
+
+      .collection-visual {
+        padding: 0;
+
+        .collection-image {
+          width: 100%;
+        }
+      }
+    }
+
+    @media (min-width: 992px) {
+      padding: 0;
+    }
   
+    // estilos para las secciones de una colección
     &.collection-section {
       column-gap: 40px;
+
+      .collection-visual {
+
+        a {
+          max-width: 200px;
+        }
+      }
   
       .collection-image {
         width: 200px;
       }
+
+      h1, h2 {
+        padding: 0 1.5rem;
+      }
+
+      @media (min-width: 768px) {
+        flex-direction: column;
+
+        h1, h2 {
+          padding: 0;
+        }
+      }
+
+      @media (min-width: 992px) {
+        flex-direction: row;
+      }
     }
+
+    
   }

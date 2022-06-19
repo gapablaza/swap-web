@@ -12,7 +12,7 @@
       <a href="/signup" class="color-accent">Regístrate</a>
     </p>
     <div class="login-form">
-      <form (ngSubmit)="onSubmit()">
+      <form (ngSubmit)="onSubmit(f)" #f="ngForm">
         <mat-form-field appearance="outline">
           <mat-label>Tu email</mat-label>
           <input type="email" matInput ngModel name="email" email required
@@ -21,11 +21,11 @@
           <mat-error *ngIf="emailInput.hasError('email')">El email no es válido</mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" hintLabel="Debe tener al menos 6 caracteres de largo">
+        <mat-form-field appearance="outline">
           <mat-label>Tu password</mat-label>
           <input type="password" matInput ngModel name="password" required minlength="6"
             #pwInput="ngModel">
-          <mat-hint align="end">{{ pwInput.value?.length }} / 6+</mat-hint>
+          <!-- <mat-hint align="end">{{ pwInput.value?.length }} / 6+</mat-hint> -->
           <mat-error>Debe tener al menos 6 caracteres de largo</mat-error>
         </mat-form-field>
 
@@ -33,13 +33,13 @@
           <a href="/forgot-password" class="color-accent">¿Olvidaste tu contraseña?</a>
         </p>
 
-        <button *ngIf="!isLoading" type="submit" mat-raised-button color="accent"
-          class="button-large" [disabled]="loginForm.invalid">Ingresar</button>
+        <button type="submit" mat-raised-button color="accent"
+          class="button-large" [disabled]="f.invalid || isLoading">Ingresar</button>
       </form>
 
       <div class="text-with-bg-line">
         <div class="bg-line"></div>
-        <div class="text">O continua con</div>
+        <div class="text">O continúa con</div>
         <div class="bg-line"></div>
       </div>
 
@@ -51,13 +51,13 @@
             </mat-icon>
           </button>
         </li>
-        <li>
+        <!-- <li>
           <button mat-raised-button aria-label="Ingresar con Facebook">
             <mat-icon>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"/></svg>
             </mat-icon>
           </button>
-        </li>
+        </li> -->
         <li>
           <button mat-raised-button aria-label="Ingresar con Twitter">
             <mat-icon>

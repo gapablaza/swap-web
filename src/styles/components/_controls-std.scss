@@ -1,18 +1,46 @@
 // ESTILOS BASE PARA LOS FILTROS ESTANDAR
 .controls-std {
+  // display: flex;
+  // align-items: center;
+  margin-bottom: 1rem;
+
+  .controls-std-main {
     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-  
-    mat-form-field.mat-form-field,
-    mat-slide-toggle.mat-slide-toggle {
-      font-size: 0.85rem;
-    }
-  
-    .mat-form-field {
-      margin-right: 6px;
-    }
-  
-    .controls-search {
-      width: 360px;
+  }
+
+  .constrols-std-filters {
+    margin-top: 0;
+    height: 0;
+    overflow: hidden;
+    transition: all 200ms ease;
+
+    &.show {
+      margin-top: 1rem;
+      height: auto;
     }
   }
+
+  mat-form-field.mat-form-field,
+  mat-slide-toggle.mat-slide-toggle {
+    font-size: 0.85rem;
+  }
+
+  .mat-form-field {
+    margin-right: 6px;
+  }
+
+  .controls-search {
+    width: 100%;
+
+    @media (min-width: 768px) {
+      width: 45%;
+    }
+  }
+
+  .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+}

@@ -4,9 +4,9 @@
 <section *ngIf="isLoaded" class="user">
   <app-user-summary></app-user-summary>
   <div class="user-info card">
-    <h1>{{ user?.displayName }}</h1>
-    <h2 *ngIf="user.location">Desde {{ user?.location_city }}, {{ user?.location_country }}</h2>
-    <h2 *ngIf="!user.location">Desde <i>Sin información</i></h2>
+    <h1 class="d-none d-sm-block">{{ user?.displayName }}</h1>
+    <h2 class="d-none d-sm-block" *ngIf="user.location">Desde {{ user?.location_city }}, {{ user?.location_country }}</h2>
+    <h2 class="d-none d-sm-block" *ngIf="!user.location">Desde <i>Sin información</i></h2>
 
     <div *ngIf="user.disabled" class="alert">
       <div class="alert-container" style="opacity: 1;">

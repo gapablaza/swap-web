@@ -1,8 +1,14 @@
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, OnInit } from '@angular/core';
+import { first } from 'rxjs';
 
-import { Collection, CollectionService, DEFAULT_COLLECTION_IMG, Item } from 'src/app/core';
+import {
+  Collection,
+  CollectionService,
+  DEFAULT_COLLECTION_IMG,
+  Item,
+} from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
 
 @Component({
@@ -19,11 +25,12 @@ export class CollectionProfileComponent implements OnInit {
 
   constructor(
     private colSrv: CollectionService,
-    private colOnlySrv: CollectionOnlyService
+    private colOnlySrv: CollectionOnlyService,
   ) {}
 
   ngOnInit(): void {
     registerLocaleData(es);
+
     this.colOnlySrv.collection$.subscribe((col) => {
       if (col.id) {
         this.collection = col;
@@ -31,12 +38,19 @@ export class CollectionProfileComponent implements OnInit {
 
         // si el usuario tiene esta colección se obtienen sus listas
         if (this.collection.collecting) {
-          this.colSrv.getItems(this.collection.id).subscribe((items) => {
-            items.forEach((item) => {
-              if (item.wishlist) { this.userWishing.push(item); }
-              if (item.tradelist) { this.userTrading.push(item); }
+          this.colSrv
+            .getItems(this.collection.id)
+            .pipe(first())
+            .subscribe((items) => {
+              items.forEach((item) => {
+                if (item.wishlist) {
+                  this.userWishing.push(item);
+                }
+                if (item.tradelist) {
+                  this.userTrading.push(item);
+                }
+              });
             });
-          });
         }
       }
     });

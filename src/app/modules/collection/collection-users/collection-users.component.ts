@@ -44,6 +44,7 @@ export class CollectionUsersComponent implements OnInit {
       arrayOrders: ['asc'],
     },
   ];
+  showFilters = false;
   isLoaded = false;
 
   constructor(

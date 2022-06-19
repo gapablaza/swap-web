@@ -52,6 +52,7 @@ export class UserMediaComponent implements OnInit {
       arrayOrders: ['asc'],
     },
   ];
+  showFilters = false;
   isLoaded = false;
 
   constructor(

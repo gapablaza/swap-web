@@ -61,6 +61,7 @@ export class UserCollectionsComponent implements OnInit {
     },
   ];
   hideCompleted = false;
+  showFilters = false;
   isLoaded = false;
 
   constructor(

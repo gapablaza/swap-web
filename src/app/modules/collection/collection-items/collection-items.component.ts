@@ -13,7 +13,8 @@ export class CollectionItemsComponent implements OnInit {
   collection: Collection = {} as Collection;
   defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   items: Item[] = [];
-  displayedColumns: string[] = ['name', 'description', 'difficulty'];
+  // displayedColumns: string[] = ['name', 'description', 'difficulty'];
+  displayedColumns: string[] = ['name', 'description'];
   isLoaded = false;
 
   constructor(

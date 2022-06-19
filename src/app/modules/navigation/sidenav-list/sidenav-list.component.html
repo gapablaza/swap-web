@@ -1,4 +1,4 @@
-<mat-nav-list>
+<!-- <mat-nav-list>
   <a *ngIf="!isAuth" mat-list-item routerLink="/signup" (click)="onClose()">
     <mat-icon>face</mat-icon>
     <span class="nav-caption">Signup</span>
@@ -17,4 +17,182 @@
       <span class="nav-caption">Logout</span>
     </button>
   </mat-list-item>
-</mat-nav-list>
+</mat-nav-list> -->
+
+<div class="vertical-navigation">
+  <div class="vertical-navigation-wrapper">
+    <div class="vertical-navigation-content">
+      <!-- <div class="vertical-navigation-content-header">
+        <h1>Intercambia</h1>
+        <img src="" alt="">
+      </div> -->
+
+      <div *ngIf="isAuth" class="vertical-navigation-group-item">
+        <div class="vertical-navigation-item-wrapper">
+          <div class="vertical-navigation-item">
+            <div class="vertical-navigation-item-title-wrapper">
+              <div class="vertical-navigation-item-title">
+                <span>Dashboard</span>
+              </div>
+              <div class="vertical-navigation-item-subtitle">
+                <span>Tú información</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="vertical-navigation-basic-item">
+          <div class="vertical-navigation-item-wrapper">
+            <a href="" class="vertical-navigation-item">
+              <mat-icon>account_circle</mat-icon>
+              <div class="vertical-navigation-item-title-wrapper">
+                <div class="vertical-navigation-item-title">
+                  <span>Mi Perfil</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="vertical-navigation-basic-item">
+          <div class="vertical-navigation-item-wrapper">
+            <a href="" class="vertical-navigation-item">
+              <mat-icon>swap_horiz</mat-icon>
+              <div class="vertical-navigation-item-title-wrapper">
+                <div class="vertical-navigation-item-title">
+                  <span>Posibles Cambios</span>
+                </div>
+              </div>
+              <div class="vertical-navigation-item-badge">
+                <div class="vertical-navigation-item-badge-content">
+                  100
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="vertical-navigation-basic-item">
+          <div class="vertical-navigation-item-wrapper">
+            <a href="" class="vertical-navigation-item">
+              <mat-icon>forum</mat-icon>
+              <div class="vertical-navigation-item-title-wrapper">
+                <div class="vertical-navigation-item-title">
+                  <span>Conversaciones</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="vertical-navigation-basic-item">
+          <div class="vertical-navigation-item-wrapper">
+            <a href="" class="vertical-navigation-item">
+              <mat-icon>settings</mat-icon>
+              <div class="vertical-navigation-item-title-wrapper">
+                <div class="vertical-navigation-item-title">
+                  <span>Configuración</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="vertical-navigation-basic-item">
+          <div class="vertical-navigation-item-wrapper">
+            <a href="" class="vertical-navigation-item">
+              <mat-icon>volunteer_activism</mat-icon>
+              <div class="vertical-navigation-item-title-wrapper">
+                <div class="vertical-navigation-item-title">
+                  <span>Colabora</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="vertical-navigation-basic-item">
+          <div class="vertical-navigation-item-wrapper">
+            <a href="" class="vertical-navigation-item">
+              <mat-icon>logout</mat-icon>
+              <div class="vertical-navigation-item-title-wrapper">
+                <div class="vertical-navigation-item-title">
+                  <span>Salir</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="vertical-navigation-group-item">
+        <div class="vertical-navigation-item-wrapper">
+          <div class="vertical-navigation-item">
+            <div class="vertical-navigation-item-title-wrapper">
+              <div class="vertical-navigation-item-title">
+                <span>Accesos</span>
+              </div>
+              <div class="vertical-navigation-item-subtitle">
+                <span>Elige qué hacer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="vertical-navigation-basic-item">
+          <div class="vertical-navigation-item-wrapper">
+            <a routerLink="/" class="vertical-navigation-item">
+              <mat-icon>home</mat-icon>
+              <div class="vertical-navigation-item-title-wrapper">
+                <div class="vertical-navigation-item-title">
+                  <span>Inicio</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="vertical-navigation-basic-item">
+          <div class="vertical-navigation-item-wrapper">
+            <a routerLink="explore/collections" class="vertical-navigation-item">
+              <mat-icon>collections_bookmark</mat-icon>
+              <div class="vertical-navigation-item-title-wrapper">
+                <div class="vertical-navigation-item-title">
+                  <span>Colecciones</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="vertical-navigation-basic-item">
+          <div class="vertical-navigation-item-wrapper">
+            <a href="" class="vertical-navigation-item">
+              <mat-icon>quiz</mat-icon>
+              <div class="vertical-navigation-item-title-wrapper">
+                <div class="vertical-navigation-item-title">
+                  <span>Modo de Uso</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="vertical-navigation-basic-item">
+          <div class="vertical-navigation-item-wrapper">
+            <a href="https://goo.gl/forms/LqbSCNkr36be0PAc2" target="_blank" class="vertical-navigation-item">
+              <mat-icon>library_add</mat-icon>
+              <div class="vertical-navigation-item-title-wrapper">
+                <div class="vertical-navigation-item-title">
+                  <span>Agregar colección</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

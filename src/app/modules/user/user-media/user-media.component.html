@@ -18,23 +18,35 @@
           <mat-icon inline="true">library_books</mat-icon> Agregar Evaluación
         </a> -->
       </div>
+
       <div class="controls-std" *ngIf="showedImages.length">
-        <mat-form-field class="controls-search" appearance="outline">
-          <mat-label>Filtrar por descripción o colección (nombre / ID)</mat-label>
-          <mat-icon matPrefix>search</mat-icon>
-          <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
-          <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Ordenar por</mat-label>
-          <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
-            <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
-              {{ option.selectName }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div class="controls-std-main">
+          <div class="controls-std-order">
+            <mat-form-field appearance="outline">
+              <mat-label>Ordenar por</mat-label>
+              <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
+                <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
+                  {{ option.selectName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="controls-std-settings">
+            <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
+              <mat-icon inline="true">filter_list</mat-icon> Filtros
+            </a>
+          </div>
+        </div>
+        <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
+          <mat-form-field class="controls-search" appearance="outline">
+            <mat-label>Filtrar por descripción o colección (nombre / ID)</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
+            <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
       </div>
 
       <div class="images-grid">

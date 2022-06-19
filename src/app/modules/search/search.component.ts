@@ -1,11 +1,18 @@
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { orderBy } from 'lodash';
-import { concatMap, of, throwError } from 'rxjs';
+import { catchError, of, switchMap } from 'rxjs';
 
-import { Collection, DEFAULT_COLLECTION_IMG, DEFAULT_USER_PROFILE_IMG, SearchService, User } from 'src/app/core';
+import {
+  Collection,
+  DEFAULT_COLLECTION_IMG,
+  DEFAULT_USER_PROFILE_IMG,
+  SearchService,
+  User,
+} from 'src/app/core';
+import { UIService } from 'src/app/shared';
 
 @Component({
   selector: 'app-search',
@@ -20,6 +27,7 @@ export class SearchComponent implements OnInit {
   defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   showedCollections: Collection[] = [];
 
+  searchedTxt = '';
   searchTxt = '';
   colFilterText = '';
   colSortOptionSelected = 'relevance';
@@ -84,25 +92,57 @@ export class SearchComponent implements OnInit {
       arrayOrders: ['desc', 'asc'],
     },
   ];
+  showUserFilters = false;
+  showColFilters = false;
+  showSerchHint = false;
   isLoaded = false;
 
   constructor(
     private searchSrv: SearchService,
-    private route: ActivatedRoute
-    ) {}
+    private route: ActivatedRoute,
+    private router: Router,
+    private uiSrv: UIService
+  ) {}
 
   ngOnInit(): void {
-    registerLocaleData( es );
-    
+    registerLocaleData(es);
+
     this.route.queryParams
       .pipe(
-        concatMap((params) => {
+        switchMap((params) => {
           this.isLoaded = false;
+          this.showSerchHint = false;
+          this.searchedTxt = '';
+          this.users = [];
+          this.showedUsers = [];
+          this.collections = [];
+          this.showedCollections = [];
+
           if (params['q']) {
-            this.searchTxt = params['q'];
-            return this.searchSrv.searchByText(this.searchTxt);
+            this.searchedTxt = params['q'];
+            this.searchTxt = this.searchedTxt;
+            return this.searchSrv.searchByText(this.searchedTxt).pipe(
+              catchError((error) => {
+                if (error.error && error.error.message) {
+                  this.uiSrv.showError(error.error.message);
+                }
+                return of({
+                  users: [],
+                  totalUsers: 0,
+                  collections: [],
+                  totalCollections: 0,
+                });
+              })
+            );
           } else {
-            return throwError(() => false);
+            // TO DO: Mostrar colecciones y usuarios "populares" obtenidos desde Home (caché)
+            this.showSerchHint = true;
+            return of({
+              users: [],
+              totalUsers: 0,
+              collections: [],
+              totalCollections: 0,
+            });
           }
         })
       )
@@ -121,8 +161,22 @@ export class SearchComponent implements OnInit {
         error: (err) => {
           console.log(err);
           this.isLoaded = true;
-        }
+        },
       });
+  }
+
+  onSearch() {
+    if (this.searchTxt.trim().length < 2) {
+      this.uiSrv.showSnackbar('Debes ingresar al menos 2 caracteres');
+      return;
+    };
+
+    this.router.navigate(['/search'], {
+      relativeTo: this.route,
+      queryParams: {
+        q: this.searchTxt,
+      },
+    });
   }
 
   trackByCollection(index: number, item: Collection): number {
@@ -167,10 +221,12 @@ export class SearchComponent implements OnInit {
             elem.publisher.data.name
               .toLocaleLowerCase()
               .indexOf(this.colFilterText.toLocaleLowerCase()) !== -1 ||
-            elem.id.toString().indexOf(this.colFilterText.toLocaleLowerCase()) !==
-              -1 ||
-            elem.year.toString().indexOf(this.colFilterText.toLocaleLowerCase()) !==
-              -1
+            elem.id
+              .toString()
+              .indexOf(this.colFilterText.toLocaleLowerCase()) !== -1 ||
+            elem.year
+              .toString()
+              .indexOf(this.colFilterText.toLocaleLowerCase()) !== -1
           );
         }),
       ];
@@ -226,8 +282,9 @@ export class SearchComponent implements OnInit {
             (elem.bio || '')
               .toLocaleLowerCase()
               .indexOf(this.userFilterText.toLocaleLowerCase()) !== -1 ||
-            elem.id.toString().indexOf(this.userFilterText.toLocaleLowerCase()) !==
-              -1
+            elem.id
+              .toString()
+              .indexOf(this.userFilterText.toLocaleLowerCase()) !== -1
           );
         }),
       ];
@@ -238,4 +295,3 @@ export class SearchComponent implements OnInit {
     this.sortShowedUsers();
   }
 }
-

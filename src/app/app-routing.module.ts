@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AuthGuard } from './modules/auth/auth.guard';
 import { HomeComponent } from './modules/home/home.component';
 
 const routes: Routes = [
@@ -22,16 +21,10 @@ const routes: Routes = [
     path: 'explore',
     loadChildren: () => import('./modules/explore/explore.module').then(m => m.ExploreModule),
   },
-  {
-    path: 'training',
-    loadChildren: () => import('./modules/training/training.module').then(m => m.TrainingModule),
-    canLoad: [AuthGuard]
-  }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers: [AuthGuard]
 })
 export class AppRoutingModule { }

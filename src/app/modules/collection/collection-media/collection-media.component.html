@@ -3,7 +3,7 @@
 </div>
 <section *ngIf="isLoaded" class="collection collection-section">
   <app-collection-summary [showBackButton]="true"></app-collection-summary>
-  <div class="collection-info">
+  <div class="collection-media">
     <h1>Elementos multimedia</h1>
     <h2 *ngIf="showedImages.length">
       Imágenes (<span class="color-accent" *ngIf="showedImages.length != medias.length">
@@ -11,30 +11,42 @@
       </span>{{ medias.length }})
     </h2>
     <div class="card">
-      <div class="empty-content" *ngIf="!showedImages.length">
+      <div class="empty-content" *ngIf="!medias.length">
         <h2>(｡◕‿‿◕｡)</h2>
         <p>Nadie ha publicado un elemento multimedia... Quieres ser el primero?</p>
         <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
           <mat-icon inline="true">add_a_photo</mat-icon> Agregar multimedia
         </a>
       </div>
-      <div class="controls-std" *ngIf="showedImages.length">
-        <mat-form-field class="controls-search" appearance="outline">
-          <mat-label>Filtrar por descripción o usuario (nombre / ID)</mat-label>
-          <mat-icon matPrefix>search</mat-icon>
-          <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
-          <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Ordenar por</mat-label>
-          <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
-            <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
-              {{ option.selectName }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+
+      <div class="controls-std" *ngIf="medias.length">
+        <div class="controls-std-main">
+          <div class="controls-std-order">
+            <mat-form-field appearance="outline">
+              <mat-label>Ordenar por</mat-label>
+              <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
+                <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
+                  {{ option.selectName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="controls-std-settings">
+            <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
+              <mat-icon inline="true">filter_list</mat-icon> Filtros
+            </a>
+          </div>
+        </div>
+        <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
+          <mat-form-field class="controls-search" appearance="outline">
+            <mat-label>Filtrar por descripción o usuario (nombre / ID)</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
+            <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
       </div>
 
       <div class="images-grid">

@@ -22,16 +22,6 @@
   'styles/base/typography',
   'styles/base/helpers';
 
-// 4. Layout-related sections
-@import
-  'styles/layout/header',
-  'styles/layout/footer',
-  'styles/layout/sidenav';
-
-
-
-
-
 
 
 // $titles-font-family: 'Lato, serif';
@@ -96,7 +86,11 @@ $my-theme: mat.define-light-theme((
 
 
 
-
+// 4. Layout-related sections
+@import
+  'styles/layout/header',
+  'styles/layout/footer',
+  'styles/layout/sidenav';
 
 // 5. Components
 @import
@@ -104,7 +98,9 @@ $my-theme: mat.define-light-theme((
   'styles/components/card',  
   'styles/components/controls-std',
   'styles/components/images-grid',
+  'styles/components/list-collections',
   'styles/components/list-std',
+  'styles/components/list-users',
   'styles/components/pagination',
   'styles/components/snackbar';
 
@@ -112,6 +108,9 @@ $my-theme: mat.define-light-theme((
 @import
   'styles/pages/collection',
   'styles/pages/explore',
+  'styles/pages/home',
+  'styles/pages/login',
+  'styles/pages/search',
   'styles/pages/user';
 
 // 7. Themes

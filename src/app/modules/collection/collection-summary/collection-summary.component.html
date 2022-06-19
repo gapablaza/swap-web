@@ -2,11 +2,13 @@
     <a *ngIf="showBackButton" class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
         <mat-icon inline="true">arrow_back</mat-icon> Volver
     </a>
+    <h1 *ngIf="!showBackButton" class="d-sm-none">{{ collection.name }}</h1>
+    <h2 *ngIf="!showBackButton" class="d-sm-none color-accent">{{ collection?.publisher?.data?.name }}, {{ collection?.year }}</h2>
     <div class="collection-imagen-container">
         <img class="collection-image" [defaultImage]="defaultCollectionImage" [lazyLoad]="collection.image"
             [alt]="collection.name">
     </div>
-    <a class="btn" mat-raised-button color="accent">
+    <a *ngIf="!showBackButton" class="btn" mat-raised-button color="accent">
         <mat-icon inline="true">add</mat-icon> Agregarlo
     </a>
     <a class="btn" mat-stroked-button (click)="onShare()">

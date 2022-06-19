@@ -1,28 +1,28 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from 'src/app/core';
+import { UIService } from 'src/app/shared';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
   @Output() sidenavToggle = new EventEmitter<void>();
   isAuth = false;
-  authSubscription!: Subscription;
   searchTxt = '';
 
   constructor(
-    private authService: AuthService,
-    private router: Router
+    private authSrv: AuthService,
+    private router: Router,
+    private uiSrv: UIService,
   ) { }
 
   ngOnInit(): void {
-    this.authSubscription =  this.authService.authChange.subscribe(authStatus => {
-      this.isAuth = authStatus;
+    this.authSrv.isAuth.subscribe(authState => {
+      this.isAuth = authState;
     })
   }
 
@@ -31,21 +31,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onLogout() {
-    this.authService.logout();
+    this.authSrv.logout();
   }
 
   onSearch() {
-    if (this.searchTxt.trim().length == 0) return;
+    if (this.searchTxt.trim().length < 2) {
+      this.uiSrv.showSnackbar('Debes ingresar al menos 2 caracteres');
+      return;
+    };
 
     this.router.navigate(['/search'], {
       queryParams: {
         q: this.searchTxt,
       }
     })
-  }
-
-  ngOnDestroy() {
-    this.authSubscription.unsubscribe();
   }
 
 }

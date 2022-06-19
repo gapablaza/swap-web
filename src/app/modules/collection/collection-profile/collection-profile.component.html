@@ -4,8 +4,8 @@
 <section *ngIf="isLoaded" class="collection">
   <app-collection-summary></app-collection-summary>
   <div class="collection-info card">
-    <h1>{{ collection?.name }}</h1>
-    <h2>{{ collection?.publisher?.data?.name }}, {{ collection?.year }}</h2>
+    <h1 class="d-none d-sm-block">{{ collection?.name }}</h1>
+    <h2 class="d-none d-sm-block color-accent">{{ collection?.publisher?.data?.name }}, {{ collection?.year }}</h2>
     <p class="collection-description" [innerHTML]="collection?.description | sanitizeHtml"></p>
     <!-- <div class="collection-tags">
       <mat-chip-list aria-label="Etiquetas de la colección">
@@ -20,7 +20,6 @@
 
     <mat-card *ngIf="collection.collecting" class="card-resalted">
       <mat-card-title>Resumen - Tus listados</mat-card-title>
-      <!-- <mat-card-subtitle>Dog Breed</mat-card-subtitle> -->
       <mat-card-content>
         <p>
           Estás buscando <strong>{{ collection?.wishing }}</strong> ítems:
@@ -52,7 +51,14 @@
           Tiene 
           <strong *ngIf="collection.items">{{ collection?.items }}</strong> 
           <strong *ngIf="!collection.items">???</strong> 
-          ítems (láminas | stickers | figuritas | estampas | cromos)
+          ítems
+          <!-- ítems (láminas | stickers | figuritas | estampas | cromos) -->
+        </div>
+        <mat-icon>navigate_next</mat-icon>
+      </a>
+      <a mat-list-item [routerLink]="['./tops']">
+        <div mat-line>
+          <strong>TOP</strong> ítems (clasificados por dificultad) <span class="pro-label">PRO</span>
         </div>
         <mat-icon>navigate_next</mat-icon>
       </a>

@@ -2,31 +2,42 @@
     <mat-spinner></mat-spinner>
 </div>
 <section *ngIf="isLoaded" class="explore explore-section">
-    <div class="collection-info flex-full">
+    <div class="explore-collections flex-full">
         <h1>
             Colecciones <span class="text-secondary">({{ paginator.total | number:'':'es' }})</span>
         </h1>
         <div class="card">
             <div *ngIf="collections.length" class="controls-std">
-                <!-- <mat-form-field class="controls-search" appearance="outline">
-                    <mat-label>Filtrar por nombre, ID, ciudad o descripción</mat-label>
-                    <mat-icon matPrefix>search</mat-icon>
-                    <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
-                    <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
-                        <mat-icon>close</mat-icon>
-                    </button>
-                </mat-form-field> -->
-                <mat-form-field appearance="outline">
-                    <mat-label>Ordenar por</mat-label>
-                    <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
-                        <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
-                            {{ option.selectName }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <p>
-                    Registros {{ paginator.from | number:'':'es' }} a {{ paginator.to | number:'':'es' }}
-                </p>
+                <div class="controls-std-main">
+                    <div class="controls-std-order">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Ordenar por</mat-label>
+                            <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
+                                <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
+                                    {{ option.selectName }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="controls-std-settings">
+                        <!-- <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
+                          <mat-icon inline="true">filter_list</mat-icon> Filtros
+                        </a> -->
+                        <p>
+                            Registros {{ paginator.from | number:'':'es' }} a {{ paginator.to | number:'':'es' }}
+                        </p>
+                    </div>
+                </div>
+                <!-- <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
+                    <mat-form-field class="controls-search" appearance="outline">
+                        <mat-label>Filtrar por nombre, ID, ciudad o descripción</mat-label>
+                        <mat-icon matPrefix>search</mat-icon>
+                        <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
+                        <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field> 
+                </div> -->
             </div>
 
             <div class="list-of-collections">

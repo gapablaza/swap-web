@@ -8,8 +8,7 @@ import { EXAMPLE_RAW_HOME } from '../constants';
 import { ApiService } from './api.service';
 // import { StorageService } from './storage.service';
 
-
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class SearchService {
     private _searches = new BehaviorSubject<string[]>([]);
     searches$: Observable<string[]> = this._searches.asObservable();

@@ -3,10 +3,23 @@
         <mat-spinner></mat-spinner>
     </div>
 
-    <div *ngIf="isLoaded" class="user-collection-modal"
-        [style]="'background-image: url(' + collection.image + ');'">
+    <div *ngIf="isLoaded" class="user-collection-modal">
         <div class="user-collection-modal-content">
-            <p class="h2">Listados de <strong>{{ user.displayName }}</strong> en<br/><strong>{{ collection.name }}</strong></p>
+            <div class="user-collection-modal-heading">
+                <p class="h2">
+                    Listados de <strong>{{ user.displayName }}</strong> en<br/>
+                    <strong>{{ collection.name }}</strong>
+                </p>
+                <div class="collection-meta custom-separator">
+                    <span>{{ collection.year }}</span>
+                    <span>{{ collection.items || '???' }} ítems</span>
+                    <span>{{ collection.publisher.data.name }}</span>
+                </div>
+                <div class="user-collection-modal-bg" 
+                    [style]="'background-image: url(' + collection.image + ');'">
+                    <div></div>
+                </div>
+            </div>
             <p class="user-collection-modal-wishing">
                 Está buscando <strong>{{ collection?.wishing }}</strong> ítems:
                 <span *ngFor="let item of userWishing; last as isLast">

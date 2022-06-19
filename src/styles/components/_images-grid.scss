@@ -10,6 +10,7 @@
       // display: inline-block;
       // width: 100%;
       width: 23%;
+      width: calc(45% + 0.5rem);
   
       .images-grid-content {
         border-radius: 10px;
@@ -93,8 +94,20 @@
       }
   
       .images-grid-title {
-        margin: 4px 4px 0px;
+        margin: 8px 4px 0px;
         line-height: 1.2;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .images-grid-card {
+        width: calc(29% + 0.33rem);
+      }
+    }
+
+    @media (min-width: 1201px) {
+      .images-grid-card {
+        width: 22%;
       }
     }
   }

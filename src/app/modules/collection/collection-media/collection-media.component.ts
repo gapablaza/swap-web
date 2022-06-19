@@ -52,6 +52,7 @@ export class CollectionMediaComponent implements OnInit {
       arrayOrders: ['asc'],
     },
   ];
+  showFilters = false;
   isLoaded = false;
 
   constructor(

@@ -9,30 +9,25 @@
     </a>
   </div>
 
-  <!-- <button mat-button [matMenuTriggerFor]="menu">Menu</button>
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item>Item 1</button>
-    <button mat-menu-item>Item 2</button>
-  </mat-menu> -->
-
-  <ul class="navigation-items">
+  <!-- <ul class="navigation-items">
     <li><a routerLink="explore/collections">Colecciones</a></li>
-    <li><a routerLink="explore/publishers">Editoriales</a></li>
-  </ul>
+  </ul> -->
 
-  <form (ngSubmit)="onSearch()" class="main-search-form">
+  <!-- <form (ngSubmit)="onSearch()" class="main-search-form">
     <input type="search" aria-label="search" placeholder="Buscar" autocomplete="off" name="search"
       [(ngModel)]="searchTxt" required>
-    <!-- <mat-icon role="img" class="mat-icon material-icons2" 
-      aria-hidden="true" data-mat-icon-type="font"> close </mat-icon> -->
-  </form>
+  </form> -->
 
   <span class="example-spacer"></span>
   <ul class="navigation-items">
-    <li *ngIf="!isAuth"><a routerLink="/signup">Signup</a></li>
-    <li *ngIf="!isAuth"><a routerLink="/login">Login</a></li>
+    <li>
+      <a mat-icon-button routerLink="/search">
+        <mat-icon>search</mat-icon>
+      </a>
+    </li>
+    <li *ngIf="!isAuth"><a routerLink="/login">Ingresar</a></li>
     <li *ngIf="isAuth">
-      <a style="cursor:pointer" (click)="onLogout()">Logout</a>
+      <a style="cursor:pointer" (click)="onLogout()">Salir</a>
     </li>
   </ul>
 </mat-toolbar>

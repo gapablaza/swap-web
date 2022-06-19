@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CollectionItemsComponent } from './collection-items/collection-items.component';
-import { CollectionMediaComponent } from './collection-media/collection-media.component';
-import { CollectionProfileComponent } from './collection-profile/collection-profile.component';
-import { CollectionTopsComponent } from './collection-tops/collection-tops.component';
-import { CollectionUsersComponent } from './collection-users/collection-users.component';
 
+import { AuthGuard } from 'src/app/core';
 import { CollectionComponent } from './collection.component';
+import { CollectionProfileComponent } from './collection-profile/collection-profile.component';
+import { CollectionItemsComponent } from './collection-items/collection-items.component';
+import { CollectionUsersComponent } from './collection-users/collection-users.component';
+import { CollectionMediaComponent } from './collection-media/collection-media.component';
+import { CollectionTopsComponent } from './collection-tops/collection-tops.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,7 @@ const routes: Routes = [
       {
         path: 'tops',
         component: CollectionTopsComponent,
+        canActivate: [AuthGuard]
       },
       // {
       //   path: '**',

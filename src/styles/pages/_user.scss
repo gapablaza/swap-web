@@ -1,33 +1,36 @@
 // ESTILOS PARA LAS PÁGINAS DE LOS USUARIOS
 section.user {
   display: flex;
-  column-gap: 100px;
+  flex-direction: column;
 
   margin-top: var(--gap-vertical);
   margin-bottom: var(--gap-vertical);
 
   .user-visual {
-    width: 200px;
-    flex-shrink: 0;
+    padding: 0 1.5rem;
 
     button,
     .btn {
       width: 100%;
+      max-width: 300px;
+      display: block;
       margin-bottom: var(--gap-vertical);
     }
 
     .user-imagen-container {
       margin-bottom: var(--gap-vertical);
-      width: 200px;
+      max-width: 300px;
     }
 
     .user-image {
-      width: 200px;
+      min-width: 250px;
+      max-width: 300px;
       border-radius: 10px;
     }
 
     .user-indicators {
       display: flex;
+      max-width: 300px;
       column-gap: 10px;
       text-align: center;
       justify-content: center;
@@ -39,6 +42,7 @@ section.user {
     span.negatives-label {
       font-size: 100%;
       padding: 4px 8px;
+      top: 0;
     }
 
     span.pro-label {
@@ -47,7 +51,7 @@ section.user {
   }
 
   .user-info {
-    width: 100%;
+    flex: 0 0 100%;
 
     .user-description {
       background-color: #f2f2f2;
@@ -70,40 +74,142 @@ section.user {
     font-weight: bold;
   }
 
+  @media (min-width: 768px) {
+    column-gap: 60px;
+    flex-direction: row;
+    padding: 0 1.5rem;
+
+    .user-info {
+      flex: auto;
+    }
+
+    .user-visual {
+      padding: 0;
+
+      .user-image {
+        min-width: 200px;
+        width: 100%;
+      }
+    }
+  }
+
+  @media (min-width: 992px) {
+    padding: 0;
+  }
+
+  // estilos para las secciones de un usuario
   &.user-section {
     column-gap: 40px;
 
+    .user-visual {
+
+      a, .user-indicators {
+        max-width: 200px;
+      }
+    }
+
     .user-image {
       width: 200px;
+      min-width: 200px;
     }
+
+    h1, h2 {
+      padding: 0 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      flex-direction: column;
+
+      h1, h2 {
+        padding: 0;
+      }
+    }
+
+    @media (min-width: 992px) {
+      flex-direction: row;
+    }
+  }
+}
+
+.user-evaluations ul.list-std {
+  .list-item-main {
+    padding-bottom: 0.25rem;
+  }
+
+  .list-item-title {
+    width: 85%;
+  }
+
+  .list-item-desc {
+    margin-left: 0;
+    margin-top: 0.25rem;
+    margin: 0.25rem 0 0.75rem;
+  }
+}
+
+.user-collections ul.list-std {
+  .list-item-desc {
+    margin: 0.5rem 0 0;
   }
 }
 
 
 .user-collection-modal {
-  padding: 1rem 0;
-  background-size: 230px;
-  background-repeat: no-repeat;
-  background-position: right 1rem;
+  // padding: 1rem 0;
 
   .user-collection-modal-content {
-    margin-right: 250px;
+    // margin-right: 250px;
+  }
+
+  .user-collection-modal-heading {
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+
+  .user-collection-modal-bg {
+    display: block;
+    height: 100%;
+    width: 180px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0.7;
+    background-size: 180px auto;
+    background-repeat: no-repeat;
+
+    @media (min-width: 576px) {
+      width: 235px;
+      background-size: 235px auto;
+    }
+
+    >div {
+      background: linear-gradient(to right, #fff 0, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0) 100%);
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .h2 {
     font-weight: 400;
+    margin-bottom: 0;
+    line-height: 1.2;
+  }
+
+  .collection-meta {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
   }
 
   .user-collection-modal-wishing {
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     margin: 0;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0rem;
   }
 
   .user-collection-modal-trading {
     margin: 0;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0rem;
   }
 
   .user-collection-modal-udpate {

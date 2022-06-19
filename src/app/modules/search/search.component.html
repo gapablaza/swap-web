@@ -1,117 +1,176 @@
 <div *ngIf="!isLoaded" class="loading-indicator">
     <mat-spinner></mat-spinner>
 </div>
-<section *ngIf="isLoaded" class="search" style="padding-top: 20px;">
-    <h1>Resultados búsqueda: "{{ searchTxt }}"</h1>
-    <mat-tab-group>
+<section *ngIf="isLoaded" class="search">
+    <div class="search-header">
+        <div class="div search-input-container">
+            <form (ngSubmit)="onSearch()" class="">
+                <input type="search" aria-label="search" placeholder="Buscar" autocomplete="off" name="search"
+                    [(ngModel)]="searchTxt" required>
+            </form>
+        </div>
+        <h1>{{ searchedTxt }}</h1>
+        <p *ngIf="users.length || collections.length">Navega por {{ collections.length }} colecciones y {{ users.length }} usuarios</p>
+        <div *ngIf="!users.length && !collections.length && !showSerchHint" class="empty-content">
+            <h2>(¬‿¬)</h2>
+            <p>No hemos encontrado resultados para el término utilizado, si pruebas con otro?</p>
+        </div>
+        <div *ngIf="showSerchHint" class="empty-content">
+            <h2>(˚Δ˚)</h2>
+            <p>Ingresa un término acá arriba para buscar colecciones o usuarios!</p>
+        </div>
+    </div>
+
+    <mat-tab-group *ngIf="users.length || collections.length">
         <mat-tab>
             <ng-template mat-tab-label>
-                <span [matBadge]="collections.length" matBadgeOverlap="false">Colecciones</span>
+                <span>Colecciones</span>
             </ng-template>
 
             <div class="controls-std card">
-                <mat-form-field class="controls-search" appearance="outline">
-                    <mat-label>Filtrar colecciones</mat-label>
-                    <mat-icon matPrefix>search</mat-icon>
-                    <input matInput type="text" [(ngModel)]="colFilterText" (ngModelChange)="onCollectionFilter()">
-                    <button *ngIf="colFilterText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearCollectionFilter()">
-                        <mat-icon>close</mat-icon>
-                    </button>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Ordenar por</mat-label>
-                    <mat-select (selectionChange)="onCollectionSort()" [(value)]="colSortOptionSelected">
-                        <mat-option *ngFor="let option of colSortOptions" [value]="option.selectValue">
-                            {{ option.selectName }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <div class="controls-std-main">
+                    <div class="controls-std-order">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Ordenar por</mat-label>
+                            <mat-select (selectionChange)="onCollectionSort()" [(value)]="colSortOptionSelected">
+                                <mat-option *ngFor="let option of colSortOptions" [value]="option.selectValue">
+                                    {{ option.selectName }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="controls-std-settings">
+                        <a class="btn" mat-stroked-button color="primary" (click)="showColFilters = !showColFilters">
+                            <mat-icon inline="true">filter_list</mat-icon> Filtros
+                        </a>
+                    </div>
+                </div>
+                <div class="constrols-std-filters" [ngClass]="{ 'show': showColFilters }">
+                    <mat-form-field class="controls-search" appearance="outline">
+                        <mat-label>Filtrar colecciones</mat-label>
+                        <mat-icon matPrefix>search</mat-icon>
+                        <input matInput type="text" [(ngModel)]="colFilterText" (ngModelChange)="onCollectionFilter()">
+                        <button *ngIf="colFilterText" matSuffix mat-icon-button aria-label="Clear"
+                            (click)="onClearCollectionFilter()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
             </div>
 
-            <ul class="list-std card">
-                <li *ngFor="let col of showedCollections ; trackBy: trackByCollection" class="list-std-item"
-                    [ngClass]="{'completed': col.completed}">
-                    <div class="list-item-content flex-full">
-                        <div class="list-item-title">
-                            <a [routerLink]="['/c', col.name | slugify, col.id]">
-                                {{ col.name }}
-                            </a>
+
+            <div class="card">
+                <ul class="list-std">
+                    <li *ngFor="let col of showedCollections ; trackBy: trackByCollection" class="list-std-item"
+                        [ngClass]="{'completed': col.completed}">
+                        <div class="list-item-main">
+                            <div class="list-item-content flex-full">
+                                <div class="list-item-title">
+                                    <a [routerLink]="['/c', col.name | slugify, col.id]">
+                                        {{ col.name }}
+                                    </a>
+                                </div>
+                                <div class="list-item-meta custom-separator">
+                                    <span>{{ col.year }}</span>
+                                    <span>{{ col.items || '???' }} ítems</span>
+                                    <span>{{ col.publisher.data.name }}</span>
+                                </div>
+                            </div>
+                            <div class="list-item-bg" [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image">
+                                <div></div>
+                            </div>
                         </div>
-                        <div class="list-item-meta custom-separator">
-                            <span>{{ col.year }}</span>
-                            <span>{{ col.items || '???' }} ítems</span>
-                            <span>{{ col.publisher.data.name }}</span>
-                        </div>
-                    </div>
-                    <div class="list-item-bg" [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image">
-                        <div></div>
-                    </div>
-                </li>
-            </ul>
+                    </li>
+                </ul>
+            </div>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
-                <span [matBadge]="users.length" matBadgeOverlap="false">Usuarios</span>
+                <span>Usuarios</span>
             </ng-template>
 
             <div class="controls-std card">
-                <mat-form-field class="controls-search" appearance="outline">
-                    <mat-label>Filtrar usuarios</mat-label>
-                    <mat-icon matPrefix>search</mat-icon>
-                    <input matInput type="text" [(ngModel)]="userFilterText" (ngModelChange)="onUserFilter()">
-                    <button *ngIf="userFilterText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearUserFilter()">
-                        <mat-icon>close</mat-icon>
-                    </button>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Ordenar por</mat-label>
-                    <mat-select (selectionChange)="onUserSort()" [(value)]="userSortOptionSelected">
-                        <mat-option *ngFor="let option of userSortOptions" [value]="option.selectValue">
-                            {{ option.selectName }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-
-            <ul class="list-std card">
-                <li class="list-std-item" *ngFor="let user of showedUsers; trackBy: trackByUsers"
-                    [ngClass]="{'pro-account': user.accountTypeId == 2}">
-                    <div class="list-item-image">
-                        <a [routerLink]="['/user', user.id]">
-                            <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage" alt="">
+                <div class="controls-std-main">
+                    <div class="controls-std-order">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Ordenar por</mat-label>
+                            <mat-select (selectionChange)="onUserSort()" [(value)]="userSortOptionSelected">
+                                <mat-option *ngFor="let option of userSortOptions" [value]="option.selectValue">
+                                    {{ option.selectName }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="controls-std-settings">
+                        <a class="btn" mat-stroked-button color="primary" (click)="showUserFilters = !showUserFilters">
+                            <mat-icon inline="true">filter_list</mat-icon> Filtros
                         </a>
                     </div>
+                </div>
+                <div class="constrols-std-filters" [ngClass]="{ 'show': showUserFilters }">
+                    <mat-form-field class="controls-search" appearance="outline">
+                        <mat-label>Filtrar usuarios</mat-label>
+                        <mat-icon matPrefix>search</mat-icon>
+                        <input matInput type="text" [(ngModel)]="userFilterText" (ngModelChange)="onUserFilter()">
+                        <button *ngIf="userFilterText" matSuffix mat-icon-button aria-label="Clear"
+                            (click)="onClearUserFilter()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
 
-                    <div class="list-item-content flex-full">
-                        <div class="list-item-title">
-                            <a [routerLink]="['/user', user.id]">
-                                {{ user.displayName }}
-                                <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
-                                <span *ngIf="user.positives" class="positives-label">+{{ user.positives }}</span>
-                                <span *ngIf="user.negatives" class="negatives-label">-{{ user.negatives }}</span>
-                            </a>
-                        </div>
-                        <div class="list-item-meta custom-separator">
-                            <span>ID {{ user.id }}</span>
-                            <span>{{ user.location || 'Sin especificar' }}</span>
-                            <span appDaysSinceLogin="{{ user.daysSinceLogin }}"></span>
+
+            </div>
+
+            <div class="card">
+                <ul class="list-std">
+                    <li class="list-std-item" *ngFor="let user of showedUsers; trackBy: trackByUsers"
+                        [ngClass]="{'pro-account': user.accountTypeId == 2}">
+                        <div class="list-item-main">
+                            <div class="list-item-image">
+                                <a [routerLink]="['/user', user.id]">
+                                    <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
+                                        alt="">
+                                </a>
+                            </div>
+
+                            <div class="list-item-content flex-full">
+                                <div class="list-item-title">
+                                    <a [routerLink]="['/user', user.id]">
+                                        {{ user.displayName }}
+                                        <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
+                                        <span *ngIf="user.positives" class="positives-label">+{{ user.positives
+                                            }}</span>
+                                        <span *ngIf="user.negatives" class="negatives-label">-{{ user.negatives
+                                            }}</span>
+                                    </a>
+                                </div>
+                                <div class="list-item-meta custom-separator">
+                                    <span>ID {{ user.id }}</span>
+                                    <span>{{ user.location || 'Sin especificar' }}</span>
+                                    <span appDaysSinceLogin="{{ user.daysSinceLogin }}"></span>
+                                </div>
+                                <!-- <div *ngIf="user?.bio" class="list-item-desc">
+                                    <p [innerHTML]="user?.bio | sanitizeHtml"></p>
+                                </div> -->
+                            </div>
+                            <div class="list-item-statics">
+                                <div>
+                                    <span class="list-item-title">{{ user.wishing | number:'':'es' }}</span>
+                                    <span class="list-item-meta">Busca</span>
+                                </div>
+                                <div>
+                                    <span class="list-item-title">{{ user.trading | number:'':'es' }}</span>
+                                    <span class="list-item-meta">Cambia</span>
+                                </div>
+                            </div>
                         </div>
                         <div *ngIf="user?.bio" class="list-item-desc">
                             <p [innerHTML]="user?.bio | sanitizeHtml"></p>
                         </div>
-                    </div>
-                    <div class="list-item-statics">
-                        <div>
-                            <span class="list-item-title">{{ user.wishing | number:'':'es' }}</span>
-                            <span class="list-item-meta">Busca</span>
-                        </div>
-                        <div>
-                            <span class="list-item-title">{{ user.trading | number:'':'es' }}</span>
-                            <span class="list-item-meta">Cambia</span>
-                        </div>
-                    </div>
-                </li>
-            </ul>
+                    </li>
+                </ul>
+            </div>
         </mat-tab>
     </mat-tab-group>
 </section>

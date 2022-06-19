@@ -19,6 +19,7 @@ export class UserEvaluationsComponent implements OnInit {
   searchText = '';
   typeSelected = "0";
   
+  showFilters = false;
   isLoaded = false;
 
   constructor(
