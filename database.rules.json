@@ -1,0 +1,40 @@
+{
+    "rules": {        
+        "commentsCollection": {
+						".read": true,
+            ".write": "auth != null",
+        },
+
+        "feedsHome": {
+          	".indexOn": ["timestamp"],
+          	".read": true,
+            ".write": "auth != null",
+        },
+
+      	"onlineUsers": {
+        		".read": true,
+        		".write": true
+        },
+          
+        "unreadUserMessages": {
+						".read": "auth != null",
+            ".write": "auth != null",
+        },
+          
+        "userMessages": {
+						".read": "auth != null",
+            ".write": "auth != null",
+        },
+          
+        "userResume": {
+						".read": "auth != null",
+            ".write": "auth != null",
+        },
+
+        "users": {
+						".read": "auth != null",
+            ".write": "auth != null",
+        },
+
+    }
+}
