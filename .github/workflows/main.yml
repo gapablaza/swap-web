@@ -17,6 +17,9 @@ jobs:
         node-version: '12.x'
     - run: npm install
     - run: npm run build:prod
+      env:
+        API_URL: ${{ secrets.API_URL }}
+        FIREBASE_STORAGEBUCKET: ${{ secrets.FIREBASE_STORAGEBUCKET }}
     - uses: w9jds/firebase-action@master
       with:
         args: deploy --only hosting
