@@ -11,7 +11,7 @@ const setEnvProd = () => {
     // `environment.ts` file structure
     const envConfigFile = `export const environment = {
       firebase: {
-          projectId: '${process.env['FIREBASE_PROJECTID']}',
+          projectId: ${process.env.FIREBASE_PROJECTID},
           appId: '${process.env['FIREBASE_APPID']}',
           databaseURL: '${process.env['FIREBASE_DATABASEURL']}',
           storageBucket: '${process.env['FIREBASE_STORAGEBUCKET']}',
