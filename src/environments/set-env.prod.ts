@@ -1,17 +1,30 @@
 const setEnvProd = () => {
     const fs = require('fs');
     const writeFile = fs.writeFile;
-    // Configure Angular `environment.ts` file path
-    const targetPath = './src/environments/environment.prod.ts';
+    // Configure Angular `environment.prod.ts` file path
+    const targetProdPath = './src/environments/environment.prod.ts';
     // Load node modules
     const appVersion = require('../../package.json').version;
+
+    // Genera archivo vacío que será reemplazado al hacer la build
+    writeFile('./src/environments/environment.ts', '', (err: any) => {
+      if (err) {
+        console.error(err);
+        throw err;
+      } else {
+        console.log(`Angular environment.ts file generated empty`);
+      }
+    });
+
+    // Obtiene variables desde .env.prod
     require('dotenv').config({
       path: 'src/environments/.env.prod',
     });
-    // `environment.ts` file structure
-    const envConfigFile = `export const environment = {
+
+    // `environment.prod.ts` file structure
+    const envProdConfigFile = `export const environment = {
       firebase: {
-          projectId: ${process.env.FIREBASE_PROJECTID},
+          projectId: '${process.env['FIREBASE_PROJECTID']}',
           appId: '${process.env['FIREBASE_APPID']}',
           databaseURL: '${process.env['FIREBASE_DATABASEURL']}',
           storageBucket: '${process.env['FIREBASE_STORAGEBUCKET']}',
@@ -27,14 +40,16 @@ const setEnvProd = () => {
     console.log(
       'The file `environment.prod.ts` will be written with the following content: \n'
     );
-    console.log(envConfigFile);
-    writeFile(targetPath, envConfigFile, (err: any) => {
+    console.log(envProdConfigFile);
+
+    // Genera archivo con contenido dinámico desde .env.prod
+    writeFile(targetProdPath, envProdConfigFile, (err: any) => {
       if (err) {
         console.error(err);
         throw err;
       } else {
         console.log(
-          `Angular environment.prod.ts file generated correctly at ${targetPath} \n`
+          `Angular environment.prod.ts file generated correctly at ${targetProdPath} \n`
         );
       }
     });
