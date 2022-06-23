@@ -2,8 +2,6 @@
 section.collection {
     display: flex;
     flex-direction: column;
-    // flex-wrap: wrap;
-    // column-gap: 40px;
   
     margin-top: var(--gap-vertical);
     margin-bottom: var(--gap-vertical);
@@ -13,25 +11,23 @@ section.collection {
 
       button, .btn {
         width: 100%;
-        max-width: 350px;
+        max-width: 280px;
         display: block;
         margin-bottom: var(--gap-vertical);
       }
   
       .collection-imagen-container {
         margin-bottom: var(--gap-vertical);
-        max-width: 350px;
+        max-width: 280px;
       }
   
       .collection-image {
-        // width: 300px;
-        min-width: 200px;
-        max-width: 350px;
+        min-width: 240px;
+        max-width: 280px;
       }
     }
   
     .collection-info {
-      // width: 100%;
       flex: 0 0 100%;
   
       .collection-tags {
@@ -40,7 +36,6 @@ section.collection {
   
       .card-resalted {
         background-color: #a8dab545;
-        // color: white;
       }
   
       .collection-help {
@@ -62,7 +57,6 @@ section.collection {
       column-gap: 60px;
       flex-direction: row;
       padding: 0 1.5rem;
-      // flex-wrap: nowrap;
 
       .collection-info {
         flex: auto;
