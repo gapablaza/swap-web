@@ -11,10 +11,8 @@
   display: flex;
   column-gap: 0.5rem;
   overflow-x: scroll;
-}
 
-@media (min-width: 768px) {
-  .mini-card-grid {
+  @media (min-width: 768px) {
     column-gap: 1.5rem;
   }
 }
@@ -42,11 +40,15 @@
 
 .mini-card-image {
   box-shadow: 0 26px 24px -16px rgb(0 0 0 / 40%);
-  height: 250px;
-  min-width: 190px;
+  height: 190px;
   margin-top: 10px;
   margin-bottom: 1rem;
   transition: all .17s ease-in-out;
+
+  @media (min-width: 576px) {
+    height: 250px;
+    min-width: 190px;
+  }
 }
 
 .mini-card-title {
@@ -71,8 +73,21 @@
 
 .horizontal-card-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 0.5rem;
+
+  @media (min-width: 576px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 1.5rem;
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
 
 .horizontal-card {

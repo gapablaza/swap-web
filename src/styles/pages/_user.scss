@@ -12,25 +12,25 @@ section.user {
     button,
     .btn {
       width: 100%;
-      max-width: 300px;
+      max-width: 250px;
       display: block;
       margin-bottom: var(--gap-vertical);
     }
 
     .user-imagen-container {
       margin-bottom: var(--gap-vertical);
-      max-width: 300px;
+      max-width: 250px;
     }
 
     .user-image {
-      min-width: 250px;
-      max-width: 300px;
-      border-radius: 10px;
+      min-width: 200px;
+      max-width: 250px;
+      border-radius: 1rem;
     }
 
     .user-indicators {
       display: flex;
-      max-width: 300px;
+      max-width: 250px;
       column-gap: 10px;
       text-align: center;
       justify-content: center;
@@ -55,7 +55,7 @@ section.user {
 
     .user-description {
       background-color: #f2f2f2;
-      padding: 20px 40px;
+      padding: 1rem 2rem;
       border-radius: 6px;
     }
 
@@ -155,11 +155,8 @@ section.user {
 
 
 .user-collection-modal {
-  // padding: 1rem 0;
 
-  .user-collection-modal-content {
-    // margin-right: 250px;
-  }
+  // .user-collection-modal-content {}
 
   .user-collection-modal-heading {
     position: relative;
@@ -169,17 +166,24 @@ section.user {
   .user-collection-modal-bg {
     display: block;
     height: 100%;
-    width: 180px;
+    width: 130px;
     position: absolute;
     top: 0;
     right: 0;
-    opacity: 0.7;
-    background-size: 180px auto;
+    opacity: 0.3;
+    background-size: 130px auto;
     background-repeat: no-repeat;
 
     @media (min-width: 576px) {
+      width: 180px;
+      background-size: 180px auto;
+      opacity: 0.5;
+    }
+
+    @media (min-width: 768px) {
       width: 235px;
       background-size: 235px auto;
+      opacity: 0.7;
     }
 
     >div {
