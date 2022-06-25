@@ -2,36 +2,42 @@
   <mat-spinner></mat-spinner>
 </div>
 <section *ngIf="isLoaded" class="user">
-  <app-user-summary></app-user-summary>
+  <!-- <app-user-summary></app-user-summary> -->
   <div class="user-info card2">
     
     <div class="card" style="margin-bottom: 2rem;">
     <div class="user-header">
+      <div class="user-image-background" [lazyLoad]="user.image || defaultUserImage">
+        <!-- <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
+          [alt]="user.displayName"> -->
+      </div>
       <div class="user-image-container">
         <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
           [alt]="user.displayName">
       </div>
-      <div class="user-main-stats">
+      <!-- <div class="user-main-stats">
         <div *ngIf="user.accountTypeId == 2" class="user-is-pro">
           <span class="pro-label">PRO</span>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <div class="user-main">
-      <h1>{{ user?.displayName }}</h1>
-      <p *ngIf="user.bio" class="user-description" [innerHTML]="user.bio | sanitizeHtml"></p>
+      <h1>
+        {{ user?.displayName }}
+        <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
+      </h1>
+      <p class="subtitle">ID de usuario: <strong>{{ user.id }}</strong></p>
 
+      <p *ngIf="user.bio" class="user-description" [innerHTML]="user.bio | sanitizeHtml"></p>
       <p *ngIf="user.location">Desde <strong>{{ user?.location_city }}, {{ user?.location_country }}</strong></p>
       <p *ngIf="!user.location">Desde <i>Sin información</i></p>
-
       <p>
         Vista/o por última vez el 
         <strong>{{ user.lastLogin | date:'dd/MM/YYYY' }}</strong> 
         (<span appDaysSinceLogin="{{ user.daysSinceLogin }}" [preText]="''"></span>)
       </p>
-      <p>ID de usuario: <strong>{{ user.id }}</strong></p>
-
+      
       <div *ngIf="user.disabled" class="alert">
         <div class="alert-container">
           <!-- <div class="alert-icon">
