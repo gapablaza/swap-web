@@ -7,7 +7,12 @@ section.user {
   margin-bottom: var(--gap-vertical);
 
   .user-visual {
+    display: none;
     padding: 0 1.5rem;
+
+    @media (min-width: 768px) {
+      display: block;
+    }
 
     button,
     .btn {
@@ -59,8 +64,49 @@ section.user {
       border-radius: 6px;
     }
 
-    .user-help {
-      color: #4f4f4d;
+    // .user-help {
+    //   color: #4f4f4d;
+    // }
+
+    .user-header {
+      display: flex;
+      flex-direction: row;
+      column-gap: 1rem;
+      margin-bottom: 1rem;
+
+      @media (min-width: 768px) {
+        display: none;
+      }
+
+      .user-image-container {
+        width: 100px;
+
+        img {
+          width: 100%;
+          border-radius: 9999px;
+        }
+      }
+
+      .user-main-stats {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+
+        .pro-label {
+          font-size: 1rem;
+          top: 0;
+          padding: 4px 10px;
+        }
+      }
+    }
+
+    .user-main {
+
+      .actions {
+        a.btn {
+          margin-right: 1rem;
+        }
+      }
     }
   }
 
@@ -69,7 +115,7 @@ section.user {
   }
 
   h3 {
-    margin-top: 40px;
+    // margin-top: 40px;
     margin-bottom: 0;
     font-weight: bold;
   }
