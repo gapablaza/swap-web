@@ -1,8 +1,8 @@
 <header>
   <app-header (sidenavToggle)="sidenav.toggle()"></app-header>
 </header>
-<mat-sidenav-container>
-  <mat-sidenav #sidenav mode="side" role="navigation">
+<mat-sidenav-container hasBackdrop="false">
+  <mat-sidenav #sidenav [mode]="navMode" [opened]="navOpened" role="navigation">
     <app-sidenav-list (closeSidenav)="sidenav.close()"></app-sidenav-list>
   </mat-sidenav>
   <mat-sidenav-content>
