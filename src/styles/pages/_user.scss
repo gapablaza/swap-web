@@ -15,6 +15,7 @@ section.user {
 
     @media (min-width: 768px) {
       width: 240px;
+      padding: 0;
     }
 
     .user-links {
@@ -72,7 +73,7 @@ section.user {
       }
 
       h1 {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0;
         padding: 0;
         font-size: 2rem;
       }
@@ -87,10 +88,8 @@ section.user {
   .user-info {
     flex: 0 0 100%;
 
-    .user-description {
-      background-color: #f2f2f2;
-      padding: 1rem 2rem;
-      border-radius: 6px;
+    @media (min-width: 768px) {
+      flex: auto;
     }
 
     .user-header {
@@ -154,18 +153,12 @@ section.user {
         align-items: flex-start;
         column-gap: 1rem;
       }
+    }
 
-      .user-main-stats {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-
-        .pro-label {
-          font-size: 1rem;
-          top: 0;
-          padding: 4px 10px;
-        }
-      }
+    .user-description {
+      background-color: #f2f2f2;
+      padding: 1rem 2rem;
+      border-radius: 6px;
     }
 
     .user-details {
@@ -191,17 +184,7 @@ section.user {
         color: var(--text-secondary);
         margin-top: 0;
       }
-
-      .actions {
-        a.btn {
-          margin-right: 1rem;
-        }
-      }
     }
-  }
-
-  hr {
-    margin: var(--gap-vertical) 0;
   }
 
   h3 {
@@ -210,18 +193,14 @@ section.user {
     font-weight: bold;
   }
 
+  hr {
+    margin: var(--gap-vertical) 0;
+  }
+
   @media (min-width: 768px) {
     column-gap: 60px;
     flex-direction: row;
     padding: 0 1.5rem;
-
-    .user-info {
-      flex: auto;
-    }
-
-    .user-visual {
-      padding: 0;
-    }
   }
 
   @media (min-width: 992px) {
@@ -237,6 +216,7 @@ section.user {
     }
   }
 }
+
 
 .user-evaluations ul.list-std {
   .list-item-main {
@@ -254,6 +234,7 @@ section.user {
   }
 }
 
+
 .user-collections ul.list-std {
   .list-item-desc {
     margin: 0.5rem 0 0;
@@ -262,8 +243,6 @@ section.user {
 
 
 .user-collection-modal {
-
-  // .user-collection-modal-content {}
 
   .user-collection-modal-heading {
     position: relative;

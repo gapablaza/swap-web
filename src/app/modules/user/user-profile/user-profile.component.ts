@@ -16,7 +16,6 @@ export class UserProfileComponent implements OnInit {
   isLoaded = false;
 
   constructor(
-    // private userSrv: UserService,
     private userOnlySrv: UserOnlyService,
   ) { }
 
