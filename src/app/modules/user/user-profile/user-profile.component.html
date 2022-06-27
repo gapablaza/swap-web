@@ -3,97 +3,95 @@
 </div>
 <section *ngIf="isLoaded" class="user">
   <!-- <app-user-summary></app-user-summary> -->
-  <div class="user-info card2">
-    
-    <div class="card" style="margin-bottom: 2rem;">
-    <div class="user-header">
-      <div class="user-image-background" [lazyLoad]="user.image || defaultUserImage">
-        <!-- <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
-          [alt]="user.displayName"> -->
-      </div>
-      <div class="user-image-container">
-        <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
-          [alt]="user.displayName">
-      </div>
-      <!-- <div class="user-main-stats">
-        <div *ngIf="user.accountTypeId == 2" class="user-is-pro">
-          <span class="pro-label">PRO</span>
-        </div>
-      </div> -->
-    </div>
+  <div class="user-info card">
 
-    <div class="user-main">
-      <h1>
-        {{ user?.displayName }}
-        <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
-      </h1>
-      <p class="subtitle">ID de usuario: <strong>{{ user.id }}</strong></p>
-
-      <p *ngIf="user.bio" class="user-description" [innerHTML]="user.bio | sanitizeHtml"></p>
-      <p *ngIf="user.location">Desde <strong>{{ user?.location_city }}, {{ user?.location_country }}</strong></p>
-      <p *ngIf="!user.location">Desde <i>Sin información</i></p>
-      <p>
-        Vista/o por última vez el 
-        <strong>{{ user.lastLogin | date:'dd/MM/YYYY' }}</strong> 
-        (<span appDaysSinceLogin="{{ user.daysSinceLogin }}" [preText]="''"></span>)
-      </p>
-      
-      <div *ngIf="user.disabled" class="alert">
-        <div class="alert-container">
-          <!-- <div class="alert-icon">
-            <div class="alert-default-icon">
-              <mat-icon>error_outline</mat-icon>
-            </div>
-          </div> -->
-          <div class="alert-content">
-            <!-- <div class="alert-title">Atención</div> -->
-            <div class="alert-message">Este usuario tiene activado el modo "Incógnito" por lo que no es considerado en los posibles cambios, no puede registrar evaluaciones ni puede enviar/recibir mensajes</div>
+    <div class="card2">
+      <div class="user-header">
+        <div class="user-image-background" [lazyLoad]="user.image || defaultUserImage"></div>
+        <div class="user-subheader">
+          <div class="user-image-container">
+            <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
+              [alt]="user.displayName">
+            <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
+          </div>
+          <div class="user-actions">
+            <a class="btn" mat-raised-button color="accent">
+              <mat-icon inline="true">add</mat-icon> Conversar
+            </a>
+            <a class="btn" mat-stroked-button>
+              <mat-icon inline="true">more_horiz</mat-icon>
+            </a>
           </div>
         </div>
       </div>
 
-      <div class="actions">
-        <a class="btn" mat-raised-button color="accent">
-          <mat-icon inline="true">add</mat-icon> Conversar
-        </a>
-        <a class="btn" mat-stroked-button>
-            <mat-icon inline="true">more_horiz</mat-icon>
-        </a>
+      <div class="user-main">
+        <h1>{{ user?.displayName }}</h1>
+        <p class="subtitle">ID de usuario: <strong>{{ user.id }}</strong></p>
+
+        <p *ngIf="user.bio" class="user-description" [innerHTML]="user.bio | sanitizeHtml"></p>
+        
+        <div class="user-details">
+          <span>
+            <mat-icon inline="true">my_location</mat-icon>
+            <span *ngIf="user.location">{{ user?.location_city }}, {{ user?.location_country }}</span>
+            <span *ngIf="!user.location"><i>Sin información</i></span>
+          </span>
+          <span>
+            <mat-icon inline="true">av_timer</mat-icon>Visto el
+            <strong>{{ user.lastLogin | date:'dd/MM/YYYY' }}</strong>
+            (<span appDaysSinceLogin="{{ user.daysSinceLogin }}" [preText]="''"></span>)
+          </span>
+        </div>
+
+        <div *ngIf="user.disabled" class="alert">
+          <div class="alert-container">
+            <!-- <div class="alert-icon">
+              <div class="alert-default-icon">
+                <mat-icon>error_outline</mat-icon>
+              </div>
+            </div> -->
+            <div class="alert-content">
+              <!-- <div class="alert-title">Atención</div> -->
+              <div class="alert-message">Este usuario tiene activado el modo "Incógnito" por lo que no es considerado en
+                los posibles cambios, no puede registrar evaluaciones ni puede enviar/recibir mensajes</div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    </div>
 
-    <div class="card">
-    <h3>Secciones</h3>
-    <mat-nav-list>
-      <a mat-list-item [routerLink]="['./evaluation']">
-        <div mat-line>
-          Evaluaciones recibidas&nbsp;
-          <span *ngIf="(user.positives || 0) > 0" class="positives-label">+{{ user.positives }}</span>
-          <span *ngIf="(user.negatives || 0) > 0" class="negatives-label">-{{ user.negatives }}</span>
-        </div>
-        <mat-icon>navigate_next</mat-icon>
-      </a>
-      <a mat-list-item [routerLink]="['./collection']">
-        <div mat-line>
-          Tiene <strong>{{ user.collections | number:'':'es' }}</strong> colecciones, <strong>{{ user.completedCollections | number:'':'es' }}</strong> completadas
-        </div>
-        <mat-icon>navigate_next</mat-icon>
-      </a>
-      <a mat-list-item [routerLink]="['./media']">
-        <div mat-line>
-          Ha agregado <strong>{{ user.contributions || 0 }}</strong> elemento(s) multimedia
-        </div>
-        <mat-icon>navigate_next</mat-icon>
-      </a>
-    </mat-nav-list>
+      <h3>Secciones</h3>
+      <mat-nav-list>
+        <a mat-list-item [routerLink]="['./evaluation']">
+          <div mat-line>
+            Evaluaciones recibidas&nbsp;
+            <span *ngIf="(user.positives || 0) > 0" class="positives-label">+{{ user.positives }}</span>
+            <span *ngIf="(user.negatives || 0) > 0" class="negatives-label">-{{ user.negatives }}</span>
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+        <a mat-list-item [routerLink]="['./collection']">
+          <div mat-line>
+            Tiene <strong>{{ user.collections | number:'':'es' }}</strong> colecciones, <strong>{{
+              user.completedCollections | number:'':'es' }}</strong> completadas
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+        <a mat-list-item [routerLink]="['./media']">
+          <div mat-line>
+            Ha agregado <strong>{{ user.contributions || 0 }}</strong> elemento(s) multimedia
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+      </mat-nav-list>
 
-    <hr />
+      <hr />
 
-    <div class="user-publisher">
-      <p>Busca <strong>{{ user.wishing | number:'':'es' }}</strong> ítems, cambia <strong>{{ user.trading | number:'':'es' }}</strong> ítems</p>
-      <p>Cuenta creada el {{ user.registration | date:'dd/MM/YYYY' }}</p>
-    </div>
+      <div class="user-publisher">
+        <p>Busca <strong>{{ user.wishing | number:'':'es' }}</strong> ítems, cambia <strong>{{ user.trading |
+            number:'':'es' }}</strong> ítems</p>
+        <p>Cuenta creada el {{ user.registration | date:'dd/MM/YYYY' }}</p>
+      </div>
     </div>
   </div>
 </section>
