@@ -3,7 +3,7 @@
 </div>
 <section *ngIf="isLoaded" class="collection collection-section">
   <app-collection-summary [showBackButton]="true"></app-collection-summary>
-  <div class="collection-info">
+  <div class="collection-items flex-full">
     <h1>Itemizado</h1>
     <div class="empty-content card" *ngIf="!items.length">
       <h2>\_(ʘ_ʘ)_/</h2>

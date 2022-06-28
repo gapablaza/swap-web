@@ -1,17 +1,21 @@
 <div class="collection-visual">
-    <a *ngIf="showBackButton" class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
-        <mat-icon inline="true">arrow_back</mat-icon> Volver
-    </a>
-    <h1 *ngIf="!showBackButton" class="d-sm-none">{{ collection.name }}</h1>
-    <h2 *ngIf="!showBackButton" class="d-sm-none color-accent">{{ collection?.publisher?.data?.name }}, {{ collection?.year }}</h2>
-    <div class="collection-imagen-container">
-        <img class="collection-image" [defaultImage]="defaultCollectionImage" [lazyLoad]="collection.image"
-            [alt]="collection.name">
+    <div class="collection-links">
+        <a *ngIf="showBackButton" class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+            <mat-icon inline="true">arrow_back</mat-icon> Volver
+        </a>
+        <a class="btn" mat-stroked-button (click)="onShare()">
+            <mat-icon inline="true">share</mat-icon> Compartir
+        </a>
     </div>
-    <a *ngIf="!showBackButton" class="btn" mat-raised-button color="accent">
-        <mat-icon inline="true">add</mat-icon> Agregarlo
-    </a>
-    <a class="btn" mat-stroked-button (click)="onShare()">
-        <mat-icon inline="true">share</mat-icon> Compartir
-    </a>
+
+    <div class="collection-content">
+        <div class="collection-imagen-container">
+            <img class="collection-image" [defaultImage]="defaultCollectionImage" [lazyLoad]="collection.image || defaultCollectionImage"
+                [alt]="collection.name">
+        </div>
+        <div class="collection-data">
+            <h1 class="">{{ collection.name }}</h1>
+            <p class="subtitle">{{ collection.publisher.data.name }}, {{ collection.year }}</p>
+        </div>
+    </div>
 </div>

@@ -3,7 +3,7 @@
 </div>
 <section *ngIf="isLoaded" class="user user-section">
   <app-user-summary [showBackButton]="true"></app-user-summary>
-  <div class="user-medias flex-full">
+  <div class="user-media flex-full">
     <h1>Elementos multimedia</h1>
     <h2 *ngIf="showedImages.length">
       Imágenes (<span class="color-accent" *ngIf="showedImages.length != medias.length">

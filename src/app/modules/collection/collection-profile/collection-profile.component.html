@@ -2,11 +2,34 @@
   <mat-spinner></mat-spinner>
 </div>
 <section *ngIf="isLoaded" class="collection">
-  <app-collection-summary></app-collection-summary>
+  <!-- <app-collection-summary></app-collection-summary> -->
   <div class="collection-info card">
-    <h1 class="d-none d-sm-block">{{ collection?.name }}</h1>
-    <h2 class="d-none d-sm-block color-accent">{{ collection?.publisher?.data?.name }}, {{ collection?.year }}</h2>
-    <p class="collection-description" [innerHTML]="collection?.description | sanitizeHtml"></p>
+
+    <div class="collection-header">
+      <div class="collection-image-background" [lazyLoad]="collection.image || defaultCollectionImage"></div>
+      <div class="collection-subheader">
+        <div class="collection-image-container">
+          <img class="collection-image" [defaultImage]="defaultCollectionImage" [lazyLoad]="collection.image || defaultCollectionImage"
+            [alt]="collection.name">
+        </div>
+        <div class="collection-actions">
+          <a class="btn" mat-raised-button color="accent">
+            <mat-icon inline="true">add</mat-icon> Agregar
+          </a>
+          <a class="btn" mat-stroked-button>
+            <mat-icon inline="true">more_horiz</mat-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="collection-main">
+      <h1>{{ collection.name }}</h1>
+      <p class="subtitle">{{ collection.publisher.data.name }}, {{ collection.year }}</p>
+
+      <p *ngIf="collection.description" class="collection-description" [innerHTML]="collection.description| sanitizeHtml"></p>
+    </div>
+
     <!-- <div class="collection-tags">
       <mat-chip-list aria-label="Etiquetas de la colección">
         <mat-chip>Tag #1</mat-chip>
@@ -44,15 +67,15 @@
 
     <!-- <hr /> -->
 
-    <h3>Acceso a secciones</h3>
+    <h3>Secciones</h3>
     <mat-nav-list>
       <a mat-list-item [routerLink]="['./items']">
         <div mat-line>
           Tiene 
-          <strong *ngIf="collection.items">{{ collection?.items }}</strong> 
+          <strong *ngIf="collection.items">{{ collection.items }}</strong> 
           <strong *ngIf="!collection.items">???</strong> 
-          ítems
-          <!-- ítems (láminas | stickers | figuritas | estampas | cromos) -->
+          <!-- ítems -->
+          ítems (láminas | stickers | figuritas | estampas | cromos)
         </div>
         <mat-icon>navigate_next</mat-icon>
       </a>
@@ -64,13 +87,13 @@
       </a>
       <a mat-list-item [routerLink]="['./users']">
         <div mat-line>
-          <strong>{{ collection?.totalCollecting }}</strong> usuarios lo coleccionan
+          <strong>{{ collection.totalCollecting }}</strong> usuarios lo coleccionan
         </div>
         <mat-icon>navigate_next</mat-icon>
       </a>
       <a mat-list-item [routerLink]="['./media']">
         <div mat-line>
-          Se han agregado <strong>{{ collection?.totalMedia}}</strong> elementos multimedia
+          Se han agregado <strong>{{ collection.totalMedia}}</strong> elementos multimedia
         </div>
         <mat-icon>navigate_next</mat-icon>
       </a>
@@ -79,7 +102,7 @@
     <hr />
 
     <div class="collection-publisher">
-      <p>{{ collection?.publisher?.data?.name }}</p>
+      <p>{{ collection.publisher.data.name }}</p>
     </div>
   </div>
 </section>

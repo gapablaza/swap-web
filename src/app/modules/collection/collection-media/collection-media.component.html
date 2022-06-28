@@ -3,7 +3,7 @@
 </div>
 <section *ngIf="isLoaded" class="collection collection-section">
   <app-collection-summary [showBackButton]="true"></app-collection-summary>
-  <div class="collection-media">
+  <div class="collection-media flex-full">
     <h1>Elementos multimedia</h1>
     <h2 *ngIf="showedImages.length">
       Imágenes (<span class="color-accent" *ngIf="showedImages.length != medias.length">
@@ -13,7 +13,7 @@
     <div class="card">
       <div class="empty-content" *ngIf="!medias.length">
         <h2>(｡◕‿‿◕｡)</h2>
-        <p>Nadie ha publicado un elemento multimedia... Quieres ser el primero?</p>
+        <p>Nadie ha publicado un elemento multimedia... Quiéres ser el primero?</p>
         <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
           <mat-icon inline="true">add_a_photo</mat-icon> Agregar multimedia
         </a>

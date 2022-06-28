@@ -211,8 +211,13 @@ section.user {
   &.user-section {
     column-gap: 40px;
 
-    h1, h2 {
+    h1,
+    h2 {
       padding: 0 1.5rem;
+
+      @media (min-width: 768px) {
+        padding: 0;
+      }
     }
   }
 }
