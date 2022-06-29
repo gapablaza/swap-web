@@ -13,6 +13,7 @@ export const environment = {
     authDomain: 'XXXXXXXXXXXXX.firebaseapp.com',
     messagingSenderId: 'XXXXXXXXXXXXX',
   },
+  analytics: 'X-XXXXXXXXXX',
   production: false,
   api_url: 'https://api.intercambialaminas.com/v2',
 };

@@ -33,6 +33,7 @@ const setEnvProd = () => {
           authDomain: '${process.env['FIREBASE_AUTHDOMAIN']}',
           messagingSenderId: '${process.env['FIREBASE_MESSAGINGSENDERID']}',
       },
+      analytics: '${process.env['ANALYTICS']}',
       production: ${process.env['PRODUCTION']},
       api_url: '${process.env['API_URL']}',
     };
