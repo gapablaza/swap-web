@@ -63,6 +63,15 @@
                 opacity: 0.6;
               }
 
+              .vertical-navigation-user-image {
+                user-select: none;
+                height: 24px;
+                width: 24px;
+                border-radius: 9999px;
+
+                margin-right: 16px;
+              }
+
               .vertical-navigation-item-title-wrapper {
 
                 .vertical-navigation-item-title {

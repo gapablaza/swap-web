@@ -46,4 +46,7 @@
 
 <mat-dialog-actions>
     <button class="mat-raised-button" (click)="onClose()">Cerrar</button>
+    <a mat-raised-button mat-dialog-close color="accent" [routerLink]="['/c', collection.name | slugify, collection.id]">
+        Ir a la colección    
+    </a>
 </mat-dialog-actions>

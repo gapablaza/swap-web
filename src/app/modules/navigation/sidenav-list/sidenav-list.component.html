@@ -43,8 +43,9 @@
 
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
-            <a href="" class="vertical-navigation-item">
-              <mat-icon>account_circle</mat-icon>
+            <a [routerLink]="['./user/', authUser.id]" class="vertical-navigation-item">
+              <img class="vertical-navigation-user-image" [defaultImage]="defaultUserImage" [lazyLoad]="authUser.image || defaultUserImage"
+              [alt]="authUser.displayName">
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
                   <span>Mi Perfil</span>
@@ -60,7 +61,7 @@
               <mat-icon>swap_horiz</mat-icon>
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
-                  <span>Posibles Cambios</span>
+                  <span>Cambios</span>
                 </div>
               </div>
               <div class="vertical-navigation-item-badge">
@@ -113,7 +114,7 @@
 
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
-            <a href="" class="vertical-navigation-item">
+            <a (click)="onLogout()" class="vertical-navigation-item">
               <mat-icon>logout</mat-icon>
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">

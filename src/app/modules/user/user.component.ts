@@ -31,7 +31,7 @@ export class UserComponent implements OnInit {
         })
       )
       .subscribe(user => {
-        console.log('from UserComponent', user);
+        console.log('from UserComponent Sub', user);
         this.userOnlySrv.setCurrentUser(user);
         this.user = user;
       });

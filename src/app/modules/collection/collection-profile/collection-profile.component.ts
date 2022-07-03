@@ -54,6 +54,6 @@ export class CollectionProfileComponent implements OnInit {
         }
       }
     });
-    console.log('from CollectionProfileComponent', this.collection);
+    console.log('from CollectionProfileComponent');
   }
 }

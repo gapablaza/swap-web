@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
-import { AuthService } from 'src/app/core';
+import { AuthService, DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
 
 @Component({
   selector: 'app-sidenav-list',
@@ -9,6 +9,8 @@ import { AuthService } from 'src/app/core';
 })
 export class SidenavListComponent implements OnInit {
   @Output() closeSidenav = new EventEmitter<void>();
+  authUser: User = {} as User;
+  defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   isAuth = false;
 
   constructor(
@@ -18,6 +20,11 @@ export class SidenavListComponent implements OnInit {
   ngOnInit(): void {
     this.authSrv.isAuth.subscribe(authState => {
       this.isAuth = authState;
+      if (this.isAuth) {
+        this.authUser = this.authSrv.getCurrentUser();
+      } else {
+        this.authUser = {} as User;
+      }
     })
   }
 
@@ -25,6 +32,8 @@ export class SidenavListComponent implements OnInit {
     this.closeSidenav.emit();
   }
 
-  onLogout() {}
+  onLogout() {
+    this.authSrv.logout();
+  }
 
 }
