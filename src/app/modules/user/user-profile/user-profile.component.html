@@ -15,8 +15,12 @@
           <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
         </div>
         <div class="user-actions">
-          <a class="btn" mat-raised-button color="accent">
+          <a *ngIf="authUser.id && (authUser.id != user.id)" class="btn" mat-raised-button color="accent">
             <mat-icon inline="true">add</mat-icon> Conversar
+          </a>
+          <a *ngIf="authUser.id && (authUser.id == user.id)" class="btn" mat-raised-button color="accent"
+            [routerLink]="['/settings']">
+            <mat-icon inline="true">edit</mat-icon> Editar
           </a>
           <a class="btn" mat-stroked-button>
             <mat-icon inline="true">more_horiz</mat-icon>

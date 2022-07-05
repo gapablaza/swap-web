@@ -5,6 +5,7 @@ import {
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
 } from '@angular/router';
+import { take } from 'rxjs';
 
 import { AuthService } from '../services';
 
@@ -13,8 +14,8 @@ export class AuthGuard implements CanActivate {
   constructor(private router: Router, private authSrv: AuthService) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const authUser = this.authSrv.getCurrentUser();
-    if (authUser.id) {
+    const isAuth = this.authSrv.isAuth.pipe(take(1));
+    if (isAuth) {
       // logged in so return true
       return true;
     } else {

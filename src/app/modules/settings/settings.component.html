@@ -1,0 +1,41 @@
+<div class="settings-page">
+    <div *ngIf="!isLoaded" class="loading-indicator">
+        <mat-spinner></mat-spinner>
+    </div>
+    <section *ngIf="isLoaded" class="settings">
+        <div class="settings-header">
+            <img class="" [defaultImage]="defaultUserImage" [lazyLoad]="authUser.image || defaultUserImage"
+            [alt]="authUser.displayName">
+            <div class="settings-title">
+                <h1>
+                    <a [routerLink]="['/user', authUser.id]">{{ authUser.displayName }}</a>
+                    <span>/</span>
+                    Editar perfil
+                </h1>
+                <h2>Define tus datos de acceso público</h2>
+            </div>
+        </div>
+        <div class="settings-content">
+            <div>
+                <ul class="settings-nav">
+                    <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                        <a [routerLink]="['.']">Editar perfil</a>
+                    </li>
+                    <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                        <a [routerLink]="['./connect']">Conectar</a>
+                    </li>
+                    <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                        <a [routerLink]="['./notifications']">Notificaciones</a>
+                    </li>
+                    <li class="separator"></li>
+                    <li class="warning">
+                        <a href="">Eliminar cuenta</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="settings main">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </section>
+</div>
