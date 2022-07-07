@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
-import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
@@ -19,6 +19,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -29,13 +30,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   imports: [
+    ClipboardModule,
     MatBadgeModule,
     MatBottomSheetModule,
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
     MatChipsModule,
-    ClipboardModule,
     MatDatepickerModule, 
     MatDialogModule,
     MatDividerModule,
@@ -43,14 +44,15 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatNativeDateModule,
-    MatSidenavModule,
     MatListModule,
     MatMenuModule,
+    MatNativeDateModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatSelectModule,
+    MatSidenavModule,
     MatSnackBarModule,
+    MatSliderModule,
     MatSlideToggleModule,
     MatSortModule,
     MatTableModule,
@@ -58,13 +60,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatToolbarModule,
   ],
   exports: [
+    ClipboardModule,
     MatBadgeModule,
     MatBottomSheetModule,
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
     MatChipsModule,
-    ClipboardModule,
     MatDatepickerModule, 
     MatDialogModule,
     MatDividerModule,
@@ -73,13 +75,14 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatIconModule,
     MatInputModule,
     MatNativeDateModule,
-    MatSidenavModule,
     MatListModule,
     MatMenuModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatSelectModule,
+    MatSidenavModule,
     MatSnackBarModule,
+    MatSliderModule,
     MatSlideToggleModule,
     MatSortModule,
     MatTableModule,

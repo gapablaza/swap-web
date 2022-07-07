@@ -1,1 +1,19 @@
-<p>settings-profile works!</p>
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="settings settings-section">
+    <div class="settings-profile">
+
+        <div class="avatar-preview">
+            <img class="" [defaultImage]="defaultUserImage" [lazyLoad]="profile.image || defaultUserImage"
+                [alt]="profile.displayName">
+            <a class="btn" mat-raised-button color="accent" (click)="onNewImage()">
+                <mat-icon inline="true">upload</mat-icon> Nueva imagen
+            </a>
+            <a *ngIf="profile.image" class="btn" mat-stroked-button (click)="onDeleteImage()">
+                <mat-icon inline="true">delete</mat-icon> Eliminar
+            </a>
+        </div>
+        
+    </div>
+</section>
