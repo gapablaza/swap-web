@@ -10,9 +10,9 @@
                 <h1>
                     <a [routerLink]="['/user', authUser.id]">{{ authUser.displayName }}</a>
                     <span>/</span>
-                    Editar perfil
+                    {{ title }}
                 </h1>
-                <h2>Define tus datos de acceso público</h2>
+                <h2>{{ subtitle }}</h2>
             </div>
         </div>
         <div class="settings-content">
@@ -33,7 +33,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="settings main">
+            <div class="settings-main">
                 <router-outlet></router-outlet>
             </div>
         </div>

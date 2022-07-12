@@ -11,10 +11,17 @@ import { AuthService } from '../services';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router, private authSrv: AuthService) {}
+  constructor(
+    private router: Router, 
+    private authSrv: AuthService
+  ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    
+    return this.authSrv.isAuth.pipe(take(1));
+    
     const isAuth = this.authSrv.isAuth.pipe(take(1));
+    console.log(isAuth);
     if (isAuth) {
       // logged in so return true
       return true;

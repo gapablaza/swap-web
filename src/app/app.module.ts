@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgProgressModule } from 'ngx-progressbar';
+import { NgProgressHttpModule } from 'ngx-progressbar/http';
 // import { AngularFireModule } from '@angular/fire/compat';
 // import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 // import { provideAuth, getAuth } from '@angular/fire/auth';
@@ -35,6 +37,11 @@ import { SidenavListComponent } from './modules/navigation/sidenav-list/sidenav-
     // provideAuth(() => getAuth()),
     // provideDatabase(() => getDatabase()),
     HomeModule,
+    NgProgressModule.withConfig({
+      color: '#2dd4bf',
+      spinner: false,
+    }),
+    NgProgressHttpModule,
   ],
   providers: [
     UIService

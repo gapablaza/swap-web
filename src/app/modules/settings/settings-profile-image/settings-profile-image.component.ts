@@ -1,7 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSliderChange } from '@angular/material/slider';
-import { ImageCroppedEvent, LoadedImage, ImageTransform } from 'ngx-image-cropper';
+import {
+  ImageCroppedEvent,
+  ImageCropperComponent,
+  ImageTransform,
+} from 'ngx-image-cropper';
+
+import { AuthService } from 'src/app/core';
+import { UIService } from 'src/app/shared';
 
 @Component({
   selector: 'app-settings-profile-image',
@@ -9,14 +16,20 @@ import { ImageCroppedEvent, LoadedImage, ImageTransform } from 'ngx-image-croppe
   styleUrls: ['./settings-profile-image.component.scss'],
 })
 export class SettingsProfileImageComponent implements OnInit {
+  @ViewChild(ImageCropperComponent) cropper!: ImageCropperComponent;
   imageChangedEvent: any = '';
   croppedImage: any = '';
   canvasRotation = 0;
   scale = 1;
   transform: ImageTransform = {};
   imageSelected = false;
+  isSaving = false;
 
-  constructor(private dialogRef: MatDialogRef<SettingsProfileImageComponent>) {}
+  constructor(
+    private dialogRef: MatDialogRef<SettingsProfileImageComponent>,
+    private authSrv: AuthService,
+    private uiSrv: UIService
+  ) {}
 
   ngOnInit(): void {}
 
@@ -25,17 +38,20 @@ export class SettingsProfileImageComponent implements OnInit {
   }
 
   imageCropped(event: ImageCroppedEvent) {
-    this.croppedImage = event.base64;
-    this.imageSelected = true;
+    // this.imageSelected = true;
+    // this.croppedImage = event.base64;
   }
 
   // imageLoaded(image: LoadedImage) {
   imageLoaded() {
+    this.imageSelected = true;
     // show cropper
   }
+
   cropperReady() {
     // cropper ready
   }
+
   loadImageFailed() {
     // show message
   }
@@ -48,8 +64,8 @@ export class SettingsProfileImageComponent implements OnInit {
   onFullZoomOut() {
     this.scale = 1;
     this.transform = {
-        ...this.transform,
-        scale: this.scale
+      ...this.transform,
+      scale: this.scale,
     };
   }
 
@@ -57,15 +73,15 @@ export class SettingsProfileImageComponent implements OnInit {
     this.scale = event.value ? event.value : 1;
     this.transform = {
       ...this.transform,
-      scale: this.scale
+      scale: this.scale,
     };
   }
 
   onFullZoomIn() {
     this.scale = 5;
     this.transform = {
-        ...this.transform,
-        scale: this.scale
+      ...this.transform,
+      scale: this.scale,
     };
   }
 
@@ -80,6 +96,24 @@ export class SettingsProfileImageComponent implements OnInit {
   }
 
   onClose() {
-    this.dialogRef.close();
+    if (!this.isSaving) {
+      this.dialogRef.close();
+    }
+  }
+
+  onSaveImage() {
+    this.isSaving = true;
+    const newAvatar = this.cropper.crop();
+    this.croppedImage = newAvatar?.base64;
+
+    this.authSrv.updateAvatar(this.croppedImage as string).subscribe((res) => {
+      if (res) {
+        this.uiSrv.showSuccess('Imagen cambiada con éxito');
+        this.dialogRef.close();
+      } else {
+        this.uiSrv.showError('No se pudo registrar la imagen');
+        this.isSaving = false;
+      }
+    });
   }
 }

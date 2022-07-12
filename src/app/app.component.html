@@ -1,6 +1,7 @@
 <header>
   <app-header (sidenavToggle)="sidenav.toggle()"></app-header>
 </header>
+<ng-progress></ng-progress>
 <mat-sidenav-container hasBackdrop="false">
   <mat-sidenav #sidenav [mode]="navMode" [opened]="navOpened" role="navigation">
     <app-sidenav-list (closeSidenav)="sidenav.close()"></app-sidenav-list>

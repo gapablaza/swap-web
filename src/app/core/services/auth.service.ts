@@ -1,16 +1,6 @@
 import { Injectable } from '@angular/core';
-import {
-  Observable,
-  BehaviorSubject,
-  of,
-  ReplaySubject,
-} from 'rxjs';
-import {
-  concatMap,
-  distinctUntilChanged,
-  map,
-  take,
-} from 'rxjs/operators';
+import { Observable, BehaviorSubject, of, ReplaySubject } from 'rxjs';
+import { concatMap, distinctUntilChanged, map, take } from 'rxjs/operators';
 
 import { User } from '../models';
 import { ApiService } from './api.service';
@@ -75,20 +65,18 @@ export class AuthService {
   }
 
   emailLogin(email: string, password: string): Observable<boolean> {
-    return this.apiSrv
-      .post('/auth/login', { email, password })
-      .pipe(
-        take(1),
-        concatMap((appToken) => {
-          this.jwtSrv.saveToken(appToken.token);
-          return this.apiSrv.get('/me').pipe(
-            map((data: { data: User, token: string }) => {
-              this.setAuth(data);
-              return true;
-            })
-          );
-        })
-      );
+    return this.apiSrv.post('/auth/login', { email, password }).pipe(
+      take(1),
+      concatMap((appToken) => {
+        this.jwtSrv.saveToken(appToken.token);
+        return this.apiSrv.get('/me').pipe(
+          map((data: { data: User; token: string }) => {
+            this.setAuth(data);
+            return true;
+          })
+        );
+      })
+    );
   }
 
   getCurrentUser(): User {
@@ -97,7 +85,7 @@ export class AuthService {
 
   isPRO(): boolean {
     const tempAuthUser = this.authUserSubject.value;
-    if (tempAuthUser.id && (tempAuthUser.accountTypeId == 2)) {
+    if (tempAuthUser.id && tempAuthUser.accountTypeId == 2) {
       return true;
     } else {
       return false;
@@ -107,5 +95,35 @@ export class AuthService {
   logout() {
     this.purgeAuth();
     location.reload();
+  }
+
+  updateAvatar(image64: string): Observable<boolean> {
+    return this.apiSrv.post('/me/avatar', { image: image64 }).pipe(
+      take(1),
+      concatMap(() => {
+        return this.apiSrv.get('/me').pipe(
+          map((data: { data: User; token: string }) => {
+            this.jwtSrv.saveToken(data.token);
+            this.authUserSubject.next(data.data);
+            return true;
+          })
+        );
+      }),
+    );
+  }
+
+  removeAvatar(): Observable<boolean> {
+    return this.apiSrv.delete('/me/avatar').pipe(
+      take(1),
+      concatMap(() => {
+        return this.apiSrv.get('/me').pipe(
+          map((data: { data: User; token: string }) => {
+            this.jwtSrv.saveToken(data.token);
+            this.authUserSubject.next(data.data);
+            return true;
+          })
+        );
+      }),
+    );
   }
 }

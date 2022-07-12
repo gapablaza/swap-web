@@ -18,14 +18,16 @@ export class SidenavListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.authSrv.isAuth.subscribe(authState => {
-      this.isAuth = authState;
-      if (this.isAuth) {
-        this.authUser = this.authSrv.getCurrentUser();
-      } else {
-        this.authUser = {} as User;
-      }
-    })
+    this.authSrv.authUser
+      .subscribe((user) => {
+        if (user.id) {
+          this.authUser = user;
+          this.isAuth = true;
+        } else {
+          this.authUser = {} as User;
+          this.isAuth = false;
+        }
+      })
   }
 
   onClose() {

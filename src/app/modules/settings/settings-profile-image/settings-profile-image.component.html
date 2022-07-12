@@ -7,31 +7,37 @@
                 <div *ngIf="!imageSelected" class="upload-image-input">
                     <a mat-raised-button>
                         <label class="custom-file-upload">
-                            <input type="file" (change)="fileChangeEvent($event)" style="display: none;" />
-                            Cargar una foto
+                                <input type="file" (change)="fileChangeEvent($event)" 
+                                    style="display: none;"
+                                    accept="image/png, image/jpeg, image/jpg" />
+                                Cargar una foto
                         </label>
                     </a>
                 </div>
 
                 <div class="upload-image-cropper">
-                    <image-cropper
-                        [allowMoveImage]="true"
-                        [imageChangedEvent]="imageChangedEvent"
-                        [maintainAspectRatio]="true"
+                    <image-cropper #cropper
+                        [allowMoveImage]="false"
                         [aspectRatio]="1 / 1"
-                        format="png"
+                        [autoCrop]="false"
                         [canvasRotation]="canvasRotation"
-                        [hideResizeSquares]="true"
-                        [transform]="transform"
                         [containWithinAspectRatio]="true"
-                        [cropperStaticWidth]="200"
-                        [cropperStaticHeight]="200"
+                        [cropperMinWidth]="50"
+                        format="png"
+                        [hideResizeSquares]="false"
+                        [imageChangedEvent]="imageChangedEvent"
+                        [imageQuality]="100"
+                        [maintainAspectRatio]="true"
+                        [resizeToWidth]="200"
+                        [transform]="transform"
                         (imageCropped)="imageCropped($event)"
                         (imageLoaded)="imageLoaded()"
                         (cropperReady)="cropperReady()"
                         (loadImageFailed)="loadImageFailed()"
                     ></image-cropper>
                 </div>
+
+                <!-- <img [src]="croppedImage" /> -->
             </div>
         </div>
     </div>
@@ -50,11 +56,13 @@
 </div>
 
 <mat-dialog-actions>
-    <button class="mat-raised-button" mat-dialog-close>Cerrar</button>
-    <button *ngIf="imageSelected" (click)="onRotate()" mat-icon-button aria-label="Rotar a la derecha">
+    <a mat-raised-button [disabled]="isSaving" (click)="onClose()">Cerrar</a>
+    <button *ngIf="imageSelected" (click)="onRotate()" [disabled]="isSaving" 
+        mat-icon-button aria-label="Rotar a la derecha">
         <mat-icon>rotate_right</mat-icon>
     </button>
-    <a *ngIf="imageSelected" mat-raised-button mat-dialog-close color="accent">
+    <a *ngIf="imageSelected" (click)="onSaveImage()" [disabled]="isSaving"
+        mat-raised-button color="accent">
         Cargar
     </a>
 </mat-dialog-actions>

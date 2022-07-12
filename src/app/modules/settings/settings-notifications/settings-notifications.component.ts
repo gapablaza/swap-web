@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/core';
+import { SettingsOnlyService } from '../settings-only.service';
 
 @Component({
   selector: 'app-settings-notifications',
@@ -7,9 +9,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SettingsNotificationsComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private authSrv: AuthService,
+    private setOnlySrv: SettingsOnlyService,
+  ) { }
 
   ngOnInit(): void {
+    console.log('SettingsNotificationsComponent');
+    this.setOnlySrv.setTitles({
+      title: 'Notificaciones',
+      subtitle: 'Recibe información directo a tu email'
+    });
   }
 
 }

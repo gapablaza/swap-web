@@ -1,13 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AuthService, DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
+import { UIService } from 'src/app/shared';
+
+import { SettingsOnlyService } from '../settings-only.service';
 import { SettingsProfileImageComponent } from '../settings-profile-image/settings-profile-image.component';
 
 export interface IProfile {
-  displayName: string,
-  image?: string,
-  bio?: string,
-  location?: string,
+  displayName: string;
+  image?: string;
+  bio?: string;
+  location?: string;
 }
 
 @Component({
@@ -16,18 +19,27 @@ export interface IProfile {
   styleUrls: ['./settings-profile.component.scss'],
 })
 export class SettingsProfileComponent implements OnInit {
+  @ViewChild('confirmDeleteDialog') deleteDialog!: TemplateRef<any>;
   authUser: User = {} as User;
   profile: IProfile = {} as IProfile;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
+  isDeleting = false;
   isLoaded = false;
 
   constructor(
+    private dialog: MatDialog,
     private authSrv: AuthService,
-    private dialog: MatDialog
+    private uiSrv: UIService,
+    private setOnlySrv: SettingsOnlyService
   ) {}
 
   ngOnInit(): void {
     console.log('SettingsProfileComponent');
+    this.setOnlySrv.setTitles({
+      title: 'Editar perfil',
+      subtitle: 'Define tus datos de acceso público',
+    });
+
     this.authSrv.authUser.subscribe((user) => {
       this.authUser = user;
       this.profile = {
@@ -35,7 +47,7 @@ export class SettingsProfileComponent implements OnInit {
         image: user.image ? user.image : '',
         bio: user.bio ? user.bio : '',
         location: user.location ? user.location : '',
-      }
+      };
 
       this.isLoaded = true;
     });
@@ -44,26 +56,32 @@ export class SettingsProfileComponent implements OnInit {
   onNewImage() {
     const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.disableClose = false;
+    dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.panelClass = ['profile-image'];
     dialogConfig.width = '375px';
-    // dialogConfig.maxWidth = '1280px';
-    // dialogConfig.height = '470px';
-    // dialogConfig.minHeight = '300px';
-    
+    // dialogConfig.maxWidth = '500px';
 
-    // dialogConfig.data = {
-    //   user: this.user,
-    //   collection: col,
-    // }
-
-    this.dialog.open(
-      SettingsProfileImageComponent, dialogConfig
-    );
+    this.dialog.open(SettingsProfileImageComponent, dialogConfig);
   }
 
   onDeleteImage() {
-    this.profile.image = '';
+    this.dialog.open(this.deleteDialog, { disableClose: true });
+  }
+
+  onConfirmDelete() {
+    this.isDeleting = true;
+
+    this.authSrv.removeAvatar().subscribe((res) => {
+      if (res) {
+        this.uiSrv.showSuccess('Imagen removida exitosamente');
+        this.dialog.closeAll();
+        this.isDeleting = false;
+      } else {
+        this.uiSrv.showError('No se pudo remover tu imagen de perfil');
+        this.dialog.closeAll();
+        this.isDeleting = false;
+      }
+    });
   }
 }
