@@ -31,6 +31,14 @@
         [innerHTML]="collection.description| sanitizeHtml"></p>
     </div>
 
+    <ng-adsense
+      [adSlot]="9177899059"
+      [adFormat]="'auto'"
+      [display]="'block'"
+      [fullWidthResponsive]="true"
+      [className]="'bga-hor'"
+    ></ng-adsense>
+
     <!-- <div class="collection-tags">
       <mat-chip-list aria-label="Etiquetas de la colección">
         <mat-chip>Tag #1</mat-chip>
@@ -57,7 +65,8 @@
           <div>
             Estás buscando <strong>{{ collection?.wishing }}</strong> ítems:
             <span *ngFor="let item of userWishing; last as isLast">
-              <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">
+              <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
+              <span>
                 {{ item.name }}<span *ngIf="item.wishlistQuantity && (item.wishlistQuantity > 1)">({{
                   item.wishlistQuantity }})</span>
               </span>
@@ -67,7 +76,8 @@
           <div>
             Tienes <strong>{{ collection?.trading }}</strong> ítems para cambiar:
             <span *ngFor="let item of userTrading; last as isLast">
-              <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">
+              <span>
+              <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
                 {{ item.name }}<span *ngIf="item.tradelistQuantity && (item.tradelistQuantity > 1)">({{
                   item.tradelistQuantity }})</span>
               </span>
@@ -111,7 +121,7 @@
       </a>
       <a mat-list-item [routerLink]="['./tops']">
         <div mat-line>
-          <strong>TOP</strong> ítems (clasificados por dificultad) <span class="pro-label">PRO</span>
+          <strong>TOP</strong> ítems <span class="pro-label">PRO</span> (clasificados por dificultad) 
         </div>
         <mat-icon>navigate_next</mat-icon>
       </a>

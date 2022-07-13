@@ -23,14 +23,16 @@
             <p class="user-collection-modal-wishing">
                 Está buscando <strong>{{ collection?.wishing }}</strong> ítems:
                 <span *ngFor="let item of userWishing; last as isLast">
-                    <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span>
+                    <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span> -->
+                    <span>{{ item.name }}</span>
                     <span *ngIf="!isLast">, </span>
                 </span>
             </p>
             <p class="user-collection-modal-trading">
                 Tiene <strong>{{ collection?.trading }}</strong> ítems para cambiar:
                 <span *ngFor="let item of userTrading; last as isLast">
-                    <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span>
+                    <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span> -->
+                    <span>{{ item.name }}</span>
                     <span *ngIf="!isLast">, </span>
                 </span>
             </p>

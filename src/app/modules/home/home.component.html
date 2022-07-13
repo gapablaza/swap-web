@@ -2,6 +2,13 @@
   <mat-spinner></mat-spinner>
 </div>
 <section *ngIf="isLoaded" class="home">
+  <ng-adsense
+    [adSlot]="7864817385"
+    [adFormat]="'auto'"
+    [display]="'block'"
+    [fullWidthResponsive]="true"
+  ></ng-adsense>
+
   <h2>Populares</h2>
   <app-list-resalted-collections [collections]="popular"></app-list-resalted-collections>
 
