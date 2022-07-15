@@ -1,13 +1,15 @@
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, OnInit } from '@angular/core';
-import { first } from 'rxjs';
+import { filter, first } from 'rxjs';
 
 import {
+  AuthService,
   Collection,
   CollectionService,
   DEFAULT_COLLECTION_IMG,
   Item,
+  User,
 } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
 
@@ -18,6 +20,7 @@ import { CollectionOnlyService } from '../collection-only.service';
 })
 export class CollectionProfileComponent implements OnInit {
   collection: Collection = {} as Collection;
+  authUser: User = {} as User;
   defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   userWishing: Item[] = [];
   userTrading: Item[] = [];
@@ -26,13 +29,23 @@ export class CollectionProfileComponent implements OnInit {
   constructor(
     private colSrv: CollectionService,
     private colOnlySrv: CollectionOnlyService,
+    private authSrv: AuthService
   ) {}
 
   ngOnInit(): void {
     registerLocaleData(es);
 
-    this.colOnlySrv.collection$.subscribe((col) => {
-      if (col.id) {
+    // get possible auth User
+    this.authSrv.authUser
+      .pipe(filter((user) => user.id != null))
+      .subscribe((user) => {
+        this.authUser = user;
+      });
+
+    // obtiene los datos de la colección
+    this.colOnlySrv.collection$
+      .pipe(filter((col) => col.id != null))
+      .subscribe((col) => {
         this.collection = col;
         this.isLoaded = true;
 
@@ -52,8 +65,7 @@ export class CollectionProfileComponent implements OnInit {
               });
             });
         }
-      }
-    });
+      });
     console.log('from CollectionProfileComponent');
   }
 }

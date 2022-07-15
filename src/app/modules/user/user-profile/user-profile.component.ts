@@ -43,7 +43,7 @@ export class UserProfileComponent implements OnInit {
     registerLocaleData(es);
 
     // TO DO: manejar el caso de que no exista el usuario consultado
-    // TO DO: Desplegar la cantidad de medio publicada
+    // TO DO: Desplegar la cantidad de media publicada
     combineLatest([this.authSrv.authUser, this.userOnlySrv.user$])
       .pipe(
         filter(([authUser, user]) => user.id != null),

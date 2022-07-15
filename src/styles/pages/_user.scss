@@ -211,6 +211,10 @@ section.user {
     padding: 0;
   }
 
+  .bga-hor {
+    margin-top: var(--gap-vertical);
+  }
+
   // estilos para las secciones de un usuario
   &.user-section {
     column-gap: 40px;

@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ApiService } from './api.service';
-import { Collection, Item, Media, User } from '../models';
+import { Collection, Item, Media, Tops, TopsCategory, User } from '../models';
 import {
   EXAMPLE_RAW_COLLECTION,
   EXAMPLE_RAW_COLLECTION_ITEMS,
@@ -44,11 +44,21 @@ export class CollectionService {
       .pipe(map((data: { data: User[] }) => data.data));
   }
 
-  getTops(collectionId: number): Observable<any> {
+  getTops(collectionId: number): Observable<Tops> {
     return this.apiSrv.get('/collections/' + collectionId + '/tops')
-      // .pipe(map((data: { available: boolean, categories: any[] }) =>
-      //   ({ available: data.available, categories: data.categories})));
-      .pipe(map((data) => data.data));
+      .pipe(map((tops: any) => {
+        let cats: TopsCategory[] = [];
+        
+        if (tops.data.available) {
+          Object.keys(tops.data.categories).forEach((item) => {
+            cats.push(tops.data.categories[item]);
+          });
+
+          return { available: true, categories: cats };
+        } else {
+          return { available: false, categories: [] };
+        }
+      }));
   }
 
   add(collectionId: number): Observable<string> {

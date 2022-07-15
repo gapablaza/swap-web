@@ -20,3 +20,11 @@
         </div>
     </div>
 </div>
+<ng-adsense
+    *ngIf="!authUser.id || (authUser.accountTypeId == 1)"
+    [adSlot]="7631554101"
+    [adFormat]="'auto'"
+    [display]="'block'"
+    [fullWidthResponsive]="true"
+    [className]="'bga-section-vert'"
+></ng-adsense>

@@ -32,6 +32,7 @@
     </div>
 
     <ng-adsense
+      *ngIf="!authUser.id || (authUser.accountTypeId == 1)"
       [adSlot]="9177899059"
       [adFormat]="'auto'"
       [display]="'block'"
@@ -119,7 +120,7 @@
         </div>
         <mat-icon>navigate_next</mat-icon>
       </a>
-      <a mat-list-item [routerLink]="['./tops']">
+      <a *ngIf="authUser.id" mat-list-item [routerLink]="['./tops']">
         <div mat-line>
           <strong>TOP</strong> ítems <span class="pro-label">PRO</span> (clasificados por dificultad) 
         </div>

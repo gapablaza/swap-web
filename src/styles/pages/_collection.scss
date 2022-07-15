@@ -204,6 +204,10 @@ section.collection {
     padding: 0;
   }
 
+  .bga-hor {
+    margin-top: var(--gap-vertical);
+  }
+
   // estilos para las secciones de una colección
   &.collection-section {
     column-gap: 40px;
@@ -215,6 +219,11 @@ section.collection {
       @media (min-width: 768px) {
         padding: 0;
       }
+    }
+
+    .tops-buttons {
+      text-align: right;
+      margin-bottom: 1rem;
     }
   }
 }

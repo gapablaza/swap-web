@@ -69,6 +69,15 @@
       <a [routerLink]="['/collaborate']">+&nbsp;INFO</a>
     </div>
 
+    <ng-adsense
+      *ngIf="!authUser.id || (authUser.accountTypeId == 1)"
+      [adSlot]="1449289134"
+      [adFormat]="'auto'"
+      [display]="'block'"
+      [fullWidthResponsive]="true"
+      [className]="'bga-hor'"
+    ></ng-adsense>
+
     <mat-expansion-panel *ngIf="authUser.id && showTrades" class="trades">
       <mat-expansion-panel-header>
         <mat-panel-title>

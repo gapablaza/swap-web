@@ -3,13 +3,15 @@ import es from '@angular/common/locales/es';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { switchMap } from 'rxjs';
+import { filter, switchMap } from 'rxjs';
 
 import {
+  AuthService,
   Collection,
   DEFAULT_COLLECTION_IMG,
   Pagination,
   SearchService,
+  User,
 } from 'src/app/core';
 
 @Component({
@@ -19,6 +21,7 @@ import {
 })
 export class ExploreCollectionsComponent implements OnInit {
   collections: Collection[] = [];
+  authUser: User = {} as User;
   paginator: Pagination = {} as Pagination;
   defaultCollectionImage = DEFAULT_COLLECTION_IMG;
 
@@ -55,11 +58,23 @@ export class ExploreCollectionsComponent implements OnInit {
   constructor(
     private searchSrv: SearchService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private authSrv: AuthService,
   ) {}
 
   ngOnInit(): void {
     registerLocaleData( es );
+
+    // get possible auth User
+    this.authSrv.authUser
+      .pipe(
+        filter(user => user.id != null)
+      )
+      .subscribe(user => {
+        this.authUser = user;
+      })
+
+    // process pagination params
     this.activatedRoute.queryParamMap
       .pipe(
         switchMap((paramMap) => {

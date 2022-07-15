@@ -29,7 +29,8 @@ export class ErrorInterceptor implements HttpInterceptor {
           this.authSrv.logout();
         }
 
-        const error = (err && err.error && err.error.message) ? err.error.message : err.statusText;
+        const error = (err && err.error && err.error.error && err.error.error.message) 
+          ? err.error.error.message : err.statusText;
         this.uiSrv.showError(error);
         return throwError(() => err);
       })

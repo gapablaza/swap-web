@@ -20,6 +20,7 @@
     </div>
 </div>
 <ng-adsense
+    *ngIf="!authUser.id || (authUser.accountTypeId == 1)"
     [adSlot]="2226581548"
     [adFormat]="'auto'"
     [display]="'block'"

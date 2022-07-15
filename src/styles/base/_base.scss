@@ -290,13 +290,11 @@ img.ng-lazyloaded {
 
 
 .bga-section-vert {
-  display: none;
+  display: none !important;
 
   @media (min-width: 768px) {
-    display: block;
+    display: block !important;
   }
 }
 
-.bga-hor {
-  
-}
+.bga-hor {}
