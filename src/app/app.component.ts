@@ -47,6 +47,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         gtag('config', `${environment.analytics}`, { 'page_path': event.urlAfterRedirects });
+
+        if (window.innerWidth < 768) {
+          this.sidenav.close();
+        }
       }      
     })
 
