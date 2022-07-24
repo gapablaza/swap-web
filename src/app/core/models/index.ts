@@ -6,5 +6,6 @@ export * from './message.model';
 export * from './pagination.model';
 export * from './publisher.model';
 export * from './tops.model';
+export * from './trades.model';
 export * from './tradesWithUser.model';
 export * from './user.model';

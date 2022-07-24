@@ -57,7 +57,7 @@
 
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
-            <a href="" class="vertical-navigation-item">
+            <a [routerLink]="['./trades/']" class="vertical-navigation-item">
               <mat-icon>swap_horiz</mat-icon>
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
@@ -93,7 +93,7 @@
 
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
-            <a href="" class="vertical-navigation-item">
+            <a [routerLink]="['./settings/']" class="vertical-navigation-item">
               <mat-icon>settings</mat-icon>
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
@@ -119,7 +119,7 @@
 
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
-            <a (click)="onLogout()" class="vertical-navigation-item">
+            <a style="cursor:pointer" (click)="onLogout()" class="vertical-navigation-item">
               <mat-icon>logout</mat-icon>
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">

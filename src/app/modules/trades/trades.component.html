@@ -1,0 +1,201 @@
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="trades trades-section">
+    <div class="trades-full flex-full">
+        <h1>
+            <span class="color-accent" *ngIf="trades.totalTrades > 0">
+                {{ trades.totalTrades | number:'':'es' }}
+              </span>
+            Posibles cambios
+        </h1>
+        <ng-adsense
+            *ngIf="!authUser.id || (authUser.accountTypeId == 1)"
+            [adSlot]="4915176250"
+            [adFormat]="'auto'"
+            [display]="'block'"
+            [fullWidthResponsive]="true"
+            [className]="'bga-hor'"
+        ></ng-adsense>
+        <div class="card">
+            <div class="controls-std">
+                <div class="controls-std-main">
+                    <div class="controls-std-order">
+                        <mat-form-field appearance="outline" class="users-last-seen">
+                            <mat-label>Usuarios</mat-label>
+                            <mat-select [(value)]="usersLastSeenSelected">
+                                <mat-option value="90000">Vistos alguna vez</mat-option>
+                                <mat-option value="90">Vistos hace no mas de 3 meses</mat-option>
+                                <mat-option value="30">Vistos hace no mas de 30 días</mat-option>
+                                <mat-option value="7">Vistos hace no mas de 7 días</mat-option>
+                                <mat-option value="1">Vistos hoy</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-select [(value)]="usersFromSelected">
+                                <mat-option value="1">De todo el mundo!</mat-option>
+                                <mat-option value="2">De {{ authUser.location_country }}</mat-option>
+                                <mat-option value="3">De {{ authUser.location_city }}, {{ authUser.location_country }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Colección</mat-label>
+                            <mat-select [(value)]="userCollectionsSelected">
+                                <mat-option value="">Todas</mat-option>
+                                <mat-option *ngFor="let col of incompleteCollections" [value]="''+col.id">
+                                    {{ col.name }} [{{ col.publisher.data.name }}]
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="controls-std-settings">
+                        <a class="btn" mat-raised-button color="accent" (click)="onSearchTrades()">
+                            <mat-icon inline="true">manage_search</mat-icon> Buscar
+                        </a>
+                        <!-- <p>
+                            Registros {{ paginator.from | number:'':'es' }} a {{ paginator.to | number:'':'es' }}
+                        </p> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="(trades.totalUsers == 0) || (pageSelected > paginator.last_page)" class="card" >
+            <div class="empty-content">
+              <h2>(;—;)</h2>
+              <p>No encontramos posibles cambios para los filtros utilizados</p>
+              <!-- <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
+                <mat-icon inline="true">add</mat-icon> Agregar colección
+              </a> -->
+            </div>
+        </div>
+
+        <div *ngIf="(trades.totalUsers > 0) && (pageSelected <= paginator.last_page)">
+            <div class="pagination-wrapper">
+                <ul class="pagination">
+                    <li class="pagination-prev">
+                        <a role="button" (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))"
+                            [disabled]="pageSelected == 1" class="btn" mat-raised-button tabindex="-1">
+                            <mat-icon inline="true">west</mat-icon>
+                        </a>
+                    </li>
+                    <li>
+                        <select name="" (change)="onPageChange(selectPage.value)" #selectPage>
+                            <option *ngFor="let item of [].constructor(paginator.last_page); index as i" [value]="i+1"
+                                [selected]="(i+1) == pageSelected">
+                                Página {{ i+1 }} de {{ paginator.last_page }}
+                            </option>
+                        </select>
+                    </li>
+                    <li class="pagination-next">
+                        <a role="button"
+                            (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
+                            [disabled]="pageSelected == paginator.last_page" class="btn" mat-raised-button>
+                            <mat-icon inline="true">east</mat-icon>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+    
+            <div *ngFor="let user of trades.user" class="trades-details card">
+                <div class="trades-user">
+                    <div class="trades-user-info"
+                        [ngClass]="{'pro-account': user.userData.accountTypeId == 2}">
+                        <div class="trades-user-main">
+                            <div class="trades-user-image">
+                                <a [routerLink]="['/user', user.userData.id]">
+                                    <img [defaultImage]="defaultUserImage"
+                                        [lazyLoad]="user.userData.image || defaultUserImage" alt="">
+                                </a>
+                            </div>
+    
+                            <div class="trades-user-content flex-full">
+                                <div class="trades-user-title">
+                                    <a [routerLink]="['/user', user.userData.id]">
+                                        {{ user.userData.displayName }}
+                                        <span *ngIf="user.userData.accountTypeId == 2" class="pro-label">PRO</span>
+                                        <span *ngIf="user.userData.positives" class="positives-label">+{{
+                                            user.userData.positives
+                                            }}</span>
+                                        <span *ngIf="user.userData.negatives" class="negatives-label">-{{
+                                            user.userData.negatives
+                                            }}</span>
+                                    </a>
+                                </div>
+                                <div class="trades-user-meta custom-separator">
+                                    <span>ID {{ user.userData.id }}</span>
+                                    <span>{{ user.userData.location_city }}, {{ user.userData.location_country }}</span>
+                                    <span appDaysSinceLogin="{{ user.userData.daysSinceLogin }}"></span>
+                                </div>
+                            </div>
+                            <div class="trades-user-count">
+                                <a class="btn" mat-stroked-button>
+                                    {{ user.userData.tradesWithUser | number:'':'es' }} 
+                                    <mat-icon inline="true">repeat</mat-icon>
+                                  </a>
+                            </div>
+                        </div>
+    
+                    </div>
+                </div>
+    
+                <div *ngFor="let col of user.collections" class="trades-collection">
+                    <div class="trades-collection-info">
+                        <a [routerLink]="['/c', col.collectionData.name| slugify, col.collectionData.id]">
+                            <img [defaultImage]="defaultCollectionImage" [lazyLoad]="col.collectionData.image"
+                                [alt]="col.collectionData.name">
+                            <span>{{ col.collectionData.name }}</span>
+                        </a>
+                    </div>
+                    <div class="trades-list">
+                        <div *ngIf="col.totalSearching">
+                            Tiene <strong>{{ col.totalSearching }}</strong> ítems que tú buscas:
+                            <span *ngFor="let item of col.searching; last as isLast">
+                                <span [ngClass]="authUser.accountTypeId == 2 ? 
+                                    'item-difficulty-' + item.difficultyCategoryId : ''">{{ item.name
+                                    }}</span>
+                                <span *ngIf="!isLast">, </span>
+                            </span>
+                        </div>
+                        <div *ngIf="col.totalTrading">
+                            Busca <strong>{{ col.totalTrading }}</strong> ítems que tú cambias:
+                            <span *ngFor="let item of col.trading; last as isLast">
+                                <span [ngClass]="authUser.accountTypeId == 2 ? 
+                                    'item-difficulty-' + item.difficultyCategoryId : ''">{{ item.name
+                                    }}</span>
+                                <span *ngIf="!isLast">, </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="pagination-wrapper">
+                <ul class="pagination">
+                    <li class="pagination-prev">
+                        <a role="button" (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))"
+                            [disabled]="pageSelected == 1" class="btn" mat-raised-button tabindex="-1">
+                            <mat-icon inline="true">west</mat-icon>
+                        </a>
+                    </li>
+                    <li>
+                        <select name="" (change)="onPageChange(selectPage.value)" #selectPage>
+                            <option *ngFor="let item of [].constructor(paginator.last_page); index as i" [value]="i+1"
+                                [selected]="(i+1) == pageSelected">
+                                Página {{ i+1 }} de {{ paginator.last_page }}
+                            </option>
+                        </select>
+                    </li>
+                    <li class="pagination-next">
+                        <a role="button"
+                            (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
+                            [disabled]="pageSelected == paginator.last_page" class="btn" mat-raised-button>
+                            <mat-icon inline="true">east</mat-icon>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+             
+    </div>
+</section>

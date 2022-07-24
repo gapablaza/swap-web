@@ -11,5 +11,8 @@
     select {
         height: 100%;
         text-align: center;
+        min-width: 200px;
+        border: 1px solid #dddfe4;
+        color: var(--text-secondary);
     }
 }

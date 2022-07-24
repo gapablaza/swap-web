@@ -3,7 +3,18 @@ import { HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Collection, Evaluation, Item, Media, TradesWithUser, TradesWithUserCollection, User } from '../models';
+import {
+  Collection,
+  Evaluation,
+  Item,
+  Media,
+  Trades,
+  TradesUser,
+  TradesUserCollection,
+  TradesWithUser,
+  TradesWithUserCollection,
+  User,
+} from '../models';
 import { ApiService } from './api.service';
 // import { EXAMPLE_USER, EXAMPLE_USER_COLLECTION, EXAMPLE_USER_COLLECTIONS } from './example-user.service';
 
@@ -113,9 +124,7 @@ export class UserService {
     // return of({ collections: EXAMPLE_USER_COLLECTIONS, trades: false });
   }
 
-  getTradesWithAuthUser(
-    userId: number
-  ): Observable<TradesWithUser> {
+  getTradesWithAuthUser(userId: number): Observable<TradesWithUser> {
     return this.apiSrv
       .get('/users/' + userId + '/collections?include=publisher')
       .pipe(
@@ -140,19 +149,72 @@ export class UserService {
       );
   }
 
-  getTrades(
-    days: number = 7,
-    location: number = 2,
-    page: number = 1
-  ): Observable<any> {
+  getTrades(data?: {
+    days?: number,
+    location?: number,
+    page?: number,
+    collections?: string
+  }): Observable<Trades> {
     let params: any = {};
-    params['days'] = days;
-    params['location'] = location;
-    params['page'] = page;
+
+    if (data && data.days) { 
+      params['days'] = data.days 
+    } else {
+      params['days'] = 7;
+    };
+
+    if (data && data.location) { 
+      params['location'] = data.location 
+    } else {
+      params['location'] = 2;
+    };
+
+    if (data && data.page) { 
+      params['page'] = data.page 
+    } else {
+      params['page'] = 1;
+    };
+
+    if (data && data.collections) { params['collections'] = data.collections };
 
     return this.apiSrv
       .get('/me/trades', new HttpParams({ fromObject: params }))
-      .pipe(map((data) => data));
+      .pipe(
+        map((data) => {
+          let tempCollections: TradesUserCollection[] = [];
+          let tempUsers: TradesUser[] = [];
+          
+          data.users.forEach((user: any) => {
+
+            tempCollections = [];
+            // converts object with array form to array
+            Object.keys(user.collections).forEach((item) => {
+              tempCollections.push({
+                ...user.collections[item],
+                collectionData: user.collections[item].data
+              });
+            });
+
+            tempUsers.push({
+              collections: tempCollections,
+              userData: {
+                ...user.data,
+                tradesWithUser: user.data.tradesWithuser
+              },
+              order: user.data
+            })
+          })
+
+          return {
+            allowedUsers: data.allowedUsers,
+            paginate: data.paginate,
+            totalTrades: data.totalTrades,
+            totalUsers: data.totalUsers,
+            uniqueTrades: data.uniqueTrades,
+            user: tempUsers,
+          }
+        })
+      );
   }
 
   // getCollectionsFromUser(id: number): Collection[] {

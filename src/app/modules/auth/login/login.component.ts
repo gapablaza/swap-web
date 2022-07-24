@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private authSrv: AuthService,
     private route: ActivatedRoute,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -44,7 +44,25 @@ export class LoginComponent implements OnInit {
       .subscribe({
         next: (resp) => {
           if (resp) {
-            this.router.navigate([this.returnUrl]);
+            const path = this.returnUrl.split('?')[0];
+            let search = {};
+
+            if (this.returnUrl.includes('?')) {
+              const searchString = this.returnUrl.split('?')[1];
+              search = JSON.parse(
+                '{"' +
+                  searchString
+                    .replace(/"/g, '\\"')
+                    .replace(/&/g, '","')
+                    .replace(/=/g, '":"') +
+                  '"}'
+              );
+            }
+
+            // this.router.navigate([this.returnUrl]);
+            this.router.navigate([path], {
+              queryParams: search
+            });
           }
 
           this.isLoading = false;

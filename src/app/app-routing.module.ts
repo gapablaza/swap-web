@@ -25,6 +25,10 @@ const routes: Routes = [
     path: 'settings',
     loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule),
   },
+  {
+    path: 'trades',
+    loadChildren: () => import('./modules/trades/trades.module').then(m => m.TradesModule),
+  },
 ];
 
 @NgModule({

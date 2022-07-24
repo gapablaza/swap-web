@@ -82,6 +82,10 @@ $my-theme: mat.define-light-theme((
   .mat-drawer-container {
     background-color: inherit;
   }
+
+  .mat-select-panel {
+    max-width: 400px;
+  }
 }
 
 
@@ -113,6 +117,7 @@ $my-theme: mat.define-light-theme((
   'styles/pages/login',
   'styles/pages/search',
   'styles/pages/settings',
+  'styles/pages/trades',
   'styles/pages/user';
 
 // 7. Themes
