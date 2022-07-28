@@ -1,6 +1,7 @@
 export class User {
   public accountTypeId: number; //OK
   public accountTypeName: string; //OK
+  public active: boolean;
   public address_components?: string; //OK - SETTINGS
   public bio: string | null; //OK
   public collections?: number; //OK - BUSQUEDA
@@ -42,6 +43,7 @@ export class User {
   constructor() {
     this.accountTypeId = 1;
     this.accountTypeName = 'Normal';
+    this.active = true;
     this.bio = '';
     this.daysSinceLogin = 0;
     this.daysSinceRegistration = 0;

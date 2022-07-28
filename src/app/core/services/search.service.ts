@@ -4,7 +4,6 @@ import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Collection, Pagination, User } from '../models';
-import { EXAMPLE_RAW_HOME } from '../constants';
 import { ApiService } from './api.service';
 // import { StorageService } from './storage.service';
 
@@ -34,9 +33,8 @@ export class SearchService {
       collections: Collection[],
       totalCollections: number
     }> {
-        return this.apiSrv.get('/search?q=' + query)
+        return this.apiSrv.get('/v2/search?q=' + query)
           .pipe(map(data => data.data));
-        // return of(EXAMPLE_SEARCH);
     }
 
     // addToHistory(query: string): void {
@@ -63,8 +61,7 @@ export class SearchService {
       published: Collection[], 
       users: User[] 
     }> {
-      return this.apiSrv.get('/home')
-      // return of(EXAMPLE_RAW_HOME)
+      return this.apiSrv.get('/v2/home')
         .pipe(map(data => {
           return {
             added: data.data.added.data as Collection[],
@@ -82,7 +79,7 @@ export class SearchService {
       collections: Collection[]
     }> {
       return this.apiSrv.get(
-          '/explore/collections',
+          '/v2/explore/collections',
           new HttpParams({ fromObject: { 
             page: options.page || 1, 
             perPage: options.perPage || 100,

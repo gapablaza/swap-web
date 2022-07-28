@@ -15,7 +15,7 @@ export const environment = {
   },
   analytics: 'X-XXXXXXXXXX',
   production: false,
-  api_url: 'https://api.intercambialaminas.com/v2',
+  api_url: 'https://api.intercambialaminas.com',
 };
 
 /*

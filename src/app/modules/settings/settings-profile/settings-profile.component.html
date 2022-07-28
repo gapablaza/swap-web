@@ -2,19 +2,69 @@
     <mat-spinner></mat-spinner>
 </div>
 <section *ngIf="isLoaded" class="settings-section">
-    <div class="settings-profile">
+    <div class="settings-profile card">
 
         <div class="avatar-preview">
-            <img class="" [defaultImage]="defaultUserImage" [lazyLoad]="profile.image || defaultUserImage"
-                [alt]="profile.displayName">
+            <img class="" [defaultImage]="defaultUserImage" [lazyLoad]="authUser.image || defaultUserImage"
+                [alt]="authUser.displayName">
             <div class="avatar-actions">
                 <a class="btn" mat-raised-button color="accent" (click)="onNewImage()">
                     <mat-icon inline="true">upload</mat-icon> Nueva imagen
                 </a>
-                <a *ngIf="profile.image" class="btn" mat-stroked-button (click)="onDeleteImage()">
+                <a *ngIf="authUser.image" class="btn" mat-stroked-button (click)="onDeleteImage()">
                     <mat-icon inline="true">delete</mat-icon> Eliminar
                 </a>
             </div>
+        </div>
+
+        <div class="edit-profile">
+            <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+
+                <div class="form-field-slide">
+                    <mat-slide-toggle formControlName="active">Realizando cambios</mat-slide-toggle>
+                    <p class="mat-hint">
+                        Si deshabilitas esta opción no aparecerás en los posibles cambios (ni podrás ver los tuyos) y
+                        una alerta se desplegará al consultar tu perfil de usuario.
+                    </p>
+                </div>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Nombre</mat-label>
+                    <input matInput #name formControlName="name">
+                    <mat-hint align="start">
+                        Asegúrate de usar un nombre por el cual los demás te puedan reconocer y buscar fácilmente.
+                    </mat-hint>
+                    <mat-hint align="end">{{name.value?.length || 0}}/40</mat-hint>
+                    <mat-error *ngIf="form['name'].errors">Campo obligatorio. Debe tener entre 3 y 40 caracteres.
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Ubicación</mat-label>
+                    <input matInput #location formControlName="location" maxlength="100"
+                        ngx-google-places-autocomplete [options]="placesOptions" 
+                        (onAddressChange)="handleAddressChange($event)" (blur)="onBlur($event)" (change)="onChange($event)"/>
+                    <mat-hint align="start">
+                        Indica la ciudad donde vives actualmente para que así los demás usuarios sepan cuán cerca estás
+                        de ellos, lo que facilitará los futuros intercambios.
+                    </mat-hint>
+                    <mat-error *ngIf="form['location'].errors">Campo obligatorio. Debes escribir y seleccionar una ubicación del listado.</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Descripción</mat-label>
+                    <textarea #bio matInput formControlName="bio" maxlength="400" rows="4"></textarea>
+                    <mat-hint align="start">
+                        Ingresa una breve biografía para que todos sepan quién eres y cómo te pueden contactar
+                        (opcional).
+                    </mat-hint>
+                    <mat-hint align="end">{{bio.value?.length || 0}}/400</mat-hint>
+                    <mat-error *ngIf="form['bio'].errors">Debes ingresar como máximo 400 caracteres.</mat-error>
+                </mat-form-field>
+
+                <button mat-raised-button [disabled]="isSaving || updateForm.invalid" color="accent">Guardar</button>
+
+            </form>
         </div>
 
     </div>
@@ -23,8 +73,7 @@
     <p matDialogContent>Estás seguro de eliminar tu foto de perfil?</p>
     <mat-dialog-actions align="end">
         <button mat-button mat-dialog-close [disabled]="isDeleting">Cancelar</button>
-        <button mat-raised-button (click)="onConfirmDelete()" 
-            [disabled]="isDeleting" color="accent">
+        <button mat-raised-button (click)="onConfirmDelete()" [disabled]="isDeleting" color="accent">
             Eliminar
         </button>
     </mat-dialog-actions>

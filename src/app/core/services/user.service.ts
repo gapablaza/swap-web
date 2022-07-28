@@ -16,16 +16,14 @@ import {
   User,
 } from '../models';
 import { ApiService } from './api.service';
-// import { EXAMPLE_USER, EXAMPLE_USER_COLLECTION, EXAMPLE_USER_COLLECTIONS } from './example-user.service';
 
 @Injectable()
 export class UserService {
   constructor(private apiSrv: ApiService) {}
 
   get(userId: number): Observable<User> {
-    // return of(EXAMPLE_USER);
     return this.apiSrv
-      .get('/users/' + userId)
+      .get('/v2/users/' + userId)
       .pipe(map((data: { data: User }) => data.data));
   }
 
@@ -33,13 +31,12 @@ export class UserService {
     userId: number
   ): Observable<{ collections: Collection[]; trades: any }> {
     return this.apiSrv
-      .get('/users/' + userId + '/collections?include=publisher')
+      .get('/v2/users/' + userId + '/collections?include=publisher')
       .pipe(
         map((data: { data: Collection[]; trades: boolean }) => {
           return { collections: data.data, trades: data.trades };
         })
       );
-    // return of({ collections: EXAMPLE_USER_COLLECTIONS, trades: false });
   }
 
   getCollectionInfo(
@@ -48,7 +45,7 @@ export class UserService {
   ): Observable<{ info: Collection; tradelist: Item[]; wishlist: Item[] }> {
     return this.apiSrv
       .get(
-        '/users/' +
+        '/v2/users/' +
           userId +
           '/collections/' +
           collectionId +
@@ -63,12 +60,11 @@ export class UserService {
           };
         })
       );
-    // .pipe(map(data => data.data));
   }
 
   getEvaluations(userId: number): Observable<Evaluation[]> {
     return this.apiSrv
-      .get('/users/' + userId + '/evaluations?include=user')
+      .get('/v2/users/' + userId + '/evaluations?include=user')
       .pipe(
         map((data: any) => {
           const evals: Evaluation[] = [];
@@ -100,7 +96,7 @@ export class UserService {
 
   getEvaluatorStatus(userId: number): Observable<any> {
     return this.apiSrv
-      .get('/users/' + userId + '/evaluations?include=user')
+      .get('/v2/users/' + userId + '/evaluations?include=user')
       .pipe(map((data) => data));
   }
 
@@ -110,7 +106,7 @@ export class UserService {
     commentText: string
   ): Observable<string> {
     return this.apiSrv
-      .post('/users/' + userId + '/evaluations', {
+      .post('/v2/users/' + userId + '/evaluations', {
         type: typeId,
         comment: commentText,
       })
@@ -119,14 +115,13 @@ export class UserService {
 
   getMedia(userId: number): Observable<Media[]> {
     return this.apiSrv
-      .get('/users/' + userId + '/medias?include=collection.publisher')
+      .get('/v2/users/' + userId + '/medias?include=collection.publisher')
       .pipe(map((data) => data.data));
-    // return of({ collections: EXAMPLE_USER_COLLECTIONS, trades: false });
   }
 
   getTradesWithAuthUser(userId: number): Observable<TradesWithUser> {
     return this.apiSrv
-      .get('/users/' + userId + '/collections?include=publisher')
+      .get('/v2/users/' + userId + '/collections?include=publisher')
       .pipe(
         map((data: { data: Collection[]; trades: any }) => {
           if (data.trades) {
@@ -150,48 +145,49 @@ export class UserService {
   }
 
   getTrades(data?: {
-    days?: number,
-    location?: number,
-    page?: number,
-    collections?: string
+    days?: number;
+    location?: number;
+    page?: number;
+    collections?: string;
   }): Observable<Trades> {
     let params: any = {};
 
-    if (data && data.days) { 
-      params['days'] = data.days 
+    if (data && data.days) {
+      params['days'] = data.days;
     } else {
       params['days'] = 7;
-    };
+    }
 
-    if (data && data.location) { 
-      params['location'] = data.location 
+    if (data && data.location) {
+      params['location'] = data.location;
     } else {
       params['location'] = 2;
-    };
+    }
 
-    if (data && data.page) { 
-      params['page'] = data.page 
+    if (data && data.page) {
+      params['page'] = data.page;
     } else {
       params['page'] = 1;
-    };
+    }
 
-    if (data && data.collections) { params['collections'] = data.collections };
+    if (data && data.collections) {
+      params['collections'] = data.collections;
+    }
 
     return this.apiSrv
-      .get('/me/trades', new HttpParams({ fromObject: params }))
+      .get('/v2/me/trades', new HttpParams({ fromObject: params }))
       .pipe(
         map((data) => {
           let tempCollections: TradesUserCollection[] = [];
           let tempUsers: TradesUser[] = [];
-          
-          data.users.forEach((user: any) => {
 
+          data.users.forEach((user: any) => {
             tempCollections = [];
             // converts object with array form to array
             Object.keys(user.collections).forEach((item) => {
               tempCollections.push({
                 ...user.collections[item],
-                collectionData: user.collections[item].data
+                collectionData: user.collections[item].data,
               });
             });
 
@@ -199,11 +195,11 @@ export class UserService {
               collections: tempCollections,
               userData: {
                 ...user.data,
-                tradesWithUser: user.data.tradesWithuser
+                tradesWithUser: user.data.tradesWithuser,
               },
-              order: user.data
-            })
-          })
+              order: user.data,
+            });
+          });
 
           return {
             allowedUsers: data.allowedUsers,
@@ -212,16 +208,8 @@ export class UserService {
             totalUsers: data.totalUsers,
             uniqueTrades: data.uniqueTrades,
             user: tempUsers,
-          }
+          };
         })
       );
   }
-
-  // getCollectionsFromUser(id: number): Collection[] {
-  //   return EXAMPLE_USER_COLLECTIONS;
-  // }
-
-  // getCollectionFromUser(userId: number, collectionId: number) {
-  //   return EXAMPLE_USER_COLLECTION;
-  // }
 }

@@ -28,7 +28,7 @@ export class AuthService {
   populate() {
     // If JWT detected, attempt to get & store user's info
     if (this.jwtSrv.getToken()) {
-      this.apiSrv.get('/me').subscribe({
+      this.apiSrv.get('/v2/me').subscribe({
         next: (data: { data: User; token: string }) => {
           this.setAuth(data);
         },
@@ -65,11 +65,11 @@ export class AuthService {
   }
 
   emailLogin(email: string, password: string): Observable<boolean> {
-    return this.apiSrv.post('/auth/login', { email, password }).pipe(
+    return this.apiSrv.post('/v2/auth/login', { email, password }).pipe(
       take(1),
       concatMap((appToken) => {
         this.jwtSrv.saveToken(appToken.token);
-        return this.apiSrv.get('/me').pipe(
+        return this.apiSrv.get('/v2/me').pipe(
           map((data: { data: User; token: string }) => {
             this.setAuth(data);
             return true;
@@ -97,11 +97,37 @@ export class AuthService {
     location.reload();
   }
 
-  updateAvatar(image64: string): Observable<boolean> {
-    return this.apiSrv.post('/me/avatar', { image: image64 }).pipe(
+  updateProfile(profile: {
+    active: boolean;
+    name: string;
+    bio?: string;
+    addressComponents: string;
+  }): Observable<boolean> {
+    return this.apiSrv.put('/v2/me', {
+      address_components: profile.addressComponents,
+      bio: profile.bio? profile.bio : '',
+      displayName: profile.name,
+      status: profile.active ? 'active' : 'inactive',
+    })
+    .pipe(
       take(1),
       concatMap(() => {
-        return this.apiSrv.get('/me').pipe(
+        return this.apiSrv.get('/v2/me').pipe(
+          map((data: { data: User; token: string }) => {
+            this.jwtSrv.saveToken(data.token);
+            this.authUserSubject.next(data.data);
+            return true;
+          })
+        );
+      })
+    );
+  }
+
+  updateAvatar(image64: string): Observable<boolean> {
+    return this.apiSrv.post('/v2/me/avatar', { image: image64 }).pipe(
+      take(1),
+      concatMap(() => {
+        return this.apiSrv.get('/v2/me').pipe(
           map((data: { data: User; token: string }) => {
             this.jwtSrv.saveToken(data.token);
             this.authUserSubject.next(data.data);
@@ -113,10 +139,10 @@ export class AuthService {
   }
 
   removeAvatar(): Observable<boolean> {
-    return this.apiSrv.delete('/me/avatar').pipe(
+    return this.apiSrv.delete('/v2/me/avatar').pipe(
       take(1),
       concatMap(() => {
-        return this.apiSrv.get('/me').pipe(
+        return this.apiSrv.get('/v2/me').pipe(
           map((data: { data: User; token: string }) => {
             this.jwtSrv.saveToken(data.token);
             this.authUserSubject.next(data.data);

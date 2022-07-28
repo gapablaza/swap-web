@@ -3,6 +3,7 @@ import { Collection, User } from '../models';
 export const EXAMPLE_USER: User = {
         'accountTypeId': 2,
         'accountTypeName': 'PRO',
+        'active': true,
         'bio': 'Wsp. +56999686369',
         'daysSinceLogin': 0,
         'daysSinceRegistration': 758,

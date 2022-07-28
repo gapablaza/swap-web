@@ -127,6 +127,33 @@ section.settings {
                 }
             }
         }
+
+        .edit-profile {
+            .form-field-slide {
+                padding: 0 1rem;
+
+                .mat-slide-toggle {
+                    display: block;
+                    margin-top: 2rem;
+                    margin-bottom: 0.5rem;
+                }
+
+                .mat-hint {
+                    font-size: 75%;
+                    line-height: 1.125;
+                    color: rgba(0, 0, 0, 0.6);
+                }
+            }
+
+            mat-form-field {
+                display: block;
+                margin-top: 3rem;
+            }
+
+            .mat-button-base {
+                margin-top: 3rem;
+            }
+        }
     }
 }
 

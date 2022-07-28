@@ -2,7 +2,6 @@
   <mat-spinner></mat-spinner>
 </div>
 <section *ngIf="isLoaded" class="user">
-  <!-- <app-user-summary></app-user-summary> -->
   <div class="user-info card">
 
     <div class="user-header">
@@ -48,7 +47,7 @@
         </span>
       </div>
 
-      <div *ngIf="user.disabled" class="alert">
+      <div *ngIf="!user.active && !user.disabled" class="alert alert-warning">
         <div class="alert-container">
           <!-- <div class="alert-icon">
               <div class="alert-default-icon">
@@ -56,9 +55,23 @@
               </div>
             </div> -->
           <div class="alert-content">
-            <!-- <div class="alert-title">Atención</div> -->
+            <div class="alert-title">Atención</div>
+            <div class="alert-message">Este usuario ha indicado que no está realizando cambios por el momento!</div>
+          </div>
+        </div>
+      </div>
+      
+      <div *ngIf="user.disabled" class="alert alert-warn">
+        <div class="alert-container">
+          <!-- <div class="alert-icon">
+              <div class="alert-default-icon">
+                <mat-icon>error_outline</mat-icon>
+              </div>
+            </div> -->
+          <div class="alert-content">
+            <div class="alert-title">Atención</div>
             <div class="alert-message">Este usuario tiene activado el modo "Incógnito" por lo que no es considerado en
-              los posibles cambios, no puede registrar evaluaciones ni puede enviar/recibir mensajes</div>
+              los posibles cambios, no puede registrar evaluaciones, ni puede enviar/recibir mensajes</div>
           </div>
         </div>
       </div>

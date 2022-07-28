@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
-import { ImageCropperModule } from 'ngx-image-cropper';
+import { ReactiveFormsModule } from '@angular/forms';
 import { HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerModule } from '@angular/platform-browser';
+import { ImageCropperModule } from 'ngx-image-cropper';
+import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 
 import { SharedModule } from 'src/app/shared';
 import { SettingsRoutingModule } from './settings-routing.module';
@@ -30,7 +32,9 @@ import 'hammerjs';
   ],
   imports: [
     SharedModule,
+    ReactiveFormsModule,
     HammerModule,
+    GooglePlaceModule,
     SettingsRoutingModule,
     ImageCropperModule,
   ],

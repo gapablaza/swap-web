@@ -32,6 +32,7 @@
     "lodash": "^4.17.21",
     "ng-lazyload-image": "^9.1.2",
     "ng2-adsense": "^10.1.0",
+    "ngx-google-places-autocomplete": "^2.0.5",
     "ngx-image-cropper": "^6.2.1",
     "ngx-progressbar": "^8.0.0",
     "rxfire": "^6.0.0",
