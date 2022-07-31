@@ -1,12 +1,7 @@
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, OnInit } from '@angular/core';
-import {
-  combineLatest,
-  filter,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { combineLatest, filter, switchMap, tap } from 'rxjs';
 
 import {
   AuthService,
@@ -41,21 +36,24 @@ export class UserProfileComponent implements OnInit {
 
   ngOnInit(): void {
     registerLocaleData(es);
+    this.user = this.userOnlySrv.getCurrentUser();
 
-    // TO DO: manejar el caso de que no exista el usuario consultado
-    // TO DO: Desplegar la cantidad de media publicada
-    combineLatest([this.authSrv.authUser, this.userOnlySrv.user$])
+    combineLatest([this.authSrv.authUser, this.userSrv.getMedia(this.user.id)])
       .pipe(
-        filter(([authUser, user]) => user.id != null),
-        tap(([authUser, user]) => {
+        tap(([authUser, media]) => {
+          console.log(authUser, media);
+
           this.authUser = authUser;
-          this.user = user;
+          this.user.contributions = media.filter((m) => {
+            return m.mediaTypeId == 1 && m.mediaStatusId == 2;
+          }).length;
+
           this.showTrades = false;
 
           if (
             authUser.id &&
             authUser.accountTypeId == 2 &&
-            authUser.id != user.id
+            authUser.id != this.user.id
           ) {
             this.isLoaded = false;
           } else {
@@ -67,12 +65,10 @@ export class UserProfileComponent implements OnInit {
         // 2.- Es PRO
         // 3.- No es el usuario que se está consultando
         filter(
-          ([authUser, user]) =>
-            authUser.accountTypeId == 2 && authUser.id != user.id
+          ([authUser, media]) =>
+            authUser.accountTypeId == 2 && authUser.id != this.user.id
         ),
-        switchMap(([authUser, user]) =>
-          this.userSrv.getTradesWithAuthUser(user.id)
-        )
+        switchMap(() => this.userSrv.getTradesWithAuthUser(this.user.id))
       )
       .subscribe((trades) => {
         if (trades.showTrades) {

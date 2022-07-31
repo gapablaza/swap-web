@@ -19,22 +19,28 @@ export class UserComponent implements OnInit {
     private route: ActivatedRoute,
     private userSrv: UserService,
     private userOnlySrv: UserOnlyService,
+    private activatedRoute: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
     this.userOnlySrv.cleanCurrentUser();
-    this.route.paramMap
-      .pipe(
-        switchMap(paramMap => {
-          this.userId = Number(paramMap.get('id'));
-          return this.userSrv.get(this.userId);
-        })
-      )
-      .subscribe(user => {
-        console.log('from UserComponent Sub', user);
-        this.userOnlySrv.setCurrentUser(user);
-        this.user = user;
-      });
+    // this.route.paramMap
+    //   .pipe(
+    //     switchMap(paramMap => {
+    //       this.userId = Number(paramMap.get('id'));
+    //       return this.userSrv.get(this.userId);
+    //     })
+    //   )
+    //   .subscribe(user => {
+    //     console.log('from UserComponent Sub', user);
+    //     this.userOnlySrv.setCurrentUser(user);
+    //     this.user = user;
+    //   });
+
+    // TO DO: Manejar el caso cuando no se encuentre el usuario solicitado
+    this.activatedRoute.data.subscribe((data) => {
+      this.userOnlySrv.setCurrentUser(data['userData']);
+    });
   }
 
 }
