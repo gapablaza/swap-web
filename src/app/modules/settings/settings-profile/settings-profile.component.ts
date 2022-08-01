@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 
@@ -15,7 +15,7 @@ import { SettingsProfileImageComponent } from '../settings-profile-image/setting
 })
 export class SettingsProfileComponent implements OnInit {
   @ViewChild('confirmDeleteDialog') deleteDialog!: TemplateRef<any>;
-  updateForm!: UntypedFormGroup;
+  updateForm!: FormGroup;
   authUser: User = {} as User;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   placesOptions: any;
@@ -28,7 +28,7 @@ export class SettingsProfileComponent implements OnInit {
     private authSrv: AuthService,
     private uiSrv: UIService,
     private setOnlySrv: SettingsOnlyService,
-    private formBuilder: UntypedFormBuilder
+    private formBuilder: FormBuilder,
   ) {}
 
   ngOnInit(): void {

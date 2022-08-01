@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, NgForm, Validators } from '@angular/forms';
+import { NgForm, Validators, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
 
@@ -11,7 +11,7 @@ import { AuthService } from 'src/app/core';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  loginForm!: UntypedFormGroup;
+  loginForm!: FormGroup;
   returnUrl = '/';
   isLoading = false;
 
@@ -22,11 +22,11 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loginForm = new UntypedFormGroup({
-      email: new UntypedFormControl('', {
+    this.loginForm = new FormGroup({
+      email: new FormControl('', {
         validators: [Validators.required, Validators.email],
       }),
-      password: new UntypedFormControl('', {
+      password: new FormControl('', {
         validators: [Validators.required],
       }),
     });

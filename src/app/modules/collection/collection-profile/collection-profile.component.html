@@ -64,7 +64,7 @@
       <div class="trades-collection">
         <div class="trades-list">
           <div>
-            Estás buscando <strong>{{ collection?.wishing }}</strong> ítems:
+            Estás buscando <strong>{{ collection.wishing }}</strong> ítems:
             <span *ngFor="let item of userWishing; last as isLast">
               <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
               <span>
@@ -75,7 +75,7 @@
             </span>
           </div>
           <div>
-            Tienes <strong>{{ collection?.trading }}</strong> ítems para cambiar:
+            Tienes <strong>{{ collection.trading }}</strong> ítems para cambiar:
             <span *ngFor="let item of userTrading; last as isLast">
               <span>
               <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
