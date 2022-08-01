@@ -13,22 +13,19 @@ import { UserMediaComponent } from './user-media/user-media.component';
 import { UserTradesComponent } from './user-trades/user-trades.component';
 
 @NgModule({
-  declarations: [
-    UserComponent,
-    UserSummaryComponent,
-    UserProfileComponent,
-    UserEvaluationsComponent,
-    UserCollectionsComponent,
-    UserCollectionDetailsComponent,
-    UserMediaComponent,
-    UserTradesComponent,
-  ],
-  imports: [
-    SharedModule,
-    UserRoutingModule,
-  ],
-  entryComponents: [
-    UserCollectionDetailsComponent,
-  ],
+    declarations: [
+        UserComponent,
+        UserSummaryComponent,
+        UserProfileComponent,
+        UserEvaluationsComponent,
+        UserCollectionsComponent,
+        UserCollectionDetailsComponent,
+        UserMediaComponent,
+        UserTradesComponent,
+    ],
+    imports: [
+        SharedModule,
+        UserRoutingModule,
+    ]
 })
 export class UserModule { }

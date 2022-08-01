@@ -29,7 +29,7 @@
     </div>
 
     <div class="user-main">
-      <h1>{{ user?.displayName }}</h1>
+      <h1>{{ user.displayName }}</h1>
       <p class="subtitle">ID de usuario: <strong>{{ user.id }}</strong></p>
 
       <p *ngIf="user.bio" class="user-description" [innerHTML]="user.bio | sanitizeHtml"></p>
@@ -37,7 +37,7 @@
       <div class="user-details">
         <span>
           <mat-icon inline="true">my_location</mat-icon>
-          <span *ngIf="user.location">{{ user?.location_city }}, {{ user?.location_country }}</span>
+          <span *ngIf="user.location">{{ user.location_city }}, {{ user.location_country }}</span>
           <span *ngIf="!user.location"><i>Sin información</i></span>
         </span>
         <span>

@@ -34,7 +34,7 @@
                     <mat-hint align="start">
                         Asegúrate de usar un nombre por el cual los demás te puedan reconocer y buscar fácilmente.
                     </mat-hint>
-                    <mat-hint align="end">{{name.value?.length || 0}}/40</mat-hint>
+                    <mat-hint align="end">{{name.value.length || 0}}/40</mat-hint>
                     <mat-error *ngIf="form['name'].errors">Campo obligatorio. Debe tener entre 3 y 40 caracteres.
                     </mat-error>
                 </mat-form-field>
@@ -58,7 +58,7 @@
                         Ingresa una breve biografía para que todos sepan quién eres y cómo te pueden contactar
                         (opcional).
                     </mat-hint>
-                    <mat-hint align="end">{{bio.value?.length || 0}}/400</mat-hint>
+                    <mat-hint align="end">{{bio.value.length || 0}}/400</mat-hint>
                     <mat-error *ngIf="form['bio'].errors">Debes ingresar como máximo 400 caracteres.</mat-error>
                 </mat-form-field>
 

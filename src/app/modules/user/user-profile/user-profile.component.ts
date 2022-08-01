@@ -41,8 +41,6 @@ export class UserProfileComponent implements OnInit {
     combineLatest([this.authSrv.authUser, this.userSrv.getMedia(this.user.id)])
       .pipe(
         tap(([authUser, media]) => {
-          console.log(authUser, media);
-
           this.authUser = authUser;
           this.user.contributions = media.filter((m) => {
             return m.mediaTypeId == 1 && m.mediaStatusId == 2;

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AdsenseModule } from 'ng2-adsense';
@@ -27,7 +26,6 @@ import { CollectionItemComponent } from './components/collection-item/collection
     HttpClientModule,
     RouterModule,
     MaterialModule,
-    FlexLayoutModule,
     LazyLoadImageModule,
     AdsenseModule.forRoot({
       adClient: 'ca-pub-6782496264167512',
@@ -39,7 +37,6 @@ import { CollectionItemComponent } from './components/collection-item/collection
     HttpClientModule,
     RouterModule,
     MaterialModule,
-    FlexLayoutModule,
     LazyLoadImageModule,
     AdsenseModule,
     SanitizeHtmlPipe,

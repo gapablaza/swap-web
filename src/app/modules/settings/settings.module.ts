@@ -23,29 +23,20 @@ import 'hammerjs';
 // }
 
 @NgModule({
-  declarations: [
-    SettingsComponent,
-    SettingsConnectComponent,
-    SettingsNotificationsComponent,
-    SettingsProfileComponent,
-    SettingsProfileImageComponent
-  ],
-  imports: [
-    SharedModule,
-    ReactiveFormsModule,
-    HammerModule,
-    GooglePlaceModule,
-    SettingsRoutingModule,
-    ImageCropperModule,
-  ],
-  // providers: [
-  //   {
-  //     provide: HAMMER_GESTURE_CONFIG,
-  //     useClass: CustomHammerConfig,
-  //   },
-  // ],
-  entryComponents: [
-    SettingsProfileImageComponent,
-  ],
+    declarations: [
+        SettingsComponent,
+        SettingsConnectComponent,
+        SettingsNotificationsComponent,
+        SettingsProfileComponent,
+        SettingsProfileImageComponent
+    ],
+    imports: [
+        SharedModule,
+        ReactiveFormsModule,
+        HammerModule,
+        GooglePlaceModule,
+        SettingsRoutingModule,
+        ImageCropperModule,
+    ]
 })
 export class SettingsModule { }

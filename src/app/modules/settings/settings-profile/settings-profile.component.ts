@@ -28,7 +28,7 @@ export class SettingsProfileComponent implements OnInit {
     private authSrv: AuthService,
     private uiSrv: UIService,
     private setOnlySrv: SettingsOnlyService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
   ) {}
 
   ngOnInit(): void {
