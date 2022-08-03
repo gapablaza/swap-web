@@ -16,19 +16,27 @@ const routes: Routes = [
       {
         path: '',
         component: SettingsProfileComponent,
+        title: 'Configuración - Editar Perfil - Intercambia Láminas'
       },
       {
         path: 'connect',
         component: SettingsConnectComponent,
+        title: 'Configuración - Conectar Redes Sociales - Intercambia Láminas'
       },
       {
         path: 'notifications',
         component: SettingsNotificationsComponent,
+        title: 'Configuración - Notificaciones - Intercambia Láminas'
       },
       // {
-      //   path: '**',
-      //   redirectTo: '',
-      // }
+      //   path: 'delete',
+      //   component: SettingsNotificationsComponent,
+      //   title: 'Configuración - Eliminar Cuenta - Intercambia Láminas'
+      // },
+      {
+        path: '**',
+        redirectTo: '',
+      }
     ]
   },
 ];

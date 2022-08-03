@@ -12,6 +12,7 @@ const routes: Routes = [
       {
         path: 'collections',
         component: ExploreCollectionsComponent,
+        title: 'Explorar Colecciones - Intercambia Láminas'
       },
     //   {
     //     path: 'users',
@@ -21,10 +22,6 @@ const routes: Routes = [
     //     path: 'publishers',
     //     component: CollectionMediaComponent,
     //   },
-      // {
-      //   path: '**',
-      //   redirectTo: '',
-      // }
     ]
   },
 ];

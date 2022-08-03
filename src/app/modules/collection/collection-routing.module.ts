@@ -13,51 +13,39 @@ const routes: Routes = [
   {
     path: ':name/:id',
     component: CollectionComponent,
-    // component: CollectionProfileComponent,
     children: [
       {
         path: '',
         component: CollectionProfileComponent,
+        title: 'Resumen Colección - Intercambia Láminas',
       },
       {
         path: 'items',
         component: CollectionItemsComponent,
+        title: 'Detalle Colección - Itemizado - Intercambia Láminas',
       },
       {
         path: 'media',
         component: CollectionMediaComponent,
+        title: 'Detalle Colección - Multimedia - Intercambia Láminas',
       },
       {
         path: 'users',
         component: CollectionUsersComponent,
+        title: 'Detalle Colección - Usuarios - Intercambia Láminas',
       },
       {
         path: 'tops',
         component: CollectionTopsComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        title: 'Detalle Colección - TOPs - Intercambia Láminas',
       },
-      // {
-      //   path: '**',
-      //   redirectTo: '',
-      // }
+      {
+        path: '**',
+        redirectTo: '',
+      }
     ]
   },
-  // {
-  //   path: ':name/:id/items',
-  //   component: CollectionItemsComponent,
-  // },
-  // {
-  //   path: ':name/:id/media',
-  //   component: CollectionMediaComponent,
-  // },
-  // {
-  //   path: ':name/:id/users',
-  //   component: CollectionUsersComponent,
-  // },
-  // {
-  //   path: ':name/:id/tops',
-  //   component: CollectionTopsComponent,
-  // },
 ];
 
 @NgModule({

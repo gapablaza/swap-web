@@ -13,7 +13,8 @@ const routes: Routes = [
       canActivate: [AuthGuard, LocationGuard],
       resolve: {
         incompleteCollections: TradesResolver
-      }
+      },
+      title: 'Posibles Cambios - Intercambia Láminas'
     },
   ];
   

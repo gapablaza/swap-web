@@ -7,6 +7,7 @@ const routes: Routes = [
     {
       path: '',
       component: SearchComponent,
+      title: 'Búsqueda - Intercambia Láminas'
     },
   ];
   

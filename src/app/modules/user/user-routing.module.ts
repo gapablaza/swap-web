@@ -19,18 +19,22 @@ const routes: Routes = [
       {
         path: '',
         component: UserProfileComponent,
+        title: 'Perfil de Usuario - Intercambia Láminas'
       },
       {
         path: 'collection',
         component: UserCollectionsComponent,
+        title: 'Perfil de Usuario - Colecciones - Intercambia Láminas'
       },
       {
         path: 'evaluation',
         component: UserEvaluationsComponent,
+        title: 'Perfil de Usuario - Evaluaciones - Intercambia Láminas'
       },
       {
         path: 'media',
         component: UserMediaComponent,
+        title: 'Perfil de Usuario - Multimedia - Intercambia Láminas'
       },
       {
         path: '**',
