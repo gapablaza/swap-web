@@ -1,1 +1,56 @@
-<p>PRONTO!</p>
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="settings-section">
+    <div class="settings-notifications card2">
+
+        <div class="update-notifications card">
+            <h2>Alertas & Notificaciones</h2>
+
+            <mat-checkbox [(ngModel)]="authUser.notifyUnreadMessages" [disabled]="isSaving" (change)="onChange($event)">
+                Al tener mensajes sin leer</mat-checkbox>
+        </div>
+
+        <div *ngIf="!authUser.email" class="update-email card">
+            <h2>Registra tu email</h2>
+            <form [formGroup]="emailForm" (ngSubmit)="onUpdate()">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Tú email</mat-label>
+                    <input type="email" matInput #email formControlName="email">
+                    <mat-hint align="start">
+                        Registra tu email para que podamos enviarte notificaciones.
+                    </mat-hint>
+                    <mat-error *ngIf="form['email'].errors">Campo obligatorio. Debe ser un email válido.
+                    </mat-error>
+                </mat-form-field>
+
+                <button mat-raised-button [disabled]="isUpdating || emailForm.invalid" color="accent">Registrar</button>
+
+            </form>
+        </div>
+
+        <div *ngIf="authUser.email" class="update-email card">
+            <h2>Actualizar email</h2>
+            <form [formGroup]="emailForm" (ngSubmit)="onUpdate()">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Nuevo email</mat-label>
+                    <input type="email" matInput #email formControlName="email">
+                    <mat-hint align="start">
+                        El email que tenemos actualmente asociado a tu cuenta es <strong>{{ authUser.email }}</strong>
+                        ¿No es el correcto? Puedes cambiarlo ingresando un nuevo email y presionando el botón
+                        "Actualizar".
+                    </mat-hint>
+                    <mat-error *ngIf="form['email'].errors">Campo obligatorio. Debe ser un email válido.
+                    </mat-error>
+                </mat-form-field>
+
+                <button mat-raised-button [disabled]="isUpdating || emailForm.invalid"
+                    color="accent">Actualizar</button>
+
+            </form>
+        </div>
+
+    </div>
+</section>

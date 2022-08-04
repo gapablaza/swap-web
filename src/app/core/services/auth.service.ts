@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, of, ReplaySubject } from 'rxjs';
 import { concatMap, distinctUntilChanged, map, take } from 'rxjs/operators';
@@ -103,24 +104,25 @@ export class AuthService {
     bio?: string;
     addressComponents: string;
   }): Observable<boolean> {
-    return this.apiSrv.put('/v2/me', {
-      address_components: profile.addressComponents,
-      bio: profile.bio? profile.bio : '',
-      displayName: profile.name,
-      status: profile.active ? 'active' : 'inactive',
-    })
-    .pipe(
-      take(1),
-      concatMap(() => {
-        return this.apiSrv.get('/v2/me').pipe(
-          map((data: { data: User; token: string }) => {
-            this.jwtSrv.saveToken(data.token);
-            this.authUserSubject.next(data.data);
-            return true;
-          })
-        );
+    return this.apiSrv
+      .put('/v2/me', {
+        address_components: profile.addressComponents,
+        bio: profile.bio ? profile.bio : '',
+        displayName: profile.name,
+        status: profile.active ? 'active' : 'inactive',
       })
-    );
+      .pipe(
+        take(1),
+        concatMap(() => {
+          return this.apiSrv.get('/v2/me').pipe(
+            map((data: { data: User; token: string }) => {
+              this.jwtSrv.saveToken(data.token);
+              this.authUserSubject.next(data.data);
+              return true;
+            })
+          );
+        })
+      );
   }
 
   updateAvatar(image64: string): Observable<boolean> {
@@ -134,7 +136,7 @@ export class AuthService {
             return true;
           })
         );
-      }),
+      })
     );
   }
 
@@ -149,7 +151,44 @@ export class AuthService {
             return true;
           })
         );
-      }),
+      })
     );
+  }
+
+  updateNotifications(notify: boolean): Observable<boolean> {
+    return this.apiSrv
+      .put('/v2/me/notify', {
+        notify,
+      })
+      .pipe(
+        take(1),
+        concatMap(() => {
+          return this.apiSrv.get('/v2/me').pipe(
+            map((data: { data: User; token: string }) => {
+              this.jwtSrv.saveToken(data.token);
+              this.authUserSubject.next(data.data);
+              return true;
+            })
+          );
+        })
+      );
+  }
+
+  changeEmail(newEmail: string): Observable<boolean> {
+    return this.apiSrv
+      .get(
+        '/v2/me/changeEmail',
+        new HttpParams({
+          fromObject: {
+            newEmail,
+          },
+        })
+      )
+      .pipe(
+        take(1),
+        map(() => {
+          return true;
+        })
+      );
   }
 }
