@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
 
 import {
   AuthService,
@@ -8,8 +7,8 @@ import {
   User,
 } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
-import { ShareUrlComponent } from 'src/app/shared/components/share-url/share-url.component';
 import { filter } from 'rxjs';
+import { UIService } from 'src/app/shared';
 
 @Component({
   selector: 'app-collection-summary',
@@ -26,7 +25,7 @@ export class CollectionSummaryComponent implements OnInit {
   constructor(
     private colOnlySrv: CollectionOnlyService,
     private authSrv: AuthService,
-    private bottomSheet: MatBottomSheet
+    private uiSrv: UIService,
   ) {}
 
   ngOnInit(): void {
@@ -48,6 +47,6 @@ export class CollectionSummaryComponent implements OnInit {
   }
 
   onShare(): void {
-    this.bottomSheet.open(ShareUrlComponent);
+    this.uiSrv.shareUrl();
   }
 }

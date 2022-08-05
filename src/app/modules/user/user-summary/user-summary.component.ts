@@ -1,10 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
 
 import { AuthService, DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
-import { ShareUrlComponent } from 'src/app/shared/components/share-url/share-url.component';
 import { filter } from 'rxjs';
+import { UIService } from 'src/app/shared';
 
 @Component({
   selector: 'app-user-summary',
@@ -21,7 +20,7 @@ export class UserSummaryComponent implements OnInit {
   constructor(
     private userOnlySrv: UserOnlyService,
     private authSrv: AuthService,
-    private bottomSheet: MatBottomSheet
+    private uiSrv: UIService,
   ) {}
 
   ngOnInit(): void {
@@ -43,6 +42,6 @@ export class UserSummaryComponent implements OnInit {
   }
 
   onShare(): void {
-    this.bottomSheet.open(ShareUrlComponent);
+    this.uiSrv.shareUrl();
   }
 }

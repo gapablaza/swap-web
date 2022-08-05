@@ -2,7 +2,6 @@
   <mat-spinner></mat-spinner>
 </div>
 <section *ngIf="isLoaded" class="collection">
-  <!-- <app-collection-summary></app-collection-summary> -->
   <div class="collection-info card">
 
     <div class="collection-header">
@@ -11,14 +10,44 @@
         <div class="collection-image-container">
           <img class="collection-image" [defaultImage]="defaultCollectionImage"
             [lazyLoad]="collection.image || defaultCollectionImage" [alt]="collection.name">
+
+            <div *ngIf="collection.completed" class="ribbon up">
+              <div class="content">
+                <svg width="18px" height="18px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check"
+                  class="svg-inline--fa fa-check fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512">
+                  <path fill="currentColor"
+                    d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z">
+                  </path>
+                </svg>
+              </div>
+            </div>
+
         </div>
         <div class="collection-actions">
-          <a class="btn" mat-raised-button color="accent">
+          <button *ngIf="authUser.id && !collection.collecting" (click)="onAdd()" [disabled]="isSaving" mat-raised-button
+            color="accent">
             <mat-icon inline="true">add</mat-icon> Agregar
-          </a>
-          <a class="btn" mat-stroked-button>
+          </button>
+          <a *ngIf="authUser.id && collection.collecting" class="btn" mat-raised-button
+            color="accent">
+            <mat-icon inline="true">edit</mat-icon> Editar
+        </a>
+          <button mat-stroked-button [matMenuTriggerFor]="menu">
             <mat-icon inline="true">more_horiz</mat-icon>
-          </a>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="onShare()">Compartir</button>
+            <button *ngIf="authUser.id && collection.collecting && !collection.completed" (click)="onComplete(true)"
+              [disabled]="isSaving" mat-menu-item>
+              Marcar como Completa</button>
+            <button *ngIf="authUser.id && collection.collecting && collection.completed" (click)="onComplete(false)"
+              [disabled]="isSaving" mat-menu-item>
+              Desmarcar como Completa</button>
+            <button *ngIf="authUser.id && collection.collecting" (click)="onDelete()" [disabled]="isSaving"
+              mat-menu-item>Quitar
+              Colección</button>
+          </mat-menu>
         </div>
       </div>
     </div>
@@ -31,14 +60,8 @@
         [innerHTML]="collection.description| sanitizeHtml"></p>
     </div>
 
-    <ng-adsense
-      *ngIf="!authUser.id || (authUser.accountTypeId == 1)"
-      [adSlot]="9177899059"
-      [adFormat]="'auto'"
-      [display]="'block'"
-      [fullWidthResponsive]="true"
-      [className]="'bga-hor'"
-    ></ng-adsense>
+    <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="9177899059" [adFormat]="'auto'"
+      [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
 
     <!-- <div class="collection-tags">
       <mat-chip-list aria-label="Etiquetas de la colección">
@@ -78,7 +101,7 @@
             Tienes <strong>{{ collection.trading }}</strong> ítems para cambiar:
             <span *ngFor="let item of userTrading; last as isLast">
               <span>
-              <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
+                <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
                 {{ item.name }}<span *ngIf="item.tradelistQuantity && (item.tradelistQuantity > 1)">({{
                   item.tradelistQuantity }})</span>
               </span>
@@ -122,7 +145,7 @@
       </a>
       <a *ngIf="authUser.id" mat-list-item [routerLink]="['./tops']">
         <div mat-line>
-          <strong>TOP</strong> ítems <span class="pro-label">PRO</span> (clasificados por dificultad) 
+          <strong>TOP</strong> ítems <span class="pro-label">PRO</span> (clasificados por dificultad)
         </div>
         <mat-icon>navigate_next</mat-icon>
       </a>
@@ -147,3 +170,12 @@
     </div>
   </div>
 </section>
+<ng-template #confirmDeleteDialog>
+  <p matDialogContent>Estás seguro de quitar esta colección? Esta acción no se puede deshacer.</p>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close [disabled]="isSaving">Cancelar</button>
+    <button mat-raised-button (click)="onConfirmDelete()" [disabled]="isSaving" color="warn">
+      Eliminar
+    </button>
+  </mat-dialog-actions>
+</ng-template>

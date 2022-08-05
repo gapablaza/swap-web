@@ -1,6 +1,7 @@
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { filter, first } from 'rxjs';
 
 import {
@@ -11,6 +12,7 @@ import {
   Item,
   User,
 } from 'src/app/core';
+import { UIService } from 'src/app/shared';
 import { CollectionOnlyService } from '../collection-only.service';
 
 @Component({
@@ -19,17 +21,21 @@ import { CollectionOnlyService } from '../collection-only.service';
   styleUrls: ['./collection-profile.component.scss'],
 })
 export class CollectionProfileComponent implements OnInit {
+  @ViewChild('confirmDeleteDialog') deleteDialog!: TemplateRef<any>;
   collection: Collection = {} as Collection;
   authUser: User = {} as User;
   defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   userWishing: Item[] = [];
   userTrading: Item[] = [];
+  isSaving = false;
   isLoaded = false;
 
   constructor(
     private colSrv: CollectionService,
     private colOnlySrv: CollectionOnlyService,
-    private authSrv: AuthService
+    private authSrv: AuthService,
+    private dialog: MatDialog,
+    private uiSrv: UIService,
   ) {}
 
   ngOnInit(): void {
@@ -67,5 +73,44 @@ export class CollectionProfileComponent implements OnInit {
         }
       });
     console.log('from CollectionProfileComponent');
+  }
+
+  onAdd() {
+    this.isSaving = true;
+    this.colSrv.add(this.collection.id)
+      .subscribe(resp => {
+        this.collection.collecting = true;
+        this.isSaving = false;
+        this.uiSrv.showSuccess(resp);
+      })
+  }
+
+  onShare(): void {
+    this.uiSrv.shareUrl();
+  }
+
+  onComplete(completed: boolean) {
+    this.isSaving = true;
+    this.colSrv.setCompleted(this.collection.id, completed)
+      .subscribe(resp => {
+        this.collection.completed = completed;
+        this.uiSrv.showSuccess(resp);
+        this.isSaving = false;
+      })
+  }
+
+  onDelete() {
+    this.dialog.open(this.deleteDialog, { disableClose: true });
+  }
+
+  onConfirmDelete() {
+    this.isSaving = true;
+    this.colSrv.remove(this.collection.id)
+      .subscribe(resp => {
+        this.collection.collecting = false;
+        this.uiSrv.showSuccess(resp);
+        this.dialog.closeAll();
+        this.isSaving = false;
+      })
   }
 }
