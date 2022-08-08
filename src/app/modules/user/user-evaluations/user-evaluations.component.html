@@ -63,8 +63,8 @@
                 <a [routerLink]="['/user', evaluation.user.data.id]">
                   {{ evaluation.user.data.displayName }}
                   <span *ngIf="evaluation.user.data.accountTypeId == 2" class="pro-label">PRO</span>
-                  <span *ngIf="evaluation.user.data.positives" class="positives-label">+{{ evaluation.user.data.positives }}</span>
-                  <span *ngIf="evaluation.user.data.negatives" class="negatives-label">-{{ evaluation.user.data.negatives }}</span>
+                  <span *ngIf="evaluation.user.data.userSummary?.positives" class="positives-label">+{{ evaluation.user.data.userSummary?.positives }}</span>
+                  <span *ngIf="evaluation.user.data.userSummary?.negatives" class="negatives-label">-{{ evaluation.user.data.userSummary?.negatives }}</span>
                 </a>
               </div>
               <!-- BEGIN last evaluation -->

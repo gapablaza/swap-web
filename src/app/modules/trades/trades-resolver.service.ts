@@ -29,7 +29,7 @@ export class TradesResolver implements Resolve<Collection[]> {
   ): Observable<any> {
     return this.userSrv.getCollections(this.authUser.id).pipe(
       map((data) => data.collections),
-      map((cols) => cols.filter((col) => (col.summary?.wishing || 0) > 0)),
+      map((cols) => cols.filter((col) => (col.userSummary?.wishing || 0) > 0)),
       map((cols) =>
         cols.sort((a, b) => {
           return a.name.toLocaleLowerCase() > b.name.toLocaleLowerCase()

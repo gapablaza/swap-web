@@ -63,27 +63,27 @@
                 <a [routerLink]="['/user', user.id]">
                   {{ user.displayName }}
                   <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
-                  <span *ngIf="user.positives" class="positives-label">+{{ user.positives }}</span>
-                  <span *ngIf="user.negatives" class="negatives-label">-{{ user.negatives }}</span>
+                  <span *ngIf="user.userSummary?.positives" class="positives-label">+{{ user.userSummary?.positives }}</span>
+                  <span *ngIf="user.userSummary?.negatives" class="negatives-label">-{{ user.userSummary?.negatives }}</span>
                 </a>
               </div>
               <div class="list-item-meta custom-separator">
                 <span>ID {{ user.id }}</span>
                 <span>{{ user.location || 'Sin especificar' }}</span>
-                <span appDaysSinceLogin="{{ user.summary?.daysSinceUpdate }}" [preText]="'Actualizado '"></span>
+                <span appDaysSinceLogin="{{ user.collectionData?.daysSinceUpdate }}" [preText]="'Actualizado '"></span>
               </div>
             </div>
             <div class="list-item-statics">
               <div>
-                <span class="list-item-title">{{ user.summary?.collectionWishing }}</span>
+                <span class="list-item-title">{{ user.collectionData?.collectionWishing }}</span>
                 <span class="list-item-meta">Busca</span>
               </div>
               <div>
-                <span class="list-item-title">{{ user.summary?.collectionTrading }}</span>
+                <span class="list-item-title">{{ user.collectionData?.collectionTrading }}</span>
                 <span class="list-item-meta">Cambia</span>
               </div>
             </div>
-            <div *ngIf="user.summary?.completed" class="ribbon custom">
+            <div *ngIf="user.collectionData?.completed" class="ribbon custom">
               <div class="content">
                 <svg width="18px" height="18px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check"
                   class="svg-inline--fa fa-check fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg"

@@ -26,11 +26,10 @@ export class UserCollectionDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.userSrv.getCollectionInfo(this.user.id, this.collection.id)
-      .subscribe(data => {
-        console.log(data);
-        this.collection = data.info;
-        this.userWishing = data.wishlist;
-        this.userTrading = data.tradelist;
+      .subscribe(col => {
+        this.collection = col;
+        this.userWishing = col.userData?.wishlist || [];
+        this.userTrading = col.userData?.tradelist || [];
 
         this.isLoaded = true;
       });

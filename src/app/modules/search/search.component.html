@@ -62,7 +62,7 @@
             <div class="card">
                 <ul class="list-std">
                     <li *ngFor="let col of showedCollections ; trackBy: trackByCollection" class="list-std-item"
-                        [ngClass]="{'completed': col.completed}">
+                        [ngClass]="{'completed': col.userData?.completed}">
                         <div class="list-item-main">
                             <div class="list-item-content flex-full">
                                 <div class="list-item-title">
@@ -139,9 +139,9 @@
                                     <a [routerLink]="['/user', user.id]">
                                         {{ user.displayName }}
                                         <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
-                                        <span *ngIf="user.positives" class="positives-label">+{{ user.positives
+                                        <span *ngIf="user.userSummary?.positives" class="positives-label">+{{ user.userSummary?.positives
                                             }}</span>
-                                        <span *ngIf="user.negatives" class="negatives-label">-{{ user.negatives
+                                        <span *ngIf="user.userSummary?.negatives" class="negatives-label">-{{ user.userSummary?.negatives
                                             }}</span>
                                     </a>
                                 </div>
@@ -156,11 +156,11 @@
                             </div>
                             <div class="list-item-statics">
                                 <div>
-                                    <span class="list-item-title">{{ user.wishing | number:'':'es' }}</span>
+                                    <span class="list-item-title">{{ user.userSummary?.wishing | number:'':'es' }}</span>
                                     <span class="list-item-meta">Busca</span>
                                 </div>
                                 <div>
-                                    <span class="list-item-title">{{ user.trading | number:'':'es' }}</span>
+                                    <span class="list-item-title">{{ user.userSummary?.trading | number:'':'es' }}</span>
                                     <span class="list-item-meta">Cambia</span>
                                 </div>
                             </div>

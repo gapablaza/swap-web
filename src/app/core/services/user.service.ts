@@ -5,8 +5,8 @@ import { map } from 'rxjs/operators';
 
 import {
   Collection,
+  CollectionUserData,
   Evaluation,
-  Item,
   Media,
   Trades,
   TradesUser,
@@ -14,6 +14,7 @@ import {
   TradesWithUser,
   TradesWithUserCollection,
   User,
+  UserSummary,
 } from '../models';
 import { ApiService } from './api.service';
 
@@ -24,7 +25,28 @@ export class UserService {
   get(userId: number): Observable<User> {
     return this.apiSrv
       .get('/v2/users/' + userId)
-      .pipe(map((data: { data: User }) => data.data));
+      .pipe(
+        map((data: { data: any }) => {
+          let tempUser: User = {} as User;
+          let tempUserSummary: UserSummary = {} as UserSummary;
+
+          tempUserSummary = {
+            collections: data.data.collections,
+            completed: data.data.completedCollections,
+            negatives: data.data.negatives,
+            positives: data.data.positives,
+            trading: data.data.trading,
+            wishing: data.data.wishing,
+          };
+
+          tempUser = {
+            ...data.data as User,
+            userSummary: tempUserSummary,
+          };
+
+          return tempUser;
+        }
+      ));
   }
 
   getCollections(
@@ -33,8 +55,15 @@ export class UserService {
     return this.apiSrv
       .get('/v2/users/' + userId + '/collections?include=publisher')
       .pipe(
-        map((data: { data: Collection[]; trades: boolean }) => {
-          return { collections: data.data, trades: data.trades };
+        map((data: { data: any[]; trades: boolean }) => {
+          let tempCollections: Collection[] = [];
+          data.data.forEach((col) => {
+            tempCollections.push({
+              ...(col as Collection),
+              userSummary: col.summary,
+            } as Collection);
+          });
+          return { collections: tempCollections, trades: data.trades };
         })
       );
   }
@@ -42,7 +71,7 @@ export class UserService {
   getCollectionInfo(
     userId: number,
     collectionId: number
-  ): Observable<{ info: Collection; tradelist: Item[]; wishlist: Item[] }> {
+  ): Observable<Collection> {
     return this.apiSrv
       .get(
         '/v2/users/' +
@@ -53,11 +82,21 @@ export class UserService {
       )
       .pipe(
         map((data: any) => {
-          return {
-            info: data.data.info,
+          let tempCollectionUserData = {} as CollectionUserData;
+          tempCollectionUserData = {
+            collecting: data.data.info.collecting,
+            completed: data.data.info.completed,
+            wishing: data.data.info.wishing,
+            trading: data.data.info.trading,
+            updated: data.data.info.updated,
             tradelist: data.data.tradelist,
             wishlist: data.data.wishlist,
           };
+
+          return {
+            ...(data.data.info as Collection),
+            userData: tempCollectionUserData,
+          } as Collection;
         })
       );
   }
@@ -71,8 +110,25 @@ export class UserService {
 
           // converts object with array form to array
           Object.keys(data.list).forEach((item) => {
-            let model = new Evaluation();
-            Object.assign(model, data.list[item]);
+            let tempUser: User = {} as User;
+            let tempUserSummary: UserSummary = {} as UserSummary;
+
+            tempUserSummary = {
+              negatives: data.list[item].user.data.negatives,
+              positives: data.list[item].user.data.positives,
+            };
+
+            tempUser = {
+              ...data.list[item].user.data,
+              userSummary: tempUserSummary,
+            };
+
+            let model = {
+              ...data.list[item],
+              user: {
+                data: tempUser,
+              },
+            } as Evaluation;
 
             // converts object with prevEvals to array
             if (data.list[item].previousEvaluationsCounter) {
@@ -84,7 +140,10 @@ export class UserService {
                   );
                 }
               );
-              model = { ...model, previousEvaluationsData: prevEvalArray };
+              model = {
+                ...model,
+                previousEvaluationsData: prevEvalArray,
+              };
             }
 
             evals.push(model);

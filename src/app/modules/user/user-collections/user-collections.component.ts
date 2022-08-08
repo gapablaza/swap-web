@@ -176,7 +176,7 @@ export class UserCollectionsComponent implements OnInit {
     if (this.hideCompleted) {
       tempCollections = [
         ...tempCollections.filter((elem) => {
-          return !elem.summary?.completed || false;
+          return !elem.userSummary?.completed || false;
         }),
       ];
     }

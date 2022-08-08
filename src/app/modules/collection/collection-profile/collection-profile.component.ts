@@ -56,7 +56,7 @@ export class CollectionProfileComponent implements OnInit {
         this.isLoaded = true;
 
         // si el usuario tiene esta colección se obtienen sus listas
-        if (this.collection.collecting) {
+        if (this.collection.userData?.collecting) {
           this.colSrv
             .getItems(this.collection.id)
             .pipe(first())
@@ -79,7 +79,13 @@ export class CollectionProfileComponent implements OnInit {
     this.isSaving = true;
     this.colSrv.add(this.collection.id)
       .subscribe(resp => {
-        this.collection.collecting = true;
+        this.collection.userData = {
+          collecting: true,
+          completed: false,
+          wishing: 0,
+          trading: 0,
+        };
+        this.colOnlySrv.setCurrentCollection(this.collection);
         this.isSaving = false;
         this.uiSrv.showSuccess(resp);
       })
@@ -93,7 +99,12 @@ export class CollectionProfileComponent implements OnInit {
     this.isSaving = true;
     this.colSrv.setCompleted(this.collection.id, completed)
       .subscribe(resp => {
-        this.collection.completed = completed;
+        this.collection.userData = {
+          ...this.collection.userData,
+          collecting: true,
+          completed
+        };
+        this.colOnlySrv.setCurrentCollection(this.collection);
         this.uiSrv.showSuccess(resp);
         this.isSaving = false;
       })
@@ -107,7 +118,10 @@ export class CollectionProfileComponent implements OnInit {
     this.isSaving = true;
     this.colSrv.remove(this.collection.id)
       .subscribe(resp => {
-        this.collection.collecting = false;
+        this.collection.userData = {
+          collecting: false
+        };
+        this.colOnlySrv.setCurrentCollection(this.collection);
         this.uiSrv.showSuccess(resp);
         this.dialog.closeAll();
         this.isSaving = false;

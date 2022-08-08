@@ -149,15 +149,15 @@
       <a mat-list-item [routerLink]="['./evaluation']">
         <div mat-line>
           Evaluaciones recibidas&nbsp;
-          <span *ngIf="(user.positives || 0) > 0" class="positives-label">+{{ user.positives }}</span>
-          <span *ngIf="(user.negatives || 0) > 0" class="negatives-label">-{{ user.negatives }}</span>
+          <span *ngIf="(user.userSummary?.positives || 0) > 0" class="positives-label">+{{ user.userSummary?.positives }}</span>
+          <span *ngIf="(user.userSummary?.negatives || 0) > 0" class="negatives-label">-{{ user.userSummary?.negatives }}</span>
         </div>
         <mat-icon>navigate_next</mat-icon>
       </a>
       <a mat-list-item [routerLink]="['./collection']">
         <div mat-line>
-          Tiene <strong>{{ user.collections | number:'':'es' }}</strong> colecciones, <strong>{{
-            user.completedCollections | number:'':'es' }}</strong> completadas
+          Tiene <strong>{{ user.userSummary?.collections | number:'':'es' }}</strong> colecciones, <strong>{{
+            user.userSummary?.completed| number:'':'es' }}</strong> completadas
         </div>
         <mat-icon>navigate_next</mat-icon>
       </a>
@@ -172,7 +172,7 @@
     <hr />
 
     <div class="user-publisher">
-      <p>Busca <strong>{{ user.wishing | number:'':'es' }}</strong> ítems, cambia <strong>{{ user.trading |
+      <p>Busca <strong>{{ user.userSummary?.wishing | number:'':'es' }}</strong> ítems, cambia <strong>{{ user.userSummary?.trading |
           number:'':'es' }}</strong> ítems</p>
       <p>Cuenta creada el {{ user.registration | date:'dd/MM/YYYY' }}</p>
     </div>

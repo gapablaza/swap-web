@@ -55,7 +55,7 @@
 
       <ul class="list-std">
         <li *ngFor="let col of showedCollections ; trackBy: trackByCollection" class="list-std-item"
-          [ngClass]="{'completed': col.completed}">
+          [ngClass]="{'completed': col.userSummary?.completed}">
           <div class="list-item-main">
             <div class="list-item-content flex-full">
               <div class="list-item-title">
@@ -69,14 +69,14 @@
                 <span>{{ col.publisher.data.name }}</span>
               </div>
               <div class="list-item-meta custom-separator">
-                <span>Busca {{ col.summary?.wishing }} ítems</span>
-                <span>Cambia {{ col.summary?.trading }} ítems</span>
+                <span>Busca {{ col.userSummary?.wishing }} ítems</span>
+                <span>Cambia {{ col.userSummary?.trading }} ítems</span>
               </div>
               <!-- <div *ngIf="user?.bio" class="list-item-desc">
                 <p [innerHTML]="user?.bio | sanitizeHtml"></p>
               </div> -->
 
-              <div *ngIf="col.summary?.completed" class="ribbon up">
+              <div *ngIf="col.userSummary?.completed" class="ribbon up">
                 <div class="content">
                   <svg width="24px" height="24px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check"
                     class="svg-inline--fa fa-check fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg"
@@ -91,7 +91,7 @@
             <div class="list-item-bg" [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image">
               <div></div>
             </div>
-            <div class="list-item-progress" [style]="'width: ' + col.summary?.progress + '%;'"></div>
+            <div class="list-item-progress" [style]="'width: ' + col.userSummary?.progress + '%;'"></div>
           </div>
         </li>
       </ul>
