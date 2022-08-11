@@ -10,6 +10,7 @@ import { CollectionItemsComponent } from './collection-items/collection-items.co
 import { CollectionUsersComponent } from './collection-users/collection-users.component';
 import { CollectionMediaComponent } from './collection-media/collection-media.component';
 import { CollectionTopsComponent } from './collection-tops/collection-tops.component';
+import { CollectionManageComponent } from './collection-manage/collection-manage.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { CollectionTopsComponent } from './collection-tops/collection-tops.compo
     CollectionUsersComponent,
     CollectionMediaComponent,
     CollectionTopsComponent,
+    CollectionManageComponent,
   ],
   imports: [
     SharedModule,

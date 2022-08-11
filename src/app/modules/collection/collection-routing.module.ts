@@ -8,6 +8,7 @@ import { CollectionItemsComponent } from './collection-items/collection-items.co
 import { CollectionUsersComponent } from './collection-users/collection-users.component';
 import { CollectionMediaComponent } from './collection-media/collection-media.component';
 import { CollectionTopsComponent } from './collection-tops/collection-tops.component';
+import { CollectionManageComponent } from './collection-manage/collection-manage.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,12 @@ const routes: Routes = [
         component: CollectionTopsComponent,
         canActivate: [AuthGuard],
         title: 'Detalle Colección - TOPs - Intercambia Láminas',
+      },
+      {
+        path: 'manage',
+        component: CollectionManageComponent,
+        canActivate: [AuthGuard],
+        title: 'Gestionar Colección - Intercambia Láminas',
       },
       {
         path: '**',

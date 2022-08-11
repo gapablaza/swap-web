@@ -112,22 +112,52 @@ export class CollectionService {
       .pipe(map((data: { message: string }) => data.message));
   }
 
-  setWishlist(collectionId: number, wishlist: string): Observable<any> {
+  setWishlist(
+    collectionId: number,
+    wishlist: string
+  ): Observable<{
+    message: string;
+    bothListsTotal: number;
+    bothListDetails: string | null;
+  }> {
     return this.apiSrv
       .post('/v2/collections/' + collectionId + '/wishlist', {
         list: wishlist,
         separator: ',',
       })
-      .pipe(map((data) => data));
+      .pipe(
+        map((data: any) => {
+          return {
+            message: data.message,
+            bothListsTotal: data.bothListsTotal,
+            bothListDetails: data.bothListDetails,
+          };
+        })
+      );
   }
 
-  setTradelist(collectionId: number, tradelist: string): Observable<any> {
+  setTradelist(
+    collectionId: number,
+    tradelist: string
+  ): Observable<{
+    message: string;
+    bothListsTotal: number;
+    bothListDetails: string | null;
+  }> {
     return this.apiSrv
       .post('/v2/collections/' + collectionId + '/tradelist', {
         list: tradelist,
         separator: ',',
       })
-      .pipe(map((data) => data));
+      .pipe(
+        map((data: any) => {
+          return {
+            message: data.message,
+            bothListsTotal: data.bothListsTotal,
+            bothListDetails: data.bothListDetails,
+          };
+        })
+      );
   }
 
   setCompleted(collectionId: number, status: boolean): Observable<string> {

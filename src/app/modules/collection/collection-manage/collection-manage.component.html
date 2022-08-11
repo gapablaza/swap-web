@@ -1,0 +1,144 @@
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner></mat-spinner>
+  </div>
+  <section *ngIf="isLoaded" class="collection collection-section">
+    <app-collection-summary [showBackButton]="true"></app-collection-summary>
+    <div class="collection-manage flex-full">
+      <h1>Gestionar colección</h1>
+      <div class="card">
+        <div class="empty-content" *ngIf="!items.length">
+          <h2>(｡◕‿‿◕｡)</h2>
+          <p>Esto es embarazoso... no nos hemos podido conseguir el itemizado de esta colección...</p>
+          <a class="btn" mat-raised-button color="accent" href="https://docs.google.com/forms/d/e/1FAIpQLScFscIKcIidgCGx-MRkCAjxNVFQFfJG0lIptcHHwUxe5zlyIQ/viewform?c=0&w=1" target="_blank">
+            <mat-icon inline="true">add_a_photo</mat-icon> Agregar colección
+          </a>
+        </div>
+  
+        <!-- <div class="controls-std" *ngIf="items.length">
+          <div class="controls-std-main">
+            <div class="controls-std-order">
+              <mat-form-field appearance="outline">
+                <mat-label>Ordenar por</mat-label>
+                <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
+                  <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
+                    {{ option.selectName }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="controls-std-settings">
+              <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
+                <mat-icon inline="true">filter_list</mat-icon> Filtros
+              </a>
+            </div>
+          </div>
+          <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
+            <mat-form-field class="controls-search" appearance="outline">
+              <mat-label>Filtrar por descripción o usuario (nombre / ID)</mat-label>
+              <mat-icon matPrefix>search</mat-icon>
+              <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
+              <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </div> -->
+  
+        <mat-tab-group *ngIf="items.length">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <span>Buscando ({{ totalWishing }})</span>
+                </ng-template>
+                <div class="manage-list">
+                    <div class="manage-list-main">
+                        <button mat-raised-button color="accent" 
+                            [disabled]="isSaving"
+                            (click)="onSaveWishlist()">
+                            Guardar Buscando
+                        </button>
+                    </div>
+                    <div class="manage-list-controls">
+                        <div class="manage-list-info">
+                            <p>(+1): Click izquierdo / Tap</p>
+                            <p>(-1): Click derecho / Tap largo</p>
+                        </div>
+                        <div class="manage-list-options">
+                            <button mat-button (click)="onCheckAllWishlist()">
+                                Marcar todos
+                            </button>
+                            <button mat-button (click)="onUncheckAllWishlist()">
+                                Desmarcar todos
+                            </button>
+                        </div>
+                    </div>
+                    <div class="manage-list-buttons">
+                        <button mat-raised-button 
+                            *ngFor="let wishItem of items"
+                            [color]="wishItem.wishlist && wishItem.tradelist ? 'warn' : wishItem.wishlist ? 'accent' : 'basic'"
+                            [matBadge]="wishItem.wishlistQuantity" [matBadgeHidden]="!wishItem.wishlist"
+                            (click)="onAddWish(wishItem)"
+                            (contextmenu)="onRemoveWish(wishItem)"
+                            longPress (mouseLongPress)="onRemoveWish(wishItem)">
+                            {{ wishItem.name }}
+                        </button>
+                    </div>
+                    <div class="manage-list-main">
+                        <button mat-raised-button color="accent" 
+                            [disabled]="isSaving"
+                            (click)="onSaveWishlist()">
+                            Guardar Buscando
+                        </button>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <span>Cambiando ({{ totalTrading }})</span>
+                </ng-template>
+                <div class="manage-list">
+                    <div class="manage-list-main">
+                        <button mat-raised-button color="accent" 
+                            [disabled]="isSaving"
+                            (click)="onSaveTradelist()">
+                            Guardar Cambiando
+                        </button>
+                    </div>
+                    <div class="manage-list-controls">
+                        <div class="manage-list-info">
+                            <p>(+1): Click izquierdo / Tap</p>
+                            <p>(-1): Click derecho / Tap largo</p>
+                        </div>
+                        <div class="manage-list-options">
+                            <button mat-button (click)="onCheckAllTradelist()">
+                                Marcar todos
+                            </button>
+                            <button mat-button (click)="onUncheckAllTradelist()">
+                                Desmarcar todos
+                            </button>
+                        </div>
+                    </div>
+                    <div class="manage-list-buttons">
+                        <button mat-raised-button 
+                            *ngFor="let tradeItem of items"
+                            [color]="tradeItem.tradelist && tradeItem.wishlist ? 'warn' : tradeItem.tradelist ? 'accent' : 'basic'"
+                            [matBadge]="tradeItem.tradelistQuantity" [matBadgeHidden]="!tradeItem.tradelist"
+                            (click)="onAddTrade(tradeItem)"
+                            (contextmenu)="onRemoveTrade(tradeItem)"
+                            longPress (mouseLongPress)="onRemoveTrade(tradeItem)">
+                            {{ tradeItem.name }}
+                        </button>
+                    </div>
+                    <div class="manage-list-main">
+                        <button mat-raised-button color="accent" 
+                            [disabled]="isSaving"
+                            (click)="onSaveTradelist()">
+                            Guardar Cambiando
+                        </button>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+      </div>
+  
+    </div>
+  </section>

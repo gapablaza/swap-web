@@ -29,8 +29,9 @@
             color="accent">
             <mat-icon inline="true">add</mat-icon> Agregar
           </button>
-          <a *ngIf="authUser.id && collection.userData?.collecting" class="btn" mat-raised-button
-            color="accent">
+          <a *ngIf="authUser.id && collection.userData?.collecting" 
+            class="btn" mat-raised-button color="accent"
+            [routerLink]="['manage']">
             <mat-icon inline="true">edit</mat-icon> Editar
         </a>
           <button mat-stroked-button [matMenuTriggerFor]="menu">

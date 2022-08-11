@@ -230,5 +230,44 @@ section.collection {
       text-align: right;
       margin-bottom: 1rem;
     }
+
+    .collection-manage {
+      .manage-list-main {
+        margin-top: 1rem;
+        text-align: right;
+      }
+
+      .manage-list-controls {
+        margin-top: 1rem;
+        display: flex;
+        // flex-direction: column;
+        row-gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+
+        .manage-list-info {
+          // display: flex;
+          // flex-direction: column;
+
+          p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+          }
+        }
+      }
+
+      .manage-list-buttons {
+        margin-top: 1rem;
+
+        button {
+          margin: 0 0.75rem 0.75rem 0;
+          // user-select: none;
+        }
+      }
+
+    }
+
   }
 }
