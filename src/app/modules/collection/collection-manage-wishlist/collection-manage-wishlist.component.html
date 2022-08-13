@@ -1,0 +1,54 @@
+<div *ngIf="!isLoaded" class="loading-indicator">
+  <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="collection collection-section">
+
+  <div class="manage-list">
+    <div class="manage-list-main">
+      <button mat-raised-button color="accent" [disabled]="isSaving" (click)="onSaveWishlist()">
+        Guardar Buscando
+      </button>
+    </div>
+    <div class="manage-list-controls">
+      <div class="manage-list-info">
+        <p>(+1): Click izquierdo / Tap</p>
+        <p>(-1): Click derecho / Tap largo</p>
+      </div>
+      <div class="manage-list-options">
+        <button mat-button (click)="onCheckAllWishlist()">
+          Marcar todos
+        </button>
+        <button mat-button (click)="onUncheckAllWishlist()">
+          Desmarcar todos
+        </button>
+      </div>
+    </div>
+    <div class="manage-list-buttons">
+      <!-- <button mat-raised-button 
+              *ngFor="let wishItem of items; let i = index; trackBy: trackById"
+              [color]="wishItem.wishlist && wishItem.tradelist ? 'warn' : wishItem.wishlist ? 'accent' : 'basic'"
+              [matBadge]="wishItem.wishlistQuantity" [matBadgeHidden]="!wishItem.wishlist"
+              (click)="onAddWish(wishItem)"
+              (contextmenu)="onRemoveWish(wishItem)"
+              longPress (mouseLongPress)="onRemoveWish(wishItem)">
+              {{ wishItem.name }}
+          </button> -->
+      <div class="span-button" *ngFor="let wishItem of items; let i = index; trackBy: trackById"
+        [ngClass]="{ 'checked': wishItem.wishlist, 'warn': wishItem.wishlist && wishItem.tradelist }"
+        (click)="onAddWish(wishItem)" (contextmenu)="onRemoveWish(wishItem)" longPress
+        (mouseLongPress)="onRemoveWish(wishItem)">
+        <span class="span-button-name">
+          {{ wishItem.name }}
+        </span>
+        <span *ngIf="wishItem.wishlist" class="span-button-q">
+          {{ wishItem.wishlistQuantity }}
+        </span>
+      </div>
+    </div>
+    <div class="manage-list-main">
+      <button mat-raised-button color="accent" [disabled]="isSaving" (click)="onSaveWishlist()">
+        Guardar Buscando
+      </button>
+    </div>
+  </div>
+</section>

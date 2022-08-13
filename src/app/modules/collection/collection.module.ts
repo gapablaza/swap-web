@@ -11,6 +11,9 @@ import { CollectionUsersComponent } from './collection-users/collection-users.co
 import { CollectionMediaComponent } from './collection-media/collection-media.component';
 import { CollectionTopsComponent } from './collection-tops/collection-tops.component';
 import { CollectionManageComponent } from './collection-manage/collection-manage.component';
+import { CollectionManageWishlistComponent } from './collection-manage-wishlist/collection-manage-wishlist.component';
+import { CollectionManageTradelistComponent } from './collection-manage-tradelist/collection-manage-tradelist.component';
+import { CollectionManageItemsComponent } from './collection-manage-items/collection-manage-items.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +25,9 @@ import { CollectionManageComponent } from './collection-manage/collection-manage
     CollectionMediaComponent,
     CollectionTopsComponent,
     CollectionManageComponent,
+    CollectionManageWishlistComponent,
+    CollectionManageTradelistComponent,
+    CollectionManageItemsComponent,
   ],
   imports: [
     SharedModule,

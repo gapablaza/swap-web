@@ -9,6 +9,9 @@ import { CollectionUsersComponent } from './collection-users/collection-users.co
 import { CollectionMediaComponent } from './collection-media/collection-media.component';
 import { CollectionTopsComponent } from './collection-tops/collection-tops.component';
 import { CollectionManageComponent } from './collection-manage/collection-manage.component';
+import { CollectionManageWishlistComponent } from './collection-manage-wishlist/collection-manage-wishlist.component';
+import { CollectionManageTradelistComponent } from './collection-manage-tradelist/collection-manage-tradelist.component';
+import { CollectionManageItemsComponent } from './collection-manage-items/collection-manage-items.component';
 
 const routes: Routes = [
   {
@@ -46,7 +49,36 @@ const routes: Routes = [
         component: CollectionManageComponent,
         canActivate: [AuthGuard],
         title: 'Gestionar Colección - Intercambia Láminas',
+        children: [
+          {
+            path: '',
+            component: CollectionManageItemsComponent,
+            title: 'Gestionar Colección - Listado - Intercambia Láminas',
+          },
+          {
+            path: 'wishlist',
+            component: CollectionManageWishlistComponent,
+            title: 'Gestionar Colección - Buscadas - Intercambia Láminas',
+          },
+          {
+            path: 'tradelist',
+            component: CollectionManageTradelistComponent,
+            title: 'Gestionar Colección - Cambiando - Intercambia Láminas',
+          },
+        ]
       },
+      // {
+      //   path: 'manage-wishlist',
+      //   component: CollectionManageWishlistComponent,
+      //   canActivate: [AuthGuard],
+      //   title: 'Gestionar Colección - Buscadas - Intercambia Láminas',
+      // },
+      // {
+      //   path: 'manage-tradelist',
+      //   component: CollectionManageTradelistComponent,
+      //   canActivate: [AuthGuard],
+      //   title: 'Gestionar Colección - Cambiando - Intercambia Láminas',
+      // },
       {
         path: '**',
         redirectTo: '',

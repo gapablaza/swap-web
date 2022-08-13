@@ -12,7 +12,6 @@ export class CollectionOnlyService {
   constructor() { }
 
   setCurrentCollection(col: Collection) {
-    // this._collection = col;
     this._collection.next(col);
   }
 

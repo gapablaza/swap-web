@@ -265,6 +265,45 @@ section.collection {
           margin: 0 0.75rem 0.75rem 0;
           // user-select: none;
         }
+
+        .span-button {
+          display: inline-block;
+          margin: 0 10px 10px 0;
+          background-color: #ccc;
+          padding: 4px 10px;
+          position: relative;
+          border-radius: 6px;
+          min-width: 60px;
+          text-align: center;
+          cursor: pointer;
+          user-select: none;
+          font-size: 0.8rem;
+          color: #727a8e;
+          background: #dddfe4;
+          transition: background-color 250ms ease, color 250ms ease;
+
+          &.checked {
+            background-color: #46be9c;
+            color: white;
+          }
+
+          &.warn {
+            background-color: #dd4c39;
+            color: white;
+          }
+
+          span.span-button-q {
+            position: absolute;
+            top: -8px;
+            right: -4px;
+            background-color: orange;
+            padding: 0px 8px;
+            font-size: 0.7rem;
+            text-align: center;
+            border-radius: 4px;
+            color: white;
+        }
+      }
       }
 
     }
