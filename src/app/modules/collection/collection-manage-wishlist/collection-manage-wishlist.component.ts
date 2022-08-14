@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { concatMap, filter, tap } from 'rxjs';
 import {
@@ -14,6 +14,7 @@ import { CollectionOnlyService } from '../collection-only.service';
   selector: 'app-collection-manage-wishlist',
   templateUrl: './collection-manage-wishlist.component.html',
   styleUrls: ['./collection-manage-wishlist.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionManageWishlistComponent implements OnInit {
   collection: Collection = {} as Collection;
@@ -26,7 +27,8 @@ export class CollectionManageWishlistComponent implements OnInit {
     private colOnlySrv: CollectionOnlyService,
     private router: Router,
     private route: ActivatedRoute,
-    private uiSrv: UIService
+    private uiSrv: UIService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -50,6 +52,7 @@ export class CollectionManageWishlistComponent implements OnInit {
       .subscribe((data) => {
         this.items = data;
         this.isLoaded = true;
+        this.cdr.detectChanges();
       });
   }
 
@@ -58,6 +61,8 @@ export class CollectionManageWishlistComponent implements OnInit {
   }
 
   onAddWish(item: Item) {
+    if (this.isSaving) return;
+
     // if already in wishlist, increment +1
     if (item.wishlist) {
       if ((item.wishlistQuantity || 0) < 99) {
@@ -71,6 +76,8 @@ export class CollectionManageWishlistComponent implements OnInit {
   }
 
   onRemoveWish(item: Item) {
+    if (this.isSaving) return;
+
     // if item already in wishlist and quantity > 1, decrement -1
     if (item.wishlist && (item.wishlistQuantity || 0) > 1) {
       item.wishlistQuantity = (item.wishlistQuantity || 0) - 1;
@@ -83,6 +90,8 @@ export class CollectionManageWishlistComponent implements OnInit {
   }
 
   onCheckAllWishlist() {
+    if (this.isSaving) return;
+
     this.items.forEach((item: Item) => {
       if (!item.wishlist) {
         item.wishlist = true;
@@ -92,6 +101,8 @@ export class CollectionManageWishlistComponent implements OnInit {
   }
 
   onUncheckAllWishlist() {
+    if (this.isSaving) return;
+    
     this.items.forEach((item: Item) => {
       if (item.wishlist) {
         item.wishlist = false;
@@ -102,6 +113,8 @@ export class CollectionManageWishlistComponent implements OnInit {
 
   onSaveWishlist() {
     this.isSaving = true;
+    this.cdr.detectChanges();
+
     let wishingItems = '';
     let totalWishing = 0;
 
@@ -146,7 +159,10 @@ export class CollectionManageWishlistComponent implements OnInit {
         console.log('setWishlist error: ', error);
         this.uiSrv.showError(error.error.message);
       },
-      complete: () => (this.isSaving = false),
+      complete: () => {
+        this.isSaving = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 }

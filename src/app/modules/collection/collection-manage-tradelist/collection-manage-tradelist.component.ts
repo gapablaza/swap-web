@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { concatMap, filter, tap } from 'rxjs';
 import {
@@ -14,6 +14,7 @@ import { CollectionOnlyService } from '../collection-only.service';
   selector: 'app-collection-manage-tradelist',
   templateUrl: './collection-manage-tradelist.component.html',
   styleUrls: ['./collection-manage-tradelist.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionManageTradelistComponent implements OnInit {
   collection: Collection = {} as Collection;
@@ -26,7 +27,8 @@ export class CollectionManageTradelistComponent implements OnInit {
     private colOnlySrv: CollectionOnlyService,
     private router: Router,
     private route: ActivatedRoute,
-    private uiSrv: UIService
+    private uiSrv: UIService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -50,6 +52,7 @@ export class CollectionManageTradelistComponent implements OnInit {
       .subscribe((data) => {
         this.items = data;
         this.isLoaded = true;
+        this.cdr.detectChanges();
       });
   }
 
@@ -58,6 +61,8 @@ export class CollectionManageTradelistComponent implements OnInit {
   }
 
   onAddTrade(item: Item) {
+    if (this.isSaving) return;
+
     // if already in tradelist, increment +1
     if (item.tradelist) {
       if ((item.tradelistQuantity || 0) < 99) {
@@ -71,6 +76,8 @@ export class CollectionManageTradelistComponent implements OnInit {
   }
 
   onRemoveTrade(item: Item) {
+    if (this.isSaving) return;
+
     // if item already in tradelist and quantity > 1, decrement -1
     if (item.tradelist && (item.tradelistQuantity || 0) > 1) {
       item.tradelistQuantity = (item.tradelistQuantity || 0) - 1;
@@ -83,6 +90,8 @@ export class CollectionManageTradelistComponent implements OnInit {
   }
 
   onCheckAllTradelist() {
+    if (this.isSaving) return;
+
     this.items.forEach((item: Item) => {
       if (!item.tradelist) {
         item.tradelist = true;
@@ -92,6 +101,8 @@ export class CollectionManageTradelistComponent implements OnInit {
   }
 
   onUncheckAllTradelist() {
+    if (this.isSaving) return;
+    
     this.items.forEach((item: Item) => {
       if (item.tradelist) {
         item.tradelist = false;
@@ -102,6 +113,8 @@ export class CollectionManageTradelistComponent implements OnInit {
 
   onSaveTradelist() {
     this.isSaving = true;
+    this.cdr.detectChanges();
+
     let tradingItems = '';
     let totalTrading = 0;
 
@@ -146,7 +159,10 @@ export class CollectionManageTradelistComponent implements OnInit {
         console.log('setTradelist error: ', error);
         this.uiSrv.showError(error.error.message);
       },
-      complete: () => (this.isSaving = false),
+      complete: () => {
+        this.isSaving = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 }

@@ -148,6 +148,16 @@ export class CollectionManageItemsComponent implements OnInit, AfterViewInit {
         next: (resp) => {
           item.wishlist = true;
           item.wishlistQuantity = 1;
+
+          this.collection = {
+            ...this.collection,
+            userData: {
+              ...this.collection.userData,
+              wishing: (this.collection.userData?.wishing || 0) + 1,
+            } as CollectionUserData,
+          };
+          this.colOnlySrv.setCurrentCollection(this.collection);
+
           this.uiSrv.showSuccess(resp);
         },
         error: (error) => {
@@ -196,13 +206,14 @@ export class CollectionManageItemsComponent implements OnInit, AfterViewInit {
           item.wishlist = false;
           item.wishlistQuantity = 0;
 
-          this.colOnlySrv.setCurrentCollection({
+          this.collection = {
             ...this.collection,
             userData: {
               ...this.collection.userData,
               wishing: (this.collection.userData?.wishing || 0) - 1,
             } as CollectionUserData,
-          });
+          };
+          this.colOnlySrv.setCurrentCollection(this.collection);
 
           this.uiSrv.showSuccess(resp);
         },
@@ -250,6 +261,15 @@ export class CollectionManageItemsComponent implements OnInit, AfterViewInit {
         next: (resp) => {
           item.tradelist = true;
           item.tradelistQuantity = 1;
+
+          this.colOnlySrv.setCurrentCollection({
+            ...this.collection,
+            userData: {
+              ...this.collection.userData,
+              trading: (this.collection.userData?.trading || 0) + 1,
+            } as CollectionUserData,
+          });
+
           this.uiSrv.showSuccess(resp);
         },
         error: (error) => {

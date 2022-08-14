@@ -24,16 +24,13 @@
       </div>
     </div>
     <div class="manage-list-buttons">
-      <!-- <button mat-raised-button 
-              *ngFor="let wishItem of items; let i = index; trackBy: trackById"
-              [color]="wishItem.wishlist && wishItem.tradelist ? 'warn' : wishItem.wishlist ? 'accent' : 'basic'"
-              [matBadge]="wishItem.wishlistQuantity" [matBadgeHidden]="!wishItem.wishlist"
-              (click)="onAddWish(wishItem)"
-              (contextmenu)="onRemoveWish(wishItem)"
-              longPress (mouseLongPress)="onRemoveWish(wishItem)">
-              {{ wishItem.name }}
-          </button> -->
-      <div class="span-button" *ngFor="let wishItem of items; let i = index; trackBy: trackById"
+      <button mat-raised-button *ngFor="let wishItem of items; let i = index; trackBy: trackById"
+        [color]="wishItem.wishlist && wishItem.tradelist ? 'warn' : wishItem.wishlist ? 'accent' : 'basic'"
+        [matBadge]="wishItem.wishlistQuantity" [matBadgeHidden]="!wishItem.wishlist" (click)="onAddWish(wishItem)"
+        (contextmenu)="onRemoveWish(wishItem)" longPress (mouseLongPress)="onRemoveWish(wishItem)">
+        {{ wishItem.name }}
+      </button>
+      <!-- <div class="span-button" *ngFor="let wishItem of items; let i = index; trackBy: trackById"
         [ngClass]="{ 'checked': wishItem.wishlist, 'warn': wishItem.wishlist && wishItem.tradelist }"
         (click)="onAddWish(wishItem)" (contextmenu)="onRemoveWish(wishItem)" longPress
         (mouseLongPress)="onRemoveWish(wishItem)">
@@ -43,7 +40,7 @@
         <span *ngIf="wishItem.wishlist" class="span-button-q">
           {{ wishItem.wishlistQuantity }}
         </span>
-      </div>
+      </div> -->
     </div>
     <div class="manage-list-main">
       <button mat-raised-button color="accent" [disabled]="isSaving" (click)="onSaveWishlist()">
