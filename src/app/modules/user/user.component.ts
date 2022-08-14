@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs';
 
-import { User, UserService } from 'src/app/core';
 import { UserOnlyService } from './user-only.service';
 
 @Component({
@@ -12,14 +10,10 @@ import { UserOnlyService } from './user-only.service';
   providers: [UserOnlyService],
 })
 export class UserComponent implements OnInit {
-  userId: number = 0;
-  user: User = {} as User;
 
   constructor(
     private route: ActivatedRoute,
-    private userSrv: UserService,
     private userOnlySrv: UserOnlyService,
-    private activatedRoute: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
@@ -38,7 +32,7 @@ export class UserComponent implements OnInit {
     //   });
 
     // TO DO: Manejar el caso cuando no se encuentre el usuario solicitado
-    this.activatedRoute.data.subscribe((data) => {
+    this.route.data.subscribe((data) => {
       this.userOnlySrv.setCurrentUser(data['userData']);
     });
   }

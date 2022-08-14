@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { concatMap, map, of } from 'rxjs';
+import { concatMap, filter, map, of } from 'rxjs';
 import { orderBy } from 'lodash';
 
-import { 
-  Collection, 
-  DEFAULT_COLLECTION_IMG, 
-  DEFAULT_USER_PROFILE_IMG, 
-  User, 
-  UserService 
+import {
+  AuthService,
+  Collection,
+  DEFAULT_COLLECTION_IMG,
+  DEFAULT_USER_PROFILE_IMG,
+  User,
+  UserService,
 } from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
 import { UserCollectionDetailsComponent } from '../user-collection-details/user-collection-details.component';
@@ -21,6 +22,7 @@ import { UserCollectionDetailsComponent } from '../user-collection-details/user-
 })
 export class UserCollectionsComponent implements OnInit {
   user: User = {} as User;
+  showEditButton = false;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   collections: Collection[] = [];
@@ -67,23 +69,21 @@ export class UserCollectionsComponent implements OnInit {
   constructor(
     private userSrv: UserService,
     private userOnlySrv: UserOnlyService,
-    private dialog: MatDialog,
+    private authSrv: AuthService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.userOnlySrv.user$
       .pipe(
+        filter((user) => user.id != null),
         concatMap((user) => {
-          if (user.id) {
-            this.user = user;
-            return this.userSrv.getCollections(user.id).pipe(
-              map((data: { collections: Collection[]; trades: any }) => {
-                return data.collections;
-              })
-            );
-          } else {
-            return of([]);
-          }
+          this.user = user;
+          return this.userSrv.getCollections(user.id).pipe(
+            map((data: { collections: Collection[]; trades: any }) => {
+              return data.collections;
+            })
+          );
         })
       )
       .subscribe((collections) => {
@@ -91,10 +91,15 @@ export class UserCollectionsComponent implements OnInit {
         this.showedCollections = [...collections];
         this.sortShowedCollections();
 
-        if (this.user.id) {
-          this.isLoaded = true;
-        }
+        this.isLoaded = true;
       });
+
+    this.authSrv.authUser
+      .pipe(filter((authUser) => authUser.id != null))
+      .subscribe((authUser) => {
+        this.showEditButton = authUser.id == this.user.id;
+      });
+
     console.log('from UserCollectionsComponent');
   }
 
@@ -110,11 +115,9 @@ export class UserCollectionsComponent implements OnInit {
     dialogConfig.data = {
       user: this.user,
       collection: col,
-    }
+    };
 
-    this.dialog.open(
-      UserCollectionDetailsComponent, dialogConfig
-    );
+    this.dialog.open(UserCollectionDetailsComponent, dialogConfig);
   }
 
   trackByCollection(index: number, item: Collection): number {

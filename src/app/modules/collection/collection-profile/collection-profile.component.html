@@ -11,39 +11,38 @@
           <img class="collection-image" [defaultImage]="defaultCollectionImage"
             [lazyLoad]="collection.image || defaultCollectionImage" [alt]="collection.name">
 
-            <div *ngIf="collection.userData?.completed" class="ribbon up">
-              <div class="content">
-                <svg width="18px" height="18px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check"
-                  class="svg-inline--fa fa-check fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512">
-                  <path fill="currentColor"
-                    d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z">
-                  </path>
-                </svg>
-              </div>
+          <div *ngIf="collection.userData?.completed" class="ribbon up">
+            <div class="content">
+              <svg width="18px" height="18px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check"
+                class="svg-inline--fa fa-check fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512">
+                <path fill="currentColor"
+                  d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z">
+                </path>
+              </svg>
             </div>
+          </div>
 
         </div>
         <div class="collection-actions">
-          <button *ngIf="authUser.id && !collection.userData?.collecting" (click)="onAdd()" [disabled]="isSaving" mat-raised-button
-            color="accent">
+          <button *ngIf="authUser.id && !collection.userData?.collecting" (click)="onAdd()" [disabled]="isSaving"
+            mat-raised-button color="accent">
             <mat-icon inline="true">add</mat-icon> Agregar
           </button>
-          <a *ngIf="authUser.id && collection.userData?.collecting" 
-            class="btn" mat-raised-button color="accent"
+          <a *ngIf="authUser.id && collection.userData?.collecting" class="btn" mat-raised-button color="accent"
             [routerLink]="['manage']">
             <mat-icon inline="true">edit</mat-icon> Editar
-        </a>
+          </a>
           <button mat-stroked-button [matMenuTriggerFor]="menu">
             <mat-icon inline="true">more_horiz</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onShare()">Compartir</button>
-            <button *ngIf="authUser.id && collection.userData?.collecting && !collection.userData?.completed" (click)="onComplete(true)"
-              [disabled]="isSaving" mat-menu-item>
+            <button *ngIf="authUser.id && collection.userData?.collecting && !collection.userData?.completed"
+              (click)="onComplete(true)" [disabled]="isSaving" mat-menu-item>
               Marcar como Completa</button>
-            <button *ngIf="authUser.id && collection.userData?.collecting && collection.userData?.completed" (click)="onComplete(false)"
-              [disabled]="isSaving" mat-menu-item>
+            <button *ngIf="authUser.id && collection.userData?.collecting && collection.userData?.completed"
+              (click)="onComplete(false)" [disabled]="isSaving" mat-menu-item>
               Desmarcar como Completa</button>
             <button *ngIf="authUser.id && collection.userData?.collecting" (click)="onDelete()" [disabled]="isSaving"
               mat-menu-item>Quitar

@@ -12,11 +12,15 @@ import { CollectionManageComponent } from './collection-manage/collection-manage
 import { CollectionManageWishlistComponent } from './collection-manage-wishlist/collection-manage-wishlist.component';
 import { CollectionManageTradelistComponent } from './collection-manage-tradelist/collection-manage-tradelist.component';
 import { CollectionManageItemsComponent } from './collection-manage-items/collection-manage-items.component';
+import { CollectionResolver } from './collection-resolver.service';
 
 const routes: Routes = [
   {
     path: ':name/:id',
     component: CollectionComponent,
+    resolve: {
+      collectionData: CollectionResolver
+    },
     children: [
       {
         path: '',
@@ -67,18 +71,6 @@ const routes: Routes = [
           },
         ]
       },
-      // {
-      //   path: 'manage-wishlist',
-      //   component: CollectionManageWishlistComponent,
-      //   canActivate: [AuthGuard],
-      //   title: 'Gestionar Colección - Buscadas - Intercambia Láminas',
-      // },
-      // {
-      //   path: 'manage-tradelist',
-      //   component: CollectionManageTradelistComponent,
-      //   canActivate: [AuthGuard],
-      //   title: 'Gestionar Colección - Cambiando - Intercambia Láminas',
-      // },
       {
         path: '**',
         redirectTo: '',
