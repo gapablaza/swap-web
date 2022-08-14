@@ -29,6 +29,10 @@ const routes: Routes = [
     path: 'trades',
     loadChildren: () => import('./modules/trades/trades.module').then(m => m.TradesModule),
   },
+  {
+    path: '**',
+    redirectTo: '',
+  }
 ];
 
 @NgModule({

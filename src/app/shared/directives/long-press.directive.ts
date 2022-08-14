@@ -40,7 +40,7 @@ import {
         .pipe(
           switchMap((state) => (state ? timer(this.threshold, 1000) : of(null))),
           filter((value) => value != null),
-          // take(1),
+          take(1),
         )
         .subscribe(() => this.mouseLongPress.emit());
     }

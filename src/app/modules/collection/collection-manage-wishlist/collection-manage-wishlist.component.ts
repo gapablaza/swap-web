@@ -5,7 +5,6 @@ import {
   Collection,
   CollectionService,
   CollectionUserData,
-  DEFAULT_COLLECTION_IMG,
   Item,
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
@@ -19,7 +18,6 @@ import { CollectionOnlyService } from '../collection-only.service';
 export class CollectionManageWishlistComponent implements OnInit {
   collection: Collection = {} as Collection;
   items: Item[] = [];
-  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   isSaving = false;
   isLoaded = false;
 

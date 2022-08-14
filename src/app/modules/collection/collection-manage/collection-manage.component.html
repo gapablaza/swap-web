@@ -16,27 +16,6 @@
         </a>
       </div>
 
-      <!-- <mat-tab-group *ngIf="items.length">
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span>Listado ({{ items.length }})</span>
-          </ng-template>
-
-        </mat-tab>
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span>Buscando ({{ totalWishing }})</span>
-          </ng-template>
-
-        </mat-tab>
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span>Cambiando ({{ totalTrading }})</span>
-          </ng-template>
-
-        </mat-tab>
-      </mat-tab-group> -->
-
       <ng-container *ngIf="collection.items">
         <nav mat-tab-nav-bar>
           <a mat-tab-link [routerLink]="['.']" [active]="actualPage == 'manage'">Listado ({{ collection.items }})</a>
@@ -44,9 +23,9 @@
           <a mat-tab-link [routerLink]="['tradelist']" [active]="actualPage == 'tradelist'">Cambiando ({{ totalTrading }})</a>
         </nav>
   
-        <div class="settings-main flex-full">
+        <!-- <div class="settings-main2 flex-full2"> -->
           <router-outlet></router-outlet>
-        </div>
+        <!-- </div> -->
       </ng-container>
 
     </div>

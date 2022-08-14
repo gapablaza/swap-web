@@ -8,7 +8,7 @@ import { AdsenseModule } from 'ng2-adsense';
 import { MaterialModule } from './material.module';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { SanitizeHtmlPipe, SlugifyPipe } from './pipes';
-import { DaysSinceLoginDirective, LongPressDirective } from './directives';
+import { DaysSinceLoginDirective, LongPressDirective, OldLongPressDirective } from './directives';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { CollectionItemComponent } from './components/collection-item/collection-item.component';
 
@@ -18,6 +18,7 @@ import { CollectionItemComponent } from './components/collection-item/collection
     SlugifyPipe,
     DaysSinceLoginDirective,
     LongPressDirective,
+    OldLongPressDirective,
     ShareUrlComponent,
     CollectionItemComponent,
   ],
@@ -44,6 +45,7 @@ import { CollectionItemComponent } from './components/collection-item/collection
     SlugifyPipe,
     DaysSinceLoginDirective,
     LongPressDirective,
+    OldLongPressDirective,
     CollectionItemComponent,
     ShareUrlComponent,
   ]

@@ -5,6 +5,7 @@ import {
   ApiService,
   AuthService,
   CollectionService,
+  ItemService,
   JwtService,
   SearchService,
   UserService
@@ -24,6 +25,7 @@ import { ErrorInterceptor, HttpTokenInterceptor } from './interceptors';
     ApiService,
     AuthService,
     CollectionService,
+    ItemService,
     JwtService,
     SearchService,
     UserService,
