@@ -317,51 +317,50 @@ section.collection {
         }
       }
 
-    }
+      .list-std {
 
-    .list-std {
-
-      .list-item-main {
-        padding: 0.5rem 1rem;
-        column-gap: 0.5rem;
-        align-items: center;
-
-        .list-item-title a {
-          font-size: 0.9rem;
+        .list-item-main {
+          padding: 0.5rem 1rem;
+          column-gap: 0.5rem;
+          align-items: center;
+  
+          .list-item-title a {
+            font-size: 0.9rem;
+          }
+  
+          .list-item-meta {
+            font-size: 0.8rem;
+          }
         }
-
-        .list-item-meta {
-          font-size: 0.8rem;
+  
+        .list-item-image {
+          display: none;
+  
+          @media (min-width: 576px) {
+            display: block;
+          }
+  
+          img {
+            border-radius: 10%;
+          }
         }
-      }
-
-      .list-item-image {
-        display: none;
-
-        @media (min-width: 576px) {
-          display: block;
-        }
-
-        img {
-          border-radius: 10%;
-        }
-      }
-
-
-      .list-item-actions {
-        display: flex;
-        column-gap: 0.5rem;
-
-        button {
-          user-select: none;
-          padding: 0 8px;
-
-          @media (min-width: 992px) {
-            padding: 0 16px;
+  
+  
+        .list-item-actions {
+          display: flex;
+          column-gap: 0.5rem;
+  
+          button {
+            user-select: none;
+            padding: 0 8px;
+  
+            @media (min-width: 992px) {
+              padding: 0 16px;
+            }
           }
         }
       }
-    }
 
+    }
   }
 }

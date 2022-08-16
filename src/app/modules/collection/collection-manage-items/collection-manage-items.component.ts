@@ -3,10 +3,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  OnDestroy,
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { concatMap, filter, take, tap } from 'rxjs';
+import { concatMap, filter, first, Subscription, take, tap } from 'rxjs';
 import {
   Collection,
   CollectionService,
@@ -19,8 +20,8 @@ import { UIService } from 'src/app/shared';
 import { CollectionOnlyService } from '../collection-only.service';
 
 export interface CustomItem extends Item {
-  isSaving?: boolean,
-  isHidden?: boolean,
+  isSaving?: boolean;
+  isHidden?: boolean;
 }
 
 @Component({
@@ -29,13 +30,16 @@ export interface CustomItem extends Item {
   styleUrls: ['./collection-manage-items.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CollectionManageItemsComponent implements OnInit, AfterViewInit {
+export class CollectionManageItemsComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   collection: Collection = {} as Collection;
   items: CustomItem[] = [];
   defaultItemImage = DEFAULT_ITEM_IMG;
   searchText = '';
   isSaving = false;
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private colSrv: CollectionService,
@@ -48,7 +52,7 @@ export class CollectionManageItemsComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.colOnlySrv.collection$
+    let colSub = this.colOnlySrv.collection$
       .pipe(
         filter((col) => col.id != null),
         tap((col) => {
@@ -57,26 +61,29 @@ export class CollectionManageItemsComponent implements OnInit, AfterViewInit {
             this.router.navigate(['../'], {
               relativeTo: this.route,
             });
+          } else {
+            this.collection = col;
           }
         }),
-        filter((col) => (col.userData?.collecting ? true : false)),
-        concatMap((col) => {
-          this.collection = col;
-          return this.colSrv.getItems(this.collection.id);
-        }),
-        take(1),
+        filter(
+          (col) =>
+            (col.userData?.collecting ? true : false) && this.items.length == 0
+        ),
+        concatMap((col) => this.colSrv.getItems(col.id).pipe(first()))
       )
       .subscribe((data) => {
+        console.log('CollectionManageItemsComponent - Sub colOnlySrv');
         this.items = data.map((item: CustomItem) => {
           return {
             ...item,
             isSaving: false,
             isHidden: false,
-          }
+          };
         });
         this.isLoaded = true;
         this.cdr.detectChanges();
       });
+    this.subs.add(colSub);
   }
 
   ngAfterViewInit() {
@@ -92,26 +99,26 @@ export class CollectionManageItemsComponent implements OnInit, AfterViewInit {
   onFilter() {
     // check at least 2 chars for search
     if (this.searchText.length > 1) {
-      this.items.forEach(item => {
+      this.items.forEach((item) => {
         if (
-            item.name
-              .toLocaleLowerCase()
-              .indexOf(this.searchText.toLocaleLowerCase()) !== -1 ||
-            (item.description || '')
-              .toLocaleLowerCase()
-              .indexOf(this.searchText.toLocaleLowerCase()) !== -1
+          item.name
+            .toLocaleLowerCase()
+            .indexOf(this.searchText.toLocaleLowerCase()) !== -1 ||
+          (item.description || '')
+            .toLocaleLowerCase()
+            .indexOf(this.searchText.toLocaleLowerCase()) !== -1
         ) {
           item.isHidden = false;
         } else {
           item.isHidden = true;
         }
-      })
+      });
       this.cdr.detectChanges();
     }
   }
 
   onClearFilter() {
-    this.items.forEach(item => {
+    this.items.forEach((item) => {
       item.isHidden = false;
     });
     this.searchText = '';
@@ -120,55 +127,57 @@ export class CollectionManageItemsComponent implements OnInit, AfterViewInit {
 
   onAddWish(item: CustomItem) {
     console.log(item);
-    
+
     item.isSaving = true;
     this.cdr.detectChanges();
 
     // if already in wishlist, increment +1
     if (item.wishlist) {
-      this.itemSrv.incrementWishlist(item.id)
+      this.itemSrv
+        .incrementWishlist(item.id)
+        .pipe(first())
         .subscribe({
           next: (resp) => {
             item.wishlistQuantity = resp.newQuantity;
             this.uiSrv.showSuccess(resp.message);
+            item.isSaving = false;
+            this.cdr.detectChanges();
           },
           error: (error) => {
             console.log('incrementWishlist error: ', error);
             this.uiSrv.showError(error.error.message);
-          },
-          complete: () => {
             item.isSaving = false;
             this.cdr.detectChanges();
           },
-        })
+        });
       // if not yet in wishlist, add it
     } else {
-      this.itemSrv.addToWishlist(item.id)
-      .subscribe({
-        next: (resp) => {
-          item.wishlist = true;
-          item.wishlistQuantity = 1;
+      this.itemSrv
+        .addToWishlist(item.id)
+        .pipe(first())
+        .subscribe({
+          next: (resp) => {
+            item.wishlist = true;
+            item.wishlistQuantity = 1;
 
-          this.collection = {
-            ...this.collection,
-            userData: {
-              ...this.collection.userData,
-              wishing: (this.collection.userData?.wishing || 0) + 1,
-            } as CollectionUserData,
-          };
-          this.colOnlySrv.setCurrentCollection(this.collection);
-
-          this.uiSrv.showSuccess(resp);
-        },
-        error: (error) => {
-          console.log('addToWishlist error: ', error);
-          this.uiSrv.showError(error.error.message);
-        },
-        complete: () => {
-          item.isSaving = false;
-          this.cdr.detectChanges();
-        },
-      })
+            this.colOnlySrv.setCurrentCollection({
+              ...this.collection,
+              userData: {
+                ...this.collection.userData,
+                wishing: (this.collection.userData?.wishing || 0) + 1,
+              } as CollectionUserData,
+            });
+            this.uiSrv.showSuccess(resp);
+            item.isSaving = false;
+            this.cdr.detectChanges();
+          },
+          error: (error) => {
+            console.log('addToWishlist error: ', error);
+            this.uiSrv.showError(error.error.message);
+            item.isSaving = false;
+            this.cdr.detectChanges();
+          },
+        });
     }
   }
 
@@ -180,52 +189,54 @@ export class CollectionManageItemsComponent implements OnInit, AfterViewInit {
       item.isSaving = true;
       this.cdr.detectChanges();
 
-      this.itemSrv.decrementWishlist(item.id)
+      this.itemSrv
+        .decrementWishlist(item.id)
+        .pipe(first())
         .subscribe({
           next: (resp) => {
             item.wishlistQuantity = resp.newQuantity;
             this.uiSrv.showSuccess(resp.message);
+            item.isSaving = false;
+            this.cdr.detectChanges();
           },
           error: (error) => {
             console.log('decrementWishlist error: ', error);
             this.uiSrv.showError(error.error.message);
-          },
-          complete: () => {
             item.isSaving = false;
             this.cdr.detectChanges();
           },
-        })
+        });
       // if already in wishlist, but once, remove from wishlist
     } else if (item.wishlist && item.wishlistQuantity == 1) {
       item.isSaving = true;
       this.cdr.detectChanges();
 
-      this.itemSrv.removeFromWishlist(item.id)
-      .subscribe({
-        next: (resp) => {
-          item.wishlist = false;
-          item.wishlistQuantity = 0;
+      this.itemSrv
+        .removeFromWishlist(item.id)
+        .pipe(first())
+        .subscribe({
+          next: (resp) => {
+            item.wishlist = false;
+            item.wishlistQuantity = 0;
 
-          this.collection = {
-            ...this.collection,
-            userData: {
-              ...this.collection.userData,
-              wishing: (this.collection.userData?.wishing || 0) - 1,
-            } as CollectionUserData,
-          };
-          this.colOnlySrv.setCurrentCollection(this.collection);
-
-          this.uiSrv.showSuccess(resp);
-        },
-        error: (error) => {
-          console.log('removeFromWishlist error: ', error);
-          this.uiSrv.showError(error.error.message);
-        },
-        complete: () => {
-          item.isSaving = false;
-          this.cdr.detectChanges();
-        },
-      })
+            this.colOnlySrv.setCurrentCollection({
+              ...this.collection,
+              userData: {
+                ...this.collection.userData,
+                wishing: (this.collection.userData?.wishing || 0) - 1,
+              } as CollectionUserData,
+            });
+            this.uiSrv.showSuccess(resp);
+            item.isSaving = false;
+            this.cdr.detectChanges();
+          },
+          error: (error) => {
+            console.log('removeFromWishlist error: ', error);
+            this.uiSrv.showError(error.error.message);
+            item.isSaving = false;
+            this.cdr.detectChanges();
+          },
+        });
     }
 
     return false;
@@ -233,54 +244,57 @@ export class CollectionManageItemsComponent implements OnInit, AfterViewInit {
 
   onAddTrade(item: CustomItem) {
     console.log(item);
-    
+
     item.isSaving = true;
     this.cdr.detectChanges();
 
     // if already in tradelist, increment +1
     if (item.tradelist) {
-      this.itemSrv.incrementTradelist(item.id)
+      this.itemSrv
+        .incrementTradelist(item.id)
+        .pipe(first())
         .subscribe({
           next: (resp) => {
             item.tradelistQuantity = resp.newQuantity;
             this.uiSrv.showSuccess(resp.message);
+            item.isSaving = false;
+            this.cdr.detectChanges();
           },
           error: (error) => {
             console.log('incrementTradelist error: ', error);
             this.uiSrv.showError(error.error.message);
-          },
-          complete: () => {
             item.isSaving = false;
             this.cdr.detectChanges();
           },
-        })
+        });
       // if not yet in tradelist, add it
     } else {
-      this.itemSrv.addToTradelist(item.id)
-      .subscribe({
-        next: (resp) => {
-          item.tradelist = true;
-          item.tradelistQuantity = 1;
+      this.itemSrv
+        .addToTradelist(item.id)
+        .pipe(first())
+        .subscribe({
+          next: (resp) => {
+            item.tradelist = true;
+            item.tradelistQuantity = 1;
 
-          this.colOnlySrv.setCurrentCollection({
-            ...this.collection,
-            userData: {
-              ...this.collection.userData,
-              trading: (this.collection.userData?.trading || 0) + 1,
-            } as CollectionUserData,
-          });
-
-          this.uiSrv.showSuccess(resp);
-        },
-        error: (error) => {
-          console.log('addToTradelist error: ', error);
-          this.uiSrv.showError(error.error.message);
-        },
-        complete: () => {
-          item.isSaving = false;
-          this.cdr.detectChanges();
-        },
-      })
+            this.colOnlySrv.setCurrentCollection({
+              ...this.collection,
+              userData: {
+                ...this.collection.userData,
+                trading: (this.collection.userData?.trading || 0) + 1,
+              } as CollectionUserData,
+            });
+            this.uiSrv.showSuccess(resp);
+            item.isSaving = false;
+            this.cdr.detectChanges();
+          },
+          error: (error) => {
+            console.log('addToTradelist error: ', error);
+            this.uiSrv.showError(error.error.message);
+            item.isSaving = false;
+            this.cdr.detectChanges();
+          },
+        });
     }
   }
 
@@ -292,53 +306,60 @@ export class CollectionManageItemsComponent implements OnInit, AfterViewInit {
       item.isSaving = true;
       this.cdr.detectChanges();
 
-      this.itemSrv.decrementTradelist(item.id)
+      this.itemSrv
+        .decrementTradelist(item.id)
+        .pipe(first())
         .subscribe({
           next: (resp) => {
             item.tradelistQuantity = resp.newQuantity;
             this.uiSrv.showSuccess(resp.message);
+            item.isSaving = false;
+            this.cdr.detectChanges();
           },
           error: (error) => {
             console.log('decrementTradelist error: ', error);
             this.uiSrv.showError(error.error.message);
-          },
-          complete: () => {
             item.isSaving = false;
             this.cdr.detectChanges();
           },
-        })
+        });
       // if already in tradelist, but once, remove from tradelist
     } else if (item.tradelist && item.tradelistQuantity == 1) {
       item.isSaving = true;
       this.cdr.detectChanges();
 
-      this.itemSrv.removeFromTradelist(item.id)
-      .subscribe({
-        next: (resp) => {
-          item.tradelist = false;
-          item.tradelistQuantity = 0;
+      this.itemSrv
+        .removeFromTradelist(item.id)
+        .pipe(first())
+        .subscribe({
+          next: (resp) => {
+            item.tradelist = false;
+            item.tradelistQuantity = 0;
 
-          this.colOnlySrv.setCurrentCollection({
-            ...this.collection,
-            userData: {
-              ...this.collection.userData,
-              trading: (this.collection.userData?.trading || 0) - 1,
-            } as CollectionUserData,
-          });
-
-          this.uiSrv.showSuccess(resp);
-        },
-        error: (error) => {
-          console.log('removeFromTradelist error: ', error);
-          this.uiSrv.showError(error.error.message);
-        },
-        complete: () => {
-          item.isSaving = false;
-          this.cdr.detectChanges();
-        },
-      })
+            this.colOnlySrv.setCurrentCollection({
+              ...this.collection,
+              userData: {
+                ...this.collection.userData,
+                trading: (this.collection.userData?.trading || 0) - 1,
+              } as CollectionUserData,
+            });
+            this.uiSrv.showSuccess(resp);
+            item.isSaving = false;
+            this.cdr.detectChanges();
+          },
+          error: (error) => {
+            console.log('removeFromTradelist error: ', error);
+            this.uiSrv.showError(error.error.message);
+            item.isSaving = false;
+            this.cdr.detectChanges();
+          },
+        });
     }
 
     return false;
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

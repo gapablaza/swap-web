@@ -1,7 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, tap } from 'rxjs';
-import { Collection, DEFAULT_COLLECTION_IMG } from 'src/app/core';
+import { filter, Subscription, tap } from 'rxjs';
+
+import { Collection } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { CollectionOnlyService } from '../collection-only.service';
 
@@ -9,25 +16,26 @@ import { CollectionOnlyService } from '../collection-only.service';
   selector: 'app-collection-manage',
   templateUrl: './collection-manage.component.html',
   styleUrls: ['./collection-manage.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CollectionManageComponent implements OnInit {
+export class CollectionManageComponent implements OnInit, OnDestroy {
   collection: Collection = {} as Collection;
   totalWishing: number = 0;
   totalTrading: number = 0;
   actualPage = '';
-  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
-  isSaving = false;
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private colOnlySrv: CollectionOnlyService,
     private router: Router,
     private route: ActivatedRoute,
-    private uiSrv: UIService
+    private uiSrv: UIService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.colOnlySrv.collection$
+    let colSub = this.colOnlySrv.collection$
       .pipe(
         filter((col) => col.id != null),
         tap((col) => {
@@ -41,11 +49,14 @@ export class CollectionManageComponent implements OnInit {
         filter((col) => (col.userData?.collecting ? true : false))
       )
       .subscribe((col) => {
+        console.log('CollectionManageComponent - Sub colOnlySrv');
         this.collection = col;
         this.totalWishing = col.userData?.wishing || 0;
         this.totalTrading = col.userData?.trading || 0;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       });
+    this.subs.add(colSub);
 
     this.actualPage = this.router.url.split('/').pop() || '';
     this.router.events
@@ -53,5 +64,9 @@ export class CollectionManageComponent implements OnInit {
       .subscribe((data: any) => {
         this.actualPage = data.url.split('/').pop() || '';
       });
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

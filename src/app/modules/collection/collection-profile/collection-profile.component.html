@@ -87,7 +87,7 @@
       <div class="trades-collection">
         <div class="trades-list">
           <div>
-            Estás buscando <strong>{{ collection.userData?.wishing }}</strong> ítems:
+            Estás buscando <strong>{{ collection.userData?.wishing || 0 }}</strong> ítems:
             <span *ngFor="let item of userWishing; last as isLast">
               <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
               <span>
@@ -98,7 +98,7 @@
             </span>
           </div>
           <div>
-            Tienes <strong>{{ collection.userData?.trading }}</strong> ítems para cambiar:
+            Tienes <strong>{{ collection.userData?.trading || 0 }}</strong> ítems para cambiar:
             <span *ngFor="let item of userTrading; last as isLast">
               <span>
                 <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
@@ -128,8 +128,6 @@
       </div> -->
 
     </mat-expansion-panel>
-
-    <!-- <hr /> -->
 
     <h3>Secciones</h3>
     <mat-nav-list>

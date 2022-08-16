@@ -1,33 +1,50 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { HomeAuthResolver } from './modules/home/home-auth-resolver.service';
 import { HomeComponent } from './modules/home/home.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  {
+    path: '',
+    component: HomeComponent,
+    resolve: {
+      isAuthenticated: HomeAuthResolver,
+    },
+  },
   {
     path: 'c',
-    loadChildren: () => import('./modules/collection/collection.module').then(m => m.CollectionModule),
+    loadChildren: () =>
+      import('./modules/collection/collection.module').then(
+        (m) => m.CollectionModule
+      ),
   },
   {
     path: 'user',
-    loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule),
+    loadChildren: () =>
+      import('./modules/user/user.module').then((m) => m.UserModule),
   },
   {
     path: 'search',
-    loadChildren: () => import('./modules/search/search.module').then(m => m.SearchModule),
+    loadChildren: () =>
+      import('./modules/search/search.module').then((m) => m.SearchModule),
   },
   {
     path: 'explore',
-    loadChildren: () => import('./modules/explore/explore.module').then(m => m.ExploreModule),
+    loadChildren: () =>
+      import('./modules/explore/explore.module').then((m) => m.ExploreModule),
   },
   {
     path: 'settings',
-    loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule),
+    loadChildren: () =>
+      import('./modules/settings/settings.module').then(
+        (m) => m.SettingsModule
+      ),
   },
   {
     path: 'trades',
-    loadChildren: () => import('./modules/trades/trades.module').then(m => m.TradesModule),
+    loadChildren: () =>
+      import('./modules/trades/trades.module').then((m) => m.TradesModule),
   },
   // {
   //   path: '**',
@@ -39,4 +56,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

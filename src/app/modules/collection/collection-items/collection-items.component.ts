@@ -1,46 +1,53 @@
-import { Component, OnInit } from '@angular/core';
-import { concatMap, of } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import { filter, first, Subscription, switchMap, tap } from 'rxjs';
 
-import { Collection, CollectionService, DEFAULT_COLLECTION_IMG, Item } from 'src/app/core';
+import {
+  CollectionService,
+  Item,
+} from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
 
 @Component({
   selector: 'app-collection-items',
   templateUrl: './collection-items.component.html',
-  styleUrls: ['./collection-items.component.scss']
+  styleUrls: ['./collection-items.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CollectionItemsComponent implements OnInit {
-  collection: Collection = {} as Collection;
-  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
+export class CollectionItemsComponent implements OnInit, OnDestroy {
   items: Item[] = [];
   // displayedColumns: string[] = ['name', 'description', 'difficulty'];
   displayedColumns: string[] = ['name', 'description'];
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private colSrv: CollectionService,
     private colOnlySrv: CollectionOnlyService,
-  ) { }
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    this.colOnlySrv.collection$
+    let colSub = this.colOnlySrv.collection$
       .pipe(
-        concatMap(col => {
-          if (col.id) {
-            this.collection = col;
-            return this.colSrv.getItems(col.id);
-          } else {
-            return of([]);
-          }
-        })
+        filter((col) => col.id != null),
+        switchMap((col) => this.colSrv.getItems(col.id).pipe(first()))
       )
-      .subscribe(items => {
+      .subscribe((items) => {
+        console.log('CollectionItemsComponent - Sub colOnlySrv');
         this.items = items;
-        if (this.collection.id) {
-          this.isLoaded = true;
-        }
+        this.isLoaded = true;
+        this.cdr.markForCheck();
       });
-      
-    console.log('from CollectionItemsComponent', this.collection);
+    this.subs.add(colSub);
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

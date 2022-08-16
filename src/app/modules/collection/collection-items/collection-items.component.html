@@ -5,6 +5,7 @@
   <app-collection-summary [showBackButton]="true"></app-collection-summary>
   <div class="collection-items flex-full">
     <h1>Itemizado</h1>
+
     <div class="empty-content card" *ngIf="!items.length">
       <h2>\_(ʘ_ʘ)_/</h2>
       <p>Lamentablemente no hemos podido conseguir el itemizado de esta colección... nos ayudas?</p>
@@ -13,6 +14,7 @@
         <mat-icon inline="true">note_add</mat-icon> Enviar info
       </a>
     </div>
+    
     <table *ngIf="items.length" mat-table [dataSource]="items" class="mat-elevation-z8">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef> Nro. </th>

@@ -1,18 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { concatMap, of } from 'rxjs';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { concatMap, filter, first, map, Subscription } from 'rxjs';
 import { orderBy } from 'lodash';
 
-import { Collection, CollectionService, DEFAULT_COLLECTION_IMG, Media } from 'src/app/core';
+import { CollectionService, Media } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
 
 @Component({
   selector: 'app-collection-media',
   templateUrl: './collection-media.component.html',
   styleUrls: ['./collection-media.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CollectionMediaComponent implements OnInit {
-  collection: Collection = {} as Collection;
-  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
+export class CollectionMediaComponent implements OnInit, OnDestroy {
   medias: Media[] = [];
   showedImages: Media[] = [];
   baseImageUrl =
@@ -54,36 +53,33 @@ export class CollectionMediaComponent implements OnInit {
   ];
   showFilters = false;
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private colSrv: CollectionService,
-    private colOnlySrv: CollectionOnlyService
+    private colOnlySrv: CollectionOnlyService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.colOnlySrv.collection$
+    let colSub = this.colOnlySrv.collection$
       .pipe(
-        concatMap((col) => {
-          if (col.id) {
-            this.collection = col;
-            return this.colSrv.getMedia(this.collection.id);
-          } else {
-            return of([]);
-          }
-        })
+        filter(col => col.id != null),
+        concatMap((col) => this.colSrv.getMedia(col.id).pipe(first())),
+        // filter only approved images
+        map(media => media.filter((elem: Media) => {
+          return elem.mediaTypeId == 1 && elem.mediaStatusId == 2;
+        })),
       )
       .subscribe((data) => {
-        // new array with only approved images
-        this.medias = data.filter((elem: Media) => {
-          return elem.mediaTypeId == 1 && elem.mediaStatusId == 2;
-        });
-        this.showedImages = [...this.medias];
+        console.log('CollectionMediaComponent - Sub colOnlySrv');
+        this.medias = [...data];
+        this.showedImages = [...data];
         this.sortShowedImages();
-
-        if (this.collection.id) {
-          this.isLoaded = true;
-        }
+        this.isLoaded = true;
+        this.cdr.markForCheck();
       });
+    this.subs.add(colSub);
   }
 
   trackByImage(index: number, item: Media): number {
@@ -138,5 +134,9 @@ export class CollectionMediaComponent implements OnInit {
 
     this.showedImages = [...tempImages];
     this.sortShowedImages();
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

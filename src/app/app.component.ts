@@ -60,12 +60,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // Suscripción para GA
+    // Suscripción para GA (opcional) y ancho responsivo
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        gtag('config', `${environment.analytics}`, {
-          page_path: event.urlAfterRedirects,
-        });
+        
+        // Suscripción para GA
+        if (environment.analytics) {
+          gtag('config', `${environment.analytics}`, {
+            page_path: event.urlAfterRedirects,
+          });
+        }
 
         if (window.innerWidth < 768) {
           this.sidenav.close();
@@ -91,11 +95,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   onResize(event: any) {
     if (event.target.innerWidth >= 768) {
       this.navMode = 'side' as MatDrawerMode;
-      // this.sidenav.open();
     }
     if (event.target.innerWidth < 768) {
       this.navMode = 'push' as MatDrawerMode;
-      //  this.sidenav.close();
     }
   }
 }

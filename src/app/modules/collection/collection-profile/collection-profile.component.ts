@@ -1,8 +1,16 @@
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { filter, first } from 'rxjs';
+import { filter, first, Subscription, switchMap, tap } from 'rxjs';
 
 import {
   AuthService,
@@ -19,16 +27,19 @@ import { CollectionOnlyService } from '../collection-only.service';
   selector: 'app-collection-profile',
   templateUrl: './collection-profile.component.html',
   styleUrls: ['./collection-profile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CollectionProfileComponent implements OnInit {
+export class CollectionProfileComponent implements OnInit, OnDestroy {
   @ViewChild('confirmDeleteDialog') deleteDialog!: TemplateRef<any>;
   collection: Collection = {} as Collection;
+  items: Item[] = [];
   authUser: User = {} as User;
   defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   userWishing: Item[] = [];
   userTrading: Item[] = [];
   isSaving = false;
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private colSrv: CollectionService,
@@ -36,49 +47,61 @@ export class CollectionProfileComponent implements OnInit {
     private authSrv: AuthService,
     private dialog: MatDialog,
     private uiSrv: UIService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     registerLocaleData(es);
 
     // get possible auth User
-    this.authSrv.authUser
+    let authSub = this.authSrv.authUser
       .pipe(filter((user) => user.id != null))
       .subscribe((user) => {
+        console.log('CollectionProfileComponent - Sub authSrv');
         this.authUser = user;
       });
+    this.subs.add(authSub);
 
     // obtiene los datos de la colección
-    this.colOnlySrv.collection$
-      .pipe(filter((col) => col.id != null))
-      .subscribe((col) => {
-        this.collection = col;
-        this.isLoaded = true;
-
+    let colSub = this.colOnlySrv.collection$
+      .pipe(
+        filter((col) => col.id != null),
+        tap((col) => {
+          this.collection = col;
+          this.isLoaded = true;
+          this.cdr.markForCheck();
+        }),
         // si el usuario tiene esta colección se obtienen sus listas
-        if (this.collection.userData?.collecting) {
-          this.colSrv
-            .getItems(this.collection.id)
-            .pipe(first())
-            .subscribe((items) => {
-              items.forEach((item) => {
-                if (item.wishlist) {
-                  this.userWishing.push(item);
-                }
-                if (item.tradelist) {
-                  this.userTrading.push(item);
-                }
-              });
-            });
-        }
+        filter(
+          (col) =>
+            (col.userData?.collecting ? true : false) && this.items.length == 0
+        ),
+        switchMap((col) => {
+          return this.colSrv.getItems(col.id).pipe(first());
+        })
+      )
+      .subscribe((items) => {
+        console.log('CollectionProfileComponent - Sub colOnlySrv');
+        this.items = items;
+        items.forEach((item) => {
+          if (item.wishlist) {
+            this.userWishing.push(item);
+          }
+          if (item.tradelist) {
+            this.userTrading.push(item);
+          }
+        });
+        this.cdr.markForCheck();
       });
-    console.log('from CollectionProfileComponent');
+    this.subs.add(colSub);
   }
 
   onAdd() {
     this.isSaving = true;
-    this.colSrv.add(this.collection.id)
-      .subscribe(resp => {
+    this.colSrv
+      .add(this.collection.id)
+      .pipe(first())
+      .subscribe((resp) => {
         this.collection.userData = {
           collecting: true,
           completed: false,
@@ -88,7 +111,7 @@ export class CollectionProfileComponent implements OnInit {
         this.colOnlySrv.setCurrentCollection(this.collection);
         this.isSaving = false;
         this.uiSrv.showSuccess(resp);
-      })
+      });
   }
 
   onShare(): void {
@@ -97,17 +120,19 @@ export class CollectionProfileComponent implements OnInit {
 
   onComplete(completed: boolean) {
     this.isSaving = true;
-    this.colSrv.setCompleted(this.collection.id, completed)
-      .subscribe(resp => {
+    this.colSrv
+      .setCompleted(this.collection.id, completed)
+      .pipe(first())
+      .subscribe((resp) => {
         this.collection.userData = {
           ...this.collection.userData,
           collecting: true,
-          completed
+          completed,
         };
         this.colOnlySrv.setCurrentCollection(this.collection);
         this.uiSrv.showSuccess(resp);
         this.isSaving = false;
-      })
+      });
   }
 
   onDelete() {
@@ -116,15 +141,21 @@ export class CollectionProfileComponent implements OnInit {
 
   onConfirmDelete() {
     this.isSaving = true;
-    this.colSrv.remove(this.collection.id)
-      .subscribe(resp => {
+    this.colSrv
+      .remove(this.collection.id)
+      .pipe(first())
+      .subscribe((resp) => {
         this.collection.userData = {
-          collecting: false
+          collecting: false,
         };
         this.colOnlySrv.setCurrentCollection(this.collection);
         this.uiSrv.showSuccess(resp);
         this.dialog.closeAll();
         this.isSaving = false;
-      })
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

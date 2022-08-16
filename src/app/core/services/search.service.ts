@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { Observable, BehaviorSubject, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, BehaviorSubject, map, shareReplay } from 'rxjs';
 
 import { Collection, Pagination, User, UserSummary } from '../models';
 import { ApiService } from './api.service';
@@ -11,6 +10,15 @@ import { ApiService } from './api.service';
 export class SearchService {
   private _searches = new BehaviorSubject<string[]>([]);
   searches$: Observable<string[]> = this._searches.asObservable();
+
+  private $cachedHomeData!: Observable<{
+    added: Collection[];
+    moreItems: User[];
+    moreMedia: User[];
+    popular: Collection[];
+    published: Collection[];
+    users: User[];
+  }>;
 
   constructor(
     // private storageSrv: StorageService,
@@ -89,18 +97,23 @@ export class SearchService {
     published: Collection[];
     users: User[];
   }> {
-    return this.apiSrv.get('/v2/home').pipe(
-      map((data) => {
-        return {
-          added: data.data.added.data as Collection[],
-          moreItems: data.data.moreItems.data as User[],
-          moreMedia: data.data.moreMedia.data as User[],
-          popular: data.data.popular.data as Collection[],
-          published: data.data.published.data as Collection[],
-          users: data.data.users.data as User[],
-        };
-      })
-    );
+    if (!this.$cachedHomeData) {
+      this.$cachedHomeData = this.apiSrv.get('/v2/home').pipe(
+        map((data) => {
+          return {
+            added: data.data.added.data as Collection[],
+            moreItems: data.data.moreItems.data as User[],
+            moreMedia: data.data.moreMedia.data as User[],
+            popular: data.data.popular.data as Collection[],
+            published: data.data.published.data as Collection[],
+            users: data.data.users.data as User[],
+          };
+        }),
+        shareReplay(1)
+      );
+    }
+
+    return this.$cachedHomeData;
   }
 
   exploreCollections(options: {

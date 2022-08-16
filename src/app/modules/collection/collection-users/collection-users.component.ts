@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { concatMap, of } from 'rxjs';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { concatMap, filter, first, Subscription, tap } from 'rxjs';
 import { orderBy } from 'lodash';
 
 import { 
   Collection, 
   CollectionService, 
-  DEFAULT_COLLECTION_IMG, 
   DEFAULT_USER_PROFILE_IMG, 
   User } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
@@ -14,10 +13,10 @@ import { CollectionOnlyService } from '../collection-only.service';
   selector: 'app-collection-users',
   templateUrl: './collection-users.component.html',
   styleUrls: ['./collection-users.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CollectionUsersComponent implements OnInit {
+export class CollectionUsersComponent implements OnInit, OnDestroy {
   collection: Collection = {} as Collection;
-  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   users: User[] = [];
   showedUsers: User[] = [];
@@ -46,33 +45,30 @@ export class CollectionUsersComponent implements OnInit {
   ];
   showFilters = false;
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private colSrv: CollectionService,
-    private colOnlySrv: CollectionOnlyService
+    private colOnlySrv: CollectionOnlyService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.colOnlySrv.collection$
+    let colSub = this.colOnlySrv.collection$
       .pipe(
-        concatMap((col) => {
-          if (col.id) {
-            this.collection = col;
-            return this.colSrv.getUsers(col.id);
-          } else {
-            return of([]);
-          }
-        })
+        filter(col => col.id != null),
+        tap(col => this.collection = col),
+        concatMap((col) => this.colSrv.getUsers(col.id).pipe(first()))
       )
       .subscribe((users) => {
-        this.users = users;
-        this.showedUsers = [...this.users];
+        console.log('CollectionUsersComponent - Sub colOnlySrv');
+        this.users = [...users];
+        this.showedUsers = [...users];
         this.sortShowedUsers();
-
-        if (this.collection.id) {
-          this.isLoaded = true;
-        }
+        this.isLoaded = true;
+        this.cdr.markForCheck();
       });
+    this.subs.add(colSub);
   }
 
   trackByUsers(index: number, item: User): number {
@@ -130,5 +126,9 @@ export class CollectionUsersComponent implements OnInit {
     this.showedUsers = [...tempCollections];
     // 3.- sorting
     this.sortShowedUsers();
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

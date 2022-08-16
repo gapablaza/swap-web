@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { Collection } from '../../core/models';
+import { Collection } from 'src/app/core';
 
 @Injectable()
 export class CollectionOnlyService {
-  // private _collection: Collection = {} as Collection;
   private _collection = new BehaviorSubject<Collection>({} as Collection);
   collection$: Observable<Collection> = this._collection.asObservable();
 
@@ -16,12 +15,10 @@ export class CollectionOnlyService {
   }
 
   getCurrentCollection() {
-    // return this._collection;
     return this._collection.value;
   }
 
   cleanCurrentCollection() {
-    // this._collection = {} as Collection;
     this._collection.next({} as Collection);
   }
 }

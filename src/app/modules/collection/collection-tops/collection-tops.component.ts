@@ -1,63 +1,68 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
-import { concatMap, filter } from 'rxjs';
+import { concatMap, filter, first, Subscription } from 'rxjs';
+
 import {
   AuthService,
-  Collection,
   CollectionService,
-  Tops,
   TopsCategory,
   User,
 } from 'src/app/core';
-
 import { CollectionOnlyService } from '../collection-only.service';
 
 @Component({
   selector: 'app-collection-tops',
   templateUrl: './collection-tops.component.html',
   styleUrls: ['./collection-tops.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CollectionTopsComponent implements OnInit {
+export class CollectionTopsComponent implements OnInit, OnDestroy {
   @ViewChild(MatAccordion) accordion!: MatAccordion;
   authUser: User = {} as User;
-  collection: Collection = {} as Collection;
   topsAvailable = false;
   categories: TopsCategory[] = [];
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private colSrv: CollectionService,
     private colOnlySrv: CollectionOnlyService,
-    private authSrv: AuthService
+    private authSrv: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     // get possible auth User
-    this.authSrv.authUser
+    let authSub = this.authSrv.authUser
       .pipe(filter((user) => user.id != null))
       .subscribe((user) => {
         this.authUser = user;
       });
+    this.subs.add(authSub);
 
     // obtiene los datos de la colección
-    this.colOnlySrv.collection$
+    let colSub = this.colOnlySrv.collection$
       .pipe(
         filter((col) => col.id != null),
-        concatMap((col) => {
-          this.collection = col;
-          return this.colSrv.getTops(col.id);
-        })
+        concatMap((col) => this.colSrv.getTops(col.id).pipe(first()))
       )
       .subscribe({
         next: (tops) => {
           this.categories = tops.categories.sort((a, b) => b.id - a.id);
           this.topsAvailable = tops.available;
           this.isLoaded = true;
+          this.cdr.markForCheck();
         },
         error: (err) => {
           this.topsAvailable = false;
           this.isLoaded = true;
+          this.cdr.markForCheck();
         },
       });
+    this.subs.add(colSub);
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

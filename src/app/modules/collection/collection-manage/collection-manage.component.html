@@ -19,16 +19,14 @@
       <ng-container *ngIf="collection.items">
         <nav mat-tab-nav-bar>
           <a mat-tab-link [routerLink]="['.']" [active]="actualPage == 'manage'">Listado ({{ collection.items }})</a>
-          <a mat-tab-link [routerLink]="['wishlist']" [active]="actualPage == 'wishlist'">Buscando ({{ totalWishing }})</a>
-          <a mat-tab-link [routerLink]="['tradelist']" [active]="actualPage == 'tradelist'">Cambiando ({{ totalTrading }})</a>
+          <a mat-tab-link [routerLink]="['wishlist']" [active]="actualPage == 'wishlist'">Buscando ({{ totalWishing
+            }})</a>
+          <a mat-tab-link [routerLink]="['tradelist']" [active]="actualPage == 'tradelist'">Cambiando ({{ totalTrading
+            }})</a>
         </nav>
-  
-        <!-- <div class="settings-main2 flex-full2"> -->
-          <router-outlet></router-outlet>
-        <!-- </div> -->
+
+        <router-outlet></router-outlet>
       </ng-container>
-
     </div>
-
   </div>
 </section>
