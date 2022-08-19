@@ -1,0 +1,93 @@
+<div class="card">
+    <div class="controls-std">
+        <div class="controls-std-main">
+            <!-- <div class="controls-std-order">
+                <mat-form-field appearance="outline">
+                    <mat-label>Ordenar por</mat-label>
+                    <mat-select (selectionChange)="onCollectionSort()" [(value)]="colSortOptionSelected">
+                        <mat-option *ngFor="let option of colSortOptions" [value]="option.selectValue">
+                            {{ option.selectName }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div> -->
+            <div class="controls-std-settings">
+                <p>
+                    Registros {{ paginator.from | number:'':'es' }} - {{ paginator.to | number:'':'es' }} de {{
+                    paginator.total | number:'':'es' }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <ul class="list-std">
+        <li class="list-std-item" *ngFor="let user of showedUsers; trackBy: trackByUser"
+            [ngClass]="{'pro-account': user.accountTypeId == 2}">
+            <div class="list-item-main">
+                <div class="list-item-image">
+                    <a [routerLink]="['/user', user.id]">
+                        <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
+                            alt="">
+                    </a>
+                </div>
+
+                <div class="list-item-content flex-full">
+                    <div class="list-item-title">
+                        <a [routerLink]="['/user', user.id]">
+                            {{ user.displayName }}
+                            <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
+                            <span *ngIf="user.userSummary?.positives" class="positives-label">+{{ user.userSummary?.positives
+                                }}</span>
+                            <span *ngIf="user.userSummary?.negatives" class="negatives-label">-{{ user.userSummary?.negatives
+                                }}</span>
+                        </a>
+                    </div>
+                    <div class="list-item-meta custom-separator">
+                        <span>ID {{ user.id }}</span>
+                        <span>{{ user.location || 'Sin especificar' }}</span>
+                        <span appDaysSinceLogin="{{ user.daysSinceLogin }}"></span>
+                    </div>
+                </div>
+                <div class="list-item-statics">
+                    <div>
+                        <span class="list-item-title">{{ user.userSummary?.wishing | number:'':'es' }}</span>
+                        <span class="list-item-meta">Busca</span>
+                    </div>
+                    <div>
+                        <span class="list-item-title">{{ user.userSummary?.trading | number:'':'es' }}</span>
+                        <span class="list-item-meta">Cambia</span>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="user?.bio" class="list-item-desc">
+                <p [innerHTML]="user?.bio | sanitizeHtml"></p>
+            </div>
+        </li>
+    </ul>
+
+    <div *ngIf="paginator.last_page > 1" class="pagination-wrapper">
+        <ul class="pagination">
+            <li class="pagination-prev">
+                <a role="button" (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))"
+                    [disabled]="pageSelected == 1" class="btn" mat-raised-button tabindex="-1">
+                    <mat-icon inline="true">navigate_before</mat-icon>
+                </a>
+            </li>
+            <li>
+                <select name="" (change)="onPageChange(selectPage.value)" #selectPage>
+                    <option *ngFor="let item of [].constructor(paginator.last_page); index as i" [value]="i+1"
+                        [selected]="(i+1) == pageSelected">
+                        Página {{ i+1 }} de {{ paginator.last_page }}
+                    </option>
+                </select>
+            </li>
+            <li class="pagination-next">
+                <a role="button"
+                    (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
+                    [disabled]="pageSelected == paginator.last_page" class="btn" mat-raised-button>
+                    <mat-icon inline="true">navigate_next</mat-icon>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

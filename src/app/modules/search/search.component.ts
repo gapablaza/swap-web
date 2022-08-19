@@ -3,15 +3,9 @@ import es from '@angular/common/locales/es';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { orderBy } from 'lodash';
-import { catchError, of, switchMap } from 'rxjs';
+import { catchError, filter, first, of, switchMap, tap } from 'rxjs';
 
-import {
-  Collection,
-  DEFAULT_COLLECTION_IMG,
-  DEFAULT_USER_PROFILE_IMG,
-  SearchService,
-  User,
-} from 'src/app/core';
+import { Collection, Pagination, SearchService, User } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 
 @Component({
@@ -21,81 +15,79 @@ import { UIService } from 'src/app/shared';
 })
 export class SearchComponent implements OnInit {
   users: User[] = [];
-  showedUsers: User[] = [];
-  defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   collections: Collection[] = [];
-  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
-  showedCollections: Collection[] = [];
+  paginator: Pagination = {} as Pagination;
+  tabsRoute = ['collection', 'user', 'publisher'];
+  pageSelected = 1;
+  selectedTabIndex = 0;
 
   searchedTxt = '';
   searchTxt = '';
-  colFilterText = '';
-  colSortOptionSelected = 'relevance';
-  colSortOptions = [
-    {
-      selectName: 'Mejor resultado',
-      selectValue: 'relevance',
-      arrayFields: ['relevance', 'name'],
-      arrayOrders: ['desc', 'asc'],
-    },
-    {
-      selectName: 'Nombre',
-      selectValue: 'name',
-      arrayFields: ['name'],
-      arrayOrders: ['asc'],
-    },
-    {
-      selectName: 'Más antiguos',
-      selectValue: 'year-',
-      arrayFields: ['year', 'name'],
-      arrayOrders: ['asc', 'asc'],
-    },
-    {
-      selectName: 'Más nuevos',
-      selectValue: 'year',
-      arrayFields: ['year', 'name'],
-      arrayOrders: ['desc', 'asc'],
-    },
-    {
-      selectName: 'Editorial',
-      selectValue: 'publisher',
-      arrayFields: ['publisher.data.name', 'name'],
-      arrayOrders: ['asc', 'asc'],
-    },
-  ];
 
-  userFilterText = '';
-  userSortOptionSelected = 'relevance';
-  userSortOptions = [
-    {
-      selectName: 'Mejor resultado',
-      selectValue: 'relevance',
-      arrayFields: ['relevance', 'positives', 'displayName'],
-      arrayOrders: ['desc', 'desc', 'asc'],
-    },
-    {
-      selectName: 'Nombre',
-      selectValue: 'name',
-      arrayFields: ['displayName', 'positives'],
-      arrayOrders: ['asc', 'desc'],
-    },
-    {
-      selectName: 'Vistos ultimamente',
-      selectValue: 'last-login',
-      arrayFields: ['daysSinceLogin', 'positives', 'displayName'],
-      arrayOrders: ['asc', 'desc', 'asc'],
-    },
-    {
-      selectName: 'Más positivas',
-      selectValue: 'positives',
-      arrayFields: ['positives', 'displayName'],
-      arrayOrders: ['desc', 'asc'],
-    },
-  ];
-  showUserFilters = false;
-  showColFilters = false;
   showSerchHint = false;
   isLoaded = false;
+
+  // colSortOptionSelected = 'relevance';
+  // colSortOptions = [
+  //   {
+  //     selectName: 'Mejor resultado',
+  //     selectValue: 'relevance',
+  //     arrayFields: ['relevance', 'name'],
+  //     arrayOrders: ['desc', 'asc'],
+  //   },
+  //   {
+  //     selectName: 'Nombre',
+  //     selectValue: 'name',
+  //     arrayFields: ['name'],
+  //     arrayOrders: ['asc'],
+  //   },
+  //   {
+  //     selectName: 'Más antiguos',
+  //     selectValue: 'year-',
+  //     arrayFields: ['year', 'name'],
+  //     arrayOrders: ['asc', 'asc'],
+  //   },
+  //   {
+  //     selectName: 'Más nuevos',
+  //     selectValue: 'year',
+  //     arrayFields: ['year', 'name'],
+  //     arrayOrders: ['desc', 'asc'],
+  //   },
+  //   {
+  //     selectName: 'Editorial',
+  //     selectValue: 'publisher',
+  //     arrayFields: ['publisher.data.name', 'name'],
+  //     arrayOrders: ['asc', 'asc'],
+  //   },
+  // ];
+
+  // userSortOptionSelected = 'relevance';
+  // userSortOptions = [
+  //   {
+  //     selectName: 'Mejor resultado',
+  //     selectValue: 'relevance',
+  //     arrayFields: ['relevance', 'positives', 'displayName'],
+  //     arrayOrders: ['desc', 'desc', 'asc'],
+  //   },
+  //   {
+  //     selectName: 'Nombre',
+  //     selectValue: 'name',
+  //     arrayFields: ['displayName', 'positives'],
+  //     arrayOrders: ['asc', 'desc'],
+  //   },
+  //   {
+  //     selectName: 'Vistos ultimamente',
+  //     selectValue: 'last-login',
+  //     arrayFields: ['daysSinceLogin', 'positives', 'displayName'],
+  //     arrayOrders: ['asc', 'desc', 'asc'],
+  //   },
+  //   {
+  //     selectName: 'Más positivas',
+  //     selectValue: 'positives',
+  //     arrayFields: ['positives', 'displayName'],
+  //     arrayOrders: ['desc', 'asc'],
+  //   },
+  // ];
 
   constructor(
     private searchSrv: SearchService,
@@ -107,55 +99,80 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
     registerLocaleData(es);
 
-    this.route.queryParams
+    this.route.queryParamMap
       .pipe(
-        switchMap((params) => {
+        tap((params) => {
+          // inicializa variables
           this.isLoaded = false;
           this.showSerchHint = false;
           this.searchedTxt = '';
+          this.pageSelected = 1;
           this.users = [];
-          this.showedUsers = [];
           this.collections = [];
-          this.showedCollections = [];
+          this.paginator = {} as Pagination;
 
-          if (params['q']) {
-            this.searchedTxt = params['q'];
-            this.searchTxt = this.searchedTxt;
-            return this.searchSrv.searchByText(this.searchedTxt).pipe(
+          // obtiene posibles parámetros
+          const query = params.get('q');
+          const page = params.get('page');
+          const type = params.get('type');
+          const sortBy = params.get('sortBy');
+
+          if (query && query.trim().length >= 2) {
+            this.searchTxt = query.trim();
+            this.searchedTxt = query.trim();
+          }
+
+          // https://stackoverflow.com/a/24457420
+          if (page && /^\d+$/.test(page)) {
+            this.pageSelected = parseInt(page);
+          }
+
+          let tempIndex = this.tabsRoute.findIndex((route) => route == type);
+          this.selectedTabIndex = tempIndex >= 0 ? tempIndex : 0;
+        }),
+        filter((params) => {
+          if ((params.get('q') || '').trim().length >= 2) {
+            return true;
+          } else {
+            this.showSerchHint = true;
+            this.isLoaded = true;
+            return false;
+          }
+        }),
+        switchMap((params) => {
+          // this.searchedTxt = params['q'].trim();
+          // this.searchTxt = this.searchedTxt;
+          return this.searchSrv
+            .search({
+              query: this.searchedTxt,
+              page: this.pageSelected,
+              type: this.tabsRoute[this.selectedTabIndex],
+            })
+            .pipe(
               catchError((error) => {
                 if (error.error && error.error.message) {
                   this.uiSrv.showError(error.error.message);
                 }
                 return of({
-                  users: [],
-                  totalUsers: 0,
-                  collections: [],
-                  totalCollections: 0,
+                  collections: [] as Collection[],
+                  users: [] as User[],
+                  paginator: {} as Pagination,
                 });
-              })
+              }),
+              first()
             );
-          } else {
-            // TO DO: Mostrar colecciones y usuarios "populares" obtenidos desde Home (caché)
-            this.showSerchHint = true;
-            return of({
-              users: [],
-              totalUsers: 0,
-              collections: [],
-              totalCollections: 0,
-            });
-          }
         })
       )
       .subscribe({
         next: (result) => {
-          this.collections = result.collections;
-          this.showedCollections = [...result.collections];
-          this.sortShowedCollections();
 
-          this.users = result.users;
-          this.showedUsers = [...result.users];
-          this.sortShowedUsers();
-
+          this.collections = result.collections.sort(
+            (a, b) => (b.relevance || 0) - (a.relevance || 0)
+          );
+          this.users = result.users.sort(
+            (a, b) => (b.userSummary?.relevance || 0) - (a.userSummary?.relevance || 0)
+          );
+          this.paginator = result.paginator;
           this.isLoaded = true;
         },
         error: (err) => {
@@ -169,129 +186,74 @@ export class SearchComponent implements OnInit {
     if (this.searchTxt.trim().length < 2) {
       this.uiSrv.showSnackbar('Debes ingresar al menos 2 caracteres');
       return;
-    };
+    }
+
+    let actualParams = this.route.snapshot.queryParams;
+    this.router.navigate(['/search'], {
+      relativeTo: this.route,
+      queryParams: {
+        ...actualParams,
+        q: this.searchTxt,
+        page: null,
+      },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  onTabChanged($event: any) {
+    let actualParams = this.route.snapshot.queryParams;
 
     this.router.navigate(['/search'], {
       relativeTo: this.route,
       queryParams: {
-        q: this.searchTxt,
+        ...actualParams,
+        type: this.tabsRoute[$event.index],
+        page: null,
+      },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  onPageChanged($event: number) {
+    let actualParams = this.route.snapshot.queryParams;
+
+    this.router.navigate(['/search'], {
+      relativeTo: this.route,
+      queryParams: {
+        ...actualParams,
+        page: $event,
       },
     });
   }
 
-  trackByCollection(index: number, item: Collection): number {
-    return item.id;
-  }
+  
+  // onCollectionSort() {
+  //   this.sortShowedCollections();
+  // }
 
-  onCollectionFilter() {
-    this.filterShowedCollections();
-  }
+  // sortShowedCollections() {
+  //   let sortParams = this.colSortOptions.find(
+  //     (e) => e.selectValue == this.colSortOptionSelected
+  //   );
+  //   this.showedCollections = orderBy(
+  //     [...this.showedCollections],
+  //     sortParams?.arrayFields,
+  //     sortParams?.arrayOrders as ['asc' | 'desc']
+  //   );
+  // }
 
-  onClearCollectionFilter() {
-    this.colFilterText = '';
-    this.filterShowedCollections();
-  }
+  // onUserSort() {
+  //   this.sortShowedUsers();
+  // }
 
-  onCollectionSort() {
-    this.sortShowedCollections();
-  }
-
-  sortShowedCollections() {
-    let sortParams = this.colSortOptions.find(
-      (e) => e.selectValue == this.colSortOptionSelected
-    );
-    this.showedCollections = orderBy(
-      [...this.showedCollections],
-      sortParams?.arrayFields,
-      sortParams?.arrayOrders as ['asc' | 'desc']
-    );
-  }
-
-  filterShowedCollections() {
-    let tempCollections = this.collections;
-    // 1.- check filter by text
-    // check at least 2 chars for search
-    if (this.colFilterText.length > 1) {
-      tempCollections = [
-        ...this.collections.filter((elem: Collection) => {
-          return (
-            elem.name
-              .toLocaleLowerCase()
-              .indexOf(this.colFilterText.toLocaleLowerCase()) !== -1 ||
-            elem.publisher.data.name
-              .toLocaleLowerCase()
-              .indexOf(this.colFilterText.toLocaleLowerCase()) !== -1 ||
-            elem.id
-              .toString()
-              .indexOf(this.colFilterText.toLocaleLowerCase()) !== -1 ||
-            elem.year
-              .toString()
-              .indexOf(this.colFilterText.toLocaleLowerCase()) !== -1
-          );
-        }),
-      ];
-    }
-
-    this.showedCollections = [...tempCollections];
-    // 3.- sorting
-    this.sortShowedCollections();
-  }
-
-  trackByUsers(index: number, item: User): number {
-    return item.id;
-  }
-
-  onUserFilter() {
-    this.filterShowedUsers();
-  }
-
-  onClearUserFilter() {
-    this.userFilterText = '';
-    this.filterShowedUsers();
-  }
-
-  onUserSort() {
-    this.sortShowedUsers();
-  }
-
-  sortShowedUsers() {
-    let sortParams = this.userSortOptions.find(
-      (e) => e.selectValue == this.userSortOptionSelected
-    );
-    this.showedUsers = orderBy(
-      [...this.showedUsers],
-      sortParams?.arrayFields,
-      sortParams?.arrayOrders as ['asc' | 'desc']
-    );
-  }
-
-  filterShowedUsers() {
-    let tempUsers = this.users;
-    // 1.- check filter by text
-    // check at least 2 chars for search
-    if (this.userFilterText.length > 1) {
-      tempUsers = [
-        ...this.users.filter((elem: User) => {
-          return (
-            elem.displayName
-              .toLocaleLowerCase()
-              .indexOf(this.userFilterText.toLocaleLowerCase()) !== -1 ||
-            (elem.location || '')
-              .toLocaleLowerCase()
-              .indexOf(this.userFilterText.toLocaleLowerCase()) !== -1 ||
-            (elem.bio || '')
-              .toLocaleLowerCase()
-              .indexOf(this.userFilterText.toLocaleLowerCase()) !== -1 ||
-            elem.id
-              .toString()
-              .indexOf(this.userFilterText.toLocaleLowerCase()) !== -1
-          );
-        }),
-      ];
-    }
-
-    this.showedUsers = [...tempUsers];
-    // 3.- sorting
-    this.sortShowedUsers();
-  }
+  // sortShowedUsers() {
+  //   let sortParams = this.userSortOptions.find(
+  //     (e) => e.selectValue == this.userSortOptionSelected
+  //   );
+  //   this.showedUsers = orderBy(
+  //     [...this.showedUsers],
+  //     sortParams?.arrayFields,
+  //     sortParams?.arrayOrders as ['asc' | 'desc']
+  //   );
+  // }
 }

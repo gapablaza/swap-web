@@ -41,4 +41,16 @@ section.search {
             padding: 0 40px;
         }
     }
+
+    .controls-std {
+        font-size: 0.85rem;
+
+        p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+    }
+    .pagination-wrapper {
+        margin-top: 2rem;
+    }
 }

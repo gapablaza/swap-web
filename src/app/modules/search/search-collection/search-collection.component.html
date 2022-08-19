@@ -1,0 +1,71 @@
+<div class="card">
+    <div class="controls-std">
+        <div class="controls-std-main">
+            <!-- <div class="controls-std-order">
+                <mat-form-field appearance="outline">
+                    <mat-label>Ordenar por</mat-label>
+                    <mat-select (selectionChange)="onCollectionSort()" [(value)]="colSortOptionSelected">
+                        <mat-option *ngFor="let option of colSortOptions" [value]="option.selectValue">
+                            {{ option.selectName }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div> -->
+            <div class="controls-std-settings">
+                <p>
+                    Registros {{ paginator.from | number:'':'es' }} - {{ paginator.to | number:'':'es' }} de {{
+                    paginator.total | number:'':'es' }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <ul class="list-std">
+        <li *ngFor="let col of showedCollections ; trackBy: trackByCollection" class="list-std-item"
+            [ngClass]="{'completed': col.userData?.completed}">
+            <div class="list-item-main">
+                <div class="list-item-content flex-full">
+                    <div class="list-item-title">
+                        <a [routerLink]="['/c', col.name | slugify, col.id]">
+                            {{ col.name }}
+                        </a>
+                    </div>
+                    <div class="list-item-meta custom-separator">
+                        <span>{{ col.year }}</span>
+                        <span>{{ col.items || '???' }} ítems</span>
+                        <span>{{ col.publisher.data.name }}</span>
+                    </div>
+                </div>
+                <div class="list-item-bg" [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image">
+                    <div></div>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+    <div *ngIf="paginator.last_page > 1" class="pagination-wrapper">
+        <ul class="pagination">
+            <li class="pagination-prev">
+                <a role="button" (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))"
+                    [disabled]="pageSelected == 1" class="btn" mat-raised-button tabindex="-1">
+                    <mat-icon inline="true">navigate_before</mat-icon>
+                </a>
+            </li>
+            <li>
+                <select name="" (change)="onPageChange(selectPage.value)" #selectPage>
+                    <option *ngFor="let item of [].constructor(paginator.last_page); index as i" [value]="i+1"
+                        [selected]="(i+1) == pageSelected">
+                        Página {{ i+1 }} de {{ paginator.last_page }}
+                    </option>
+                </select>
+            </li>
+            <li class="pagination-next">
+                <a role="button"
+                    (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
+                    [disabled]="pageSelected == paginator.last_page" class="btn" mat-raised-button>
+                    <mat-icon inline="true">navigate_next</mat-icon>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -73,6 +73,60 @@ export class SearchService {
     );
   }
 
+  search(options: {
+    query: string;
+    page?: number;
+    perPage?: number;
+    type?: string;
+    sortBy?: string;
+  }): Observable<{
+    collections: Collection[];
+    users: User[];
+    paginator: Pagination;
+  }> {
+    return this.apiSrv
+      .get(
+        '/v3/search?q=' + options.query,
+        new HttpParams({
+          fromObject: {
+            page: options.page || 1,
+            perPage: options.perPage || 50,
+            type: options.type || 'collection',
+            sortBy: options.sortBy || 'relevance',
+          },
+        })
+      )
+      .pipe(
+        map((data: any) => {
+          let tempUsers: User[] = [];
+          let tempUserSummary: UserSummary = {} as UserSummary;
+
+          data.users.forEach((user: any) => {
+            tempUserSummary = {
+              collections: user.collections || undefined,
+              completed: user.completed || undefined,
+              negatives: user.negatives || undefined,
+              positives: user.positives || undefined,
+              relevance: user.relevance || undefined,
+              trading: user.trading || undefined,
+              wishing: user.wishing || undefined,
+            };
+
+            tempUsers.push({
+              ...user,
+              userSummary: tempUserSummary,
+            });
+          });
+
+          return {
+            collections: data.collections as Collection[],
+            users: tempUsers,
+            paginator: data.paginator as Pagination,
+          };
+        })
+      );
+  }
+
   // addToHistory(query: string): void {
   //     let q: string[] = [];
   //     q = JSON.parse(this.storageSrv.getString('searches'));
