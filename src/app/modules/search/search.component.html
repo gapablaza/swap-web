@@ -11,29 +11,27 @@
         </div>
         <h1>{{ searchedTxt }}</h1>
         <!-- <p *ngIf="users.length || collections.length">Navega por {{ collections.length }} colecciones y {{ users.length }} usuarios</p> -->
-        <div *ngIf="!users.length && !collections.length && !showSerchHint" class="empty-content">
-            <h2>(¬‿¬)</h2>
-            <p>No hemos encontrado resultados para el término utilizado, si pruebas con otro?</p>
-        </div>
         <div *ngIf="showSerchHint" class="empty-content">
             <h2>(˚Δ˚)</h2>
             <p>Ingresa un término acá arriba para buscar colecciones o usuarios!</p>
         </div>
     </div>
 
-    <mat-tab-group *ngIf="users.length || collections.length" [(selectedIndex)]="selectedTabIndex"
+    <mat-tab-group *ngIf="!showSerchHint" [(selectedIndex)]="selectedTabIndex"
         (selectedTabChange)="onTabChanged($event);">
         <mat-tab label="Colecciones">
             <ng-template matTabContent>
                 <app-search-collection [collections]="collections" [paginator]="paginator"
-                    (onPageSelected)="onPageChanged($event)">
+                    (onPageSelected)="onPageChanged($event)"
+                    (onOrderSelected)="onOrderChanged($event)">
                 </app-search-collection>
             </ng-template>
         </mat-tab>
         <mat-tab label="Usuarios">
             <ng-template matTabContent>
                 <app-search-user [users]="users" [paginator]="paginator"
-                    (onPageSelected)="onPageChanged($event)">
+                    (onPageSelected)="onPageChanged($event)"
+                    (onOrderSelected)="onOrderChanged($event)">
                 </app-search-user>
             </ng-template>
         </mat-tab>

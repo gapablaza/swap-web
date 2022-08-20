@@ -2,7 +2,6 @@ import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { orderBy } from 'lodash';
 import { catchError, filter, first, of, switchMap, tap } from 'rxjs';
 
 import { Collection, Pagination, SearchService, User } from 'src/app/core';
@@ -18,76 +17,16 @@ export class SearchComponent implements OnInit {
   collections: Collection[] = [];
   paginator: Pagination = {} as Pagination;
   tabsRoute = ['collection', 'user', 'publisher'];
-  pageSelected = 1;
   selectedTabIndex = 0;
+  pageSelected = 1;
+  ordersOptions = ['relevance', 'title-ASC', 'title-DESC'];
+  orderSelected = 'relevance';
 
   searchedTxt = '';
   searchTxt = '';
 
   showSerchHint = false;
   isLoaded = false;
-
-  // colSortOptionSelected = 'relevance';
-  // colSortOptions = [
-  //   {
-  //     selectName: 'Mejor resultado',
-  //     selectValue: 'relevance',
-  //     arrayFields: ['relevance', 'name'],
-  //     arrayOrders: ['desc', 'asc'],
-  //   },
-  //   {
-  //     selectName: 'Nombre',
-  //     selectValue: 'name',
-  //     arrayFields: ['name'],
-  //     arrayOrders: ['asc'],
-  //   },
-  //   {
-  //     selectName: 'Más antiguos',
-  //     selectValue: 'year-',
-  //     arrayFields: ['year', 'name'],
-  //     arrayOrders: ['asc', 'asc'],
-  //   },
-  //   {
-  //     selectName: 'Más nuevos',
-  //     selectValue: 'year',
-  //     arrayFields: ['year', 'name'],
-  //     arrayOrders: ['desc', 'asc'],
-  //   },
-  //   {
-  //     selectName: 'Editorial',
-  //     selectValue: 'publisher',
-  //     arrayFields: ['publisher.data.name', 'name'],
-  //     arrayOrders: ['asc', 'asc'],
-  //   },
-  // ];
-
-  // userSortOptionSelected = 'relevance';
-  // userSortOptions = [
-  //   {
-  //     selectName: 'Mejor resultado',
-  //     selectValue: 'relevance',
-  //     arrayFields: ['relevance', 'positives', 'displayName'],
-  //     arrayOrders: ['desc', 'desc', 'asc'],
-  //   },
-  //   {
-  //     selectName: 'Nombre',
-  //     selectValue: 'name',
-  //     arrayFields: ['displayName', 'positives'],
-  //     arrayOrders: ['asc', 'desc'],
-  //   },
-  //   {
-  //     selectName: 'Vistos ultimamente',
-  //     selectValue: 'last-login',
-  //     arrayFields: ['daysSinceLogin', 'positives', 'displayName'],
-  //     arrayOrders: ['asc', 'desc', 'asc'],
-  //   },
-  //   {
-  //     selectName: 'Más positivas',
-  //     selectValue: 'positives',
-  //     arrayFields: ['positives', 'displayName'],
-  //     arrayOrders: ['desc', 'asc'],
-  //   },
-  // ];
 
   constructor(
     private searchSrv: SearchService,
@@ -107,6 +46,7 @@ export class SearchComponent implements OnInit {
           this.showSerchHint = false;
           this.searchedTxt = '';
           this.pageSelected = 1;
+          this.orderSelected = 'relevance';
           this.users = [];
           this.collections = [];
           this.paginator = {} as Pagination;
@@ -129,6 +69,9 @@ export class SearchComponent implements OnInit {
 
           let tempIndex = this.tabsRoute.findIndex((route) => route == type);
           this.selectedTabIndex = tempIndex >= 0 ? tempIndex : 0;
+
+          let tempOrder = this.ordersOptions.findIndex((order) => order == sortBy);
+          this.orderSelected = tempOrder >= 0 ? this.ordersOptions[tempOrder] : 'relevance';
         }),
         filter((params) => {
           if ((params.get('q') || '').trim().length >= 2) {
@@ -140,13 +83,12 @@ export class SearchComponent implements OnInit {
           }
         }),
         switchMap((params) => {
-          // this.searchedTxt = params['q'].trim();
-          // this.searchTxt = this.searchedTxt;
           return this.searchSrv
             .search({
               query: this.searchedTxt,
               page: this.pageSelected,
               type: this.tabsRoute[this.selectedTabIndex],
+              sortBy: this.orderSelected,
             })
             .pipe(
               catchError((error) => {
@@ -165,13 +107,8 @@ export class SearchComponent implements OnInit {
       )
       .subscribe({
         next: (result) => {
-
-          this.collections = result.collections.sort(
-            (a, b) => (b.relevance || 0) - (a.relevance || 0)
-          );
-          this.users = result.users.sort(
-            (a, b) => (b.userSummary?.relevance || 0) - (a.userSummary?.relevance || 0)
-          );
+          this.collections = result.collections;
+          this.users = result.users;
           this.paginator = result.paginator;
           this.isLoaded = true;
         },
@@ -189,6 +126,7 @@ export class SearchComponent implements OnInit {
     }
 
     let actualParams = this.route.snapshot.queryParams;
+
     this.router.navigate(['/search'], {
       relativeTo: this.route,
       queryParams: {
@@ -226,34 +164,15 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  
-  // onCollectionSort() {
-  //   this.sortShowedCollections();
-  // }
+  onOrderChanged($event: string) {
+    let actualParams = this.route.snapshot.queryParams;
 
-  // sortShowedCollections() {
-  //   let sortParams = this.colSortOptions.find(
-  //     (e) => e.selectValue == this.colSortOptionSelected
-  //   );
-  //   this.showedCollections = orderBy(
-  //     [...this.showedCollections],
-  //     sortParams?.arrayFields,
-  //     sortParams?.arrayOrders as ['asc' | 'desc']
-  //   );
-  // }
-
-  // onUserSort() {
-  //   this.sortShowedUsers();
-  // }
-
-  // sortShowedUsers() {
-  //   let sortParams = this.userSortOptions.find(
-  //     (e) => e.selectValue == this.userSortOptionSelected
-  //   );
-  //   this.showedUsers = orderBy(
-  //     [...this.showedUsers],
-  //     sortParams?.arrayFields,
-  //     sortParams?.arrayOrders as ['asc' | 'desc']
-  //   );
-  // }
+    this.router.navigate(['/search'], {
+      relativeTo: this.route,
+      queryParams: {
+        ...actualParams,
+        sortBy: $event,
+      },
+    });
+  }
 }

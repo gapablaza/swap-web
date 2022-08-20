@@ -103,13 +103,13 @@ export class SearchService {
 
           data.users.forEach((user: any) => {
             tempUserSummary = {
-              collections: user.collections || undefined,
-              completed: user.completed || undefined,
-              negatives: user.negatives || undefined,
-              positives: user.positives || undefined,
-              relevance: user.relevance || undefined,
-              trading: user.trading || undefined,
-              wishing: user.wishing || undefined,
+              collections: user.hasOwnProperty('collections') ? user.collections : undefined,
+              completed: user.hasOwnProperty('completed') ? user.completed : undefined,
+              negatives: user.hasOwnProperty('negatives') ? user.negatives : undefined,
+              positives: user.hasOwnProperty('positives') ? user.positives : undefined,
+              relevance: user.hasOwnProperty('relevance') ? user.relevance : undefined,
+              trading: user.hasOwnProperty('trading') ? user.trading : undefined,
+              wishing: user.hasOwnProperty('wishing') ? user.wishing : undefined,
             };
 
             tempUsers.push({

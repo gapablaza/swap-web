@@ -1,7 +1,12 @@
-<div class="card">
+<div *ngIf="!collections.length" class="card empty-content">
+    <h2>(¬‿¬)</h2>
+    <p>No hemos encontrado colecciones para el término utilizado, si pruebas con otro?</p>
+</div>
+
+<div *ngIf="collections.length" class="card">
     <div class="controls-std">
         <div class="controls-std-main">
-            <!-- <div class="controls-std-order">
+            <div class="controls-std-order">
                 <mat-form-field appearance="outline">
                     <mat-label>Ordenar por</mat-label>
                     <mat-select (selectionChange)="onCollectionSort()" [(value)]="colSortOptionSelected">
@@ -10,7 +15,7 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-            </div> -->
+            </div>
             <div class="controls-std-settings">
                 <p>
                     Registros {{ paginator.from | number:'':'es' }} - {{ paginator.to | number:'':'es' }} de {{
