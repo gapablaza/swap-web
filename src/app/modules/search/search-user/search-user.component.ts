@@ -6,7 +6,7 @@ import { DEFAULT_USER_PROFILE_IMG, Pagination, User } from 'src/app/core';
 @Component({
   selector: 'app-search-user',
   templateUrl: './search-user.component.html',
-  styleUrls: ['./search-user.component.scss']
+  styleUrls: ['./search-user.component.scss'],
 })
 export class SearchUserComponent implements OnInit {
   @Input() users: User[] = [];
@@ -42,7 +42,9 @@ export class SearchUserComponent implements OnInit {
       (sort) => sort.selectValue == tempSort
     );
     this.userSortOptionSelected =
-      tempIndex >= 0 ? this.userSortOptions[tempIndex].selectValue : 'relevance';
+      tempIndex >= 0
+        ? this.userSortOptions[tempIndex].selectValue
+        : 'relevance';
     this.pageSelected = this.paginator.current_page;
     this.showedUsers = [...this.users];
   }

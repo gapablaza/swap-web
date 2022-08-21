@@ -1,12 +1,37 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Collection, Item, User } from '../models';
 
 import { ApiService } from './api.service';
 
 @Injectable()
 export class ItemService {
   constructor(private apiSrv: ApiService) {}
+
+  get(
+    itemId: number
+  ): Observable<{
+    item: Item;
+    collection: Collection;
+    wishing: User[];
+    trading: User[];
+  }> {
+    return this.apiSrv
+      .get('/v2/items/' + itemId + '?include=collection.publisher')
+      .pipe(
+        map((data: { data: any }) => {
+          console.log(data.data);
+          
+          return {
+            item: data.data as Item,
+            collection: data.data.collection.data as Collection,
+            wishing: data.data.searching as User[],
+            trading: data.data.trading as User[],
+          };
+        })
+      );
+  }
 
   addToWishlist(itemId: number): Observable<string> {
     return this.apiSrv

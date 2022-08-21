@@ -231,6 +231,15 @@ section.collection {
       margin-bottom: 1rem;
     }
 
+    .collection-items-table {
+      .mat-column-name {
+        width: 100px;
+      }
+      .mat-column-actions {
+        width: 100px;
+      }
+    }
+
     .collection-manage {
 
       .manage-list-main {

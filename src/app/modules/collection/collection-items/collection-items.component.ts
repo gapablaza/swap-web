@@ -22,7 +22,7 @@ import { CollectionOnlyService } from '../collection-only.service';
 export class CollectionItemsComponent implements OnInit, OnDestroy {
   items: Item[] = [];
   // displayedColumns: string[] = ['name', 'description', 'difficulty'];
-  displayedColumns: string[] = ['name', 'description'];
+  displayedColumns: string[] = ['name', 'description', 'actions'];
   isLoaded = false;
   subs: Subscription = new Subscription();
 

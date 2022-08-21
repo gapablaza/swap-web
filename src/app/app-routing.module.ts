@@ -25,6 +25,11 @@ const routes: Routes = [
       import('./modules/user/user.module').then((m) => m.UserModule),
   },
   {
+    path: 'item',
+    loadChildren: () =>
+      import('./modules/item/item.module').then((m) => m.ItemModule),
+  },
+  {
     path: 'search',
     loadChildren: () =>
       import('./modules/search/search.module').then((m) => m.SearchModule),

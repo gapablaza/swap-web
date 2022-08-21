@@ -1,0 +1,29 @@
+section.item {
+    display: flex;
+    flex-direction: column;
+
+    margin-top: var(--gap-vertical);
+    margin-bottom: var(--gap-vertical);
+
+    &.item-section {
+        column-gap: 40px;
+
+        h1,
+        h2 {
+            padding: 0 1.5rem;
+
+            @media (min-width: 992px) {
+                padding: 0;
+            }
+        }
+
+        h2 a {
+            text-decoration: none;
+            color: var(--text-secondary);
+        }
+
+        .controls-std {
+            margin-top: 1rem;
+        }
+    }
+}
