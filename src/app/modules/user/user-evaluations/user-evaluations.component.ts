@@ -1,63 +1,122 @@
 import { Component, OnInit } from '@angular/core';
-import { concatMap, map, of } from 'rxjs';
+import { concatMap, filter, first, tap } from 'rxjs';
 import { orderBy } from 'lodash';
 
-import { DEFAULT_USER_PROFILE_IMG, Evaluation, User, UserService } from 'src/app/core';
+import {
+  AuthService,
+  DEFAULT_USER_PROFILE_IMG,
+  Evaluation,
+  User,
+  UserService,
+} from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UIService } from 'src/app/shared';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-evaluations',
   templateUrl: './user-evaluations.component.html',
-  styleUrls: ['./user-evaluations.component.scss']
+  styleUrls: ['./user-evaluations.component.scss'],
 })
 export class UserEvaluationsComponent implements OnInit {
   user: User = {} as User;
+  isAuth = false;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   evaluations: Evaluation[] = [];
   showedEvaluations: Evaluation[] = [];
+  disabled = true;
+  disabledData: any;
+
+  evaluationForm!: FormGroup;
 
   searchText = '';
-  typeSelected = "0";
-  
+  typeSelected = '0';
+
   showFilters = false;
+  isSaving = false;
   isLoaded = false;
 
   constructor(
     private userSrv: UserService,
     private userOnlySrv: UserOnlyService,
-  ) { }
+    private authSrv: AuthService,
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private uiSrv: UIService
+  ) {}
 
   ngOnInit(): void {
     this.userOnlySrv.user$
       .pipe(
-        concatMap(user => {
-          if (user.id) {
-            this.user = user;
-            return this.userSrv.getEvaluations(user.id);
-          } else {
-            return of([]);
-          }
-        })
+        filter(user => user.id != null),
+        tap(user => {
+          this.isLoaded = false;
+          this.user = user;
+        }),
+        concatMap((user) => this.userSrv.getEvaluations(user.id))
       )
-      .subscribe(evaluations => {
-        this.evaluations = evaluations
-          .map(e => {
-            if (e.previousEvaluationsCounter) {
-              let prevEvalArray = e.previousEvaluationsData?.sort((pa, pb) => {
-                return (pa.epochCreationTime) < (pb.epochCreationTime) ? 1 : -1;
-              })
-              return { ...e, previousEvaluationsData: prevEvalArray };
-            } else {
-              return e;
-            }
-          });
+      .subscribe((resp) => {
+        this.evaluations = resp.evaluations.map((e) => {
+          if (e.previousEvaluationsCounter) {
+            let prevEvalArray = e.previousEvaluationsData?.sort((pa, pb) => {
+              return pa.epochCreationTime < pb.epochCreationTime ? 1 : -1;
+            });
+            return { ...e, previousEvaluationsData: prevEvalArray };
+          } else {
+            return e;
+          }
+        });
         this.showedEvaluations = [...this.evaluations];
         this.sortShowedEvaluations();
-        if (this.user.id) {
-          this.isLoaded = true;
-        }
+        this.disabled = resp.disabled;
+        this.disabledData = resp.disabledData;
+        this.isLoaded = true;
       });
+
+    this.evaluationForm = this.formBuilder.group({
+      type: ['', Validators.required],
+      comment: ['', [Validators.required, Validators.maxLength(255)]],
+    });
+
+    this.authSrv.isAuth.subscribe(authState => {
+      this.isAuth = authState;
+    });
+
     console.log('from UserEvaluationsComponent');
+  }
+
+  get form() {
+    return this.evaluationForm.controls;
+  }
+
+  onSubmit() {
+    if (this.evaluationForm.invalid) {
+      return;
+    }
+
+    this.isSaving = true;
+
+    let userId = this.user.id;
+    let typeId = +this.evaluationForm.value.type || 0;
+    let commentText = this.evaluationForm.value.comment || '';
+
+    this.userSrv
+      .addEvaluation(userId, typeId, commentText)
+      .pipe(first())
+      .subscribe({
+        next: (res) => {
+          this.uiSrv.showSuccess('Evaluación registrada exitosamente');
+          this.router.navigate(['user', this.user.id])
+            .then(() => window.location.reload());
+          this.isSaving = false;
+        },
+        error: (error) => {
+          console.log('addEvaluation error: ', error);
+          this.uiSrv.showError(error.error.message);
+          this.isSaving = false;
+        },
+      });
   }
 
   trackByEvaluation(index: number, item: Evaluation): number {
@@ -100,8 +159,9 @@ export class UserEvaluationsComponent implements OnInit {
             elem.user.data.displayName
               .toLocaleLowerCase()
               .indexOf(this.searchText.toLocaleLowerCase()) !== -1 ||
-            elem.user.data.id.toString().indexOf(this.searchText.toLocaleLowerCase()) !==
-              -1
+            elem.user.data.id
+              .toString()
+              .indexOf(this.searchText.toLocaleLowerCase()) !== -1
           );
         }),
       ];
@@ -119,5 +179,12 @@ export class UserEvaluationsComponent implements OnInit {
     this.showedEvaluations = [...tempEvaluations];
     // 3.- sorting
     this.sortShowedEvaluations();
+  }
+
+  navigateToForm() {
+    let x = document.querySelector('#evaluation');
+    if (x) {
+      x.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 }

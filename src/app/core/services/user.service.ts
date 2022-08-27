@@ -23,30 +23,28 @@ export class UserService {
   constructor(private apiSrv: ApiService) {}
 
   get(userId: number): Observable<User> {
-    return this.apiSrv
-      .get('/v2/users/' + userId)
-      .pipe(
-        map((data: { data: any }) => {
-          let tempUser: User = {} as User;
-          let tempUserSummary: UserSummary = {} as UserSummary;
+    return this.apiSrv.get('/v2/users/' + userId).pipe(
+      map((data: { data: any }) => {
+        let tempUser: User = {} as User;
+        let tempUserSummary: UserSummary = {} as UserSummary;
 
-          tempUserSummary = {
-            collections: data.data.collections,
-            completed: data.data.completedCollections,
-            negatives: data.data.negatives,
-            positives: data.data.positives,
-            trading: data.data.trading,
-            wishing: data.data.wishing,
-          };
+        tempUserSummary = {
+          collections: data.data.collections,
+          completed: data.data.completedCollections,
+          negatives: data.data.negatives,
+          positives: data.data.positives,
+          trading: data.data.trading,
+          wishing: data.data.wishing,
+        };
 
-          tempUser = {
-            ...data.data as User,
-            userSummary: tempUserSummary,
-          };
+        tempUser = {
+          ...(data.data as User),
+          userSummary: tempUserSummary,
+        };
 
-          return tempUser;
-        }
-      ));
+        return tempUser;
+      })
+    );
   }
 
   getCollections(
@@ -101,7 +99,16 @@ export class UserService {
       );
   }
 
-  getEvaluations(userId: number): Observable<Evaluation[]> {
+  getEvaluations(userId: number): Observable<{
+    evaluations: Evaluation[],
+    disabled: boolean,
+    disabledData?: {
+      disabledForAntiquity: boolean | number,
+      disabledForTime: boolean | number,
+      disabledForUser: boolean,
+      disabledUser: boolean,
+    };
+  }> {
     return this.apiSrv
       .get('/v2/users/' + userId + '/evaluations?include=user')
       .pipe(
@@ -148,16 +155,25 @@ export class UserService {
 
             evals.push(model);
           });
-          return evals;
+          return {
+            evaluations: evals,
+            disabled: data.disabled,
+            disabledData: {
+              disabledForAntiquity: data.disabledForAntiquity || undefined,
+              disabledForTime: data.disabledForTime || undefined,
+              disabledForUser: data.disabledForUser || undefined,
+              disabledUser: data.disabledUser || undefined,
+            },
+          };
         })
       );
   }
 
-  getEvaluatorStatus(userId: number): Observable<any> {
-    return this.apiSrv
-      .get('/v2/users/' + userId + '/evaluations?include=user')
-      .pipe(map((data) => data));
-  }
+  // getEvaluatorStatus(userId: number): Observable<any> {
+  //   return this.apiSrv
+  //     .get('/v2/users/' + userId + '/evaluations?include=user')
+  //     .pipe(map((data) => data));
+  // }
 
   addEvaluation(
     userId: number,

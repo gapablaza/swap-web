@@ -230,6 +230,37 @@ section.user {
   }
 }
 
+.user-evaluations {
+  .main-action {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .add-evaluation {
+    margin-top: 2rem;
+
+    h3 {
+      margin-top: 0;
+    }
+
+    mat-form-field {
+      display: block;
+      margin-top: 1rem;
+    }
+
+    .mat-button-base {
+      margin-top: 1rem;
+    }
+
+    .mat-hint {
+      font-size: 90%;
+      line-height: 1.125;
+      color: rgba(0, 0, 0, 0.6);
+    }
+
+  }
+}
 
 .user-evaluations ul.list-std {
   .list-item-main {
@@ -252,7 +283,8 @@ section.user {
   .list-item-desc {
     margin: 0.5rem 0 0;
   }
-  .list-item-main > a {
+
+  .list-item-main>a {
     position: absolute;
     bottom: 1rem;
     right: 1.5rem;
