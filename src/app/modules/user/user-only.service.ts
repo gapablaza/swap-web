@@ -1,29 +1,36 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, Observable } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, first, Observable } from 'rxjs';
+import { UserService } from 'src/app/core';
 
 import { User } from '../../core/models';
 
 @Injectable()
 export class UserOnlyService {
-  // private _user: User = {} as User;
   private _user = new BehaviorSubject<User>({} as User);
-  // user$: Observable<User> = this._user.asObservable();
-  user$: Observable<User> = this._user.asObservable().pipe(distinctUntilChanged());
+  user$: Observable<User> = this._user
+    .asObservable()
+    .pipe(distinctUntilChanged());
 
-  constructor() { }
+  constructor(private userSrv: UserService) {}
 
   setCurrentUser(user: User) {
-    // this._user = user;
     this._user.next(user);
   }
 
   getCurrentUser() {
-    // return this._user;
     return this._user.value;
   }
 
   cleanCurrentUser() {
-    // this._user = {} as User;
     this._user.next({} as User);
+  }
+
+  requestUserUpdate() {
+    this.userSrv
+      .get(this._user.value.id)
+      .pipe(first())
+      .subscribe((user) => {
+        this._user.next(user);
+      });
   }
 }

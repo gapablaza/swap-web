@@ -14,9 +14,9 @@
       <div class="empty-content" *ngIf="!evaluations.length">
         <h2>(>_<) </h2>
             <p>Todavía no hay evaluaciones, quién será el primero?</p>
-            <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
+            <!-- <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
               <mat-icon inline="true">library_books</mat-icon> Agregar Evaluación
-            </a>
+            </a> -->
       </div>
       <div *ngIf="!disabled" class="main-action">
         <a class="btn" mat-raised-button color="accent" (click)="navigateToForm()">

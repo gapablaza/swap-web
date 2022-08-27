@@ -12,7 +12,6 @@ import {
 import { UserOnlyService } from '../user-only.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UIService } from 'src/app/shared';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-evaluations',
@@ -42,7 +41,6 @@ export class UserEvaluationsComponent implements OnInit {
     private userOnlySrv: UserOnlyService,
     private authSrv: AuthService,
     private formBuilder: FormBuilder,
-    private router: Router,
     private uiSrv: UIService
   ) {}
 
@@ -51,6 +49,7 @@ export class UserEvaluationsComponent implements OnInit {
       .pipe(
         filter(user => user.id != null),
         tap(user => {
+          this.isSaving = false;
           this.isLoaded = false;
           this.user = user;
         }),
@@ -107,9 +106,7 @@ export class UserEvaluationsComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.uiSrv.showSuccess('Evaluación registrada exitosamente');
-          this.router.navigate(['user', this.user.id])
-            .then(() => window.location.reload());
-          this.isSaving = false;
+          this.userOnlySrv.requestUserUpdate();
         },
         error: (error) => {
           console.log('addEvaluation error: ', error);
