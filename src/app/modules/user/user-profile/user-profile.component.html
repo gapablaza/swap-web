@@ -49,11 +49,6 @@
 
       <div *ngIf="!user.active && !user.disabled" class="alert alert-warning">
         <div class="alert-container">
-          <!-- <div class="alert-icon">
-              <div class="alert-default-icon">
-                <mat-icon>error_outline</mat-icon>
-              </div>
-            </div> -->
           <div class="alert-content">
             <div class="alert-title">Atención</div>
             <div class="alert-message">Este usuario ha indicado que no está realizando cambios por el momento!</div>
@@ -63,11 +58,6 @@
       
       <div *ngIf="user.disabled" class="alert alert-warn">
         <div class="alert-container">
-          <!-- <div class="alert-icon">
-              <div class="alert-default-icon">
-                <mat-icon>error_outline</mat-icon>
-              </div>
-            </div> -->
           <div class="alert-content">
             <div class="alert-title">Atención</div>
             <div class="alert-message">Este usuario tiene activado el modo "Incógnito" por lo que no es considerado en
@@ -96,9 +86,6 @@
         <mat-panel-title>
           Tienen {{ possibleTrades }} posibles cambios!
         </mat-panel-title>
-        <!-- <mat-panel-description>
-          revisa el detalle
-        </mat-panel-description> -->
       </mat-expansion-panel-header>
 
       <div *ngFor="let col of trades" class="trades-collection">

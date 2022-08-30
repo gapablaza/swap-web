@@ -31,18 +31,11 @@ export class SearchCollectionComponent implements OnInit {
       selectName: 'Nombre Z-A',
       selectValue: 'title-DESC',
     },
-    // {
-    //   selectName: 'Más antiguos',
-    //   selectValue: 'year-',
-
-    // },
-    // {
-    //   selectName: 'Más nuevos',
-    //   selectValue: 'year',
-    // },
   ];
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     let actualParams = this.route.snapshot.queryParams;

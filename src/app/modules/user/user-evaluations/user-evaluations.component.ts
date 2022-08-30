@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { concatMap, filter, first, tap } from 'rxjs';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { concatMap, filter, first, Subscription, tap } from 'rxjs';
 import { orderBy } from 'lodash';
 
 import {
@@ -17,16 +17,17 @@ import { UIService } from 'src/app/shared';
   selector: 'app-user-evaluations',
   templateUrl: './user-evaluations.component.html',
   styleUrls: ['./user-evaluations.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserEvaluationsComponent implements OnInit {
+export class UserEvaluationsComponent implements OnInit, OnDestroy {
   user: User = {} as User;
   isAuth = false;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   evaluations: Evaluation[] = [];
   showedEvaluations: Evaluation[] = [];
+
   disabled = true;
   disabledData: any;
-
   evaluationForm!: FormGroup;
 
   searchText = '';
@@ -35,20 +36,22 @@ export class UserEvaluationsComponent implements OnInit {
   showFilters = false;
   isSaving = false;
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private userSrv: UserService,
     private userOnlySrv: UserOnlyService,
     private authSrv: AuthService,
     private formBuilder: FormBuilder,
-    private uiSrv: UIService
+    private uiSrv: UIService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.userOnlySrv.user$
+    let userSub = this.userOnlySrv.user$
       .pipe(
-        filter(user => user.id != null),
-        tap(user => {
+        filter((user) => user.id != null),
+        tap((user) => {
           this.isSaving = false;
           this.isLoaded = false;
           this.user = user;
@@ -71,16 +74,19 @@ export class UserEvaluationsComponent implements OnInit {
         this.disabled = resp.disabled;
         this.disabledData = resp.disabledData;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       });
+    this.subs.add(userSub);
 
     this.evaluationForm = this.formBuilder.group({
       type: ['', Validators.required],
       comment: ['', [Validators.required, Validators.maxLength(255)]],
     });
 
-    this.authSrv.isAuth.subscribe(authState => {
+    let authSub = this.authSrv.isAuth.subscribe((authState) => {
       this.isAuth = authState;
     });
+    this.subs.add(authSub);
 
     console.log('from UserEvaluationsComponent');
   }
@@ -183,5 +189,9 @@ export class UserEvaluationsComponent implements OnInit {
     if (x) {
       x.scrollIntoView({ behavior: 'smooth' });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

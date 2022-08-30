@@ -1,7 +1,14 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
+import { first, Subscription } from 'rxjs';
 
 import { AuthService, DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
 import { UIService } from 'src/app/shared';
@@ -13,7 +20,7 @@ import { SettingsProfileImageComponent } from '../settings-profile-image/setting
   templateUrl: './settings-profile.component.html',
   styleUrls: ['./settings-profile.component.scss'],
 })
-export class SettingsProfileComponent implements OnInit {
+export class SettingsProfileComponent implements OnInit, OnDestroy {
   @ViewChild('confirmDeleteDialog') deleteDialog!: TemplateRef<any>;
   updateForm!: FormGroup;
   authUser: User = {} as User;
@@ -22,13 +29,14 @@ export class SettingsProfileComponent implements OnInit {
   isDeleting = false;
   isSaving = false;
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private dialog: MatDialog,
     private authSrv: AuthService,
     private uiSrv: UIService,
     private setOnlySrv: SettingsOnlyService,
-    private formBuilder: FormBuilder,
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -44,7 +52,7 @@ export class SettingsProfileComponent implements OnInit {
       fields: ['address_components', 'formatted_address'],
     });
 
-    this.authSrv.authUser.subscribe((user) => {
+    let authSub = this.authSrv.authUser.subscribe((user) => {
       this.authUser = user;
 
       this.updateForm = this.formBuilder.group({
@@ -67,6 +75,7 @@ export class SettingsProfileComponent implements OnInit {
 
       this.isLoaded = true;
     });
+    this.subs.add(authSub);
   }
 
   get form() {
@@ -101,16 +110,19 @@ export class SettingsProfileComponent implements OnInit {
       return;
     }
 
-    this.authSrv.updateProfile(this.updateForm.value).subscribe((res) => {
-      if (res) {
-        this.uiSrv.showSuccess('Perfil actualizado exitosamente');
-      } else {
-        this.uiSrv.showError(
-          'No se pudo actualizar tu perfil. Intenta nuevamente mas tarde por favor.'
-        );
-      }
-      this.isSaving = false;
-    });
+    this.authSrv
+      .updateProfile(this.updateForm.value)
+      .pipe(first())
+      .subscribe((res) => {
+        if (res) {
+          this.uiSrv.showSuccess('Perfil actualizado exitosamente');
+        } else {
+          this.uiSrv.showError(
+            'No se pudo actualizar tu perfil. Intenta nuevamente mas tarde por favor.'
+          );
+        }
+        this.isSaving = false;
+      });
   }
 
   onNewImage() {
@@ -132,14 +144,21 @@ export class SettingsProfileComponent implements OnInit {
   onConfirmDelete() {
     this.isDeleting = true;
 
-    this.authSrv.removeAvatar().subscribe((res) => {
-      if (res) {
-        this.uiSrv.showSuccess('Imagen removida exitosamente');
-      } else {
-        this.uiSrv.showError('No se pudo remover tu imagen de perfil');
-      }
-      this.dialog.closeAll();
-      this.isDeleting = false;
-    });
+    this.authSrv
+      .removeAvatar()
+      .pipe(first())
+      .subscribe((res) => {
+        if (res) {
+          this.uiSrv.showSuccess('Imagen removida exitosamente');
+        } else {
+          this.uiSrv.showError('No se pudo remover tu imagen de perfil');
+        }
+        this.dialog.closeAll();
+        this.isDeleting = false;
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

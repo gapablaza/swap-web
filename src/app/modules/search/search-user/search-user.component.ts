@@ -33,7 +33,9 @@ export class SearchUserComponent implements OnInit {
     },
   ];
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     let actualParams = this.route.snapshot.queryParams;

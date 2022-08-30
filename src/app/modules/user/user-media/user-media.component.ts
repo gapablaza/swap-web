@@ -1,16 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { concatMap, of } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import { concatMap, filter, of, Subscription, tap } from 'rxjs';
 import { orderBy } from 'lodash';
 
-import { DEFAULT_USER_PROFILE_IMG, Media, User, UserService } from 'src/app/core';
+import {
+  DEFAULT_USER_PROFILE_IMG,
+  Media,
+  User,
+  UserService,
+} from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
 
 @Component({
   selector: 'app-user-media',
   templateUrl: './user-media.component.html',
   styleUrls: ['./user-media.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserMediaComponent implements OnInit {
+export class UserMediaComponent implements OnInit, OnDestroy {
   user: User = {} as User;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   medias: Media[] = [];
@@ -54,23 +66,20 @@ export class UserMediaComponent implements OnInit {
   ];
   showFilters = false;
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private userSrv: UserService,
-    private userOnlySrv: UserOnlyService
+    private userOnlySrv: UserOnlyService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.userOnlySrv.user$
+    let userSub = this.userOnlySrv.user$
       .pipe(
-        concatMap((user) => {
-          if (user.id) {
-            this.user = user;
-            return this.userSrv.getMedia(user.id);
-          } else {
-            return of([]);
-          }
-        })
+        filter((user) => user.id != null),
+        tap((user) => (this.user = user)),
+        concatMap((user) => this.userSrv.getMedia(user.id))
       )
       .subscribe((medias) => {
         // new array with only approved images
@@ -80,10 +89,10 @@ export class UserMediaComponent implements OnInit {
         this.showedImages = [...this.medias];
         this.sortShowedImages();
 
-        if (this.user.id) {
-          this.isLoaded = true;
-        }
+        this.isLoaded = true;
+        this.cdr.markForCheck();
       });
+    this.subs.add(userSub);
   }
 
   trackByImage(index: number, item: Media): number {
@@ -138,5 +147,9 @@ export class UserMediaComponent implements OnInit {
 
     this.showedImages = [...tempImages];
     this.sortShowedImages();
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

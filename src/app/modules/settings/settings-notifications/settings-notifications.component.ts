@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { first, Subscription } from 'rxjs';
+
 import { AuthService, User, UserService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { SettingsOnlyService } from '../settings-only.service';
@@ -15,6 +17,7 @@ export class SettingsNotificationsComponent implements OnInit {
   isSaving = false;
   isUpdating = false;
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private authSrv: AuthService,
@@ -32,7 +35,7 @@ export class SettingsNotificationsComponent implements OnInit {
       subtitle: 'Recibe información directo a tu email',
     });
 
-    this.authSrv.authUser.subscribe((user) => {
+    let authSub = this.authSrv.authUser.subscribe((user) => {
       this.authUser = user;
 
       this.emailForm = this.formBuilder.group({
@@ -41,36 +44,41 @@ export class SettingsNotificationsComponent implements OnInit {
 
       this.isLoaded = true;
     });
+    this.subs.add(authSub);
   }
 
   onChange(e: any) {
     this.isSaving = true;
-    this.authSrv.updateNotifications(e.checked).subscribe((res) => {
-      if (res) {
-        this.uiSrv.showSuccess('Configuración actualizada exitosamente');
-      } else {
-        this.uiSrv.showError(
-          'No se pudo actualizar tu configuración. Intenta nuevamente mas tarde por favor.'
-        );
-      }
-      this.isSaving = false;
-    });
+    this.authSrv
+      .updateNotifications(e.checked)
+      .pipe(first())
+      .subscribe((res) => {
+        if (res) {
+          this.uiSrv.showSuccess('Configuración actualizada exitosamente');
+        } else {
+          this.uiSrv.showError(
+            'No se pudo actualizar tu configuración. Intenta nuevamente mas tarde por favor.'
+          );
+        }
+        this.isSaving = false;
+      });
   }
 
   get form() {
     return this.emailForm.controls;
   }
 
-  onUpdate() {    
+  onUpdate() {
     if (this.emailForm.invalid) {
       return;
     }
-    
+
     this.isUpdating = true;
     this.emailForm.get('email')?.disable();
 
     this.authSrv
       .changeEmail(this.emailForm.get('email')?.value)
+      .pipe(first())
       .subscribe((res) => {
         if (res) {
           this.uiSrv.showSuccess(
@@ -84,5 +92,9 @@ export class SettingsNotificationsComponent implements OnInit {
           this.isUpdating = false;
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

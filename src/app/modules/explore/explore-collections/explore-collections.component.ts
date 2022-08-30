@@ -1,9 +1,9 @@
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { filter, switchMap } from 'rxjs';
+import { filter, first, Subscription, switchMap } from 'rxjs';
 
 import {
   AuthService,
@@ -19,7 +19,7 @@ import {
   templateUrl: './explore-collections.component.html',
   styleUrls: ['./explore-collections.component.scss'],
 })
-export class ExploreCollectionsComponent implements OnInit {
+export class ExploreCollectionsComponent implements OnInit, OnDestroy {
   collections: Collection[] = [];
   authUser: User = {} as User;
   paginator: Pagination = {} as Pagination;
@@ -54,25 +54,25 @@ export class ExploreCollectionsComponent implements OnInit {
   ];
   pageSelected = 1;
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private searchSrv: SearchService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private authSrv: AuthService,
+    private authSrv: AuthService
   ) {}
 
   ngOnInit(): void {
-    registerLocaleData( es );
+    registerLocaleData(es);
 
     // get possible auth User
-    this.authSrv.authUser
-      .pipe(
-        filter(user => user.id != null)
-      )
-      .subscribe(user => {
+    let authSub = this.authSrv.authUser
+      .pipe(filter((user) => user.id != null))
+      .subscribe((user) => {
         this.authUser = user;
-      })
+      });
+    this.subs.add(authSub);
 
     // process pagination params
     this.activatedRoute.queryParamMap
@@ -94,10 +94,12 @@ export class ExploreCollectionsComponent implements OnInit {
             this.sortOptionSelected = sortBy;
           }
 
-          return this.searchSrv.exploreCollections({
-            page: this.pageSelected,
-            sortBy: this.sortOptionSelected,
-          });
+          return this.searchSrv
+            .exploreCollections({
+              page: this.pageSelected,
+              sortBy: this.sortOptionSelected,
+            })
+            .pipe(first());
         })
       )
       .subscribe((data) => {
@@ -124,5 +126,9 @@ export class ExploreCollectionsComponent implements OnInit {
         sortBy: this.sortOptionSelected,
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

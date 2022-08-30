@@ -1,21 +1,23 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { AuthService, DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
-import { filter } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { UIService } from 'src/app/shared';
 
 @Component({
   selector: 'app-user-summary',
   templateUrl: './user-summary.component.html',
   styleUrls: ['./user-summary.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserSummaryComponent implements OnInit {
+export class UserSummaryComponent implements OnInit, OnDestroy {
   @Input() showBackButton = false;
   user: User = {} as User;
   authUser: User = {} as User;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private userOnlySrv: UserOnlyService,
@@ -25,23 +27,30 @@ export class UserSummaryComponent implements OnInit {
 
   ngOnInit(): void {
     // get possible auth User
-    this.authSrv.authUser
+    let authSub = this.authSrv.authUser
       .pipe(filter((user) => user.id != null))
       .subscribe((user) => {
         this.authUser = user;
       });
+    this.subs.add(authSub);
 
     // obtiene los datos del usuario consultado
-    this.userOnlySrv.user$
+    let userSub = this.userOnlySrv.user$
       .pipe(filter((user) => user.id != null))
       .subscribe((user) => {
         this.user = user;
         this.isLoaded = true;
       });
+    this.subs.add(userSub);
+
     console.log('from UserSummaryComponent', this.user);
   }
 
   onShare(): void {
     this.uiSrv.shareUrl();
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

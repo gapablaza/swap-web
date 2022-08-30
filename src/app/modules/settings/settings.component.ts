@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { AuthService, DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
 
 import { SettingsOnlyService } from './settings-only.service';
@@ -6,15 +7,16 @@ import { SettingsOnlyService } from './settings-only.service';
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
-  providers: [SettingsOnlyService],
   styleUrls: ['./settings.component.scss'],
+  providers: [SettingsOnlyService],
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
   authUser: User = {} as User;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   title = '';
   subtitle = '';
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private authSrv: AuthService,
@@ -23,16 +25,22 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit(): void {
     // console.log('SettingsComponent');
-    this.setOnlySrv.titles$.subscribe((titles) => {
+    let setSub = this.setOnlySrv.titles$.subscribe((titles) => {
       setTimeout(() => {
         this.title = titles.title;
         this.subtitle = titles.subtitle;
       });
     });
+    this.subs.add(setSub);
 
-    this.authSrv.authUser.subscribe((user) => {
+    let authSub = this.authSrv.authUser.subscribe((user) => {
       this.authUser = user;
       this.isLoaded = true;
     });
+    this.subs.add(authSub);
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

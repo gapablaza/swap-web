@@ -5,7 +5,7 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { filter, first, Subscription, switchMap, tap } from 'rxjs';
+import { filter, first, Subscription, switchMap } from 'rxjs';
 
 import {
   CollectionService,

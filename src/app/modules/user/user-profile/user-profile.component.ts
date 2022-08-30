@@ -1,7 +1,7 @@
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
-import { Component, OnInit } from '@angular/core';
-import { combineLatest, filter, switchMap, tap } from 'rxjs';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { combineLatest, filter, first, Subscription, switchMap, tap } from 'rxjs';
 
 import {
   AuthService,
@@ -17,8 +17,9 @@ import { UserOnlyService } from '../user-only.service';
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit, OnDestroy {
   user: User = {} as User;
   authUser: User = {} as User;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
@@ -27,18 +28,20 @@ export class UserProfileComponent implements OnInit {
   possibleTrades = 0;
   showTrades = false;
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private userOnlySrv: UserOnlyService,
     private userSrv: UserService,
-    private authSrv: AuthService
+    private authSrv: AuthService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     registerLocaleData(es);
     this.user = this.userOnlySrv.getCurrentUser();
 
-    combineLatest([this.authSrv.authUser, this.userSrv.getMedia(this.user.id)])
+    let dataSub = combineLatest([this.authSrv.authUser, this.userSrv.getMedia(this.user.id)])
       .pipe(
         tap(([authUser, media]) => {
           this.authUser = authUser;
@@ -56,6 +59,7 @@ export class UserProfileComponent implements OnInit {
             this.isLoaded = false;
           } else {
             this.isLoaded = true;
+            this.cdr.markForCheck();
           }
         }),
         // Se buscan los posibles cambios con el usuario consultado, si:
@@ -66,7 +70,9 @@ export class UserProfileComponent implements OnInit {
           ([authUser, media]) =>
             authUser.accountTypeId == 2 && authUser.id != this.user.id
         ),
-        switchMap(() => this.userSrv.getTradesWithAuthUser(this.user.id))
+        switchMap(() =>
+          this.userSrv.getTradesWithAuthUser(this.user.id).pipe(first())
+        )
       )
       .subscribe((trades) => {
         if (trades.showTrades) {
@@ -77,8 +83,14 @@ export class UserProfileComponent implements OnInit {
           this.showTrades = true;
         }
         this.isLoaded = true;
+        this.cdr.markForCheck();
       });
+    this.subs.add(dataSub);
 
     console.log('from UserProfileComponent');
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

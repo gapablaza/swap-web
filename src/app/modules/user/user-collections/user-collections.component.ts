@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { concatMap, filter, map, of } from 'rxjs';
+import { concatMap, filter, map, Subscription, tap } from 'rxjs';
 import { orderBy } from 'lodash';
 
 import {
@@ -19,8 +19,9 @@ import { UserCollectionDetailsComponent } from '../user-collection-details/user-
   selector: 'app-user-collections',
   templateUrl: './user-collections.component.html',
   styleUrls: ['./user-collections.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserCollectionsComponent implements OnInit {
+export class UserCollectionsComponent implements OnInit, OnDestroy {
   user: User = {} as User;
   showEditButton = false;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
@@ -64,27 +65,27 @@ export class UserCollectionsComponent implements OnInit {
   ];
   hideCompleted = false;
   showFilters = false;
+  subs: Subscription = new Subscription();
   isLoaded = false;
 
   constructor(
     private userSrv: UserService,
     private userOnlySrv: UserOnlyService,
     private authSrv: AuthService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
-    this.userOnlySrv.user$
+    let userSub = this.userOnlySrv.user$
       .pipe(
         filter((user) => user.id != null),
-        concatMap((user) => {
-          this.user = user;
-          return this.userSrv.getCollections(user.id).pipe(
+        tap(user => this.user = user),
+        concatMap((user) => this.userSrv.getCollections(user.id).pipe(
             map((data: { collections: Collection[]; trades: any }) => {
               return data.collections;
             })
-          );
-        })
+          ))
       )
       .subscribe((collections) => {
         this.collections = [...collections];
@@ -92,13 +93,16 @@ export class UserCollectionsComponent implements OnInit {
         this.sortShowedCollections();
 
         this.isLoaded = true;
+        this.cdr.markForCheck();
       });
+    this.subs.add(userSub);
 
-    this.authSrv.authUser
+    let authSub = this.authSrv.authUser
       .pipe(filter((authUser) => authUser.id != null))
       .subscribe((authUser) => {
         this.showEditButton = authUser.id == this.user.id;
       });
+    this.subs.add(authSub);
 
     console.log('from UserCollectionsComponent');
   }
@@ -187,5 +191,9 @@ export class UserCollectionsComponent implements OnInit {
     this.showedCollections = [...tempCollections];
     // 3.- sorting
     this.sortShowedCollections();
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }
