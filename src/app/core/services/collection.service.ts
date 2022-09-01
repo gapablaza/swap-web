@@ -30,6 +30,7 @@ export class CollectionService {
             completed: data.data.completed || undefined,
             wishing: data.data.wishing || undefined,
             trading: data.data.trading || undefined,
+            publicComment: data.data.public_comment || undefined,
           };
 
           return {
@@ -74,7 +75,10 @@ export class CollectionService {
             // wishing: user.wishing || undefined,
           };
 
-          tempUserCollection = user.summary;
+          tempUserCollection = {
+            ...user.summary,
+            publicComment: user.summary.public_comment
+          };
 
           tempUsers.push({
             ...user,
@@ -170,6 +174,20 @@ export class CollectionService {
         .delete('/v2/collections/' + collectionId + '/completed')
         .pipe(map((data: { message: string }) => data.message));
     }
+  }
+
+  addComment(collectionId: number, comment: string): Observable<string> {
+    return this.apiSrv
+      .post('/v2/collections/' + collectionId + '/comment', {
+        comment: comment,
+      })
+      .pipe(map((data: { message: string }) => data.message));
+  }
+
+  removeComment(collectionId: number): Observable<string> {
+    return this.apiSrv
+      .delete('/v2/collections/' + collectionId + '/comment')
+      .pipe(map((data: { message: string }) => data.message));
   }
 
   remove(collectionId: number): Observable<string> {

@@ -5,10 +5,11 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, Subscription, tap } from 'rxjs';
+import { filter, first, Subscription, tap } from 'rxjs';
 
-import { Collection } from 'src/app/core';
+import { Collection, CollectionService, CollectionUserData } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { CollectionOnlyService } from '../collection-only.service';
 
@@ -19,18 +20,22 @@ import { CollectionOnlyService } from '../collection-only.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionManageComponent implements OnInit, OnDestroy {
+  commentForm!: FormGroup;
   collection: Collection = {} as Collection;
   totalWishing: number = 0;
   totalTrading: number = 0;
   actualPage = '';
+  isSaving = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
 
   constructor(
     private colOnlySrv: CollectionOnlyService,
+    private colSrv: CollectionService,
     private router: Router,
     private route: ActivatedRoute,
     private uiSrv: UIService,
+    private formBuilder: FormBuilder,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -46,7 +51,19 @@ export class CollectionManageComponent implements OnInit, OnDestroy {
             });
           }
         }),
-        filter((col) => (col.userData?.collecting ? true : false))
+        filter((col) => (col.userData?.collecting ? true : false)),
+        tap((col) => {
+          this.commentForm = this.formBuilder.group({
+            comment: [
+              col.userData?.publicComment || '',
+              [
+                Validators.required,
+                Validators.minLength(3),
+                Validators.maxLength(250),
+              ],
+            ],
+          });
+        })
       )
       .subscribe((col) => {
         console.log('CollectionManageComponent - Sub colOnlySrv');
@@ -63,6 +80,59 @@ export class CollectionManageComponent implements OnInit, OnDestroy {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((data: any) => {
         this.actualPage = data.url.split('/').pop() || '';
+      });
+  }
+
+  get form() {
+    return this.commentForm.controls;
+  }
+
+  onSubmit() {
+    if (this.commentForm.invalid) {
+      return;
+    }
+
+    this.isSaving = true;
+
+    this.colSrv
+      .addComment(this.collection.id, this.commentForm.value.comment)
+      .pipe(first())
+      .subscribe((resp: string) => {
+        this.uiSrv.showSuccess('Comentario actualizado exitosamente');
+        this.isSaving = false;
+
+        let tempUserData = {
+          ...this.collection.userData,
+          publicComment: this.commentForm.value.comment
+        } as CollectionUserData;
+
+        this.colOnlySrv.setCurrentCollection({
+          ...this.collection,
+          userData: tempUserData
+        });
+      });
+  }
+
+  onDeleteComment() {
+    this.isSaving = true;
+
+    this.colSrv
+      .removeComment(this.collection.id)
+      .pipe(first())
+      .subscribe((resp: string) => {
+        this.uiSrv.showSuccess('Comentario eliminado exitosamente');
+
+        let tempUserData = {
+          ...this.collection.userData,
+          publicComment: undefined
+        } as CollectionUserData;
+
+        this.colOnlySrv.setCurrentCollection({
+          ...this.collection,
+          userData: tempUserData
+        });
+
+        this.isSaving = false;
       });
   }
 

@@ -7,7 +7,7 @@
         <div class="user-collection-modal-content">
             <div class="user-collection-modal-heading">
                 <p class="h2">
-                    Listados de <strong>{{ user.displayName }}</strong> en<br/>
+                    Listados de <strong>{{ user.displayName }}</strong> en<br />
                     <strong>{{ collection.name }}</strong>
                 </p>
                 <div class="collection-meta custom-separator">
@@ -15,8 +15,10 @@
                     <span>{{ collection.items || '???' }} ítems</span>
                     <span>{{ collection.publisher.data.name }}</span>
                 </div>
-                <div class="user-collection-modal-bg" 
-                    [style]="'background-image: url(' + collection.image + ');'">
+                <div *ngIf="collection.userData?.publicComment" class="user-collection-modal-desc">
+                    <p [innerHTML]="collection.userData?.publicComment | sanitizeHtml"></p>
+                </div>
+                <div class="user-collection-modal-bg" [style]="'background-image: url(' + collection.image + ');'">
                     <div></div>
                 </div>
             </div>
@@ -45,7 +47,8 @@
 
 <mat-dialog-actions>
     <button class="mat-raised-button" (click)="onClose()">Cerrar</button>
-    <a mat-raised-button mat-dialog-close color="accent" [routerLink]="['/c', collection.name | slugify, collection.id]">
-        Ir a la colección    
+    <a mat-raised-button mat-dialog-close color="accent"
+        [routerLink]="['/c', collection.name | slugify, collection.id]">
+        Ir a la colección
     </a>
 </mat-dialog-actions>

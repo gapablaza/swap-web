@@ -69,9 +69,9 @@
                 <span>Busca {{ col.userSummary?.wishing }} ítems</span>
                 <span>Cambia {{ col.userSummary?.trading }} ítems</span>
               </div>
-              <!-- <div *ngIf="user?.bio" class="list-item-desc">
-                <p [innerHTML]="user?.bio | sanitizeHtml"></p>
-              </div> -->
+              <div *ngIf="col.userSummary?.publicComment" class="list-item-desc">
+                <p [innerHTML]="col.userSummary?.publicComment | sanitizeHtml"></p>
+              </div>
 
               <div *ngIf="col.userSummary?.completed" class="ribbon up">
                 <div class="content">

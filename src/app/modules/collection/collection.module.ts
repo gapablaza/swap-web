@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CollectionRoutingModule } from './collection-routing.module';
@@ -31,6 +32,7 @@ import { CollectionManageItemsComponent } from './collection-manage-items/collec
   ],
   imports: [
     SharedModule,
+    ReactiveFormsModule,
     CollectionRoutingModule,
   ]
 })

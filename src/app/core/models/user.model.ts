@@ -3,6 +3,7 @@ export interface UserCollection {
   collectionWishing: number;
   collectionTrading: number;
   completed: boolean;
+  publicComment: string;
   daysSinceUpdate: number;
 }
 

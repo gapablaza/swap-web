@@ -34,7 +34,7 @@
             <mat-icon inline="true">edit</mat-icon> Editar
           </a>
           <button mat-stroked-button [matMenuTriggerFor]="menu">
-            <mat-icon inline="true">more_horiz</mat-icon>
+            <mat-icon inline="true">more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onShare()">Compartir</button>
@@ -73,8 +73,8 @@
     </div> -->
 
     <!-- <hr /> -->
-
-    <mat-expansion-panel *ngIf="collection.userData?.collecting" expanded="true" class="trades">
+    <mat-accordion *ngIf="collection.userData?.collecting">
+    <mat-expansion-panel expanded="true" class="trades">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Resumen
@@ -128,6 +128,23 @@
       </div> -->
 
     </mat-expansion-panel>
+    <mat-expansion-panel class="">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Comentario público
+        </mat-panel-title>
+        <mat-panel-description>
+          Tus anotaciones
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <p *ngIf="collection.userData?.publicComment">
+        {{ collection.userData?.publicComment }}
+      </p>
+      <p *ngIf="!collection.userData?.publicComment">
+        <i>No has ingresado un comentario público en esta colección</i>
+      </p>
+    </mat-expansion-panel>
+    </mat-accordion>
 
     <h3>Secciones</h3>
     <mat-nav-list>

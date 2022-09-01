@@ -58,7 +58,10 @@ export class UserService {
           data.data.forEach((col) => {
             tempCollections.push({
               ...(col as Collection),
-              userSummary: col.summary,
+              userSummary: {
+                ...col.summary,
+                publicComment: col.summary.public_comment,
+              },
             } as Collection);
           });
           return { collections: tempCollections, trades: data.trades };
@@ -86,6 +89,7 @@ export class UserService {
             completed: data.data.info.completed,
             wishing: data.data.info.wishing,
             trading: data.data.info.trading,
+            publicComment: data.data.info.public_comment,
             updated: data.data.info.updated,
             tradelist: data.data.tradelist,
             wishlist: data.data.wishlist,

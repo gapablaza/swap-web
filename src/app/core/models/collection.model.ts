@@ -6,6 +6,7 @@ export interface CollectionUserData {
   completed?: boolean; //OK COLLECION DEL USUARIO
   wishing?: number; //OK COLLECION DEL USUARIO
   trading?: number; //OK COLLECION DEL USUARIO
+  publicComment?: string;
   
   updated?: string; // USER COLLECTION DETAILS
   tradelist?: Item[]; // USER COLLECTION DETAILS
@@ -16,6 +17,7 @@ export interface CollectionUserSummary { // OK - PERFIL USUARIO
   wishing: number;
   trading: number;
   completed: boolean;
+  publicComment: string;
   progress: number;
   created: string;
   updated: string;

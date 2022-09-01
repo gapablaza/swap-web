@@ -370,6 +370,20 @@ section.collection {
         }
       }
 
+      .form-std {
+        margin-bottom: 2rem;
+
+        mat-form-field {
+            display: block;
+            margin-top: 1rem;
+        }
+
+        .mat-button-base {
+            margin-top: 2rem;
+            margin-right: 1rem;
+        }
+    }
+
     }
   }
 }

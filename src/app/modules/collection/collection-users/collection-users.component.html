@@ -95,8 +95,11 @@
               </div>
             </div>
           </div>
-          <div *ngIf="user?.bio" class="list-item-desc">
+          <!-- <div *ngIf="user?.bio" class="list-item-desc">
             <p [innerHTML]="user?.bio | sanitizeHtml"></p>
+          </div> -->
+          <div *ngIf="user.collectionData?.publicComment" class="list-item-desc">
+            <p [innerHTML]="user.collectionData?.publicComment | sanitizeHtml"></p>
           </div>
         </li>
       </ul>

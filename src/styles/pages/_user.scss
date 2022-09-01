@@ -344,6 +344,23 @@ section.user {
     font-size: 0.9rem;
   }
 
+  .user-collection-modal-desc {
+    border-left: 2px solid black;
+    border-radius: 8px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--text-secondary);
+    display: block;
+    z-index: 10;
+    position: relative;
+    margin: 0.25rem 0 0.25rem;
+
+    p {
+      margin: 0;
+    }
+  }
+
   .user-collection-modal-wishing {
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
