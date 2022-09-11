@@ -20,6 +20,7 @@ jobs:
       env:
         ANALYTICS: ${{ secrets.ANALYTICS }}
         API_URL: ${{ secrets.API_URL }}
+        FACEBOOK_TOKEN: ${{ secrets.FACEBOOK_TOKEN }}
         FIREBASE_APIKEY: ${{ secrets.FIREBASE_APIKEY }}
         FIREBASE_APPID: ${{ secrets.FIREBASE_APPID }}
         FIREBASE_AUTHDOMAIN: ${{ secrets.FIREBASE_AUTHDOMAIN }}
@@ -28,6 +29,7 @@ jobs:
         FIREBASE_MESSAGINGSENDERID: ${{ secrets.FIREBASE_MESSAGINGSENDERID }}
         FIREBASE_PROJECTID: ${{ secrets.FIREBASE_PROJECTID }}
         FIREBASE_STORAGEBUCKET: ${{ secrets.FIREBASE_STORAGEBUCKET }}
+        GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN }}
         PRODUCTION: ${{ secrets.PRODUCTION }}
     - uses: w9jds/firebase-action@master
       with:
