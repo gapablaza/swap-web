@@ -7,6 +7,7 @@ import {
   CollectionService,
   ItemService,
   JwtService,
+  MediaService,
   SearchService,
   UserService
 } from './services';
@@ -27,6 +28,7 @@ import { ErrorInterceptor, HttpTokenInterceptor } from './interceptors';
     CollectionService,
     ItemService,
     JwtService,
+    MediaService,
     SearchService,
     UserService,
   ]

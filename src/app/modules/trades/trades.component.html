@@ -71,6 +71,15 @@
         </div>
 
         <div *ngIf="(trades.totalUsers > 0) && (pageSelected <= paginator.last_page)">
+            <div *ngIf="trades.uniqueTrades > 0"  class="alert alert-info">
+                <div class="alert-container">
+                    <div class="alert-content">
+                        <!-- <div class="alert-title">Atención</div> -->
+                        <div class="alert-message">Los ítems subrayados no los tienen ningún otro usuario para los filtros utilizados. Deberías priorizarlos!</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="pagination-wrapper">
                 <ul class="pagination">
                     <li class="pagination-prev">
@@ -151,8 +160,8 @@
                         <div *ngIf="col.totalSearching">
                             Tiene <strong>{{ col.totalSearching }}</strong> ítems que tú buscas:
                             <span *ngFor="let item of col.searching; last as isLast">
-                                <span [ngClass]="authUser.accountTypeId == 2 ? 
-                                    'item-difficulty-' + item.difficultyCategoryId : ''">{{ item.name
+                                <span [ngClass]="[authUser.accountTypeId == 2 ? 
+                                    'item-difficulty-' + item.difficultyCategoryId : '', item.unique ? 'item-unique' : '']">{{ item.name
                                     }}</span>
                                 <span *ngIf="!isLast">, </span>
                             </span>

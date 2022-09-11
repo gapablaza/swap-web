@@ -11,6 +11,7 @@ import {
   User,
   UserService,
 } from 'src/app/core';
+import { UIService } from 'src/app/shared';
 import { UserOnlyService } from '../user-only.service';
 
 @Component({
@@ -34,6 +35,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     private userOnlySrv: UserOnlyService,
     private userSrv: UserService,
     private authSrv: AuthService,
+    private uiSrv: UIService,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -88,6 +90,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.subs.add(dataSub);
 
     console.log('from UserProfileComponent');
+  }
+
+  onShare(): void {
+    this.uiSrv.shareUrl();
   }
 
   ngOnDestroy(): void {

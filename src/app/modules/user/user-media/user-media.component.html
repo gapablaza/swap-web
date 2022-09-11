@@ -47,7 +47,8 @@
       </div>
 
       <div class="images-grid">
-        <div *ngFor="let image of showedImages; let i = index; trackBy: trackByImage" class="images-grid-card">
+        <div *ngFor="let image of showedImages; let i = index; trackBy: trackByImage" 
+          class="images-grid-card">
           <div class="images-grid-content">
             <img [lazyLoad]="baseImageUrl + image.id + '.jpg'" alt="" class="images-grid-image">
             <p class="images-grid-author">
@@ -55,7 +56,8 @@
                 [routerLink]="['/c', image.collection?.data?.name | slugify, image.collection?.data?.id]">{{
                 image.collection?.data?.name }}</a> el {{ image.created * 1000 | date:'dd/MM/yy' }}
             </p>
-            <div class="images-grid-likes">
+            <div (click)="toggleLike(image)"
+              class="images-grid-likes" [ngClass]="{'likes': image.likes }">
               <mat-icon aria-hidden="false" aria-label="Number of likes">favorite</mat-icon>
               <span>{{ image.totalLikes }}</span>
             </div>

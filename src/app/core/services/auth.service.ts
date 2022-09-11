@@ -1,7 +1,17 @@
+import {
+  GoogleLoginProvider,
+  SocialAuthService,
+} from '@abacritt/angularx-social-login';
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, of, ReplaySubject } from 'rxjs';
-import { concatMap, distinctUntilChanged, map, take } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of, ReplaySubject, from } from 'rxjs';
+import {
+  concatMap,
+  distinctUntilChanged,
+  map,
+  switchMap,
+  take,
+} from 'rxjs/operators';
 
 import { User } from '../models';
 import { ApiService } from './api.service';
@@ -20,6 +30,7 @@ export class AuthService {
 
   constructor(
     // private storageSrv: StorageService,
+    private socialSrv: SocialAuthService,
     private apiSrv: ApiService,
     private jwtSrv: JwtService
   ) {}
@@ -57,6 +68,8 @@ export class AuthService {
   purgeAuth() {
     // try to logout from firebase
     // this.logoutOnFirebase();
+    // TO DO: try to logout from social networks
+    // this.socialSrv.signOut();
     // Remove JWT from localstorage
     this.jwtSrv.destroyToken();
     // Set current user to an empty object
@@ -67,6 +80,93 @@ export class AuthService {
 
   emailLogin(email: string, password: string): Observable<boolean> {
     return this.apiSrv.post('/v2/auth/login', { email, password }).pipe(
+      take(1),
+      concatMap((appToken) => {
+        this.jwtSrv.saveToken(appToken.token);
+        return this.apiSrv.get('/v2/me').pipe(
+          map((data: { data: User; token: string }) => {
+            this.setAuth(data);
+            return true;
+          })
+        );
+      })
+    );
+  }
+
+  googleIdLogin(google: string): Observable<boolean> {
+    return this.apiSrv.post('/v2/auth/googleWithId', { google }).pipe(
+      take(1),
+      concatMap((appToken) => {
+        this.jwtSrv.saveToken(appToken.token);
+        return this.apiSrv.get('/v2/me').pipe(
+          map((data: { data: User; token: string }) => {
+            this.setAuth(data);
+            return true;
+          })
+        );
+      })
+    );
+  }
+
+  facebookIdLogin(facebook: string): Observable<boolean> {
+    return this.apiSrv.post('/v2/auth/facebookWithId', { facebook }).pipe(
+      take(1),
+      concatMap((appToken) => {
+        this.jwtSrv.saveToken(appToken.token);
+        return this.apiSrv.get('/v2/me').pipe(
+          map((data: { data: User; token: string }) => {
+            this.setAuth(data);
+            return true;
+          })
+        );
+      })
+    );
+  }
+
+  linkGoogle(data: {
+    id: string;
+    email: string;
+    image: string;
+  }): Observable<boolean> {
+    return this.apiSrv
+      .post('/v2/auth/linkGoogleWithId', {
+        id: data.id,
+        email: data.email,
+        image: data.image,
+      })
+      .pipe(
+        take(1),
+        concatMap((appToken) => {
+          this.jwtSrv.saveToken(appToken.token);
+          return this.apiSrv.get('/v2/me').pipe(
+            map((data: { data: User; token: string }) => {
+              this.setAuth(data);
+              return true;
+            })
+          );
+        })
+      );
+  }
+
+  linkFacebook(data: { id: string; email: string }): Observable<boolean> {
+    return this.apiSrv
+      .post('/v2/auth/linkFacebookWithId', { id: data.id, email: data.email })
+      .pipe(
+        take(1),
+        concatMap((appToken) => {
+          this.jwtSrv.saveToken(appToken.token);
+          return this.apiSrv.get('/v2/me').pipe(
+            map((data: { data: User; token: string }) => {
+              this.setAuth(data);
+              return true;
+            })
+          );
+        })
+      );
+  }
+
+  unlink(provider: 'facebook' | 'google'): Observable<boolean> {
+    return this.apiSrv.post('/v2/auth/unlink', { provider }).pipe(
       take(1),
       concatMap((appToken) => {
         this.jwtSrv.saveToken(appToken.token);

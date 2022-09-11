@@ -54,9 +54,10 @@
           <div class="images-grid-content">
             <img [lazyLoad]="baseImageUrl + image.id + '.jpg'" alt="" class="images-grid-image">
             <p class="images-grid-author">
-              por <a href="">{{ image.user?.data?.displayName }}</a> el {{ image.created * 1000 | date:'dd/MM/yy' }}
+              por <a [routerLink]="['/user', image.user?.data?.id]">{{ image.user?.data?.displayName }}</a> el {{ image.created * 1000 | date:'dd/MM/yy' }}
             </p>
-            <div class="images-grid-likes">
+            <div (click)="toggleLike(image)"
+              class="images-grid-likes" [ngClass]="{'likes': image.likes }">
               <mat-icon aria-hidden="false" aria-label="Number of likes">favorite</mat-icon>
               <span>{{ image.totalLikes }}</span>
             </div>

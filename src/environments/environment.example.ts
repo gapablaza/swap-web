@@ -3,6 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  facebook: {
+    token: 'XXXXXXXXXXXXX',
+  },
   firebase: {
     projectId: 'XXXXXXXXXXXXX',
     appId: 'XXXXXXXXXXXXX',
@@ -12,6 +15,9 @@ export const environment = {
     apiKey: 'XXXXXXXXXXXXX',
     authDomain: 'XXXXXXXXXXXXX.firebaseapp.com',
     messagingSenderId: 'XXXXXXXXXXXXX',
+  },
+  google: {
+    token: 'XXXXXXXXXXXXX-XXXXXXXXXXXXX.apps.googleusercontent.com',
   },
   analytics: 'X-XXXXXXXXXX',
   production: false,

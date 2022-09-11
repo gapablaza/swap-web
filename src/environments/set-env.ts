@@ -10,6 +10,9 @@ const setEnv = () => {
   });
   // `environment.ts` file structure
   const envConfigFile = `export const environment = {
+    facebook: {
+      token: '${process.env['FACEBOOK_TOKEN']}',
+    },
     firebase: {
         projectId: '${process.env['FIREBASE_PROJECTID']}',
         appId: '${process.env['FIREBASE_APPID']}',
@@ -19,6 +22,9 @@ const setEnv = () => {
         apiKey: '${process.env['FIREBASE_APIKEY']}',
         authDomain: '${process.env['FIREBASE_AUTHDOMAIN']}',
         messagingSenderId: '${process.env['FIREBASE_MESSAGINGSENDERID']}',
+    },
+    google: {
+      token: '${process.env['GOOGLE_TOKEN']}',
     },
     analytics: '${process.env['ANALYTICS']}',
     production: ${process.env['PRODUCTION']},

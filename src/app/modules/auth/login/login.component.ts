@@ -1,7 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm, Validators, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { first } from 'rxjs';
+import { filter, first, from, Subscription, switchMap, tap } from 'rxjs';
+
+import {
+  // GoogleLoginProvider,
+  FacebookLoginProvider,
+  SocialAuthService,
+} from '@abacritt/angularx-social-login';
 
 import { AuthService } from 'src/app/core';
 
@@ -10,13 +16,15 @@ import { AuthService } from 'src/app/core';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   returnUrl = '/';
   isLoading = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private authSrv: AuthService,
+    private socialSrv: SocialAuthService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -31,6 +39,18 @@ export class LoginComponent implements OnInit {
       }),
     });
 
+    let socialSub = this.socialSrv.authState
+      .pipe(
+        filter((user) => (user != null) && (user.provider == 'GOOGLE')),
+        switchMap((user) => this.authSrv.googleIdLogin(user.id))
+      )
+      .subscribe((resp) => {
+        if (resp) {
+          this.redirectOnLogin();
+        }
+      });
+    this.subs.add(socialSub);
+
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
@@ -44,25 +64,7 @@ export class LoginComponent implements OnInit {
       .subscribe({
         next: (resp) => {
           if (resp) {
-            const path = this.returnUrl.split('?')[0];
-            let search = {};
-
-            if (this.returnUrl.includes('?')) {
-              const searchString = this.returnUrl.split('?')[1];
-              search = JSON.parse(
-                '{"' +
-                  searchString
-                    .replace(/"/g, '\\"')
-                    .replace(/&/g, '","')
-                    .replace(/=/g, '":"') +
-                  '"}'
-              );
-            }
-
-            // this.router.navigate([this.returnUrl]);
-            this.router.navigate([path], {
-              queryParams: search
-            });
+            this.redirectOnLogin();
           }
 
           this.isLoading = false;
@@ -72,5 +74,59 @@ export class LoginComponent implements OnInit {
           this.isLoading = false;
         },
       });
+  }
+
+  signInWithFB(): void {
+    this.isLoading = true;
+
+    from(this.socialSrv.signIn(FacebookLoginProvider.PROVIDER_ID))
+      .pipe(
+        first(),
+        filter(user => user != null),
+        switchMap(user => this.authSrv.facebookIdLogin(user.id))
+      )
+      .subscribe({
+        next: (resp) => {
+          if (resp) {
+            this.redirectOnLogin();
+          }
+
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.log(err);
+          this.isLoading = false;
+        },
+      });
+  }
+
+  // refreshGoogleToken(): void {
+  //   this.socialSrv.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID);
+  // }
+
+  redirectOnLogin() {
+    const path = this.returnUrl.split('?')[0];
+    let search = {};
+
+    if (this.returnUrl.includes('?')) {
+      const searchString = this.returnUrl.split('?')[1];
+      search = JSON.parse(
+        '{"' +
+          searchString
+            .replace(/"/g, '\\"')
+            .replace(/&/g, '","')
+            .replace(/=/g, '":"') +
+          '"}'
+      );
+    }
+
+    // this.router.navigate([this.returnUrl]);
+    this.router.navigate([path], {
+      queryParams: search,
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

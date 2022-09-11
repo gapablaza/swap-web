@@ -10,6 +10,7 @@ export interface Item {
   quantity?: number,
   tradelist?: boolean,
   tradelistQuantity?: number,
+  unique?: boolean,
   updated?: string,
   wishlist?: boolean,
   wishlistQuantity?: number,

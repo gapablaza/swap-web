@@ -21,9 +21,12 @@
             [routerLink]="['/settings']">
             <mat-icon inline="true">edit</mat-icon> Editar
           </a>
-          <a class="btn" mat-stroked-button>
-            <mat-icon inline="true">more_horiz</mat-icon>
+          <a class="btn" mat-stroked-button [matMenuTriggerFor]="menu">
+            <mat-icon inline="true">more_vert</mat-icon>
           </a>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="onShare()">Compartir</button>
+          </mat-menu>
         </div>
       </div>
     </div>

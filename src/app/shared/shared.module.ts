@@ -7,8 +7,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { AdsenseModule } from 'ng2-adsense';
 import { MaterialModule } from './material.module';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
+
 import { SanitizeHtmlPipe, SlugifyPipe } from './pipes';
-import { DaysSinceLoginDirective, LongPressDirective, OldLongPressDirective } from './directives';
+import {
+  DaysSinceLoginDirective,
+  GoogleButtonDirective,
+  LongPressDirective,
+  OldLongPressDirective,
+} from './directives';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { CollectionItemComponent } from './components/collection-item/collection-item.component';
 
@@ -17,6 +23,7 @@ import { CollectionItemComponent } from './components/collection-item/collection
     SanitizeHtmlPipe,
     SlugifyPipe,
     DaysSinceLoginDirective,
+    GoogleButtonDirective,
     LongPressDirective,
     OldLongPressDirective,
     ShareUrlComponent,
@@ -44,10 +51,11 @@ import { CollectionItemComponent } from './components/collection-item/collection
     SanitizeHtmlPipe,
     SlugifyPipe,
     DaysSinceLoginDirective,
+    GoogleButtonDirective,
     LongPressDirective,
     OldLongPressDirective,
     CollectionItemComponent,
     ShareUrlComponent,
-  ]
+  ],
 })
-export class SharedModule { }
+export class SharedModule {}

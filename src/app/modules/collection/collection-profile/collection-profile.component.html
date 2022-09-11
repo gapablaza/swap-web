@@ -77,11 +77,11 @@
     <mat-expansion-panel expanded="true" class="trades">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          Resumen
-        </mat-panel-title>
-        <mat-panel-description>
           Tus listados
-        </mat-panel-description>
+        </mat-panel-title>
+        <!-- <mat-panel-description>
+          Tus listados
+        </mat-panel-description> -->
       </mat-expansion-panel-header>
 
       <div class="trades-collection">
@@ -131,11 +131,11 @@
     <mat-expansion-panel class="">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          Comentario público
+          Tu comentario público
         </mat-panel-title>
-        <mat-panel-description>
+        <!-- <mat-panel-description>
           Tus anotaciones
-        </mat-panel-description>
+        </mat-panel-description> -->
       </mat-expansion-panel-header>
       <p *ngIf="collection.userData?.publicComment">
         {{ collection.userData?.publicComment }}

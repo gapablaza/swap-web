@@ -3,6 +3,16 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgProgressModule } from 'ngx-progressbar';
 import { NgProgressHttpModule } from 'ngx-progressbar/http';
+import {
+  SocialLoginModule,
+  SocialAuthServiceConfig,
+  GoogleInitOptions,
+} from '@abacritt/angularx-social-login';
+import {
+  GoogleLoginProvider,
+  FacebookLoginProvider,
+} from '@abacritt/angularx-social-login';
+
 // import { AngularFireModule } from '@angular/fire/compat';
 // import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 // import { provideAuth, getAuth } from '@angular/fire/auth';
@@ -19,12 +29,19 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './modules/navigation/header/header.component';
 import { SidenavListComponent } from './modules/navigation/sidenav-list/sidenav-list.component';
 
+const googleLoginOptions: GoogleInitOptions = {
+  oneTapEnabled: false, // default is true
+  scopes:
+    'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+};
+
+const fbLoginOptions = {
+  scope: 'email',
+  // return_scopes: true,
+};
+
 @NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-    SidenavListComponent,
-  ],
+  declarations: [AppComponent, HeaderComponent, SidenavListComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -37,6 +54,7 @@ import { SidenavListComponent } from './modules/navigation/sidenav-list/sidenav-
     // provideAuth(() => getAuth()),
     // provideDatabase(() => getDatabase()),
     HomeModule,
+    SocialLoginModule,
     NgProgressModule.withConfig({
       color: '#2dd4bf',
       spinner: false,
@@ -44,8 +62,33 @@ import { SidenavListComponent } from './modules/navigation/sidenav-list/sidenav-
     NgProgressHttpModule,
   ],
   providers: [
-    UIService
+    UIService,
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              environment.google.token,
+              googleLoginOptions
+            ),
+          },
+          {
+            id: FacebookLoginProvider.PROVIDER_ID,
+            provider: new FacebookLoginProvider(
+              environment.facebook.token,
+              fbLoginOptions
+            ),
+          },
+        ],
+        onError: (err) => {
+          console.error(err);
+        },
+      } as SocialAuthServiceConfig,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

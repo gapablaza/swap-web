@@ -89,6 +89,11 @@
         display: flex;
         z-index: 5;
         cursor: pointer;
+
+        &.likes {
+          color: var(--color-accent);
+          color: #46be9c;
+        }
   
         .mat-icon {
           width: 22px;

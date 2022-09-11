@@ -2,7 +2,7 @@
     <div class="row-item-image">
         <a [routerLink]="['/c', collection.name | slugify, collection.id]" class="row-item-image-url">
             <img [defaultImage]="defaultCollectionImage" [lazyLoad]="collection.image" [alt]="collection.name"
-                [title]="collection.name">
+                [title]="collection.name" width="400" height="510">
         </a>
     </div>
     <div class="row-item-text">

@@ -5,16 +5,18 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { concatMap, filter, of, Subscription, tap } from 'rxjs';
+import { concatMap, filter, first, Subscription, tap } from 'rxjs';
 import { orderBy } from 'lodash';
 
 import {
   DEFAULT_USER_PROFILE_IMG,
   Media,
+  MediaService,
   User,
   UserService,
 } from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
+import { UIService } from 'src/app/shared';
 
 @Component({
   selector: 'app-user-media',
@@ -65,12 +67,15 @@ export class UserMediaComponent implements OnInit, OnDestroy {
     },
   ];
   showFilters = false;
+  isSaving = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
 
   constructor(
     private userSrv: UserService,
     private userOnlySrv: UserOnlyService,
+    private mediaSrv: MediaService,
+    private uiSrv: UIService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -93,6 +98,40 @@ export class UserMediaComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       });
     this.subs.add(userSub);
+
+    // Load items into gallery
+    // const galleryRef = this.gallery.ref(this.galleryId);
+    // galleryRef.load(this.galleryItems);
+  }
+
+  toggleLike(item: Media) {
+    if (this.isSaving) {
+      return;
+    }
+
+    this.isSaving = true;
+    let newStatus = !item.likes;
+
+    this.mediaSrv
+      .setLike(item.id, newStatus)
+      .pipe(first())
+      .subscribe({
+        next: (message) => {
+          item.likes = newStatus;
+          item.totalLikes = newStatus
+            ? (item.totalLikes || 0) + 1
+            : (item.totalLikes || 0) - 1;
+          this.uiSrv.showSuccess(message);
+          this.isSaving = false;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.log('setLike error: ', error);
+          this.uiSrv.showError(error.error.message);
+          this.isSaving = false;
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   trackByImage(index: number, item: Media): number {

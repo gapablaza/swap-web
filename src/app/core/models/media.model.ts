@@ -5,7 +5,7 @@ export interface Media {
     created: number,
     description: string,
     id: number,
-    likes?: boolean | null,
+    likes?: boolean,
     mediaStatusId: number,
     mediaStatusName: string,
     mediaTypeId: number,

@@ -104,6 +104,13 @@ section.settings {
 
     // estilos para las secciones
     .settings-section {
+        .card{
+            margin: 0 -1.5rem;
+
+            @media (min-width: 768px) {
+                margin: none;
+            }
+        }
         
         .avatar-preview {
             display: flex;
@@ -167,6 +174,29 @@ section.settings {
 
             .mat-button-base {
                 margin-top: 2rem;
+            }
+        }
+
+        .settings-connect {
+            .mat-list {
+                .mat-subheader {
+                    padding-left: 0;
+                    padding-right: 0;
+                }
+
+                .mat-list-item-content {
+                    padding: 0;
+
+                    .mat-line {
+                        @media (min-width: 576px) {
+                            white-space: inherit;
+                        }
+                    }
+
+                    button {
+                        flex-shrink: 0;
+                    }
+                }
             }
         }
     }
