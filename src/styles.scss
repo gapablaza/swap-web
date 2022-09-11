@@ -99,7 +99,8 @@ $my-theme: mat.define-light-theme((
 // 5. Components
 @import
   'styles/components/alert',  
-  'styles/components/card',  
+  'styles/components/card',
+  'styles/components/collection-item',
   'styles/components/controls-std',
   'styles/components/images-grid',
   'styles/components/list-collections',
