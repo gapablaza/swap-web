@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { concatMap, filter, first, Subscription, tap } from 'rxjs';
-import { orderBy } from 'lodash';
+import orderBy from 'lodash/orderBy';
 
 import { 
   Collection, 

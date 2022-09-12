@@ -6,7 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { concatMap, filter, first, map, Subscription } from 'rxjs';
-import { orderBy } from 'lodash';
+import orderBy from 'lodash/orderBy';
 
 import { CollectionService, Media, MediaService } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';

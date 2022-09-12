@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { concatMap, filter, map, Subscription, tap } from 'rxjs';
-import { orderBy } from 'lodash';
+import orderBy from 'lodash/orderBy';
 
 import {
   AuthService,

@@ -6,7 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { concatMap, filter, first, Subscription, tap } from 'rxjs';
-import { orderBy } from 'lodash';
+import orderBy from 'lodash/orderBy';
 
 import {
   DEFAULT_USER_PROFILE_IMG,
