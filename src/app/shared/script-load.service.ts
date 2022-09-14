@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 const ScriptList = [
   {
@@ -7,7 +8,7 @@ const ScriptList = [
   },
   {
     name: 'googleMap',
-    src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCwfEsHlQvSMX3AuDR2QXhlcovqsnxVNc8&libraries=places&language=en',
+    src: `https://maps.googleapis.com/maps/api/js?key=${environment.google.apiKey}&libraries=places&language=en`,
   },
 ];
 
