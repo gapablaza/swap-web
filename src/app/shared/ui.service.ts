@@ -9,6 +9,7 @@ import { ShareUrlComponent } from './components/share-url/share-url.component';
 export class UIService {
   loadingStateChanged = new Subject<boolean>();
   defaultSnackbarDuration = 3000;
+  private _isGoogleMapsLoaded = false;
 
   constructor(
     private snackbar: MatSnackBar,
@@ -57,4 +58,14 @@ export class UIService {
   shareUrl() {
     this.bottomSheet.open(ShareUrlComponent);
   }
+
+  isGMapsLoaded() {
+    return this._isGoogleMapsLoaded;
+  }
+
+  setGMapStatus(status: boolean) {
+    this._isGoogleMapsLoaded = status;
+  }
+
+
 }

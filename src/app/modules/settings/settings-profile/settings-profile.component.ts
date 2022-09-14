@@ -1,5 +1,8 @@
+import { DOCUMENT } from '@angular/common';
 import {
   Component,
+  ElementRef,
+  Inject,
   OnDestroy,
   OnInit,
   TemplateRef,
@@ -10,6 +13,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import { first, Subscription } from 'rxjs';
 
+import { environment } from 'src/environments/environment';
 import { AuthService, DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { SettingsOnlyService } from '../settings-only.service';
@@ -26,6 +30,7 @@ export class SettingsProfileComponent implements OnInit, OnDestroy {
   authUser: User = {} as User;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   placesOptions: any;
+  isApiLoaded = false;
   isDeleting = false;
   isSaving = false;
   isLoaded = false;
@@ -36,11 +41,23 @@ export class SettingsProfileComponent implements OnInit, OnDestroy {
     private authSrv: AuthService,
     private uiSrv: UIService,
     private setOnlySrv: SettingsOnlyService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    
+    @Inject(DOCUMENT) private document: Document,
+    private elementRef: ElementRef
   ) {}
 
   ngOnInit(): void {
     console.log('SettingsProfileComponent');
+
+    if(!this.uiSrv.isGMapsLoaded()) {
+      this.loadScript().then(() =>{
+        this.isApiLoaded = true;
+        this.uiSrv.setGMapStatus(true);
+      })
+    } else {
+      this.isApiLoaded = true;
+    }
 
     this.setOnlySrv.setTitles({
       title: 'Editar perfil',
@@ -76,6 +93,17 @@ export class SettingsProfileComponent implements OnInit, OnDestroy {
       this.isLoaded = true;
     });
     this.subs.add(authSub);
+  }
+
+  loadScript() {
+    return new Promise((resolve, reject) => {
+      const element = this.document.createElement('script');
+      element.type = 'text/javascript';
+      element.src = `https://maps.googleapis.com/maps/api/js?key=${environment.google.apiKey}&libraries=places&language=en`;
+      element.onload = resolve;
+      element.onerror = reject;
+      this.elementRef.nativeElement.appendChild(element);
+    })
   }
 
   get form() {

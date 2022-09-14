@@ -12,6 +12,7 @@ import { UserCollectionDetailsComponent } from './user-collection-details/user-c
 import { UserMediaComponent } from './user-media/user-media.component';
 import { UserTradesComponent } from './user-trades/user-trades.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 @NgModule({
     declarations: [
@@ -26,6 +27,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     ],
     imports: [
         SharedModule,
+        MaterialModule,
         ReactiveFormsModule,
         UserRoutingModule,
     ]

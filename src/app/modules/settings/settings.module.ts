@@ -14,6 +14,7 @@ import { SettingsProfileComponent } from './settings-profile/settings-profile.co
 import { SettingsProfileImageComponent } from './settings-profile-image/settings-profile-image.component';
 
 import 'hammerjs';
+import { MaterialModule } from 'src/app/shared/material.module';
 // import * as Hammer from 'hammerjs';
 
 // export class MyHammerConfig extends HammerGestureConfig {
@@ -32,6 +33,7 @@ import 'hammerjs';
     ],
     imports: [
         SharedModule,
+        MaterialModule,
         ReactiveFormsModule,
         HammerModule,
         GooglePlaceModule,

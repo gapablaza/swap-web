@@ -39,7 +39,7 @@
                     </mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline">
+                <mat-form-field appearance="outline" *ngIf="isApiLoaded">
                     <mat-label>Ubicación</mat-label>
                     <input matInput #location formControlName="location" maxlength="100"
                         ngx-google-places-autocomplete [options]="placesOptions" 

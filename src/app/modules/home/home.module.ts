@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { SharedModule } from 'src/app/shared/shared.module';
 import { HomeComponent } from './home.component';
@@ -15,6 +16,7 @@ import { ListUsersComponent } from './list-users/list-users.component';
   ],
   imports: [
     SharedModule,
+    MatProgressSpinnerModule,
   ]
 })
 export class HomeModule { }

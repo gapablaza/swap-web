@@ -6,6 +6,7 @@ import { SearchRoutingModule } from './search-routing.module';
 import { SearchComponent } from './search.component';
 import { SearchCollectionComponent } from './search-collection/search-collection.component';
 import { SearchUserComponent } from './search-user/search-user.component';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { SearchUserComponent } from './search-user/search-user.component';
   ],
   imports: [
     SharedModule,
+    MaterialModule,
     SearchRoutingModule,
   ]
 })

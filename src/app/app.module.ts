@@ -19,7 +19,7 @@ import {
 // import { provideDatabase, getDatabase } from '@angular/fire/database';
 
 import { environment } from '../environments/environment';
-import { UIService } from './shared/ui.service';
+import { UIService } from './shared';
 import { CoreModule } from './core';
 import { SharedModule } from './shared/shared.module';
 import { AppRoutingModule } from './app-routing.module';
@@ -28,6 +28,11 @@ import { HomeModule } from './modules/home/home.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './modules/navigation/header/header.component';
 import { SidenavListComponent } from './modules/navigation/sidenav-list/sidenav-list.component';
+
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 const googleLoginOptions: GoogleInitOptions = {
   oneTapEnabled: false, // default is true
@@ -46,7 +51,13 @@ const fbLoginOptions = {
     BrowserModule,
     BrowserAnimationsModule,
     CoreModule,
-    SharedModule,
+
+    SharedModule,    
+    MatSidenavModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+
     AppRoutingModule,
     // AngularFireModule.initializeApp(environment.firebase),
     AuthModule,

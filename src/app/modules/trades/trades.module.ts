@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { SharedModule } from 'src/app/shared';
+import { MaterialModule } from 'src/app/shared/material.module';
 import { LocationGuard } from './location.guard';
 import { TradesRoutingModule } from './trades-routing.module';
 import { TradesComponent } from './trades.component';
@@ -11,6 +12,7 @@ import { TradesComponent } from './trades.component';
   ],
   imports: [
     SharedModule,
+    MaterialModule,
     TradesRoutingModule,
   ],
   providers: [

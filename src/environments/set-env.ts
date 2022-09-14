@@ -24,6 +24,7 @@ const setEnv = () => {
         messagingSenderId: '${process.env['FIREBASE_MESSAGINGSENDERID']}',
     },
     google: {
+      apiKey: '${process.env['GOOGLE_APIKEY']}',
       token: '${process.env['GOOGLE_TOKEN']}',
     },
     analytics: '${process.env['ANALYTICS']}',

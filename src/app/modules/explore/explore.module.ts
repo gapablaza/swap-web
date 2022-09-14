@@ -5,6 +5,7 @@ import { ExploreRoutingModule } from './explore-routing.module';
 
 import { ExploreComponent } from './explore.component';
 import { ExploreCollectionsComponent } from './explore-collections/explore-collections.component';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { ExploreCollectionsComponent } from './explore-collections/explore-colle
   ],
   imports: [
     SharedModule,
+    MaterialModule,
     ExploreRoutingModule,
   ]
 })

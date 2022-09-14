@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AdsenseModule } from 'ng2-adsense';
-import { MaterialModule } from './material.module';
+// import { MaterialModule } from './material.module';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { SanitizeHtmlPipe, SlugifyPipe } from './pipes';
@@ -17,6 +17,7 @@ import {
 } from './directives';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { CollectionItemComponent } from './components/collection-item/collection-item.component';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,9 @@ import { CollectionItemComponent } from './components/collection-item/collection
     FormsModule,
     HttpClientModule,
     RouterModule,
-    MaterialModule,
+    // MaterialModule,
+    MatListModule,
+    
     LazyLoadImageModule,
     AdsenseModule.forRoot({
       adClient: 'ca-pub-6782496264167512',
@@ -45,7 +48,7 @@ import { CollectionItemComponent } from './components/collection-item/collection
     FormsModule,
     HttpClientModule,
     RouterModule,
-    MaterialModule,
+    // MaterialModule,
     LazyLoadImageModule,
     AdsenseModule,
     SanitizeHtmlPipe,

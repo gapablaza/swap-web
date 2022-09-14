@@ -17,6 +17,7 @@ export const environment = {
     messagingSenderId: 'XXXXXXXXXXXXX',
   },
   google: {
+    apiKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXX',
     token: 'XXXXXXXXXXXXX-XXXXXXXXXXXXX.apps.googleusercontent.com',
   },
   analytics: 'X-XXXXXXXXXX',

@@ -20,7 +20,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   constructor(
     private authSrv: AuthService,
-    private setOnlySrv: SettingsOnlyService
+    private setOnlySrv: SettingsOnlyService,
   ) {}
 
   ngOnInit(): void {

@@ -15,6 +15,7 @@ import { CollectionManageComponent } from './collection-manage/collection-manage
 import { CollectionManageWishlistComponent } from './collection-manage-wishlist/collection-manage-wishlist.component';
 import { CollectionManageTradelistComponent } from './collection-manage-tradelist/collection-manage-tradelist.component';
 import { CollectionManageItemsComponent } from './collection-manage-items/collection-manage-items.component';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { CollectionManageItemsComponent } from './collection-manage-items/collec
   ],
   imports: [
     SharedModule,
+    MaterialModule,
     ReactiveFormsModule,
     CollectionRoutingModule,
   ]

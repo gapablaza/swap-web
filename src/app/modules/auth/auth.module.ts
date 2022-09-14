@@ -6,6 +6,7 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SignupComponent } from './signup/signup.component';
 import { LoginComponent } from './login/login.component';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { LoginComponent } from './login/login.component';
     ReactiveFormsModule,
     // provideAuth(() => getAuth()),
     SharedModule,
+    MaterialModule,
     AuthRoutingModule,
   ]
 })
