@@ -29,6 +29,7 @@ jobs:
         FIREBASE_MESSAGINGSENDERID: ${{ secrets.FIREBASE_MESSAGINGSENDERID }}
         FIREBASE_PROJECTID: ${{ secrets.FIREBASE_PROJECTID }}
         FIREBASE_STORAGEBUCKET: ${{ secrets.FIREBASE_STORAGEBUCKET }}
+        GOOGLE_APIKEY: ${{ secrets.GOOGLE_APIKEY }}
         GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN }}
         PRODUCTION: ${{ secrets.PRODUCTION }}
     - uses: w9jds/firebase-action@master
