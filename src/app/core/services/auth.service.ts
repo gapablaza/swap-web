@@ -1,15 +1,14 @@
-import {
-  GoogleLoginProvider,
-  SocialAuthService,
-} from '@abacritt/angularx-social-login';
+// import {
+//   GoogleLoginProvider,
+//   SocialAuthService,
+// } from '@abacritt/angularx-social-login';
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, of, ReplaySubject, from } from 'rxjs';
+import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import {
   concatMap,
   distinctUntilChanged,
   map,
-  switchMap,
   take,
 } from 'rxjs/operators';
 
@@ -30,7 +29,7 @@ export class AuthService {
 
   constructor(
     // private storageSrv: StorageService,
-    private socialSrv: SocialAuthService,
+    // private socialSrv: SocialAuthService,
     private apiSrv: ApiService,
     private jwtSrv: JwtService
   ) {}

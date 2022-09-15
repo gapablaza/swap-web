@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 
+import { MaterialModule } from 'src/app/shared/material.module';
 import { SharedModule } from 'src/app/shared';
 import { UserRoutingModule } from './user-routing.module';
 
@@ -11,8 +12,6 @@ import { UserCollectionsComponent } from './user-collections/user-collections.co
 import { UserCollectionDetailsComponent } from './user-collection-details/user-collection-details.component';
 import { UserMediaComponent } from './user-media/user-media.component';
 import { UserTradesComponent } from './user-trades/user-trades.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MaterialModule } from 'src/app/shared/material.module';
 
 @NgModule({
     declarations: [
@@ -28,7 +27,6 @@ import { MaterialModule } from 'src/app/shared/material.module';
     imports: [
         SharedModule,
         MaterialModule,
-        ReactiveFormsModule,
         UserRoutingModule,
     ]
 })

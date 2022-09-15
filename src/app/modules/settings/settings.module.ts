@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerModule } from '@angular/platform-browser';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 
-import { SharedModule } from 'src/app/shared';
+import { MaterialModule } from 'src/app/shared/material.module';
 import { SettingsRoutingModule } from './settings-routing.module';
+import { SharedModule, SocialModule } from 'src/app/shared';
 
 import { SettingsComponent } from './settings.component';
 import { SettingsConnectComponent } from './settings-connect/settings-connect.component';
@@ -14,7 +14,6 @@ import { SettingsProfileComponent } from './settings-profile/settings-profile.co
 import { SettingsProfileImageComponent } from './settings-profile-image/settings-profile-image.component';
 
 import 'hammerjs';
-import { MaterialModule } from 'src/app/shared/material.module';
 // import * as Hammer from 'hammerjs';
 
 // export class MyHammerConfig extends HammerGestureConfig {
@@ -33,8 +32,8 @@ import { MaterialModule } from 'src/app/shared/material.module';
     ],
     imports: [
         SharedModule,
+        SocialModule,
         MaterialModule,
-        ReactiveFormsModule,
         HammerModule,
         GooglePlaceModule,
         SettingsRoutingModule,

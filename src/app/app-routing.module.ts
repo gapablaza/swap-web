@@ -13,6 +13,20 @@ const routes: Routes = [
     },
   },
   {
+    path: 'login',
+    loadChildren: () =>
+      import('./modules/auth/login/login.module').then(
+        (m) => m.LoginModule
+      ),
+  },
+  {
+    path: 'signup',
+    loadChildren: () =>
+      import('./modules/auth/signup/signup.module').then(
+        (m) => m.SignupModule
+      ),
+  },
+  {
     path: 'c',
     loadChildren: () =>
       import('./modules/collection/collection.module').then(
