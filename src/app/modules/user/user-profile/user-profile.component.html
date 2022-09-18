@@ -58,7 +58,7 @@
           </div>
         </div>
       </div>
-      
+
       <div *ngIf="user.disabled" class="alert alert-warn">
         <div class="alert-container">
           <div class="alert-content">
@@ -75,14 +75,8 @@
       <a [routerLink]="['/collaborate']">+&nbsp;INFO</a>
     </div>
 
-    <ng-adsense
-      *ngIf="!authUser.id || (authUser.accountTypeId == 1)"
-      [adSlot]="1449289134"
-      [adFormat]="'auto'"
-      [display]="'block'"
-      [fullWidthResponsive]="true"
-      [className]="'bga-hor'"
-    ></ng-adsense>
+    <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="1449289134" [adFormat]="'auto'"
+      [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
 
     <mat-expansion-panel *ngIf="authUser.id && showTrades" class="trades-details">
       <mat-expansion-panel-header>
@@ -121,15 +115,18 @@
         <p>
           Los colores sirven para indicar la dificultad de conseguir el ítem de acuerdo a lo siguiente:
           <br />
-          <span class="item-difficulty-5">Muy Difícil</span>, 
-          <span class="item-difficulty-4">Difícil</span>, 
-          <span class="item-difficulty-3">Rara</span>, 
-          <span class="item-difficulty-2">Infrecuente</span>, 
-          <span class="item-difficulty-1">Común</span> 
+          <span class="item-difficulty-5">Muy Difícil</span>,
+          <span class="item-difficulty-4">Difícil</span>,
+          <span class="item-difficulty-3">Rara</span>,
+          <span class="item-difficulty-2">Infrecuente</span>,
+          <span class="item-difficulty-1">Común</span>
           y <span class="item-difficulty-0">Por categorizar</span>.
         </p>
         <p>
-          Revisa <a href="https://trello.com/c/QRvIcc3x/8-ayudar-a-hacer-mejores-cambios-indicando-la-dificultad-de-las-l%C3%A1minas-en-los-posibles-cambios" target="_blank">aquí</a> para ver mas detalles de la lógica usada para categorizar los ítems de la colección por dificultad.
+          Revisa <a
+            href="https://trello.com/c/QRvIcc3x/8-ayudar-a-hacer-mejores-cambios-indicando-la-dificultad-de-las-l%C3%A1minas-en-los-posibles-cambios"
+            target="_blank" rel="noopener noreferrer">aquí</a> para ver mas detalles de la lógica usada para categorizar
+          los ítems de la colección por dificultad.
         </p>
       </div>
     </mat-expansion-panel>
@@ -139,8 +136,10 @@
       <a mat-list-item [routerLink]="['./evaluation']">
         <div mat-line>
           Evaluaciones recibidas&nbsp;
-          <span *ngIf="(user.userSummary?.positives || 0) > 0" class="positives-label">+{{ user.userSummary?.positives }}</span>
-          <span *ngIf="(user.userSummary?.negatives || 0) > 0" class="negatives-label">-{{ user.userSummary?.negatives }}</span>
+          <span *ngIf="(user.userSummary?.positives || 0) > 0" class="positives-label">+{{ user.userSummary?.positives
+            }}</span>
+          <span *ngIf="(user.userSummary?.negatives || 0) > 0" class="negatives-label">-{{ user.userSummary?.negatives
+            }}</span>
         </div>
         <mat-icon>navigate_next</mat-icon>
       </a>
@@ -162,7 +161,8 @@
     <hr />
 
     <div class="user-publisher">
-      <p>Busca <strong>{{ user.userSummary?.wishing | number:'':'es' }}</strong> ítems, cambia <strong>{{ user.userSummary?.trading |
+      <p>Busca <strong>{{ user.userSummary?.wishing | number:'':'es' }}</strong> ítems, cambia <strong>{{
+          user.userSummary?.trading |
           number:'':'es' }}</strong> ítems</p>
       <p>Cuenta creada el {{ user.registration | date:'dd/MM/YYYY' }}</p>
     </div>

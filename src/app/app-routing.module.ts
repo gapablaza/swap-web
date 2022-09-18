@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { HomeAuthResolver } from './modules/home/home-auth-resolver.service';
 import { HomeComponent } from './modules/home/home.component';
+import { CustomErrorComponent } from './modules/navigation/custom-error/custom-error.component';
 
 const routes: Routes = [
   {
@@ -15,16 +16,12 @@ const routes: Routes = [
   {
     path: 'login',
     loadChildren: () =>
-      import('./modules/auth/login/login.module').then(
-        (m) => m.LoginModule
-      ),
+      import('./modules/auth/login/login.module').then((m) => m.LoginModule),
   },
   {
     path: 'signup',
     loadChildren: () =>
-      import('./modules/auth/signup/signup.module').then(
-        (m) => m.SignupModule
-      ),
+      import('./modules/auth/signup/signup.module').then((m) => m.SignupModule),
   },
   {
     path: 'c',
@@ -65,10 +62,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./modules/trades/trades.module').then((m) => m.TradesModule),
   },
-  // {
-  //   path: '**',
-  //   redirectTo: '',
-  // }
+  {
+    path: '**',
+    pathMatch: 'full',
+    component: CustomErrorComponent,
+  },
 ];
 
 @NgModule({

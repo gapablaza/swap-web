@@ -2,6 +2,45 @@ section.home {
     padding: 0 1.5rem;
     margin-top: var(--gap-vertical);
 
+    .site-title {
+        background-color: white;
+        padding: 1rem 1.5rem;
+        margin-bottom: 2rem;
+        border-radius: 1rem;
+        // border: 1px solid rgb(68 192 157);
+        display: flex;
+        flex-direction: column;
+        row-gap: 1rem;
+        @include mat.elevation(4);
+
+        .site-title-main {
+            display: flex;
+            column-gap: 1.5rem;
+            align-items: center;
+        }
+
+        img {
+            width: 60px;
+        }
+
+        h1 {
+            margin-bottom: 0;
+        }
+
+        p {
+            margin: 0;
+        }
+    }
+
+    h2 {
+        margin-bottom: 0.25rem;
+    }
+
+    .home-subtitle {
+        color: var(--text-secondary);
+        margin: 0 0 1.5rem;
+    }
+
     .horizontal-card-grid {
         grid-template-columns: repeat(2, 1fr);
         grid-row-gap: 0px;

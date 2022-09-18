@@ -123,10 +123,10 @@
                                     <a [routerLink]="['/user', user.userData.id]">
                                         {{ user.userData.displayName }}
                                         <span *ngIf="user.userData.accountTypeId == 2" class="pro-label">PRO</span>
-                                        <span *ngIf="user.userData.positives" class="positives-label">+{{
+                                        <span *ngIf="user.userData.positives > 0" class="positives-label">+{{
                                             user.userData.positives
                                             }}</span>
-                                        <span *ngIf="user.userData.negatives" class="negatives-label">-{{
+                                        <span *ngIf="user.userData.negatives > 0" class="negatives-label">-{{
                                             user.userData.negatives
                                             }}</span>
                                     </a>

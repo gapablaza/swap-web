@@ -1,10 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  HostListener,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav, MatDrawerMode } from '@angular/material/sidenav';
 import { NavigationEnd, Router } from '@angular/router';
 
@@ -18,7 +12,7 @@ declare const gtag: Function;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   navMode = 'push' as MatDrawerMode;
   navOpened = false;
@@ -63,7 +57,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     // Suscripción para GA (opcional) y ancho responsivo
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        
         // Suscripción para GA
         if (environment.analytics) {
           gtag('config', `${environment.analytics}`, {
@@ -77,17 +70,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.authSrv.populate();
-  }
-
-  ngAfterViewInit(): void {
     // Despliega el sidebar si es que la pantalla es ancha
-    setTimeout(() => {
-      if (window.innerWidth >= 768) {
-        this.navMode = 'side' as MatDrawerMode;
-        this.sidenav.open();
-      }
-    });
+    if (window.innerWidth >= 768) {
+      this.navMode = 'side' as MatDrawerMode;
+      this.navOpened = true;
+    }
+
+    this.authSrv.populate();
   }
 
   // Ajusta el modo de la sidenav dependiendo del ancho de la pantalla

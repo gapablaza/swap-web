@@ -1,26 +1,63 @@
 <section *ngIf="isLoaded else loading" class="home">
+  <div class="site-title">
+    <div class="site-title-main">
+      <img src="/assets/img/logo-icon-40x40.svg" alt="Logo Intercambialaminas.com">
+      <h1>Intercambia y completa tus álbumes!</h1>
+    </div>
+    <p>Encuentra fácilmente con quien cambiar las láminas / stickers / figuritas / pegatinas / cromos / estampas que te faltan!</p>
+  </div>
+
   <h2>Populares</h2>
+  <p class="home-subtitle">
+    Álbumes / Colecciones con mas usuarios en los últimos 15 días
+  </p>
   <app-list-resalted-collections [collections]="popular"></app-list-resalted-collections>
 
   <h2>Con más elementos multimedia</h2>
+  <p class="home-subtitle">
+    Usuarios con más elementos multimedia publicados en los últimos 30 días
+  </p>
   <app-list-users [users]="moreMedia" [type]="'media'"></app-list-users>
 
   <h2>Recientemente publicados</h2>
+  <p class="home-subtitle">
+    Últimos ábumes / colecciones publicados por las editoriales
+  </p>
   <app-list-collections [collections]="published"></app-list-collections>
 
   <h2>Con más ítems listados</h2>
+  <p class="home-subtitle">
+    Usuarios con mas ítems (láminas / stickers / figuritas / pegatinas / cromos / estampas) marcados
+  </p>
   <app-list-users [users]="moreItems" [type]="'item'"></app-list-users>
 
   <h2>Últimas incorporaciones a nuestro catálogo</h2>
+  <p class="home-subtitle">
+    Últimos ábumes / colecciones agregados a nuestro catálogo
+  </p>
   <app-list-collections [collections]="added"></app-list-collections>
 
   <h2>Últimos en registrarse</h2>
+  <p class="home-subtitle">
+    Últimos usuarios que se han registrado
+  </p>
   <app-list-users [users]="users"></app-list-users>
 </section>
 
 <ng-template #loading>
   <section class="home">
+    <div class="site-title">
+      <div class="site-title-main">
+        <img src="/assets/img/logo-icon-40x40.svg" alt="Logo Intercambialaminas.com">
+        <h1>Intercambia y completa tus álbumes!</h1>
+      </div>
+      <p>Encuentra fácilmente con quien cambiar las láminas / stickers / figuritas / pegatinas / cromos / estampas que te faltan!</p>
+    </div>
+
     <h2>Populares</h2>
+    <p class="home-subtitle">
+      Álbumes / Colecciones con mas usuarios en los últimos 15 días
+    </p>
     <div class="list-of-collections">
       <div class="horizontal-card-grid">
         <div class="row-item collection-item">
@@ -171,6 +208,9 @@
     </div>
 
     <h2>Con más elementos multimedia</h2>
+    <p class="home-subtitle">
+      Usuarios con más elementos multimedia publicados en los últimos 30 días
+    </p>
     <ul class="user-card-list">
       <li class="user-card card">
         <a>

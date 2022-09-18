@@ -1,7 +1,9 @@
 <ul class="user-card-list">
   <li *ngFor="let user of users" class="user-card card">
     <a [routerLink]="['/user', user.id]">
-      <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || '/assets/img/profile_user.png'" alt="" class="user-card-image">
+      <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || '/assets/img/profile_user.png'"
+        [alt]="'Perfil público de ' + user.displayName" [title]="'Perfil público de ' + user.displayName"
+        class="user-card-image">
       <h3 class="user-card-title">{{ user.displayName }}</h3>
     </a>
     <p class="user-card-subtitle">{{ user.location }}</p>

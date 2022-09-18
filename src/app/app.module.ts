@@ -20,16 +20,22 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './modules/navigation/header/header.component';
 import { SidenavListComponent } from './modules/navigation/sidenav-list/sidenav-list.component';
+import { CustomErrorComponent } from './modules/navigation/custom-error/custom-error.component';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, SidenavListComponent],
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    SidenavListComponent,
+    CustomErrorComponent,
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     CoreModule,
 
-    SharedModule,  
-    MatBottomSheetModule,  
+    SharedModule,
+    MatBottomSheetModule,
     MatButtonModule,
     MatIconModule,
     MatSidenavModule,
@@ -48,9 +54,7 @@ import { SidenavListComponent } from './modules/navigation/sidenav-list/sidenav-
     }),
     NgProgressHttpModule,
   ],
-  providers: [
-    UIService,
-  ],
+  providers: [UIService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

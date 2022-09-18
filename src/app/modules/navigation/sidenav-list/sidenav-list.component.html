@@ -44,8 +44,8 @@
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
             <a [routerLink]="['./user/', authUser.id]" class="vertical-navigation-item">
-              <img class="vertical-navigation-user-image" [defaultImage]="defaultUserImage" [lazyLoad]="authUser.image || defaultUserImage"
-              [alt]="authUser.displayName">
+              <img class="vertical-navigation-user-image" [defaultImage]="defaultUserImage"
+                [lazyLoad]="authUser.image || defaultUserImage" [alt]="authUser.displayName">
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
                   <span>Mi Perfil</span>
@@ -187,7 +187,8 @@
 
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
-            <a href="https://goo.gl/forms/LqbSCNkr36be0PAc2" target="_blank" class="vertical-navigation-item">
+            <a href="https://goo.gl/forms/LqbSCNkr36be0PAc2" target="_blank" rel="noopener noreferrer"
+              class="vertical-navigation-item">
               <mat-icon>library_add</mat-icon>
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
