@@ -3,7 +3,9 @@ section.home {
     margin-top: var(--gap-vertical);
 
     .site-title {
-        background-color: white;
+        background-color: #191e28;
+        background-image: linear-gradient( 135deg, #191e28 10%, #45c09e 100%);
+        color: white;
         padding: 1rem 1.5rem;
         margin-bottom: 2rem;
         border-radius: 1rem;

@@ -21,6 +21,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './modules/navigation/header/header.component';
 import { SidenavListComponent } from './modules/navigation/sidenav-list/sidenav-list.component';
 import { CustomErrorComponent } from './modules/navigation/custom-error/custom-error.component';
+import { FooterComponent } from './modules/navigation/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { CustomErrorComponent } from './modules/navigation/custom-error/custom-e
     HeaderComponent,
     SidenavListComponent,
     CustomErrorComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,

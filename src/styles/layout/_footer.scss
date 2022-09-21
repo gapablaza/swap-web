@@ -8,5 +8,37 @@ footer {
     color: var(--text-secondary);
     padding: 20px;
     align-items: center;
+    justify-content: center;
     border-top: 1px solid #E2E8EE;
+
+    p {
+      text-align: center;
+      font-size: 0.85rem;
+
+      &.help {
+        a {
+          color: var(--color-accent);
+          font-weight: bold;
+        }
+      }
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      display: inline-block;
+
+      &:not(:first-child):before {
+        position: relative;
+        display: inline-block;
+        height: 1em;
+        margin: 0 0.45rem;
+        top: -0.15em;
+        overflow: hidden;
+        line-height: 1.1em;
+        vertical-align: middle;
+        pointer-events: none;
+        content: "•";
+      }
+    }
   }

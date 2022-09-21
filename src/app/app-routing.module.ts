@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeAuthResolver } from './modules/home/home-auth-resolver.service';
+
 import { HomeComponent } from './modules/home/home.component';
 import { CustomErrorComponent } from './modules/navigation/custom-error/custom-error.component';
 
@@ -61,6 +62,11 @@ const routes: Routes = [
     path: 'trades',
     loadChildren: () =>
       import('./modules/trades/trades.module').then((m) => m.TradesModule),
+  },
+  {
+    path: 'p',
+    loadChildren: () =>
+      import('./modules/pages/pages.module').then((m) => m.PagesModule),
   },
   {
     path: '**',

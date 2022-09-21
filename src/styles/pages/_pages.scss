@@ -1,0 +1,19 @@
+section.pages {  
+    margin-top: var(--gap-vertical);
+    margin-bottom: var(--gap-vertical);
+
+    h2 {
+        margin-top: 2rem;
+    }
+
+    h3 {
+        margin-top: 2rem;
+    }
+
+    blockquote {
+        background-color: white;
+        padding: 1rem 1.5rem;
+        font-weight: bold;
+        border-radius: 0.5rem;
+    }
+}
