@@ -37,6 +37,7 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
   defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   userWishing: Item[] = [];
   userTrading: Item[] = [];
+  isAdsLoaded = false;
   isSaving = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
@@ -55,7 +56,14 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
 
     // get possible auth User
     let authSub = this.authSrv.authUser
-      .pipe(filter((user) => user.id != null))
+      .pipe(
+        tap((user) => {
+          if(!user.id || (user.accountTypeId == 1)) {
+            this.loadAds();
+          }
+        }),
+        filter((user) => user.id != null)
+      )
       .subscribe((user) => {
         console.log('CollectionProfileComponent - Sub authSrv');
         this.authUser = user;
@@ -94,6 +102,13 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       });
     this.subs.add(colSub);
+  }
+
+  loadAds() {
+    this.uiSrv.loadAds().then(() => {
+      this.isAdsLoaded = true;
+      this.cdr.markForCheck();
+    })
   }
 
   onAdd() {

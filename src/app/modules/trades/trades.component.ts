@@ -13,6 +13,7 @@ import {
   Trades,
   UserService,
 } from 'src/app/core';
+import { UIService } from 'src/app/shared';
 
 export interface IFilters {
   days?: number;
@@ -41,13 +42,15 @@ export class TradesComponent implements OnInit {
   userCollectionsSelected = '';
 
   showFilters = false;
+  isAdsLoaded = false;
   isLoaded = false;
 
   constructor(
     private authSrv: AuthService,
     private userSrv: UserService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private uiSrv: UIService,
   ) {}
 
   ngOnInit(): void {
@@ -105,6 +108,16 @@ export class TradesComponent implements OnInit {
         }
         this.isLoaded = true;
       });
+
+      if(this.authUser.accountTypeId == 1) {
+        this.loadAds();
+      }
+  }
+
+  loadAds() {
+    this.uiSrv.loadAds().then(() => {
+      this.isAdsLoaded = true;
+    })
   }
 
   onPageChange(e: string) {

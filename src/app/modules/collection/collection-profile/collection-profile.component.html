@@ -60,8 +60,10 @@
         [innerHTML]="collection.description| sanitizeHtml"></p>
     </div>
 
-    <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="9177899059" [adFormat]="'auto'"
-      [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
+    <ng-container *ngIf="isAdsLoaded">
+      <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="9177899059" [adFormat]="'auto'"
+        [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
+    </ng-container>
 
     <!-- <div class="collection-tags">
       <mat-chip-list aria-label="Etiquetas de la colección">

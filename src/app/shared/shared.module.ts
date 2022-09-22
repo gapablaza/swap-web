@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 
-import { AdsenseModule } from 'ng2-adsense';
+// import { AdsenseModule } from 'ng2-adsense';
 // import { MaterialModule } from './material.module';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 
@@ -40,9 +40,9 @@ import { MatListModule } from '@angular/material/list';
     MatListModule,
     
     LazyLoadImageModule,
-    AdsenseModule.forRoot({
-      adClient: 'ca-pub-6782496264167512',
-    }),
+    // AdsenseModule.forRoot({
+    //   adClient: 'ca-pub-6782496264167512',
+    // }),
   ],
   exports: [
     CommonModule,
@@ -52,7 +52,7 @@ import { MatListModule } from '@angular/material/list';
     RouterModule,
     // MaterialModule,
     LazyLoadImageModule,
-    AdsenseModule,
+    // AdsenseModule,
     SanitizeHtmlPipe,
     SlugifyPipe,
     DaysSinceLoginDirective,

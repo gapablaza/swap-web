@@ -28,6 +28,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   trades: TradesWithUserCollection[] = [];
   possibleTrades = 0;
   showTrades = false;
+  isAdsLoaded = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
 
@@ -50,6 +51,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.user.contributions = media.filter((m) => {
             return m.mediaTypeId == 1 && m.mediaStatusId == 2;
           }).length;
+
+          if(!authUser.id || (authUser.accountTypeId == 1)) {
+            this.loadAds();
+          }
 
           this.showTrades = false;
 
@@ -90,6 +95,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.subs.add(dataSub);
 
     console.log('from UserProfileComponent');
+  }
+
+  loadAds() {
+    this.uiSrv.loadAds().then(() => {
+      this.isAdsLoaded = true;
+      this.cdr.markForCheck();
+    })
   }
 
   onShare(): void {

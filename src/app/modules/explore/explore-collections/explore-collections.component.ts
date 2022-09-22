@@ -3,7 +3,7 @@ import es from '@angular/common/locales/es';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { filter, first, Subscription, switchMap } from 'rxjs';
+import { filter, first, Subscription, switchMap, tap } from 'rxjs';
 
 import {
   AuthService,
@@ -13,6 +13,7 @@ import {
   SearchService,
   User,
 } from 'src/app/core';
+import { UIService } from 'src/app/shared';
 
 @Component({
   selector: 'app-explore-collections',
@@ -53,6 +54,7 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
     },
   ];
   pageSelected = 1;
+  isAdsLoaded = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
 
@@ -60,7 +62,8 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
     private searchSrv: SearchService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private authSrv: AuthService
+    private authSrv: AuthService,
+    private uiSrv: UIService,
   ) {}
 
   ngOnInit(): void {
@@ -68,7 +71,14 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
 
     // get possible auth User
     let authSub = this.authSrv.authUser
-      .pipe(filter((user) => user.id != null))
+      .pipe(
+        tap((user) => {
+          if(!user.id || (user.accountTypeId == 1)) {
+            this.loadAds();
+          }
+        }),
+        filter((user) => user.id != null)
+      )
       .subscribe((user) => {
         this.authUser = user;
       });
@@ -107,6 +117,12 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
         this.paginator = data.paginator;
         this.isLoaded = true;
       });
+  }
+
+  loadAds() {
+    this.uiSrv.loadAds().then(() => {
+      this.isAdsLoaded = true;
+    })
   }
 
   onSort() {

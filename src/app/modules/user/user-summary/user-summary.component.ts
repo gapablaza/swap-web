@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { AuthService, DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
-import { filter, Subscription } from 'rxjs';
+import { filter, Subscription, tap } from 'rxjs';
 import { UIService } from 'src/app/shared';
 
 @Component({
@@ -16,6 +16,7 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
   user: User = {} as User;
   authUser: User = {} as User;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
+  isAdsLoaded = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
 
@@ -23,12 +24,20 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     private userOnlySrv: UserOnlyService,
     private authSrv: AuthService,
     private uiSrv: UIService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     // get possible auth User
     let authSub = this.authSrv.authUser
-      .pipe(filter((user) => user.id != null))
+      .pipe(
+        tap((user) => {
+          if(!user.id || (user.accountTypeId == 1)) {
+            this.loadAds();
+          }
+        }),
+        filter((user) => user.id != null)
+      )
       .subscribe((user) => {
         this.authUser = user;
       });
@@ -44,6 +53,13 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     this.subs.add(userSub);
 
     console.log('from UserSummaryComponent', this.user);
+  }
+
+  loadAds() {
+    this.uiSrv.loadAds().then(() => {
+      this.isAdsLoaded = true;
+      this.cdr.markForCheck();
+    })
   }
 
   onShare(): void {

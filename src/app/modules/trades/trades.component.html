@@ -6,17 +6,13 @@
         <h1>
             <span class="color-accent" *ngIf="trades.totalTrades > 0">
                 {{ trades.totalTrades | number:'':'es' }}
-              </span>
+            </span>
             Posibles cambios
         </h1>
-        <ng-adsense
-            *ngIf="!authUser.id || (authUser.accountTypeId == 1)"
-            [adSlot]="4915176250"
-            [adFormat]="'auto'"
-            [display]="'block'"
-            [fullWidthResponsive]="true"
-            [className]="'bga-hor'"
-        ></ng-adsense>
+        <ng-container *ngIf="isAdsLoaded">
+            <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="4915176250" [adFormat]="'auto'"
+                [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
+        </ng-container>
         <div class="card">
             <div class="controls-std">
                 <div class="controls-std-main">
@@ -35,7 +31,8 @@
                             <mat-select [(value)]="usersFromSelected">
                                 <mat-option value="1">De todo el mundo!</mat-option>
                                 <mat-option value="2">De {{ authUser.location_country }}</mat-option>
-                                <mat-option value="3">De {{ authUser.location_city }}, {{ authUser.location_country }}</mat-option>
+                                <mat-option value="3">De {{ authUser.location_city }}, {{ authUser.location_country }}
+                                </mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field appearance="outline">
@@ -60,22 +57,23 @@
             </div>
         </div>
 
-        <div *ngIf="(trades.totalUsers == 0) || (pageSelected > paginator.last_page)" class="card" >
+        <div *ngIf="(trades.totalUsers == 0) || (pageSelected > paginator.last_page)" class="card">
             <div class="empty-content">
-              <h2>(;—;)</h2>
-              <p>No encontramos posibles cambios para los filtros utilizados</p>
-              <!-- <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
+                <h2>(;—;)</h2>
+                <p>No encontramos posibles cambios para los filtros utilizados</p>
+                <!-- <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
                 <mat-icon inline="true">add</mat-icon> Agregar colección
               </a> -->
             </div>
         </div>
 
         <div *ngIf="(trades.totalUsers > 0) && (pageSelected <= paginator.last_page)">
-            <div *ngIf="trades.uniqueTrades > 0"  class="alert alert-info">
+            <div *ngIf="trades.uniqueTrades > 0" class="alert alert-info">
                 <div class="alert-container">
                     <div class="alert-content">
                         <!-- <div class="alert-title">Atención</div> -->
-                        <div class="alert-message">Los ítems subrayados no los tienen ningún otro usuario para los filtros utilizados. Deberías priorizarlos!</div>
+                        <div class="alert-message">Los ítems subrayados no los tienen ningún otro usuario para los
+                            filtros utilizados. Deberías priorizarlos!</div>
                     </div>
                 </div>
             </div>
@@ -105,11 +103,10 @@
                     </li>
                 </ul>
             </div>
-    
+
             <div *ngFor="let user of trades.user" class="trades-details card">
                 <div class="trades-user">
-                    <div class="trades-user-info"
-                        [ngClass]="{'pro-account': user.userData.accountTypeId == 2}">
+                    <div class="trades-user-info" [ngClass]="{'pro-account': user.userData.accountTypeId == 2}">
                         <div class="trades-user-main">
                             <div class="trades-user-image">
                                 <a [routerLink]="['/user', user.userData.id]">
@@ -117,7 +114,7 @@
                                         [lazyLoad]="user.userData.image || defaultUserImage" alt="">
                                 </a>
                             </div>
-    
+
                             <div class="trades-user-content flex-full">
                                 <div class="trades-user-title">
                                     <a [routerLink]="['/user', user.userData.id]">
@@ -139,15 +136,15 @@
                             </div>
                             <div class="trades-user-count">
                                 <a class="btn" mat-stroked-button>
-                                    {{ user.userData.tradesWithUser | number:'':'es' }} 
+                                    {{ user.userData.tradesWithUser | number:'':'es' }}
                                     <mat-icon inline="true">repeat</mat-icon>
-                                  </a>
+                                </a>
                             </div>
                         </div>
-    
+
                     </div>
                 </div>
-    
+
                 <div *ngFor="let col of user.collections" class="trades-collection">
                     <div class="trades-collection-info">
                         <a [routerLink]="['/c', col.collectionData.name| slugify, col.collectionData.id]">
@@ -160,8 +157,10 @@
                         <div *ngIf="col.totalSearching">
                             Tiene <strong>{{ col.totalSearching }}</strong> ítems que tú buscas:
                             <span *ngFor="let item of col.searching; last as isLast">
-                                <span [ngClass]="[authUser.accountTypeId == 2 ? 
-                                    'item-difficulty-' + item.difficultyCategoryId : '', item.unique ? 'item-unique' : '']">{{ item.name
+                                <span
+                                    [ngClass]="[authUser.accountTypeId == 2 ? 
+                                    'item-difficulty-' + item.difficultyCategoryId : '', item.unique ? 'item-unique' : '']">{{
+                                    item.name
                                     }}</span>
                                 <span *ngIf="!isLast">, </span>
                             </span>
@@ -178,7 +177,7 @@
                     </div>
                 </div>
             </div>
-    
+
             <div class="pagination-wrapper">
                 <ul class="pagination">
                     <li class="pagination-prev">
@@ -205,6 +204,6 @@
                 </ul>
             </div>
         </div>
-             
+
     </div>
 </section>

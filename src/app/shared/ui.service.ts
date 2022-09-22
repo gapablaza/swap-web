@@ -10,10 +10,11 @@ export class UIService {
   loadingStateChanged = new Subject<boolean>();
   defaultSnackbarDuration = 3000;
   private _isGoogleMapsLoaded = false;
+  private _isAdsSenseLoaded = false;
 
   constructor(
     private snackbar: MatSnackBar,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
   ) {}
 
   showSnackbar(
@@ -67,5 +68,34 @@ export class UIService {
     this._isGoogleMapsLoaded = status;
   }
 
+  isAdsLoaded() {
+    return this._isAdsSenseLoaded;
+  }
 
+  setAdsStatus(status: boolean) {
+    this._isAdsSenseLoaded = status;
+  }
+
+  loadAds() {
+    return new Promise((resolve, reject) => {
+
+      if (this._isAdsSenseLoaded) {
+        resolve(true);
+      } else {
+        const element = document.createElement('script');
+        // element.type = 'text/javascript';
+        element.id = 'google_ads_dynamic_script';
+        element.src = `//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js`;
+        element.onload = () => {
+          this._isAdsSenseLoaded = true;
+          resolve(true);
+        }
+        element.onerror = () => {
+          reject(false);
+        }
+        
+        document.getElementsByTagName('head')[0].appendChild(element);
+      }
+    });
+  }
 }

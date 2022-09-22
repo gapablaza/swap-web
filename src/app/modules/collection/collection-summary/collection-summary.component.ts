@@ -14,7 +14,7 @@ import {
   User,
 } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
-import { filter, first, Subscription } from 'rxjs';
+import { filter, first, Subscription, tap } from 'rxjs';
 import { UIService } from 'src/app/shared';
 
 @Component({
@@ -28,6 +28,7 @@ export class CollectionSummaryComponent implements OnInit, OnDestroy {
   collection: Collection = {} as Collection;
   authUser: User = {} as User;
   defaultCollectionImage = DEFAULT_COLLECTION_IMG;
+  isAdsLoaded = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
 
@@ -41,7 +42,14 @@ export class CollectionSummaryComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // get possible auth User
     let authSub = this.authSrv.authUser
-      .pipe(filter((user) => user.id != null))
+      .pipe(
+        tap((user) => {
+          if(!user.id || (user.accountTypeId == 1)) {
+            this.loadAds();
+          }
+        }),
+        filter((user) => user.id != null)
+      )
       .subscribe((user) => {
         console.log('CollectionSummaryComponent - Sub authSrv');
         this.authUser = user;
@@ -61,6 +69,13 @@ export class CollectionSummaryComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       });
     this.subs.add(colSub);
+  }
+
+  loadAds() {
+    this.uiSrv.loadAds().then(() => {
+      this.isAdsLoaded = true;
+      this.cdr.markForCheck();
+    })
   }
 
   onShare(): void {
