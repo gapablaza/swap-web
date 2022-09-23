@@ -9,8 +9,9 @@
     <p class="user-card-subtitle">{{ user.location }}</p>
     <hr *ngIf="showObject" />
     <div *ngIf="showObject" class="user-card-info">
-      <span *ngIf="type == 'media'"><strong>{{ user.contributions | number:'':'es' }}</strong> media</span>
-      <span *ngIf="type == 'item'"><strong>{{ user.totalItems | number:'':'es' }}</strong> ítems</span>
+      <span *ngIf="type == 'media'"><strong class="color-accent">{{ user.contributions | number:'':'es' }}</strong> media</span>
+      <span *ngIf="type == 'item'"><strong class="color-accent">{{ user.totalItems | number:'':'es' }}</strong> ítems</span>
+      <span *ngIf="type == 'positives'"><strong class="color-accent">+{{ (user.userSummary?.positives || 0) | number:'':'es' }}</strong> positivas</span>
     </div>
   </li>
 </ul>

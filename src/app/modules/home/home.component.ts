@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit {
   added: Collection[] = [];
   moreItems: User[] = [];
   moreMedia: User[] = [];
+  morePositives: User[] = [];
   popular: Collection[] = [];
   published: Collection[] = [];
   users: User[] = [];
@@ -43,6 +44,10 @@ export class HomeComponent implements OnInit {
 
         this.moreMedia = data.moreMedia.sort((a, b) => {
           return (a.contributions || 0) < (b.contributions || 0) ? 1 : -1;
+        });
+
+        this.morePositives = data.morePositives.sort((a, b) => {
+          return (a.userSummary?.positives || 0) < (b.userSummary?.positives || 0) ? 1 : -1;
         });
 
         this.popular = data.popular.sort((a, b) => {

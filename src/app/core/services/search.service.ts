@@ -15,6 +15,7 @@ export class SearchService {
     added: Collection[];
     moreItems: User[];
     moreMedia: User[];
+    morePositives: User[];
     popular: Collection[];
     published: Collection[];
     users: User[];
@@ -147,6 +148,7 @@ export class SearchService {
     added: Collection[];
     moreItems: User[];
     moreMedia: User[];
+    morePositives: User[];
     popular: Collection[];
     published: Collection[];
     users: User[];
@@ -158,6 +160,7 @@ export class SearchService {
             added: data.data.added.data as Collection[],
             moreItems: data.data.moreItems.data as User[],
             moreMedia: data.data.moreMedia.data as User[],
+            morePositives: data.data.morePositives.data as User[],
             popular: data.data.popular.data as Collection[],
             published: data.data.published.data as Collection[],
             users: data.data.users.data as User[],

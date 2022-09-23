@@ -25,11 +25,11 @@
   </p>
   <app-list-collections [collections]="published"></app-list-collections>
 
-  <h2>Con más ítems listados</h2>
+  <h2>Mejor evaluados</h2>
   <p class="home-subtitle">
-    Usuarios con mas ítems (láminas / stickers / figuritas / pegatinas / cromos / estampas) marcados
+    Usuarios con mas evaluaciones positivas recibidas en los últimos 15 días
   </p>
-  <app-list-users [users]="moreItems" [type]="'item'"></app-list-users>
+  <app-list-users [users]="morePositives" [type]="'positives'"></app-list-users>
 
   <h2>Últimas incorporaciones</h2>
   <p class="home-subtitle">
@@ -37,6 +37,12 @@
   </p>
   <app-list-collections [collections]="added"></app-list-collections>
 
+  <h2>Con más ítems listados</h2>
+  <p class="home-subtitle">
+    Usuarios con mas ítems (láminas / stickers / figuritas / pegatinas / cromos / estampas) marcados
+  </p>
+  <app-list-users [users]="moreItems" [type]="'item'"></app-list-users>
+  
   <h2>Últimos en registrarse</h2>
   <p class="home-subtitle">
     Últimos usuarios que se han registrado
