@@ -22,6 +22,8 @@ import { HeaderComponent } from './modules/navigation/header/header.component';
 import { SidenavListComponent } from './modules/navigation/sidenav-list/sidenav-list.component';
 import { CustomErrorComponent } from './modules/navigation/custom-error/custom-error.component';
 import { FooterComponent } from './modules/navigation/footer/footer.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,12 @@ import { FooterComponent } from './modules/navigation/footer/footer.component';
       spinner: false,
     }),
     NgProgressHttpModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
   ],
   providers: [UIService],
   bootstrap: [AppComponent],
