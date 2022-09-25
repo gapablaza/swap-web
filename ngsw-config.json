@@ -26,5 +26,31 @@
         ]
       }
     }
+  ],
+  "dataGroups": [
+    {
+      "name": "images-cdn-col",
+      "urls": [
+        "https://ik.imagekit.io/nfd3o4hfi/tr:n-il_col_wm/collections/*",
+        "https://res.cloudinary.com/cambialaminas/image/upload/t_il_col_wm/collections/*",
+        "https://cdn.intercambialaminas.com/collections/*"
+      ],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 5000,
+        "maxAge": "30d"
+      }
+    },
+    {
+      "name": "api-short",
+      "urls": [
+        "https://api.intercambialaminas.com/*/home"
+      ],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 10,
+        "maxAge": "1h"
+      }
+    }
   ]
 }
