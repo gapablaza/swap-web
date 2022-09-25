@@ -30,7 +30,7 @@ export class UserMediaComponent implements OnInit, OnDestroy {
   medias: Media[] = [];
   showedImages: Media[] = [];
   baseImageUrl =
-    'https://res.cloudinary.com/cambialaminas/image/upload/c_scale,q_auto,h_280/c_scale,e_grayscale,g_south_east,l_base:icono-logo-watermark-white,o_40,w_35,x_5,y_5/v1/prod/collectionMedia/';
+    'https://res.cloudinary.com/cambialaminas/image/upload/t_il_media_wm/prod/collectionMedia/';
 
   searchText = '';
   sortOptionSelected = 'likes';

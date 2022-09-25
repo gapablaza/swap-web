@@ -42,6 +42,17 @@
       }
     },
     {
+      "name": "images-cdn-media",
+      "urls": [
+        "https://res.cloudinary.com/cambialaminas/image/upload/t_il_media_wm/prod/collectionMedia/*"
+      ],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 2000,
+        "maxAge": "30d"
+      }
+    },
+    {
       "name": "api-short",
       "urls": [
         "https://api.intercambialaminas.com/*/home"
