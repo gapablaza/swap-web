@@ -32,14 +32,14 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'user',
-    loadChildren: () =>
-      import('./modules/user/user.module').then((m) => m.UserModule),
-  },
-  {
     path: 'item',
     loadChildren: () =>
       import('./modules/item/item.module').then((m) => m.ItemModule),
+  },
+  {
+    path: 'user',
+    loadChildren: () =>
+      import('./modules/user/user.module').then((m) => m.UserModule),
   },
   {
     path: 'search',
@@ -52,16 +52,21 @@ const routes: Routes = [
       import('./modules/explore/explore.module').then((m) => m.ExploreModule),
   },
   {
+    path: 'trades',
+    loadChildren: () =>
+      import('./modules/trades/trades.module').then((m) => m.TradesModule),
+  },
+  {
+    path: 'message',
+    loadChildren: () =>
+      import('./modules/message/message.module').then((m) => m.MessageModule),
+  },
+  {
     path: 'settings',
     loadChildren: () =>
       import('./modules/settings/settings.module').then(
         (m) => m.SettingsModule
       ),
-  },
-  {
-    path: 'trades',
-    loadChildren: () =>
-      import('./modules/trades/trades.module').then((m) => m.TradesModule),
   },
   {
     path: 'p',

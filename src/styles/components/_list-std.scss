@@ -144,6 +144,26 @@ ul.list-std {
       align-items: center;
     }
   }
+
+  .list-item-message {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 4px;
+
+    .list-item-message-new {
+      background-color: #46be9c;
+      color: white;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      text-align: center;
+      line-height: 1.5rem;
+    }    
+  }
 }
 
 // @media (min-width: 768px) {

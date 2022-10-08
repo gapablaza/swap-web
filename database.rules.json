@@ -1,40 +1,43 @@
 {
-    "rules": {        
-        "commentsCollection": {
-						".read": true,
-            ".write": "auth != null",
-        },
+  "rules": {
+    "commentsCollection": {
+      ".read": true,
+      ".write": "auth != null"
+    },
 
-        "feedsHome": {
-          	".indexOn": ["timestamp"],
-          	".read": true,
-            ".write": "auth != null",
-        },
+    "feedsHome": {
+      ".indexOn": ["timestamp"],
+      ".read": true,
+      ".write": "auth != null"
+    },
 
-      	"onlineUsers": {
-        		".read": true,
-        		".write": true
-        },
-          
-        "unreadUserMessages": {
-						".read": "auth != null",
-            ".write": "auth != null",
-        },
-          
-        "userMessages": {
-						".read": "auth != null",
-            ".write": "auth != null",
-        },
-          
-        "userResume": {
-						".read": "auth != null",
-            ".write": "auth != null",
-        },
+    "onlineUsers": {
+      ".read": true,
+      ".write": true
+    },
 
-        "users": {
-						".read": "auth != null",
-            ".write": "auth != null",
-        },
+    "unreadUserMessages": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
 
+    "userMessages": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+
+    "userResume": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+
+      "$userRes": {
+        ".indexOn": ["toUserId"]
+      }
+    },
+
+    "users": {
+      ".read": "auth != null",
+      ".write": "auth != null"
     }
+  }
 }

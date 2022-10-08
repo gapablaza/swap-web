@@ -1,16 +1,15 @@
-// import {
-//   GoogleLoginProvider,
-//   SocialAuthService,
-// } from '@abacritt/angularx-social-login';
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { Observable, BehaviorSubject, ReplaySubject, from } from 'rxjs';
 import {
   concatMap,
   distinctUntilChanged,
   map,
   take,
 } from 'rxjs/operators';
+
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+// import firebase from 'firebase/compat/app';
 
 import { User } from '../models';
 import { ApiService } from './api.service';
@@ -27,11 +26,14 @@ export class AuthService {
   private isAuthSubject = new ReplaySubject<boolean>(1);
   public isAuth = this.isAuthSubject.asObservable();
 
+  private isFBAuthSubject = new ReplaySubject<boolean>(1);
+  public isFBAuth = this.isFBAuthSubject.asObservable();
+
   constructor(
     // private storageSrv: StorageService,
-    // private socialSrv: SocialAuthService,
     private apiSrv: ApiService,
-    private jwtSrv: JwtService
+    private jwtSrv: JwtService,
+    private afAuth: AngularFireAuth
   ) {}
 
   // Verify JWT in localstorage with server & load user's info.
@@ -60,13 +62,17 @@ export class AuthService {
     this.authUserSubject.next(user.data);
     // Set isAuthenticated to true
     this.isAuthSubject.next(true);
-    // try to login on Firebase
-    // this.loginOnFirebase();
+    // try to login on Firebase if not disabled
+    if (user.data.disabled) {
+      this.isFBAuthSubject.next(false);
+    } else {
+      this.loginOnFirebase();
+    }
   }
 
   purgeAuth() {
     // try to logout from firebase
-    // this.logoutOnFirebase();
+    this.logoutOnFirebase();
     // TO DO: try to logout from social networks
     // this.socialSrv.signOut();
     // Remove JWT from localstorage
@@ -121,6 +127,72 @@ export class AuthService {
       })
     );
   }
+
+
+  loginOnFirebase() {
+    this.apiSrv.get('/v2/me/firebase').pipe(
+      take(1),
+      concatMap((data: any) => {
+        return from(this.afAuth.signInWithCustomToken(data.tokenFB))
+      })
+    )
+      .subscribe({
+        next: () => {
+          console.log('signInWithCustomToken');
+          this.isFBAuthSubject.next(true);
+        },
+        error: () => this.isFBAuthSubject.next(false)
+      });
+
+      // .subscribe(
+      //   (data: any) => {
+      //     firebase.login({
+      //       type: firebase.LoginType.CUSTOM,
+      //       customOptions: {
+      //         token: data.tokenFB
+      //       }
+      //     }).then(
+      //       (result) => {
+      //         // console.log(JSON.stringify(result));
+      //         this.isFBAuthenticatedSubject.next(true);
+      //         // save FB device token 
+      //         firebase.addOnPushTokenReceivedCallback(
+      //           (token) => {
+      //             // console.log('login device token: ', token);
+      //             this.deviceToken = token;
+      //             firebase.setValue(
+      //               'users/userId_' + this.getCurrentUser().id + '/notificationTokens/' + token,
+      //               true
+      //             );
+      //           }
+      //         );
+
+      //       },
+      //       (errorMessage) => {
+      //         console.log(errorMessage);
+      //         this.isFBAuthenticatedSubject.next(false);
+      //       }
+      //     );
+      //   },
+      //   err => console.log('error: ', err)
+      // );
+  }
+
+
+  logoutOnFirebase() {
+    // const tempUserId = this.getCurrentUser().id;
+    // // remove FB device token 
+    // if (this.deviceToken) {
+    //   firebase.remove(
+    //     'users/userId_' + tempUserId + '/notificationTokens/' + this.deviceToken
+    //   );
+    //   this.deviceToken = null;
+    //   console.log('tryed to remove device token');
+    // }
+    this.afAuth.signOut();
+    this.isFBAuthSubject.next(false);
+  }
+
 
   linkGoogle(data: {
     id: string;

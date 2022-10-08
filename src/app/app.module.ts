@@ -4,6 +4,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgProgressModule } from 'ngx-progressbar';
 import { NgProgressHttpModule } from 'ngx-progressbar/http';
 
+import { AngularFireModule } from '@angular/fire/compat';
+// import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { getDatabase, provideDatabase } from '@angular/fire/database';
+
 import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core';
 import { HomeModule } from './modules/home/home.module';
@@ -47,10 +52,10 @@ import { environment } from '../environments/environment';
     MatToolbarModule,
 
     AppRoutingModule,
-    // AngularFireModule.initializeApp(environment.firebase),
+    AngularFireModule.initializeApp(environment.firebase),
     // provideFirebaseApp(() => initializeApp(environment.firebase)),
-    // provideAuth(() => getAuth()),
-    // provideDatabase(() => getDatabase()),
+    provideAuth(() => getAuth()),
+    provideDatabase(() => getDatabase()),
     HomeModule,
     NgProgressModule.withConfig({
       color: '#2dd4bf',

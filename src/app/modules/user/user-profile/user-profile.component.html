@@ -14,7 +14,8 @@
           <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
         </div>
         <div class="user-actions">
-          <a *ngIf="authUser.id && (authUser.id != user.id)" class="btn" mat-raised-button color="accent">
+          <a *ngIf="authUser.id && (authUser.id != user.id)" class="btn" mat-raised-button color="accent"
+            [routerLink]="['/message', user.id]">
             <mat-icon inline="true">add</mat-icon> Conversar
           </a>
           <a *ngIf="authUser.id && (authUser.id == user.id)" class="btn" mat-raised-button color="accent"
@@ -63,7 +64,7 @@
         <div class="alert-container">
           <div class="alert-content">
             <div class="alert-title">Atención</div>
-            <div class="alert-message">Este usuario tiene activado el modo "Incógnito" por lo que no es considerado en
+            <div class="alert-message">Este usuario se encuentra "deshabilitado" por lo que no es considerado en
               los posibles cambios, no puede registrar evaluaciones, ni puede enviar/recibir mensajes</div>
           </div>
         </div>

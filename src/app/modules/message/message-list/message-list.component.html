@@ -1,0 +1,85 @@
+<div class="messages-page">
+    <div *ngIf="!isLoaded" class="loading-indicator">
+        <mat-spinner></mat-spinner>
+    </div>
+    <section *ngIf="isLoaded" class="messages flex-full">
+        <h1>
+            {{ showedMessages.length }} Conversaciones
+            <span *ngIf="typeSelected == '1'" class="color-accent">Activas</span>
+            <span *ngIf="typeSelected == '2'" class="text-secondary">Archivadas</span>
+        </h1>
+        <div class="card flex-full">
+            <div class="empty-content" *ngIf="!messages.length">
+                <h2>(¬‿¬)</h2>
+                <p>Todavía no tienes conversaciones con otros usuarios...</p>
+            </div>
+
+            <div *ngIf="messages.length" class="controls-std">
+                <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
+                    <mat-form-field class="controls-search" appearance="outline">
+                        <mat-label>Filtrar por usuario (nombre / ID) o por el texto del último mensaje</mat-label>
+                        <mat-icon matPrefix>search</mat-icon>
+                        <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
+                        <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear"
+                            (click)="onClearFilter()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Conversaciones</mat-label>
+                        <mat-select (selectionChange)="onFilter()" [(value)]="typeSelected">
+                            <mat-option value="1">Activas</mat-option>
+                            <mat-option value="2">Archivadas</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <ul *ngIf="showedMessages.length" class="list-std">
+                <li class="list-std-item" *ngFor="let elem of showedMessages; trackBy: trackByUsers">
+                    <div class="list-item-main">
+                        <div class="list-item-image">
+                            <a [routerLink]="['/message', elem.withUserId]">
+                                <img [defaultImage]="defaultUserImage"
+                                    [lazyLoad]="elem.withUserImage || defaultUserImage" alt="">
+                            </a>
+                        </div>
+                        <div class="list-item-content flex-full">
+                            <div class="list-item-title">
+                                <a [routerLink]="['/message', elem.withUserId]">
+                                    {{ elem.withUserName }}
+                                </a>
+                            </div>
+                            <div class="list-item-meta custom-separator2">
+                                <mat-icon *ngIf="elem.fromAuthUser" aria-hidden="false" aria-label="read status"
+                                    fontIcon="done_all" inline="true" [ngClass]="{ 'readed': !elem.unread }"></mat-icon>
+                                <span>{{ elem.withUserText }}</span>
+                            </div>
+                        </div>
+                        <div class="list-item-message">
+                            <span class="list-item-message-date">{{ elem.withUserTime | date:'dd/MM/YYYY' }}</span>
+                            <span *ngIf="elem.unread && !elem.fromAuthUser" class="list-item-message-new">N</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="empty-content" *ngIf="!showedMessages.length">
+                <h2>(¬‿¬)</h2>
+                <p>No se encuentran conversaciones para los filtros seleccionados</p>
+            </div>
+
+            <div class="alert alert-warning">
+                <div class="alert-container">
+                    <div class="alert-content">
+                        <div class="alert-message">
+                            Los mensajes enviados a través de la aplicación NO están cifrados NI
+                            son privados, por lo que NO debes usarlos para enviar información confidencial.<br /><br />
+                            También ten en cuenta que las conversaciones con más de 1 año de
+                            antigüedad serán borradas de manera definitiva.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

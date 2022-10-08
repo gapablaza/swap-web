@@ -75,18 +75,18 @@
 
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
-            <a class="vertical-navigation-item">
+            <a [routerLink]="['./message/']" class="vertical-navigation-item">
               <mat-icon>forum</mat-icon>
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
                   <span>Conversaciones</span>
                 </div>
               </div>
-              <!-- <div class="vertical-navigation-item-badge">
+              <div *ngIf="unreadCount > 0" class="vertical-navigation-item-badge">
                 <div class="vertical-navigation-item-badge-content">
-                  3
+                  {{ unreadCount }}
                 </div>
-              </div> -->
+              </div>
             </a>
           </div>
         </div>
