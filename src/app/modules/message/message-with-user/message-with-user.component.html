@@ -9,7 +9,8 @@
                     <mat-icon inline="true">keyboard_backspace</mat-icon>
                 </a>
                 <div class="chat-header-user">
-                    <img [defaultImage]="defaultUserImage" [lazyLoad]="otherUser.image || defaultUserImage" alt="">
+                    <img [defaultImage]="defaultUserImage" [lazyLoad]="otherUser.image || defaultUserImage" 
+                        alt="Imagen de Perfil" crossorigin="anonymous">
                     <h3>{{ otherUser.displayName }}</h3>
                 </div>
                 <a class="btn" mat-icon-button [matMenuTriggerFor]="menu">

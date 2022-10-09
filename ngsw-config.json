@@ -31,9 +31,9 @@
     {
       "name": "images-cdn-col",
       "urls": [
-        "https://ik.imagekit.io/nfd3o4hfi/tr:n-il_col_wm/collections/*",
-        "https://res.cloudinary.com/cambialaminas/image/upload/t_il_col_wm/collections/*",
-        "https://cdn.intercambialaminas.com/collections/*"
+        "**/tr:n-il_col_wm/collections/*.*",
+        "**/t_il_col_wm/collections/*.*",
+        "cdn.intercambialaminas.com/collections/*.*"
       ],
       "cacheConfig": {
         "strategy": "performance",
@@ -44,7 +44,7 @@
     {
       "name": "images-cdn-media",
       "urls": [
-        "https://res.cloudinary.com/cambialaminas/image/upload/t_il_media_wm/prod/collectionMedia/*"
+        "**/t_il_media_wm/prod/collectionMedia/*.*"
       ],
       "cacheConfig": {
         "strategy": "performance",
@@ -55,7 +55,7 @@
     {
       "name": "api-short",
       "urls": [
-        "https://api.intercambialaminas.com/*/home"
+        "api.intercambialaminas.com/*/home"
       ],
       "cacheConfig": {
         "strategy": "performance",

@@ -111,7 +111,8 @@
                             <div class="trades-user-image">
                                 <a [routerLink]="['/user', user.userData.id]">
                                     <img [defaultImage]="defaultUserImage"
-                                        [lazyLoad]="user.userData.image || defaultUserImage" alt="">
+                                        [lazyLoad]="user.userData.image || defaultUserImage" alt="Imagen de Perfil"
+                                        crossorigin="anonymous">
                                 </a>
                             </div>
 
@@ -149,7 +150,7 @@
                     <div class="trades-collection-info">
                         <a [routerLink]="['/c', col.collectionData.name| slugify, col.collectionData.id]">
                             <img [defaultImage]="defaultCollectionImage" [lazyLoad]="col.collectionData.image"
-                                [alt]="col.collectionData.name">
+                                [alt]="col.collectionData.name" crossorigin="anonymous">
                             <span>{{ col.collectionData.name }}</span>
                         </a>
                     </div>

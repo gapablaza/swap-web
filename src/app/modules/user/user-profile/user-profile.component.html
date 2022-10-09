@@ -10,7 +10,7 @@
       <div class="user-subheader">
         <div class="user-image-container">
           <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
-            [alt]="user.displayName">
+            [alt]="user.displayName" crossorigin="anonymous">
           <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
         </div>
         <div class="user-actions">
@@ -92,7 +92,7 @@
         <div class="trades-collection-info">
           <a [routerLink]="['/c', col.name | slugify, col.id]">
             <img [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image || defaultCollectionImage"
-              [alt]="col.name">
+              [alt]="col.name" crossorigin="anonymous">
             <span>{{ col.name }}</span>
           </a>
         </div>

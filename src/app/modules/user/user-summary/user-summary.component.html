@@ -11,7 +11,7 @@
     <div class="user-content">
         <div class="user-imagen-container">
             <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
-                [alt]="user.displayName">
+                [alt]="user.displayName" crossorigin="anonymous">
         </div>
         <div class="user-data">
             <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>

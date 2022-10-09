@@ -55,7 +55,8 @@
           <div class="list-item-main">
             <div class="list-item-image">
               <a [routerLink]="['/user', user.id]">
-                <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage" alt="">
+                <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage" 
+                alt="Imagen de perfil" crossorigin="anonymous">
               </a>
             </div>
             <div class="list-item-content flex-full">

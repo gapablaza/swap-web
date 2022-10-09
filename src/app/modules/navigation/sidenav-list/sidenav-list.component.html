@@ -45,7 +45,8 @@
           <div class="vertical-navigation-item-wrapper">
             <a [routerLink]="['./user/', authUser.id]" class="vertical-navigation-item">
               <img class="vertical-navigation-user-image" [defaultImage]="defaultUserImage"
-                [lazyLoad]="authUser.image || defaultUserImage" [alt]="authUser.displayName">
+                [lazyLoad]="authUser.image || defaultUserImage" [alt]="authUser.displayName"
+                crossorigin="anonymous">
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
                   <span>Mi Perfil</span>

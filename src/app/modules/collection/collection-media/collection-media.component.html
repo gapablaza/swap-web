@@ -7,7 +7,7 @@
     <h1>Elementos multimedia</h1>
     <h2 *ngIf="showedImages.length">
       Imágenes (<span class="color-accent" *ngIf="showedImages.length != medias.length">
-        {{ showedImages.length }} de 
+        {{ showedImages.length }} de
       </span>{{ medias.length }})
     </h2>
     <div class="card">
@@ -52,12 +52,14 @@
       <div class="images-grid">
         <div *ngFor="let image of showedImages; let i = index; trackBy: trackByImage" class="images-grid-card">
           <div class="images-grid-content">
-            <img [lazyLoad]="baseImageUrl + image.id + '.jpg'" alt="" class="images-grid-image">
+            <img [lazyLoad]="baseImageUrl + image.id + '.jpg'"
+              [alt]="image.description + ' en ' + image.collection?.data?.name" class="images-grid-image"
+              crossorigin="anonymous">
             <p class="images-grid-author">
-              por <a [routerLink]="['/user', image.user?.data?.id]">{{ image.user?.data?.displayName }}</a> el {{ image.created * 1000 | date:'dd/MM/yy' }}
+              por <a [routerLink]="['/user', image.user?.data?.id]">{{ image.user?.data?.displayName }}</a> el {{
+              image.created * 1000 | date:'dd/MM/yy' }}
             </p>
-            <div (click)="toggleLike(image)"
-              class="images-grid-likes" [ngClass]="{'likes': image.likes }">
+            <div (click)="toggleLike(image)" class="images-grid-likes" [ngClass]="{'likes': image.likes }">
               <mat-icon aria-hidden="false" aria-label="Number of likes">favorite</mat-icon>
               <span>{{ image.totalLikes }}</span>
             </div>

@@ -6,7 +6,7 @@
 
         <div class="avatar-preview">
             <img class="" [defaultImage]="defaultUserImage" [lazyLoad]="authUser.image || defaultUserImage"
-                [alt]="authUser.displayName">
+                [alt]="authUser.displayName" crossorigin="anonymous">
             <div class="avatar-actions">
                 <a class="btn" mat-raised-button color="accent" (click)="onNewImage()">
                     <mat-icon inline="true">upload</mat-icon> Nueva imagen

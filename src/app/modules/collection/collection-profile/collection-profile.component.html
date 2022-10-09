@@ -9,7 +9,8 @@
       <div class="collection-subheader">
         <div class="collection-image-container">
           <img class="collection-image" [defaultImage]="defaultCollectionImage"
-            [lazyLoad]="collection.image || defaultCollectionImage" [alt]="collection.name">
+            [lazyLoad]="collection.image || defaultCollectionImage" [alt]="collection.name"
+            crossorigin="anonymous">
 
           <div *ngIf="collection.userData?.completed" class="ribbon up">
             <div class="content">
