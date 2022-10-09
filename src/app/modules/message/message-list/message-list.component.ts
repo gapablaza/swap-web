@@ -46,8 +46,11 @@ export class MessageListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.authUser = this.authSrv.getCurrentUser();
-
-    this.messagesRef = this.afDB.list(`userResume/userId_${this.authUser.id}`);
+    this.messagesRef = this.afDB.list(
+      `userResume/userId_${this.authUser.id}`,
+      (ref) => ref.orderByChild('timestamp')
+    );
+    
     let messagesSub = this.messagesRef
       .snapshotChanges()
       .pipe(
@@ -132,7 +135,7 @@ export class MessageListComponent implements OnInit, OnDestroy {
       ];
     }
 
-    this.showedMessages = [...tempMessages];
+    this.showedMessages = [...tempMessages.reverse()];
   }
 
   ngOnDestroy(): void {

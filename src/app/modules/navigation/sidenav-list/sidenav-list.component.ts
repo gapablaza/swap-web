@@ -53,7 +53,7 @@ export class SidenavListComponent implements OnInit {
           .pipe(
             map((resp: any) => {
               return resp.filter((mess: Message) => {
-                return mess.unread !== false
+                return mess.unread === false ? false : true
               })
             })
           )

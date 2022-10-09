@@ -15,16 +15,27 @@ section.messages {
 
     ul.list-std {
         .list-item-main {
-            .list-item-meta {
-                display: flex;
-                column-gap: 4px;
-                align-items: center;
-
-                .mat-icon {
-                    font-size: 1.25rem;
-
-                    &.readed {
-                        color: #46be9c;
+            .list-item-content {
+                overflow-x: hidden;
+                
+                .list-item-meta {
+                    display: flex;
+                    column-gap: 4px;
+                    align-items: center;
+    
+                    .mat-icon {
+                        font-size: 1.25rem;
+                        flex-shrink: 0;
+    
+                        &.readed {
+                            color: #46be9c;
+                        }
+                    }
+    
+                    span {
+                        overflow-x: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
                     }
                 }
             }
