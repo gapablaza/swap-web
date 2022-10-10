@@ -53,8 +53,8 @@
         <div *ngFor="let image of showedImages; let i = index; trackBy: trackByImage" class="images-grid-card">
           <div class="images-grid-content">
             <img [lazyLoad]="baseImageUrl + image.id + '.jpg'"
-              [alt]="image.description + ' en ' + image.collection?.data?.name" class="images-grid-image"
-              crossorigin="anonymous">
+              [alt]="image.description + ' en ' + collection.name + ' de ' + collection.publisher.data.name"
+              class="images-grid-image" crossorigin="anonymous">
             <p class="images-grid-author">
               por <a [routerLink]="['/user', image.user?.data?.id]">{{ image.user?.data?.displayName }}</a> el {{
               image.created * 1000 | date:'dd/MM/yy' }}

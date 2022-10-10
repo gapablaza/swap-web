@@ -92,7 +92,7 @@
         <div class="trades-collection-info">
           <a [routerLink]="['/c', col.name | slugify, col.id]">
             <img [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image || defaultCollectionImage"
-              [alt]="col.name" crossorigin="anonymous">
+            [alt]="col.name + ' de ' + col.publisherName" crossorigin="anonymous">
             <span>{{ col.name }}</span>
           </a>
         </div>

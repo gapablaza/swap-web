@@ -18,7 +18,7 @@
                 </a>
                 <mat-menu #menu="matMenu">
                     <button mat-menu-item [routerLink]="['/user', otherUser.id]">Ver perfil</button>
-                    <button mat-menu-item *ngIf="!isArchived" (click)="onArchive()">Archivar conversación</button>
+                    <button mat-menu-item *ngIf="!isArchived && usersMessages.length" (click)="onArchive()">Archivar conversación</button>
                 </mat-menu>
             </div>
             <div class="chat-content">
@@ -36,6 +36,16 @@
                             <div class="chat-message-date">{{ message.timestamp | date:'HH:mm' }}</div>
                         </div>
                     </ng-container>
+                    <div *ngIf="!usersMessages.length" class="alert alert-warning">
+                        <div class="alert-container">
+                            <div class="alert-content">
+                                <div class="alert-message">
+                                    Los mensajes enviados a través de la aplicación NO están cifrados NI
+                                    son privados, por lo que NO debes usarlos para enviar información confidencial.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div *ngIf="isArchived && !otherUser.disabled" class="alert alert-info">
                         <div class="alert-container">
                             <div class="alert-content">

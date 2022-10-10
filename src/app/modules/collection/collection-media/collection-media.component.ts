@@ -5,10 +5,10 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { concatMap, filter, first, map, Subscription } from 'rxjs';
+import { concatMap, filter, first, map, Subscription, tap } from 'rxjs';
 import orderBy from 'lodash/orderBy';
 
-import { CollectionService, Media, MediaService } from 'src/app/core';
+import { AuthService, Collection, CollectionService, Media, MediaService } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
 import { UIService } from 'src/app/shared';
 
@@ -21,6 +21,7 @@ import { UIService } from 'src/app/shared';
 export class CollectionMediaComponent implements OnInit, OnDestroy {
   medias: Media[] = [];
   showedImages: Media[] = [];
+  collection: Collection = {} as Collection;
   baseImageUrl =
     'https://res.cloudinary.com/cambialaminas/image/upload/t_il_media_wm/prod/collectionMedia/';
 
@@ -59,6 +60,7 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
     },
   ];
   showFilters = false;
+  isAuth = false;
   isSaving = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
@@ -67,6 +69,7 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
     private colSrv: CollectionService,
     private colOnlySrv: CollectionOnlyService,
     private mediaSrv: MediaService,
+    private authSrv: AuthService,
     private uiSrv: UIService,
     private cdr: ChangeDetectorRef
   ) {}
@@ -74,7 +77,8 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     let colSub = this.colOnlySrv.collection$
       .pipe(
-        filter((col) => col.id != null),
+        filter(col => col.id != null),
+        tap(col => this.collection = col),
         concatMap((col) => this.colSrv.getMedia(col.id).pipe(first())),
         // filter only approved images
         map((media) =>
@@ -92,9 +96,16 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       });
     this.subs.add(colSub);
+
+    let authSub = this.authSrv.isAuth.subscribe(auth => this.isAuth = auth);
+    this.subs.add(authSub);
   }
 
   toggleLike(item: Media) {
+    if (!this.isAuth) {
+      this.uiSrv.showError('Debes iniciar sesión para realizar esta acción');
+      return;
+    }
     if (this.isSaving) {
       return;
     }

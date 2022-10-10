@@ -50,8 +50,8 @@
         <div *ngFor="let image of showedImages; let i = index; trackBy: trackByImage" class="images-grid-card">
           <div class="images-grid-content">
             <img [lazyLoad]="baseImageUrl + image.id + '.jpg'"
-              [alt]="image.description + ' en ' + image.collection?.data?.name" class="images-grid-image"
-              crossorigin="anonymous">
+              [alt]="image.description + ' en ' + image.collection?.data?.name + ' de ' + image.collection?.data?.publisher?.data?.name"
+              class="images-grid-image" crossorigin="anonymous">
             <p class="images-grid-author">
               publicado en <a
                 [routerLink]="['/c', image.collection?.data?.name | slugify, image.collection?.data?.id]">{{

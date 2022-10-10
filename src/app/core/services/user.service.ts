@@ -104,13 +104,13 @@ export class UserService {
   }
 
   getEvaluations(userId: number): Observable<{
-    evaluations: Evaluation[],
-    disabled: boolean,
+    evaluations: Evaluation[];
+    disabled: boolean;
     disabledData?: {
-      disabledForAntiquity: boolean | number,
-      disabledForTime: boolean | number,
-      disabledForUser: boolean,
-      disabledUser: boolean,
+      disabledForAntiquity: boolean | number;
+      disabledForTime: boolean | number;
+      disabledForUser: boolean;
+      disabledUser: boolean;
     };
   }> {
     return this.apiSrv

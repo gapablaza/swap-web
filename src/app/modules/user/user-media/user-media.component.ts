@@ -9,6 +9,7 @@ import { concatMap, filter, first, Subscription, tap } from 'rxjs';
 import orderBy from 'lodash/orderBy';
 
 import {
+  AuthService,
   DEFAULT_USER_PROFILE_IMG,
   Media,
   MediaService,
@@ -67,6 +68,7 @@ export class UserMediaComponent implements OnInit, OnDestroy {
     },
   ];
   showFilters = false;
+  isAuth = false;
   isSaving = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
@@ -75,6 +77,7 @@ export class UserMediaComponent implements OnInit, OnDestroy {
     private userSrv: UserService,
     private userOnlySrv: UserOnlyService,
     private mediaSrv: MediaService,
+    private authSrv: AuthService,
     private uiSrv: UIService,
     private cdr: ChangeDetectorRef
   ) {}
@@ -99,12 +102,19 @@ export class UserMediaComponent implements OnInit, OnDestroy {
       });
     this.subs.add(userSub);
 
+    let authSub = this.authSrv.isAuth.subscribe(auth => this.isAuth = auth);
+    this.subs.add(authSub);
+
     // Load items into gallery
     // const galleryRef = this.gallery.ref(this.galleryId);
     // galleryRef.load(this.galleryItems);
   }
 
   toggleLike(item: Media) {
+    if (!this.isAuth) {
+      this.uiSrv.showError('Debes iniciar sesión para realizar esta acción');
+      return;
+    }
     if (this.isSaving) {
       return;
     }

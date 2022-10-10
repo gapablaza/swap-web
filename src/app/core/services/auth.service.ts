@@ -138,7 +138,6 @@ export class AuthService {
     )
       .subscribe({
         next: () => {
-          console.log('signInWithCustomToken');
           this.isFBAuthSubject.next(true);
         },
         error: () => this.isFBAuthSubject.next(false)

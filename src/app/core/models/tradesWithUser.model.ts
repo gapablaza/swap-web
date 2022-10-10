@@ -6,6 +6,7 @@ export interface TradesWithUserCollection {
     name: string,
     possibleTrades: number,
     publisherId: number,
+    publisherName: string,
     searching: Item[],
     totalSearching: number,
     trading: Item[],
