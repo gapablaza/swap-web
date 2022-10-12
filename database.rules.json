@@ -31,7 +31,7 @@
       ".write": "auth != null",
 
       "$userRes": {
-        ".indexOn": ["toUserId"]
+        ".indexOn": ["timestamp", "toUserId"]
       }
     },
 
