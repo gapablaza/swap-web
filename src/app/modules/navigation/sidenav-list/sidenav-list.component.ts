@@ -48,26 +48,36 @@ export class SidenavListComponent implements OnInit {
     });
 
     this.authSrv.isFBAuth.pipe(filter((FBState) => FBState)).subscribe(() => {
-      this.afDB
-        // .list(`userResume/userId_${this.authUser.id}`, (ref) =>
-        //   ref.orderByChild('toUserId').equalTo(this.authUser.id)
-        // )
-        .list(`userResume/userId_${this.authUser.id}`)
-        .valueChanges()
-        .pipe(
-          map((resp: any) => {
-            return resp.filter((mess: Message) => {
-              return (
-                (mess.unread === false ? false : true) &&
-                mess.toUserId == this.authUser.id
-              );
-            });
-          })
-        )
-        .subscribe((resp: any) => {
-          this.unreadCount = resp.length;
-          this.cdr.markForCheck();
-        });
+      // this.afDB
+      //   // .list(`userResume/userId_${this.authUser.id}`, (ref) =>
+      //   //   ref.orderByChild('toUserId').equalTo(this.authUser.id)
+      //   // )
+      //   .list(`userResume/userId_${this.authUser.id}`)
+      //   .valueChanges()
+      //   .pipe(
+      //     map((resp: any) => {
+      //       return resp.filter((mess: Message) => {
+      //         return (
+      //           (mess.unread === false ? false : true) &&
+      //           mess.toUserId == this.authUser.id
+      //         );
+      //       });
+      //     })
+      //   )
+      //   .subscribe((resp: any) => {
+      //     this.unreadCount = resp.length;
+      //     this.cdr.markForCheck();
+      //   });
+
+      this.afDB.list(`unreadUserMessages/userId_${this.authUser.id}`)
+      .valueChanges()
+      .pipe(
+        map(unreads => unreads.length)
+      )
+      .subscribe(unreadQ => {
+        this.unreadCount = unreadQ;
+        this.cdr.markForCheck();
+      })
     });
   }
 

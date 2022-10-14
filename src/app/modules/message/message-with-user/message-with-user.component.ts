@@ -119,19 +119,30 @@ export class MessageWithUserComponent implements OnInit, OnDestroy {
   // cuando el otro usuario de esta conversación me envía un nuevo mensaje
   // se actualiza como leído
   cleanUnread() {
-    let unreadSub = this.afDB
+    let unreadRef = this.afDB.object(
+      `unreadUserMessages/userId_${this.authUser.id}/userId_${this.otherUser.id}`
+    );
+    let oldUnreadSub = unreadRef
+      .snapshotChanges()
+      .pipe(filter((resp: any) => resp.key != null))
+      .subscribe((resp: any) => {
+        unreadRef.remove();
+      });
+    this.subs.add(oldUnreadSub);
+
+    let newUnreadSub = this.afDB
       .object(
         `userResume/userId_${this.authUser.id}/userId_${this.otherUser.id}`
       )
       .valueChanges()
       .pipe(
         tap((resp: any) => {
-          this.isArchived = resp.archived === true;
+          this.isArchived = resp && resp.archived === true;
           this.cdr.markForCheck();
         }),
         filter(
           (resp: any) =>
-            resp.toUserId == this.authUser.id && resp.unread !== false
+            resp && resp.toUserId == this.authUser.id && resp.unread !== false
         )
       )
       .subscribe(() => {
@@ -146,7 +157,7 @@ export class MessageWithUserComponent implements OnInit, OnDestroy {
           )
           .update({ unread: false });
       });
-    this.subs.add(unreadSub);
+    this.subs.add(newUnreadSub);
   }
 
   onSend() {
@@ -171,13 +182,20 @@ export class MessageWithUserComponent implements OnInit, OnDestroy {
       timestamp: firebase.database.ServerValue.TIMESTAMP,
     };
 
+    // Escribe en /userMessages
     this.usersMessagesRef.push(newMessage).then(() => {
+      // escribe en /userResume del authUser
       this.afDB
         .list(`userResume/userId_${this.authUser.id}/`)
         .set(`userId_${this.otherUser.id}`, { ...newMessage, unread: true });
+      // escribe en /userResume del otherUser
       this.afDB
         .list(`userResume/userId_${this.otherUser.id}/`)
         .set(`userId_${this.authUser.id}`, { ...newMessage, unread: true });
+      // escribe en /unreadUserMessages del otherUser
+      this.afDB
+        .list(`unreadUserMessages/userId_${this.otherUser.id}/`)
+        .set(`userId_${this.authUser.id}`, newMessage);
     });
 
     this.newMessageText = '';

@@ -10,7 +10,7 @@ import {
   AngularFireDatabase,
   AngularFireList,
 } from '@angular/fire/compat/database';
-import { map, Subscription } from 'rxjs';
+import { combineLatest, map, Subscription } from 'rxjs';
 import {
   AuthService,
   DEFAULT_USER_PROFILE_IMG,
@@ -30,6 +30,7 @@ export class MessageListComponent implements OnInit, OnDestroy {
   messagesRef!: AngularFireList<any>;
   messages: any[] = [];
   showedMessages: any[] = [];
+  unreadUserIds: number[] = [];
 
   searchText = '';
   typeSelected = '1';
@@ -50,7 +51,61 @@ export class MessageListComponent implements OnInit, OnDestroy {
       `userResume/userId_${this.authUser.id}`,
       (ref) => ref.orderByChild('timestamp')
     );
-    
+
+    // const unreads$ = this.afDB
+    //   .list(`unreadUserMessages/userId_${this.authUser.id}`)
+    //   .snapshotChanges()
+    //   .pipe(
+    //     map((unreads) =>
+    //       unreads.map((unread) => Number(unread.key?.split('_')[1]))
+    //     )
+    //   );
+
+    // const resume$ = this.afDB
+    //   .list(`userResume/userId_${this.authUser.id}`, (ref) =>
+    //     ref.orderByChild('timestamp')
+    //   )
+    //   .snapshotChanges();
+
+    // let messSub = combineLatest([unreads$, resume$])
+    //   .pipe(
+    //     map(([unreads, resume]) => {
+    //       console.log('resume', resume);
+    //       return resume.map((mess) => {
+    //         let payload = mess.payload.val() as Message;
+    //         return {
+    //           withUserId:
+    //             payload.toUserId == this.authUser.id
+    //               ? payload.fromUserId
+    //               : payload.toUserId,
+    //           withUserName:
+    //             payload.toUserId == this.authUser.id
+    //               ? payload.fromUserName
+    //               : payload.toUserName,
+    //           withUserImage:
+    //             payload.toUserId == this.authUser.id
+    //               ? payload.fromUserImage
+    //               : payload.toUserImage,
+    //           withUserText: payload.body,
+    //           withUserTime: payload.timestamp,
+    //           fromAuthUser:
+    //             payload.fromUserId == this.authUser.id ? true : false,
+    //           // unread: payload.unread === false ? false : true,
+    //           unread: unreads.includes(payload.fromUserId) ? true : false,
+    //           archived: payload.archived === true ? true : false,
+    //         };
+    //       });
+    //     })
+    //   )
+    //   .subscribe((list) => {
+    //     console.log('list', list);
+    //     this.messages = list;
+    //     this.filterShowedMessages();
+    //     this.isLoaded = true;
+    //     this.cdr.markForCheck();
+    //   });
+    // this.subs.add(messSub);
+
     let messagesSub = this.messagesRef
       .snapshotChanges()
       .pipe(
