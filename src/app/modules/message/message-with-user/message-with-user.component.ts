@@ -135,28 +135,32 @@ export class MessageWithUserComponent implements OnInit, OnDestroy {
         `userResume/userId_${this.authUser.id}/userId_${this.otherUser.id}`
       )
       .valueChanges()
-      .pipe(
-        tap((resp: any) => {
-          this.isArchived = resp && resp.archived === true;
-          this.cdr.markForCheck();
-        }),
-        filter(
-          (resp: any) =>
-            resp && resp.toUserId == this.authUser.id && resp.unread !== false
-        )
-      )
-      .subscribe(() => {
-        this.afDB
-          .object(
-            `userResume/userId_${this.otherUser.id}/userId_${this.authUser.id}`
-          )
-          .update({ unread: false });
-        this.afDB
-          .object(
-            `userResume/userId_${this.authUser.id}/userId_${this.otherUser.id}`
-          )
-          .update({ unread: false });
-      });
+      .subscribe((resp: any) => {
+        this.isArchived = resp && resp.archived === true;
+        this.cdr.markForCheck();
+      })
+      // .pipe(
+      //   tap((resp: any) => {
+      //     this.isArchived = resp && resp.archived === true;
+      //     this.cdr.markForCheck();
+      //   }),
+      //   filter(
+      //     (resp: any) =>
+      //       resp && resp.toUserId == this.authUser.id && resp.unread !== false
+      //   )
+      // )
+      // .subscribe(() => {
+      //   this.afDB
+      //     .object(
+      //       `userResume/userId_${this.otherUser.id}/userId_${this.authUser.id}`
+      //     )
+      //     .update({ unread: false });
+      //   this.afDB
+      //     .object(
+      //       `userResume/userId_${this.authUser.id}/userId_${this.otherUser.id}`
+      //     )
+      //     .update({ unread: false });
+      // });
     this.subs.add(newUnreadSub);
   }
 
