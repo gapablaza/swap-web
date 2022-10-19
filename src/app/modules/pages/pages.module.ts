@@ -8,13 +8,15 @@ import { TosComponent } from './tos/tos.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { AboutComponent } from './about/about.component';
 import { FaqsComponent } from './faqs/faqs.component';
+import { GuideComponent } from './guide/guide.component';
 
 @NgModule({
   declarations: [
     TosComponent,
     PrivacyComponent,
     AboutComponent,
-    FaqsComponent
+    FaqsComponent,
+    GuideComponent
   ],
   imports: [
     SharedModule,

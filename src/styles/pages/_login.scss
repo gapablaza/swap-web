@@ -7,7 +7,7 @@ section.auth {
     margin: 2rem 0;
   }
   
-  .login {
+  .login, .signup {
     max-width: 30rem;
     padding: 2.5rem;
   
@@ -66,6 +66,14 @@ section.auth {
         width: 100%;
         padding-top: 0.25rem;
         padding-bottom: 0.25rem;
+      }
+    }
+  }
+
+  .signup {
+    form {
+      p {
+        text-align: center;
       }
     }
   }

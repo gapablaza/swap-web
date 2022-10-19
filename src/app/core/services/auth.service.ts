@@ -83,6 +83,21 @@ export class AuthService {
     this.isAuthSubject.next(false);
   }
 
+  emailSignup(displayName: string, email: string, password: string): Observable<boolean> {
+    return this.apiSrv.post('/v2/auth/signup', { displayName, email, password }).pipe(
+      take(1),
+      concatMap((appToken) => {
+        this.jwtSrv.saveToken(appToken.token);
+        return this.apiSrv.get('/v2/me').pipe(
+          map((data: { data: User; token: string }) => {
+            this.setAuth(data);
+            return true;
+          })
+        );
+      })
+    );
+  }
+  
   emailLogin(email: string, password: string): Observable<boolean> {
     return this.apiSrv.post('/v2/auth/login', { email, password }).pipe(
       take(1),
@@ -96,6 +111,34 @@ export class AuthService {
         );
       })
     );
+  }
+
+  // Registro con Google ID
+  googleSignup(data: {
+    id: string;
+    name: string;
+    email: string;
+    image: string;
+  }): Observable<boolean> {
+    return this.apiSrv
+      .post('/v2/auth/signupWithGoogleId', {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        image: data.image,
+      })
+      .pipe(
+        take(1),
+        concatMap((appToken) => {
+          this.jwtSrv.saveToken(appToken.token);
+          return this.apiSrv.get('/v2/me').pipe(
+            map((data: { data: User; token: string }) => {
+              this.setAuth(data);
+              return true;
+            })
+          );
+        })
+      );
   }
 
   googleIdLogin(google: string): Observable<boolean> {

@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AboutComponent } from './about/about.component';
 import { FaqsComponent } from './faqs/faqs.component';
+import { GuideComponent } from './guide/guide.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { TosComponent } from './tos/tos.component';
 
@@ -31,6 +32,11 @@ const routes: Routes = [
       path: 'about',
       component: AboutComponent,
       title: 'Acerca de nosotros - Intercambia Láminas'
+    },
+    {
+      path: 'guide',
+      component: GuideComponent,
+      title: 'Modo de Uso - Intercambia Láminas'
     },
   ];
 

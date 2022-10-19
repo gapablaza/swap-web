@@ -8,6 +8,33 @@
 }
 
 .vertical-navigation {
+  .vertical-navigation-signup {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    // flex-grow: 1;
+    background-color: #46be9c;
+    // margin: 0;
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+  }
+
+  .vertical-navigation-login {
+    text-align: center;
+    font-size: 0.85rem;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    color: var(--text-secondary);
+
+    a {
+      color: white;
+      text-decoration: none;
+    }
+  }
 
   .vertical-navigation-wrapper {
 

@@ -9,8 +9,7 @@
     </h1>
     <p>
       ¿No tienes una cuenta?
-      <!-- <a href="/signup" class="color-accent">Regístrate</a> -->
-      <a class="color-accent">Regístrate</a>
+      <a [routerLink]="['/signup']" class="color-accent">Regístrate</a>
     </p>
     <div class="login-form">
       <form (ngSubmit)="onSubmit(f)" #f="ngForm">

@@ -1,6 +1,7 @@
-section.pages {  
+section.pages {
     margin-top: var(--gap-vertical);
     margin-bottom: var(--gap-vertical);
+    padding: 0 1.5rem;
 
     h2 {
         margin-top: 2rem;
@@ -15,5 +16,55 @@ section.pages {
         padding: 1rem 1.5rem;
         font-weight: bold;
         border-radius: 0.5rem;
+    }
+
+    .guide-step {
+        display: flex;
+        flex-direction: column;
+        column-gap: 2rem;
+        margin-bottom: 2rem;
+
+        a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+        }
+
+        @media (min-width: 768px) {
+            flex-direction: row;
+        }
+
+        .guide-step-info {
+            flex-grow: 3;
+        }
+
+        .guide-step-img {
+            flex-grow: 2;
+            margin-top: 1rem;
+            text-align: center;
+
+            img {
+                width: 100%;
+                max-width: 480px;
+
+                @media (min-width: 768px) {
+                    width: inherit;
+                    max-width: 400px;
+                }
+
+                @media (min-width: 992px) {
+                    max-width: 480px;
+                }
+            }
+        }
+
+        @media (min-width: 768px) {
+            &.alt {
+                .guide-step-info {
+                    order: 2;
+                }
+            }
+        }
+
     }
 }

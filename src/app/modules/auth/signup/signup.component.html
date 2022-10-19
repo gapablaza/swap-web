@@ -1,59 +1,76 @@
-<!-- <section class="signup-form">
-  <form
-    fxLayout="column"
-    fxLayoutAlign="center center"
-    fxLayoutGap="10px"
-    #f="ngForm"
-    (ngSubmit)="onSubmit(f)">
-    <mat-form-field>
-      <input
-        type="email"
-        matInput
-        placeholder="Your email"
-        ngModel
-        name="email"
-        email
-        required
-        #emailInput="ngModel">
-      <mat-error *ngIf="emailInput.hasError('required')">Field must not be empty</mat-error>
-      <mat-error *ngIf="emailInput.hasError('email')">Email is invalid</mat-error>
-    </mat-form-field>
-    <mat-form-field hintLabel="Should be at least 6 characters long">
-      <input
-        type="password"
-        matInput
-        placeholder="Your password"
-        ngModel
-        name="password"
-        required
-        minlength="6"
-        #pwInput="ngModel">
-      <mat-hint align="end">{{ pwInput.value?.length }} / 6</mat-hint>
-      <mat-error>Has to be at least 6 characters long</mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Choose a date</mat-label>
-      <input
-        matInput
-        [matDatepicker]="picker"
-        [max]="maxDate"
-        ngModel
-        name="birthdate"
-        required>
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-    <mat-checkbox
-      ngModel
-      name="agree"
-      required 
-      color="primary">Agree to Terms and Conditions</mat-checkbox>
-    <button
-      *ngIf="!isLoading"
-      type="submit"
-      mat-raised-button
-      color="primary"
-      [disabled]="f.invalid">Submit</button>
-    <mat-spinner *ngIf="isLoading"></mat-spinner>
-  </form>
-</section> -->
+<section class="auth auth-section">
+  <div class="signup card">
+    <img src="/assets/img/logo-icon-40x40.svg" alt="">
+    <h1>
+      Regístrate
+    </h1>
+    <p>
+      ¿Ya tienes una cuenta?
+      <a [routerLink]="['/login']" class="color-accent">Ingresa</a>
+    </p>
+    <div class="login-form">
+      <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+        <mat-form-field appearance="outline">
+          <mat-label>Tu nombre</mat-label>
+          <input type="text" matInput ngModel name="name" required minlength="3" maxlength="20" #nameInput="ngModel">
+          <mat-error *ngIf="nameInput.hasError('required')">No puede quedar vacío</mat-error>
+          <mat-error *ngIf="nameInput.hasError('minlength')">Debe tener al menos 3 caracteres</mat-error>
+          <mat-error *ngIf="nameInput.hasError('maxlength')">No puede tener mas de 20 caracteres</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Tu email</mat-label>
+          <input type="email" matInput ngModel name="email" email required #emailInput="ngModel">
+          <mat-error *ngIf="emailInput.hasError('required')">No puede quedar vacío</mat-error>
+          <mat-error *ngIf="emailInput.hasError('email')">El email no es válido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Tu password</mat-label>
+          <input type="password" matInput ngModel name="password" required minlength="6" maxlength="20"
+            #pwInput="ngModel">
+          <!-- <mat-hint align="end">{{ pwInput.value?.length }} / 6+</mat-hint> -->
+          <mat-error>Debe tener al menos 6 caracteres de largo</mat-error>
+        </mat-form-field>
+
+        <p>
+          Al crear una cuenta, estás aceptando las <a routerLink="/p/privacy" class="color-accent"
+            target="_blank">Políticas de
+            privacidad</a> y <a routerLink="/p/tos" class="color-accent" target="_blank">Condiciones de uso</a>
+        </p>
+
+        <button type="submit" mat-raised-button color="accent" class="button-large"
+          [disabled]="f.invalid || isLoading">Crear Cuenta</button>
+      </form>
+
+      <div class="text-with-bg-line">
+        <div class="bg-line"></div>
+        <div class="text">O también puedes hacerlo con</div>
+        <div class="bg-line"></div>
+      </div>
+
+      <ul class="social-links">
+        <li>
+          <google-button [selectable]="true"></google-button>
+        </li>
+        <!-- <li>
+          <button mat-raised-button aria-label="Ingresar con Twitter">
+            <mat-icon>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>              
+            </mat-icon>
+          </button>
+        </li> -->
+        <!-- <li>
+          <button mat-raised-button aria-label="Ingresar con Facebook" (click)="signInWithFB()" [disabled]="isLoading">
+            <mat-icon>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path
+                  d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z" />
+              </svg>
+            </mat-icon>
+          </button>
+        </li> -->
+      </ul>
+    </div>
+  </div>
+</section>

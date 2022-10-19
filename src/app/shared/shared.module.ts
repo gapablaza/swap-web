@@ -18,6 +18,7 @@ import {
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { CollectionItemComponent } from './components/collection-item/collection-item.component';
 import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,7 @@ import { MatListModule } from '@angular/material/list';
     RouterModule,
     // MaterialModule,
     MatListModule,
-    
+    MatIconModule,
     LazyLoadImageModule,
     // AdsenseModule.forRoot({
     //   adClient: 'ca-pub-6782496264167512',

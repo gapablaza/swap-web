@@ -175,7 +175,7 @@
 
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
-            <a class="vertical-navigation-item">
+            <a routerLink="/p/guide" class="vertical-navigation-item">
               <mat-icon>quiz</mat-icon>
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
@@ -197,6 +197,17 @@
                 </div>
               </div>
             </a>
+          </div>
+        </div>
+
+        <div *ngIf="!isAuth" class="vertical-navigation-basic-item">
+          <div class="vertical-navigation-item-wrapper">
+            <a routerLink="/signup" class="vertical-navigation-signup">
+              Regístrate gratis!
+            </a>
+            <p class="vertical-navigation-login">
+              Ya tienes cuenta? <a routerLink="/login">Ingresa</a>
+            </p>
           </div>
         </div>
 

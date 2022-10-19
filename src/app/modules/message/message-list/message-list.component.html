@@ -9,12 +9,12 @@
             <span *ngIf="typeSelected == '2'" class="text-secondary">Archivadas</span>
         </h1>
         <div class="card flex-full">
-            <div class="empty-content" *ngIf="!messages.length">
+            <!-- <div class="empty-content" *ngIf="!messages.length">
                 <h2>(¬‿¬)</h2>
                 <p>Todavía no tienes conversaciones con otros usuarios...</p>
-            </div>
+            </div> -->
 
-            <div *ngIf="messages.length" class="controls-std">
+            <div class="controls-std">
                 <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
                     <mat-form-field class="controls-search" appearance="outline">
                         <mat-label>Filtrar por usuario (nombre / ID) o por el texto del último mensaje</mat-label>
@@ -66,7 +66,7 @@
             </ul>
 
             <div class="empty-content" *ngIf="!showedMessages.length">
-                <h2>(¬‿¬)</h2>
+                <h2>(u‿u)</h2>
                 <p>No se encuentran conversaciones para los filtros seleccionados</p>
             </div>
 
