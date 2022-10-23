@@ -1,0 +1,71 @@
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="moderation moderation-section">
+    <div class="moderation-media flex-full">
+        <h1>Elementos multimedia</h1>
+
+        <ng-container *ngIf="medias.length">
+            <h2>Esperando moderación</h2>
+            <div class="table-responsive">
+                <table class="table-std">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Colección</th>
+                            <th>Subido por</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th>F. subida</th>
+                            <th>URL</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let image of medias; let i = index;">
+                            <td>{{ i+1 }}</td>
+                            <td>
+                                <a [routerLink]="['/c', image.collection?.data?.name | slugify, image.collection?.data?.id, 'media']"
+                                    target="_blank">
+                                    {{ image.collection?.data?.name + ' de ' +
+                                    image.collection?.data?.publisher?.data?.name }}
+                                </a>
+                            </td>
+                            <td>
+                                <a [routerLink]="['/user', image.user?.data?.id]" target="_blank">
+                                    {{ image.user?.data?.displayName }}
+                                </a>
+                            </td>
+                            <td>{{ image.mediaTypeName }}</td>
+                            <td>{{ image.description }}</td>
+                            <td>{{ image.created * 1000 | date:'dd/MM/YYYY HH:MM \'hrs.\'' }}</td>
+                            <td>
+                                <a class="btn" mat-flat-button [href]="baseForModImageUrl + image.id" target="_blank">
+                                    <mat-icon>link</mat-icon> Ver
+                                </a>
+                            </td>
+                            <td>
+                                <button (click)="onSanctionImage(image.id, 2)" [disabled]="isSaving" mat-raised-button
+                                    color="accent" aria-label="Autorizar imagen">
+                                    <mat-icon>done</mat-icon>
+                                </button>
+                                <button (click)="onSanctionImage(image.id, 3)" [disabled]="isSaving" mat-raised-button
+                                    color="warn" aria-label="Rechazar imagen">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ng-container>
+
+        <div *ngIf="!medias.length" class="card">
+            <div class="empty-content">
+                <h2>(｡◕‿‿◕｡)</h2>
+                <p>No hay elementos multimedia que requieran moderación</p>
+            </div>
+        </div>
+
+    </div>
+</section>

@@ -133,6 +133,35 @@
 
       </div>
 
+      <div *ngIf="authUser.isMod" class="vertical-navigation-group-item">
+        <div class="vertical-navigation-item-wrapper">
+          <div class="vertical-navigation-item">
+            <div class="vertical-navigation-item-title-wrapper">
+              <div class="vertical-navigation-item-title">
+                <span>Moderación</span>
+              </div>
+              <div class="vertical-navigation-item-subtitle">
+                <span>Revisa y sanciona</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="vertical-navigation-basic-item">
+          <div class="vertical-navigation-item-wrapper">
+            <a routerLink="/mod/media" class="vertical-navigation-item">
+              <mat-icon>add_a_photo</mat-icon>
+              <div class="vertical-navigation-item-title-wrapper">
+                <div class="vertical-navigation-item-title">
+                  <span>Media</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
       <div class="vertical-navigation-group-item">
         <div class="vertical-navigation-item-wrapper">
           <div class="vertical-navigation-item">

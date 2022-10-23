@@ -20,3 +20,10 @@ export interface Media {
       data: Collection,
     }
 }
+
+export interface MediaUpload {
+  description: string,
+  url: string | null,
+  mediaTypeId: 1 | 2 | 3 | 4,
+  collectionId: number,
+}

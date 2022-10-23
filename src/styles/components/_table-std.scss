@@ -1,0 +1,34 @@
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table-std {
+    width: 100%;
+    font-size: 0.9rem;
+    border-collapse: collapse;
+    border-bottom: 2px solid var(--color-accent);
+    text-align: left;
+
+    thead {
+        background-color: var(--color-accent);
+        color: white;
+
+        th {
+            padding: 4px 8px;
+        }
+    }
+
+    tbody {
+        tr {
+            border-bottom: 1px solid #ccc;
+
+            // &:nth-of-type(odd) { 
+            //     background: white; 
+            // }
+        }
+
+        td {
+            padding: 2px 4px 2px 8px;
+        }
+    }
+}

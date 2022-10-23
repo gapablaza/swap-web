@@ -1,0 +1,61 @@
+<h2 mat-dialog-title>Subir imagen</h2>
+<mat-dialog-content>
+
+    <div *ngIf="imageSelected" class="upload-image-description">
+        <mat-form-field class="" appearance="outline">
+            <mat-label>Descripción</mat-label>
+            <input matInput type="text" [(ngModel)]="imgDescription" maxlength="100" required>
+        </mat-form-field>
+    </div>
+
+    <div class="upload-image-center">
+        <div class="upload-image-content">
+            <div class="upload-image-main">
+                <div *ngIf="!imageSelected" class="upload-image-input">
+                    <a mat-raised-button>
+                        <label class="custom-file-upload">
+                            <input type="file" (change)="fileChangeEvent($event)" style="display: none;"
+                                accept="image/png, image/jpeg, image/jpg" />
+                            Seleccionar una imagen
+                        </label>
+                    </a>
+                </div>
+
+                <div class="upload-image-cropper">
+                    <image-cropper #cropper [allowMoveImage]="true" [autoCrop]="false" [canvasRotation]="canvasRotation"
+                        format="jpeg" [hideResizeSquares]="false" [imageChangedEvent]="imageChangedEvent"
+                        [imageQuality]="100" [maintainAspectRatio]="false" [transform]="transform"
+                        (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
+                        (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()"></image-cropper>
+                </div>
+
+                <!-- <img [src]="croppedImage" /> -->
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="imageSelected" class="upload-image-actions">
+        <button mat-flat-button aria-label="Alejar" (click)="onFullZoomOut()">
+            <mat-icon>zoom_out</mat-icon>
+        </button>
+        <mat-slider min="1" max="5" step="0.5" value="1" aria-label="Zoom" [value]="scale"
+            (change)="onChangeScale($event)">
+        </mat-slider>
+        <button mat-flat-button aria-label="Acercar" (click)="onFullZoomIn()">
+            <mat-icon>zoom_in</mat-icon>
+        </button>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <a mat-raised-button [disabled]="isSaving" (click)="onClose()">Cerrar</a>
+    <button *ngIf="imageSelected" (click)="onRotate()" [disabled]="isSaving" mat-icon-button
+        aria-label="Rotar a la derecha">
+        <mat-icon>rotate_right</mat-icon>
+    </button>
+    <a *ngIf="imageSelected" (click)="onSaveImage()" [disabled]="isSaving || (imgDescription.trim().length < 3)"
+        mat-raised-button color="accent">
+        Cargar
+    </a>
+</mat-dialog-actions>

@@ -16,6 +16,10 @@ import { CollectionManageTradelistComponent } from './collection-manage-tradelis
 import { CollectionManageItemsComponent } from './collection-manage-items/collection-manage-items.component';
 import { MaterialModule } from 'src/app/shared/material.module';
 import { AdsModule } from 'src/app/shared/ads.module';
+import { CollectionMediaUploadComponent } from './collection-media-upload/collection-media-upload.component';
+import { ImageCropperModule } from 'ngx-image-cropper';
+
+import 'hammerjs'; import { HammerModule } from '@angular/platform-browser';
 
 @NgModule({
   declarations: [
@@ -30,11 +34,13 @@ import { AdsModule } from 'src/app/shared/ads.module';
     CollectionManageWishlistComponent,
     CollectionManageTradelistComponent,
     CollectionManageItemsComponent,
+    CollectionMediaUploadComponent,
   ],
   imports: [
     SharedModule,
     MaterialModule,
     AdsModule,
+    ImageCropperModule,
     CollectionRoutingModule,
   ]
 })

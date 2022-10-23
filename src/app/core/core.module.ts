@@ -11,7 +11,7 @@ import {
   SearchService,
   UserService
 } from './services';
-import { AuthGuard, FBAuthGuard, NoAuthGuard } from './guards';
+import { AuthGuard, FBAuthGuard, ModGuard, NoAuthGuard } from './guards';
 import { ErrorInterceptor, HttpTokenInterceptor } from './interceptors';
 
 @NgModule({
@@ -30,6 +30,7 @@ import { ErrorInterceptor, HttpTokenInterceptor } from './interceptors';
     ItemService,
     JwtService,
     MediaService,
+    ModGuard,
     NoAuthGuard,
     SearchService,
     UserService,

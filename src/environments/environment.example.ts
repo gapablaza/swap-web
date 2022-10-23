@@ -3,6 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  cloudinary: {
+    uploadPreset: 'XXXXXXXX',
+    cloudName: 'XXXXXXXX',
+    site: 'dev|prod',
+  },
   facebook: {
     token: 'XXXXXXXXXXXXX',
   },

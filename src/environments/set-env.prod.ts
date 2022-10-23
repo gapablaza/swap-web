@@ -1,28 +1,33 @@
 const setEnvProd = () => {
-    const fs = require('fs');
-    const writeFile = fs.writeFile;
-    // Configure Angular `environment.prod.ts` file path
-    const targetProdPath = './src/environments/environment.prod.ts';
-    // Load node modules
-    const appVersion = require('../../package.json').version;
+  const fs = require('fs');
+  const writeFile = fs.writeFile;
+  // Configure Angular `environment.prod.ts` file path
+  const targetProdPath = './src/environments/environment.prod.ts';
+  // Load node modules
+  const appVersion = require('../../package.json').version;
 
-    // Genera archivo vacío que será reemplazado al hacer la build
-    writeFile('./src/environments/environment.ts', '', (err: any) => {
-      if (err) {
-        console.error(err);
-        throw err;
-      } else {
-        console.log(`Angular environment.ts file generated empty`);
-      }
-    });
+  // Genera archivo vacío que será reemplazado al hacer la build
+  writeFile('./src/environments/environment.ts', '', (err: any) => {
+    if (err) {
+      console.error(err);
+      throw err;
+    } else {
+      console.log(`Angular environment.ts file generated empty`);
+    }
+  });
 
-    // Obtiene variables desde .env.prod
-    require('dotenv').config({
-      path: 'src/environments/.env.prod',
-    });
+  // Obtiene variables desde .env.prod
+  require('dotenv').config({
+    path: 'src/environments/.env.prod',
+  });
 
-    // `environment.prod.ts` file structure
-    const envProdConfigFile = `export const environment = {
+  // `environment.prod.ts` file structure
+  const envProdConfigFile = `export const environment = {
+      cloudinary: {
+        uploadPreset: '${process.env['CLOUDINARY_UPLOADPRESET']}',
+        cloudName: '${process.env['CLOUDINARY_CLOUDNAME']}',
+        site: '${process.env['CLOUDINARY_SITE']}',
+      },
       facebook: {
         token: '${process.env['FACEBOOK_TOKEN']}',
       },
@@ -45,23 +50,22 @@ const setEnvProd = () => {
       api_url: '${process.env['API_URL']}',
     };
     `;
-    console.log(
-      'The file `environment.prod.ts` will be written with the following content: \n'
-    );
-    console.log(envProdConfigFile);
+  console.log(
+    'The file `environment.prod.ts` will be written with the following content: \n'
+  );
+  console.log(envProdConfigFile);
 
-    // Genera archivo con contenido dinámico desde .env.prod
-    writeFile(targetProdPath, envProdConfigFile, (err: any) => {
-      if (err) {
-        console.error(err);
-        throw err;
-      } else {
-        console.log(
-          `Angular environment.prod.ts file generated correctly at ${targetProdPath} \n`
-        );
-      }
-    });
-  };
-  
-  setEnvProd();
-  
+  // Genera archivo con contenido dinámico desde .env.prod
+  writeFile(targetProdPath, envProdConfigFile, (err: any) => {
+    if (err) {
+      console.error(err);
+      throw err;
+    } else {
+      console.log(
+        `Angular environment.prod.ts file generated correctly at ${targetProdPath} \n`
+      );
+    }
+  });
+};
+
+setEnvProd();

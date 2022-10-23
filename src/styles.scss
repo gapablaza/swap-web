@@ -108,6 +108,7 @@ $my-theme: mat.define-light-theme((
   'styles/components/list-users',
   'styles/components/pagination',
   'styles/components/snackbar',
+  'styles/components/table-std',
   'styles/components/trades';
 
 // 6. Page-specific styles
@@ -119,6 +120,7 @@ $my-theme: mat.define-light-theme((
   'styles/pages/item',
   'styles/pages/login',
   'styles/pages/message',
+  'styles/pages/moderation',
   'styles/pages/pages',
   'styles/pages/search',
   'styles/pages/settings',

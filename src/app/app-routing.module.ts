@@ -74,6 +74,11 @@ const routes: Routes = [
       import('./modules/pages/pages.module').then((m) => m.PagesModule),
   },
   {
+    path: 'mod',
+    loadChildren: () =>
+      import('./modules/mod/mod.module').then((m) => m.ModModule),
+  },
+  {
     path: '**',
     pathMatch: 'full',
     component: CustomErrorComponent,

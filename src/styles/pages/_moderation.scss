@@ -1,0 +1,17 @@
+section.moderation {
+    margin-top: var(--gap-vertical);
+    margin-bottom: var(--gap-vertical);
+
+    h1, h2 {
+        padding: 0 1.5rem;
+
+        @media (min-width: 992px) {
+            padding: 0;
+        }
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+}

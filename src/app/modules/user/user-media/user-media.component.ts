@@ -18,6 +18,7 @@ import {
 } from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
 import { UIService } from 'src/app/shared';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-user-media',
@@ -30,8 +31,7 @@ export class UserMediaComponent implements OnInit, OnDestroy {
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   medias: Media[] = [];
   showedImages: Media[] = [];
-  baseImageUrl =
-    'https://res.cloudinary.com/cambialaminas/image/upload/t_il_media_wm/prod/collectionMedia/';
+  baseImageUrl = `https://res.cloudinary.com/${environment.cloudinary.cloudName}/image/upload/t_il_media_wm/${environment.cloudinary.site}/collectionMedia/`;
 
   searchText = '';
   sortOptionSelected = 'likes';
@@ -102,7 +102,7 @@ export class UserMediaComponent implements OnInit, OnDestroy {
       });
     this.subs.add(userSub);
 
-    let authSub = this.authSrv.isAuth.subscribe(auth => this.isAuth = auth);
+    let authSub = this.authSrv.isAuth.subscribe((auth) => (this.isAuth = auth));
     this.subs.add(authSub);
 
     // Load items into gallery

@@ -10,6 +10,11 @@ const setEnv = () => {
   });
   // `environment.ts` file structure
   const envConfigFile = `export const environment = {
+    cloudinary: {
+      uploadPreset: '${process.env['CLOUDINARY_UPLOADPRESET']}',
+      cloudName: '${process.env['CLOUDINARY_CLOUDNAME']}',
+      site: '${process.env['CLOUDINARY_SITE']}',
+    },
     facebook: {
       token: '${process.env['FACEBOOK_TOKEN']}',
     },
