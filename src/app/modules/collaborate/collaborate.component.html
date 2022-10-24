@@ -1,0 +1,118 @@
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="pages collaborate">
+    <h1>Colabora</h1>
+    <p>El uso de <strong>IntercambiaLaminas.com</strong> es <strong>totalmente gratuito</strong> y haremos todo lo
+        posible porque siempre
+        sea así! Lamentablemente hay costos y pagos que realizar para mantener la aplicación funcionando (sin
+        considerar las muchas horas de trabajo utilizadas en su desarrollo).
+    </p>
+    <p>Por lo tanto para evitar el solicitar un pago por uso, hemos implementado la opción de realizar donaciones,
+        totalmente voluntarias, por el monto que ustedes deseen.</p>
+    <p>
+        Los usuarios que colaboren con <strong>IntercambiaLaminas.com</strong> a través de sus donaciones, de manera de
+        retribuir en algo
+        su aporte, serán beneficiados con una mejora de sus cuentas básicas a cuentas <span
+            class="pro-label">PRO</span>, lo cual les dará derecho a
+        los
+        siguientes beneficios:
+    </p>
+    <ul>
+        <li>Se despliegan <strong>resaltados</strong> en los distintos listados de usuarios.</li>
+        <!-- <li>Aparecen <strong>primeros</strong> en los posibles cambios.</li> -->
+        <li><strong>No tienen que esperar</strong> para registrar una nueva evaluación.</li>
+        <li>Tienen acceso a consultar la clasificación por <strong>dificultad</strong> de los ítem de una colección.
+        </li>
+        <li>No ven las <strong>propagandas</strong> de la página.</li>
+        <!-- <li>Ven los <strong>posibles cambios</strong> al consultar otro usuario.</li> -->
+    </ul>
+
+    <h2><span>Cómo hacerlo</span></h2>
+    <p>Para mejorar tu cuenta y tener acceso a los beneficios mencionados anteriormente por 1 año, sólo debes hacer una
+        donación de al menos CL$15.000 (pesos chilenos) ó US$20 (dólares estadounidenses). Para lo cual tienes
+        disponibles los siguiente métodos:</p>
+
+    <div class="collaborate-options">
+        <div>
+            <h3>Donar al menos US$20 dólares estadounidenses:</h3>
+            <a
+                [href]="'https://www.paypal.com/donate/?hosted_button_id=GY5VMKSVW9QKC&item_name=Donativo Anual (ID Usuario:' + authUser.id + ')'">
+                <img style="border-radius: 4px;" src="assets/img/paypal.jpg">
+            </a>
+        </div>
+        <div>
+            <h3>Donar al menos CL$15.000 pesos chilenos:</h3>
+            <a href="http://www.flow.cl/btn.php?token=ywrxenr">
+                <img style="border-radius: 4px;" src="assets/img/flow.jpg">
+            </a>
+        </div>
+    </div>
+    <div class="alert alert-warning">
+        <div class="alert-container">
+            <div class="alert-content">
+                <div class="alert-title">Atención</div>
+                <div class="alert-message">No olvides de indicar tu ID de usuario al momento de realizar la donación!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2><span>Tabla Comparativa</span></h2>
+    <table class="table-std account-types">
+        <thead>
+            <tr>
+                <th>Tipo de Cuenta</th>
+                <th>Básica</th>
+                <th>PRO <span class="pro-label">PRO</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="account-types-desc">Valor (anual)</td>
+                <td>Gratis</td>
+                <td>Desde CL$15.000 ó US$20</td>
+            </tr>
+            <tr>
+                <td class="account-types-desc">Usuarios resaltados</td>
+                <td>No</td>
+                <td>Sí</td>
+            </tr>
+            <tr>
+                <td class="account-types-desc">Tiempo entre evaluaciones</td>
+                <td>Cada 7 días</td>
+                <td>No hay</td>
+            </tr>
+            <!-- <tr>
+                <td class="account-types-desc">Posibles cambios al consultar otro usuario</td>
+                <td>No</td>
+                <td>Sí</td>
+            </tr> -->
+            <tr>
+                <td class="account-types-desc">TOP ítems de una colección (por dificultad)</td>
+                <td>No</td>
+                <td>Sí</td>
+            </tr>
+            <tr>
+                <td class="account-types-desc">Ver la clasificación de dificultad en "colores"</td>
+                <td>No</td>
+                <td>Sí</td>
+            </tr>
+            <tr>
+                <td class="account-types-desc">Propagandas en la página</td>
+                <td>Sí</td>
+                <td>No</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Tu donación será utilizada para:</h2>
+    <ul>
+        <li>Implementar nuevas funcionalidades y características.</li>
+        <li>Administración de la plataforma.</li>
+        <li>Mejorar la infraestructura.</li>
+        <li>Difusión.</li>
+        <li>Gastos operativos.</li>
+        <li>Otros.</li>
+    </ul>
+</section>

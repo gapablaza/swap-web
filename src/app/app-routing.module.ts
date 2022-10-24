@@ -79,6 +79,11 @@ const routes: Routes = [
       import('./modules/mod/mod.module').then((m) => m.ModModule),
   },
   {
+    path: 'collaborate',
+    loadChildren: () =>
+      import('./modules/collaborate/collaborate.module').then((m) => m.CollaborateModule),
+  },
+  {
     path: '**',
     pathMatch: 'full',
     component: CustomErrorComponent,
