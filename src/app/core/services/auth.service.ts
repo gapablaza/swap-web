@@ -1,12 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, ReplaySubject, from } from 'rxjs';
-import {
-  concatMap,
-  distinctUntilChanged,
-  map,
-  take,
-} from 'rxjs/operators';
+import { concatMap, distinctUntilChanged, map, take } from 'rxjs/operators';
 
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 // import firebase from 'firebase/compat/app';
@@ -83,21 +78,27 @@ export class AuthService {
     this.isAuthSubject.next(false);
   }
 
-  emailSignup(displayName: string, email: string, password: string): Observable<boolean> {
-    return this.apiSrv.post('/v2/auth/signup', { displayName, email, password }).pipe(
-      take(1),
-      concatMap((appToken) => {
-        this.jwtSrv.saveToken(appToken.token);
-        return this.apiSrv.get('/v2/me').pipe(
-          map((data: { data: User; token: string }) => {
-            this.setAuth(data);
-            return true;
-          })
-        );
-      })
-    );
+  emailSignup(
+    displayName: string,
+    email: string,
+    password: string
+  ): Observable<boolean> {
+    return this.apiSrv
+      .post('/v2/auth/signup', { displayName, email, password })
+      .pipe(
+        take(1),
+        concatMap((appToken) => {
+          this.jwtSrv.saveToken(appToken.token);
+          return this.apiSrv.get('/v2/me').pipe(
+            map((data: { data: User; token: string }) => {
+              this.setAuth(data);
+              return true;
+            })
+          );
+        })
+      );
   }
-  
+
   emailLogin(email: string, password: string): Observable<boolean> {
     return this.apiSrv.post('/v2/auth/login', { email, password }).pipe(
       take(1),
@@ -171,59 +172,59 @@ export class AuthService {
     );
   }
 
-
   loginOnFirebase() {
-    this.apiSrv.get('/v2/me/firebase').pipe(
-      take(1),
-      concatMap((data: any) => {
-        return from(this.afAuth.signInWithCustomToken(data.tokenFB))
-      })
-    )
+    this.apiSrv
+      .get('/v2/me/firebase')
+      .pipe(
+        take(1),
+        concatMap((data: any) => {
+          return from(this.afAuth.signInWithCustomToken(data.tokenFB));
+        })
+      )
       .subscribe({
         next: () => {
           this.isFBAuthSubject.next(true);
         },
-        error: () => this.isFBAuthSubject.next(false)
+        error: () => this.isFBAuthSubject.next(false),
       });
 
-      // .subscribe(
-      //   (data: any) => {
-      //     firebase.login({
-      //       type: firebase.LoginType.CUSTOM,
-      //       customOptions: {
-      //         token: data.tokenFB
-      //       }
-      //     }).then(
-      //       (result) => {
-      //         // console.log(JSON.stringify(result));
-      //         this.isFBAuthenticatedSubject.next(true);
-      //         // save FB device token 
-      //         firebase.addOnPushTokenReceivedCallback(
-      //           (token) => {
-      //             // console.log('login device token: ', token);
-      //             this.deviceToken = token;
-      //             firebase.setValue(
-      //               'users/userId_' + this.getCurrentUser().id + '/notificationTokens/' + token,
-      //               true
-      //             );
-      //           }
-      //         );
+    // .subscribe(
+    //   (data: any) => {
+    //     firebase.login({
+    //       type: firebase.LoginType.CUSTOM,
+    //       customOptions: {
+    //         token: data.tokenFB
+    //       }
+    //     }).then(
+    //       (result) => {
+    //         // console.log(JSON.stringify(result));
+    //         this.isFBAuthenticatedSubject.next(true);
+    //         // save FB device token
+    //         firebase.addOnPushTokenReceivedCallback(
+    //           (token) => {
+    //             // console.log('login device token: ', token);
+    //             this.deviceToken = token;
+    //             firebase.setValue(
+    //               'users/userId_' + this.getCurrentUser().id + '/notificationTokens/' + token,
+    //               true
+    //             );
+    //           }
+    //         );
 
-      //       },
-      //       (errorMessage) => {
-      //         console.log(errorMessage);
-      //         this.isFBAuthenticatedSubject.next(false);
-      //       }
-      //     );
-      //   },
-      //   err => console.log('error: ', err)
-      // );
+    //       },
+    //       (errorMessage) => {
+    //         console.log(errorMessage);
+    //         this.isFBAuthenticatedSubject.next(false);
+    //       }
+    //     );
+    //   },
+    //   err => console.log('error: ', err)
+    // );
   }
-
 
   logoutOnFirebase() {
     // const tempUserId = this.getCurrentUser().id;
-    // // remove FB device token 
+    // // remove FB device token
     // if (this.deviceToken) {
     //   firebase.remove(
     //     'users/userId_' + tempUserId + '/notificationTokens/' + this.deviceToken
@@ -234,7 +235,6 @@ export class AuthService {
     this.afAuth.signOut();
     this.isFBAuthSubject.next(false);
   }
-
 
   linkGoogle(data: {
     id: string;
@@ -403,5 +403,25 @@ export class AuthService {
           return true;
         })
       );
+  }
+
+  resetPassword(email: string): Observable<string> {
+    return this.apiSrv
+      .post('/v2/auth/forgotPassword', { email })
+      .pipe(map((data: { message: string }) => data.message));
+  }
+
+  setNewPassword(
+    newPassword: string,
+    userId: number,
+    hash: string
+  ): Observable<string> {
+    return this.apiSrv
+      .post('/v2/auth/setNewPassword', {
+        newPassword,
+        userId,
+        hash,
+      })
+      .pipe(map((data: { message: string }) => data.message));
   }
 }

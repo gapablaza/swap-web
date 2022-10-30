@@ -25,6 +25,16 @@ const routes: Routes = [
       import('./modules/auth/signup/signup.module').then((m) => m.SignupModule),
   },
   {
+    path: 'forgot-password',
+    loadChildren: () =>
+      import('./modules/auth/reset-password/reset-password.module').then((m) => m.ResetPasswordModule),
+  },
+  {
+    path: 'new-password',
+    loadChildren: () =>
+      import('./modules/auth/new-password/new-password.module').then((m) => m.NewPasswordModule),
+  },
+  {
     path: 'c',
     loadChildren: () =>
       import('./modules/collection/collection.module').then(
