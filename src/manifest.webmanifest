@@ -2,7 +2,7 @@
     "name": "IntercambiaLáminas",
     "short_name": "intercambia",
     "description": "Completa tu álbum! Encuentra fácilmente con quien cambiar las láminas / stickers / figuritas / pegatinas / cromos / estampas que te faltan!",
-    "theme_color": "#393f4f",
+    "theme_color": "#191e28",
     "background_color": "#dddfe4",
     "display": "standalone",
     "scope": "./",
