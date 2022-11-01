@@ -67,6 +67,54 @@ const setEnvProd = () => {
       );
     }
   });
+
+  // `firebase-messaging-sw.js` file structure
+  const fbMessagingSWFile = `importScripts('https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.10.0/firebase-messaging-compat.js');
+
+firebase.initializeApp({
+  apiKey: '${process.env['FIREBASE_APIKEY']}',
+  authDomain: '${process.env['FIREBASE_AUTHDOMAIN']}',
+  databaseURL: '${process.env['FIREBASE_DATABASEURL']}',
+  projectId: '${process.env['FIREBASE_PROJECTID']}',
+  storageBucket: '${process.env['FIREBASE_STORAGEBUCKET']}',
+  messagingSenderId: '${process.env['FIREBASE_MESSAGINGSENDERID']}',
+  appId: '${process.env['FIREBASE_APPID']}',
+});
+
+const messaging = firebase.messaging();
+
+messaging.onBackgroundMessage(function (payload) {
+  console.log(
+    '[firebase-messaging-sw.js] Received background message ',
+    payload
+  );
+  // Customize notification here
+  const notificationTitle = 'Nuevo mensaje';
+  const notificationOptions = {
+    body: 'Presiona para revisar en detalle',
+    icon: '/assets/icons/icon-192x192.png',
+  };
+
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
+  `;
+  console.log(
+    'The file `firebase-messaging-sw.js` will be written with the following content: \n'
+  );
+  console.log(fbMessagingSWFile);
+
+  // Genera archivo con contenido dinámico desde .env.prod
+  writeFile('./src/firebase-messaging-sw.js', fbMessagingSWFile, (err: any) => {
+    if (err) {
+      console.error(err);
+      throw err;
+    } else {
+      console.log(
+        `Angular firebase-messaging-sw.js file generated correctly at ./src/firebase-messaging-sw.js \n`
+      );
+    }
+  });
 };
 
 setEnvProd();
