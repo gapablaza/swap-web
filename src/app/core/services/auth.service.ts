@@ -1,14 +1,30 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, ReplaySubject, from } from 'rxjs';
-import { concatMap, distinctUntilChanged, map, take } from 'rxjs/operators';
+import {
+  Observable,
+  BehaviorSubject,
+  ReplaySubject,
+  from,
+  of,
+  combineLatest,
+} from 'rxjs';
+import {
+  concatMap,
+  distinctUntilChanged,
+  first,
+  map,
+  take,
+} from 'rxjs/operators';
 
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 // import firebase from 'firebase/compat/app';
 
 import { User } from '../models';
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { Router } from '@angular/router';
 // import { StorageService } from './storage.service';
 
 @Injectable()
@@ -28,7 +44,10 @@ export class AuthService {
     // private storageSrv: StorageService,
     private apiSrv: ApiService,
     private jwtSrv: JwtService,
-    private afAuth: AngularFireAuth
+    private router: Router,
+    private afAuth: AngularFireAuth,
+    private afMessaging: AngularFireMessaging,
+    private afDB: AngularFireDatabase
   ) {}
 
   // Verify JWT in localstorage with server & load user's info.
@@ -184,56 +203,62 @@ export class AuthService {
       .subscribe({
         next: () => {
           this.isFBAuthSubject.next(true);
+          this.saveFirebaseToken();
         },
         error: () => this.isFBAuthSubject.next(false),
       });
+  }
 
-    // .subscribe(
-    //   (data: any) => {
-    //     firebase.login({
-    //       type: firebase.LoginType.CUSTOM,
-    //       customOptions: {
-    //         token: data.tokenFB
-    //       }
-    //     }).then(
-    //       (result) => {
-    //         // console.log(JSON.stringify(result));
-    //         this.isFBAuthenticatedSubject.next(true);
-    //         // save FB device token
-    //         firebase.addOnPushTokenReceivedCallback(
-    //           (token) => {
-    //             // console.log('login device token: ', token);
-    //             this.deviceToken = token;
-    //             firebase.setValue(
-    //               'users/userId_' + this.getCurrentUser().id + '/notificationTokens/' + token,
-    //               true
-    //             );
-    //           }
-    //         );
+  saveFirebaseToken() {
+    let tempAuthUser = this.getCurrentUser();
+    if (tempAuthUser.id == null) return;
 
-    //       },
-    //       (errorMessage) => {
-    //         console.log(errorMessage);
-    //         this.isFBAuthenticatedSubject.next(false);
-    //       }
-    //     );
-    //   },
-    //   err => console.log('error: ', err)
-    // );
+    this.afMessaging.getToken.pipe(first()).subscribe((token) => {
+      if (token) {
+        this.afDB
+          .object(`users/userId_${tempAuthUser.id}/notificationTokens/${token}`)
+          .set(true);
+      }
+    });
   }
 
   logoutOnFirebase() {
-    // const tempUserId = this.getCurrentUser().id;
-    // // remove FB device token
-    // if (this.deviceToken) {
-    //   firebase.remove(
-    //     'users/userId_' + tempUserId + '/notificationTokens/' + this.deviceToken
-    //   );
-    //   this.deviceToken = null;
-    //   console.log('tryed to remove device token');
-    // }
-    this.afAuth.signOut();
-    this.isFBAuthSubject.next(false);
+    let tempAuthUser = this.getCurrentUser();
+
+    // remove FB device token
+    this.afMessaging.getToken
+      .pipe(
+        first(),
+        concatMap((token) => {
+          if (token) {
+            if (tempAuthUser.id != null) {
+              const server$ = from(
+                this.afDB
+                  .object(
+                    `users/userId_${tempAuthUser.id}/notificationTokens/${token}`
+                  )
+                  .remove()
+              );
+              const client$ = this.afMessaging.deleteToken(token).pipe(first());
+
+              return combineLatest([server$, client$]).pipe(
+                map(([server, client]) => client)
+              );
+            } else {
+              return this.afMessaging.deleteToken(token).pipe(first());
+            }
+          } else {
+            return of(false);
+          }
+        }),
+        concatMap((resp) => {
+          // console.log(resp ? 'Token deleted!' : 'Token cant be deleted');
+          return from(this.afAuth.signOut());
+        })
+      )
+      .subscribe((resp) => {
+        this.isFBAuthSubject.next(false);
+      });
   }
 
   linkGoogle(data: {
@@ -308,7 +333,8 @@ export class AuthService {
 
   logout() {
     this.purgeAuth();
-    location.reload();
+    this.router.navigate(['/']);
+    // location.reload();
   }
 
   updateProfile(profile: {

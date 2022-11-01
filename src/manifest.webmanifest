@@ -1,11 +1,12 @@
 {
-    "name": "swap-web",
-    "short_name": "swap-web",
+    "name": "IntercambiaLáminas",
+    "short_name": "intercambia",
+    "description": "Completa tu álbum! Encuentra fácilmente con quien cambiar las láminas / stickers / figuritas / pegatinas / cromos / estampas que te faltan!",
     "theme_color": "#393f4f",
     "background_color": "#dddfe4",
     "display": "standalone",
     "scope": "./",
-    "start_url": "./",
+    "start_url": "./?utm_source=web_app_manifest",
     "icons": [
       {
         "src": "assets/icons/icon-48x48.png",

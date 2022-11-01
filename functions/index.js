@@ -15,6 +15,98 @@ const CUT_OFF_TIME = 2 * 60 * 60 * 1000; // 2 Hours in milliseconds.
 const MAX_OLDER_CONVERSATIONS_TIME = 365 * 24 * 60 * 60 * 1000; // 365 days in milliseconds.
 const MAX_DELETED_CONVERSATIONS = 500;
 
+// Función para notificar nuevos mensajes al destinatario
+exports.notifyNewMessage = functions.database
+  .ref('/unreadUserMessages/{userId}/{otherUserId}')
+  .onWrite(async (change, context) => {
+    const userId = context.params.userId.substring(7);
+    const otherUserId = context.params.otherUserId.substring(7);
+    
+    if (!change.after.val()) {
+      return functions.logger.log(
+        'Mensaje de ',
+        otherUserId,
+        ' ya leído por ',
+        userId
+      );
+    }
+
+    functions.logger.log(
+      'El usuario ',
+      userId,
+      ' tiene un nuevo mensaje de ',
+      otherUserId
+    );
+
+    // Get the list of device notification tokens.
+    const getDeviceTokensPromise = admin
+      .database()
+      .ref(`/users/userId_${userId}/notificationTokens`)
+      .once('value');
+
+    // Get the other user profile.
+    // const getFollowerProfilePromise = admin.auth().getUser(followerUid);
+
+    // The snapshot to the user's tokens.
+    let tokensSnapshot;
+
+    // The array containing all the user's tokens.
+    let tokens;
+
+    const results = await Promise.all([getDeviceTokensPromise]);
+    tokensSnapshot = results[0];
+    // const follower = results[1];
+
+    // Check if there are any device tokens.
+    if (!tokensSnapshot.hasChildren()) {
+      return functions.logger.log(
+        'There are no notification tokens to send to.'
+      );
+    }
+    functions.logger.log(
+      'There are',
+      tokensSnapshot.numChildren(),
+      'tokens to send notifications to.'
+    );
+    // functions.logger.log('Fetched follower profile', follower);
+
+    // Notification details.
+    const payload = {
+      notification: {
+        title: `${change.after.val().fromUserName} dice:`,
+        body: `${change.after.val().body}`,
+        icon: `${change.after.val().fromUserImage}`,
+        color: '#46be9c',
+        click_action: `https://intercambialaminas.com/message/${otherUserId}`,
+      },
+    };
+
+    // Listing all tokens as an array.
+    tokens = Object.keys(tokensSnapshot.val());
+    // Send notifications to all tokens.
+    const response = await admin.messaging().sendToDevice(tokens, payload);
+    // For each message check if there was an error.
+    const tokensToRemove = [];
+    response.results.forEach((result, index) => {
+      const error = result.error;
+      if (error) {
+        functions.logger.error(
+          'Failure sending notification to',
+          tokens[index],
+          error
+        );
+        // Cleanup the tokens who are not registered anymore.
+        if (
+          error.code === 'messaging/invalid-registration-token' ||
+          error.code === 'messaging/registration-token-not-registered'
+        ) {
+          tokensToRemove.push(tokensSnapshot.ref.child(tokens[index]).remove());
+        }
+      }
+    });
+    return Promise.all(tokensToRemove);
+  });
+
 // Función para actualizar los userResume cuando se elimina un mensaje sin leer
 exports.updateUnreadStatus = functions.database
   .ref('/unreadUserMessages/{userId}/{otherUserId}')

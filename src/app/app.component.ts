@@ -1,9 +1,12 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { MatSidenav, MatDrawerMode } from '@angular/material/sidenav';
 import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { AuthService } from './core';
+import { UIService } from './shared';
 
 declare const gtag: Function;
 
@@ -17,7 +20,12 @@ export class AppComponent implements OnInit {
   navMode = 'push' as MatDrawerMode;
   navOpened = false;
 
-  constructor(private authSrv: AuthService, private router: Router) {
+  constructor(
+    private authSrv: AuthService,
+    private afMessaging: AngularFireMessaging,
+    private uiSrv: UIService,
+    private router: Router
+  ) {
     // agrega scripts de GA al index.html
     if (environment.analytics) {
       // register google tag manager
@@ -75,6 +83,17 @@ export class AppComponent implements OnInit {
       this.navMode = 'side' as MatDrawerMode;
       this.navOpened = true;
     }
+
+    // Subscripción a notificación de nuevos mensajes
+    this.afMessaging.getToken
+      .pipe(
+        filter((token) => token != null),
+      )
+      .subscribe((token) => {
+        this.afMessaging.onMessage((payload) => {
+          this.uiSrv.showSnackbar('Tienes un nuevo mensaje!');
+        });
+      });
 
     this.authSrv.populate();
   }

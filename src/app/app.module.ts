@@ -5,9 +5,10 @@ import { NgProgressModule } from 'ngx-progressbar';
 import { NgProgressHttpModule } from 'ngx-progressbar/http';
 
 import { AngularFireModule } from '@angular/fire/compat';
-// import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { provideAuth, getAuth } from '@angular/fire/auth';
-import { getDatabase, provideDatabase } from '@angular/fire/database';
+import { AngularFireMessagingModule, SERVICE_WORKER, VAPID_KEY } from '@angular/fire/compat/messaging';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+// import { provideAuth, getAuth } from '@angular/fire/auth';
+// import { getDatabase, provideDatabase } from '@angular/fire/database';
 
 import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core';
@@ -52,24 +53,29 @@ import { environment } from '../environments/environment';
     MatToolbarModule,
 
     AppRoutingModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    // provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAuth(() => getAuth()),
-    provideDatabase(() => getDatabase()),
-    HomeModule,
-    NgProgressModule.withConfig({
-      color: '#2dd4bf',
-      spinner: false,
-    }),
-    NgProgressHttpModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
     }),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireMessagingModule,
+    // provideAuth(() => getAuth()),
+    // provideDatabase(() => getDatabase()),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    HomeModule,
+    NgProgressModule.withConfig({
+      color: '#2dd4bf',
+      spinner: false,
+    }),
+    NgProgressHttpModule,
   ],
-  providers: [UIService],
+  providers: [
+    UIService,
+    { provide: VAPID_KEY, useValue: environment.vapidKey },
+    { provide: SERVICE_WORKER, useFactory: () => typeof navigator !== 'undefined' && navigator.serviceWorker?.register('firebase-messaging-sw.js', { scope: '__' }) || undefined },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

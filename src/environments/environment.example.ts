@@ -26,6 +26,7 @@ export const environment = {
     token: 'XXXXXXXXXXXXX-XXXXXXXXXXXXX.apps.googleusercontent.com',
   },
   analytics: 'X-XXXXXXXXXX',
+  vapidkey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
   production: false,
   api_url: 'https://api.intercambialaminas.com',
 };

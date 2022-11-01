@@ -1,1 +1,11 @@
 <router-outlet></router-outlet>
+<ng-template #customRequest>
+    <h2 mat-dialog-title>Notificaciones</h2>
+    <mat-dialog-content>
+        Permite las notificaciones en este navegador para que te podamos avisar al recibir mensajes de otros usuarios!
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button tabindex="-1" mat-dialog-close>Mas tarde</button>
+        <button mat-raised-button color="accent" [mat-dialog-close]="true">OK</button>
+    </mat-dialog-actions>
+</ng-template>
