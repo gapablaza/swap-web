@@ -33,7 +33,7 @@ const setEnv = () => {
       token: '${process.env['GOOGLE_TOKEN']}',
     },
     analytics: '${process.env['ANALYTICS']}',
-    vapidkey: '${process.env['VAPIDKEY']}',
+    vapidKey: '${process.env['VAPIDKEY']}',
     production: ${process.env['PRODUCTION']},
     api_url: '${process.env['API_URL']}',
   };
