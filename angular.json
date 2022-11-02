@@ -34,7 +34,10 @@
               "src/assets",
               "src/manifest.webmanifest",
               "src/main-sw.js",
-              "src/firebase-messaging-sw.js"
+              "src/firebase-messaging-sw.js",
+              "src/sitemap.xml",
+              "src/robots.txt",
+              "src/ads.txt"
             ],
             "styles": [
               "src/styles.scss"

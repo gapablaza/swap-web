@@ -1,0 +1,10 @@
+# Allow all URLs (see https://www.robotstxt.org/robotstxt.html)
+User-agent: *
+Disallow: /trades/
+Disallow: /message/
+Disallow: /settings/
+Disallow: /mod/
+Disallow: /collaborate/
+Disallow: /forgot-password/
+Disallow: /new-password/
+Sitemap: https://intercambialaminas.com/sitemap.xml
