@@ -188,7 +188,7 @@
                         </a>
                     </li>
                     <li>
-                        <select name="" (change)="onPageChange(selectPage.value)" #selectPage>
+                        <select name="" (change)="onPageChange(selectPageDown.value)" #selectPageDown>
                             <option *ngFor="let item of [].constructor(paginator.last_page); index as i" [value]="i+1"
                                 [selected]="(i+1) == pageSelected">
                                 Página {{ i+1 }} de {{ paginator.last_page }}

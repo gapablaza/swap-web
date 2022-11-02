@@ -126,7 +126,6 @@ export class CollectionMediaUploadComponent implements OnInit {
           description: this.imgDescription,
           id: newId,
         });
-        this.isSaving = false;
       });
   }
 }
