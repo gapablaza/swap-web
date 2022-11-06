@@ -5,7 +5,7 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { concatMap, filter, first, Subscription, tap } from 'rxjs';
+import { concatMap, filter, Subscription, take, tap } from 'rxjs';
 import orderBy from 'lodash/orderBy';
 
 import {
@@ -124,7 +124,7 @@ export class UserMediaComponent implements OnInit, OnDestroy {
 
     this.mediaSrv
       .setLike(item.id, newStatus)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe({
         next: (message) => {
           item.likes = newStatus;

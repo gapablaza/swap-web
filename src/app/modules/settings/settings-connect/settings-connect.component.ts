@@ -4,7 +4,7 @@ import {
   FacebookLoginProvider,
   SocialAuthService,
 } from '@abacritt/angularx-social-login';
-import { filter, first, from, Subscription, switchMap } from 'rxjs';
+import { filter, from, Subscription, switchMap, take } from 'rxjs';
 
 import { AuthService, User } from 'src/app/core';
 import { UIService } from 'src/app/shared';
@@ -69,7 +69,7 @@ export class SettingsConnectComponent implements OnInit, OnDestroy {
 
     from(this.socialSrv.signIn(FacebookLoginProvider.PROVIDER_ID))
       .pipe(
-        first(),
+        take(1),
         filter((user) => user != null),
         switchMap((user) =>
           this.authSrv.linkFacebook({ id: user.id, email: user.email })
@@ -88,7 +88,7 @@ export class SettingsConnectComponent implements OnInit, OnDestroy {
 
     this.authSrv
       .unlink(network)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe((res) => {
         if (res) {
           this.uiSrv.showSuccess(`${network} fue removido exitosamente`);

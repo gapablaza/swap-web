@@ -5,10 +5,11 @@ import { NgProgressModule } from 'ngx-progressbar';
 import { NgProgressHttpModule } from 'ngx-progressbar/http';
 
 import { AngularFireModule } from '@angular/fire/compat';
+import { getApp } from '@angular/fire/app';
+// import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideAuth, getAuth, initializeAuth, indexedDBLocalPersistence, browserLocalPersistence } from '@angular/fire/auth';
+import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { AngularFireMessagingModule, SERVICE_WORKER, VAPID_KEY } from '@angular/fire/compat/messaging';
-import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-// import { provideAuth, getAuth } from '@angular/fire/auth';
-// import { getDatabase, provideDatabase } from '@angular/fire/database';
 
 import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core';
@@ -62,8 +63,11 @@ import { environment } from '../environments/environment';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireMessagingModule,
     // provideAuth(() => getAuth()),
-    // provideDatabase(() => getDatabase()),
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => initializeAuth(getApp(), {
+      persistence: [indexedDBLocalPersistence, browserLocalPersistence],
+    })),
+    provideDatabase(() => getDatabase()),
+    // provideFirebaseApp(() => initializeApp(environment.firebase)),
     HomeModule,
     NgProgressModule.withConfig({
       color: '#2dd4bf',

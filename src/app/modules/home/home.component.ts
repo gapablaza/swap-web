@@ -4,7 +4,7 @@ import {
   Component,
   OnInit,
 } from '@angular/core';
-import { first } from 'rxjs';
+import { take } from 'rxjs';
 
 import { Collection, SearchService, User } from 'src/app/core';
 
@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.searchSrv
       .getHomeData()
-      .pipe(first())
+      .pipe(take(1))
       .subscribe((data) => {
         this.added = data.added.sort((a, b) => {
           return a.id < b.id ? 1 : -1;

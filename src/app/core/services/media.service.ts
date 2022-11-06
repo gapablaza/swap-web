@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { concatMap, first, map } from 'rxjs/operators';
+import { concatMap, map, take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Media, MediaUpload } from '../models';
 
@@ -32,7 +32,7 @@ export class MediaService {
         collectionId: mediaData.collectionId,
       })
       .pipe(
-        first(),
+        take(1),
         map((data) => Number(data.newId)),
         concatMap((mediaId) =>
           this.http
@@ -47,7 +47,7 @@ export class MediaService {
               })
             )
             .pipe(
-              first(),
+              take(1),
               map(() => mediaId)
             )
         )

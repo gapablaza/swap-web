@@ -1,7 +1,7 @@
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { combineLatest, filter, first, Subscription, switchMap, tap } from 'rxjs';
+import { combineLatest, filter, Subscription, switchMap, take, tap } from 'rxjs';
 
 import {
   AuthService,
@@ -78,7 +78,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             authUser.accountTypeId == 2 && authUser.id != this.user.id
         ),
         switchMap(() =>
-          this.userSrv.getTradesWithAuthUser(this.user.id).pipe(first())
+          this.userSrv.getTradesWithAuthUser(this.user.id).pipe(take(1))
         )
       )
       .subscribe((trades) => {

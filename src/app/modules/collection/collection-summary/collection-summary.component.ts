@@ -14,7 +14,7 @@ import {
   User,
 } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
-import { filter, first, Subscription, tap } from 'rxjs';
+import { filter, Subscription, take, tap } from 'rxjs';
 import { UIService } from 'src/app/shared';
 
 @Component({
@@ -60,7 +60,7 @@ export class CollectionSummaryComponent implements OnInit, OnDestroy {
     let colSub = this.colOnlySrv.collection$
       .pipe(
         filter((col) => col.id != null),
-        first(),
+        take(1),
       )
       .subscribe((col) => {
         console.log('CollectionSummaryComponent - Sub colOnlySrv');

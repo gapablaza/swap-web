@@ -2,7 +2,7 @@ import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { filter, first, Subscription, switchMap, tap } from 'rxjs';
+import { filter, Subscription, switchMap, take } from 'rxjs';
 
 import { AuthService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
@@ -72,7 +72,7 @@ export class SignupComponent implements OnInit, OnDestroy {
 
     this.authSrv
       .emailSignup(f.value.name, f.value.email, f.value.password)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe({
         next: (resp) => {
           if (resp) {

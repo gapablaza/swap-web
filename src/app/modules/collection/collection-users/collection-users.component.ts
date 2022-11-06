@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { concatMap, filter, first, Subscription, tap } from 'rxjs';
+import { concatMap, filter, Subscription, take, tap } from 'rxjs';
 import orderBy from 'lodash/orderBy';
 
 import { 
@@ -58,7 +58,7 @@ export class CollectionUsersComponent implements OnInit, OnDestroy {
       .pipe(
         filter(col => col.id != null),
         tap(col => this.collection = col),
-        concatMap((col) => this.colSrv.getUsers(col.id).pipe(first()))
+        concatMap((col) => this.colSrv.getUsers(col.id).pipe(take(1)))
       )
       .subscribe((users) => {
         console.log('CollectionUsersComponent - Sub colOnlySrv');

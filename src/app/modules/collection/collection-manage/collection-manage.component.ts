@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, first, Subscription, tap } from 'rxjs';
+import { filter, Subscription, take, tap } from 'rxjs';
 
 import { Collection, CollectionService, CollectionUserData } from 'src/app/core';
 import { UIService } from 'src/app/shared';
@@ -96,7 +96,7 @@ export class CollectionManageComponent implements OnInit, OnDestroy {
 
     this.colSrv
       .addComment(this.collection.id, this.commentForm.value.comment)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe((resp: string) => {
         this.uiSrv.showSuccess('Comentario actualizado exitosamente');
         this.isSaving = false;
@@ -118,7 +118,7 @@ export class CollectionManageComponent implements OnInit, OnDestroy {
 
     this.colSrv
       .removeComment(this.collection.id)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe((resp: string) => {
         this.uiSrv.showSuccess('Comentario eliminado exitosamente');
 

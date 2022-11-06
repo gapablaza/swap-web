@@ -2,7 +2,7 @@ import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, filter, first, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, first, of, switchMap, take, tap } from 'rxjs';
 
 import { Collection, Pagination, SearchService, User } from 'src/app/core';
 import { UIService } from 'src/app/shared';
@@ -101,7 +101,7 @@ export class SearchComponent implements OnInit {
                   paginator: {} as Pagination,
                 });
               }),
-              first()
+              take(1)
             );
         })
       )

@@ -4,7 +4,7 @@ import {
   Component,
   OnInit,
 } from '@angular/core';
-import { first, map } from 'rxjs';
+import { map, take } from 'rxjs';
 import { Media, MediaService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
@@ -37,7 +37,7 @@ export class ModMediaComponent implements OnInit {
             return elem.mediaTypeId == 1;
           })
         ),
-        first()
+        take(1)
       )
       .subscribe((media) => {
         this.medias = media;
@@ -51,7 +51,7 @@ export class ModMediaComponent implements OnInit {
 
     this.mediaSrv
       .sanction(mediaId, sanctionId)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe({
         next: (message) => {
           this.medias.splice(

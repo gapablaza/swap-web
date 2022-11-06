@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
-import { concatMap, filter, first, Subscription } from 'rxjs';
+import { concatMap, filter, Subscription, take } from 'rxjs';
 
 import {
   AuthService,
@@ -44,7 +44,7 @@ export class CollectionTopsComponent implements OnInit, OnDestroy {
     let colSub = this.colOnlySrv.collection$
       .pipe(
         filter((col) => col.id != null),
-        concatMap((col) => this.colSrv.getTops(col.id).pipe(first()))
+        concatMap((col) => this.colSrv.getTops(col.id).pipe(take(1)))
       )
       .subscribe({
         next: (tops) => {

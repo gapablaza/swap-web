@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, first, Observable } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, Observable, take } from 'rxjs';
 import { UserService } from 'src/app/core';
 
 import { User } from '../../core/models';
@@ -28,7 +28,7 @@ export class UserOnlyService {
   requestUserUpdate() {
     this.userSrv
       .get(this._user.value.id)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe((user) => {
         this._user.next(user);
       });

@@ -5,7 +5,7 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { concatMap, filter, first, map, Subscription, tap } from 'rxjs';
+import { concatMap, filter, map, Subscription, take, tap } from 'rxjs';
 import orderBy from 'lodash/orderBy';
 
 import {
@@ -90,7 +90,7 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
       .pipe(
         filter((col) => col.id != null),
         tap((col) => (this.collection = col)),
-        concatMap((col) => this.colSrv.getMedia(col.id).pipe(first())),
+        concatMap((col) => this.colSrv.getMedia(col.id).pipe(take(1))),
         // filter only approved images
         map((media) =>
           media.filter((elem: Media) => {
@@ -120,7 +120,7 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
                 return elem.mediaTypeId == 1;
               })
             ),
-            first()
+            take(1)
           )
           .subscribe((media) => {
             this.imagesForModeration = media;
@@ -177,7 +177,7 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
     this.isSaving = true;
     this.mediaSrv
       .delete(id)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe({
         next: (message) => {
           this.imagesForModeration.splice(
@@ -213,7 +213,7 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
 
     this.mediaSrv
       .setLike(item.id, newStatus)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe({
         next: (message) => {
           item.likes = newStatus;

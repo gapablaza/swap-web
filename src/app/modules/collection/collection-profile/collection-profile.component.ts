@@ -10,7 +10,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { filter, first, Subscription, switchMap, tap } from 'rxjs';
+import { filter, Subscription, switchMap, take, tap } from 'rxjs';
 
 import {
   AuthService,
@@ -85,7 +85,7 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
             (col.userData?.collecting ? true : false) && this.items.length == 0
         ),
         switchMap((col) => {
-          return this.colSrv.getItems(col.id).pipe(first());
+          return this.colSrv.getItems(col.id).pipe(take(1));
         })
       )
       .subscribe((items) => {
@@ -115,7 +115,7 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
     this.isSaving = true;
     this.colSrv
       .add(this.collection.id)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe((resp) => {
         this.collection.userData = {
           collecting: true,
@@ -137,7 +137,7 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
     this.isSaving = true;
     this.colSrv
       .setCompleted(this.collection.id, completed)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe((resp) => {
         this.collection.userData = {
           ...this.collection.userData,
@@ -158,7 +158,7 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
     this.isSaving = true;
     this.colSrv
       .remove(this.collection.id)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe((resp) => {
         this.collection.userData = {
           collecting: false,

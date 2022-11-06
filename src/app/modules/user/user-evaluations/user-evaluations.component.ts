@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { concatMap, filter, first, Subscription, tap } from 'rxjs';
+import { concatMap, filter, Subscription, take, tap } from 'rxjs';
 import orderBy from 'lodash/orderBy';
 
 import {
@@ -108,7 +108,7 @@ export class UserEvaluationsComponent implements OnInit, OnDestroy {
 
     this.userSrv
       .addEvaluation(userId, typeId, commentText)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe({
         next: (res) => {
           this.uiSrv.showSuccess('Evaluación registrada exitosamente');

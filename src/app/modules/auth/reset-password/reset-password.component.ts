@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
-import { first } from 'rxjs';
+import { take } from 'rxjs';
 
 import { AuthService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
@@ -30,7 +30,7 @@ export class ResetPasswordComponent implements OnInit {
   onSubmit(f: NgForm) {
     this.isLoading = true;
     this.authSrv.resetPassword(f.value.email)
-    .pipe(first())
+    .pipe(take(1))
     .subscribe({
       next: (resp) => {
         this.uiSrv.showSuccess(resp);

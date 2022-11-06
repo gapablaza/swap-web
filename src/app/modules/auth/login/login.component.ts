@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm, Validators, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, first, from, Subscription, switchMap, tap } from 'rxjs';
+import { filter, from, Subscription, switchMap, take } from 'rxjs';
 
 import {
   // GoogleLoginProvider,
@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.authSrv
       .emailLogin(f.value.email, f.value.password)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe({
         next: (resp) => {
           if (resp) {
@@ -81,7 +81,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     from(this.socialSrv.signIn(FacebookLoginProvider.PROVIDER_ID))
       .pipe(
-        first(),
+        take(1),
         filter(user => user != null),
         switchMap(user => this.authSrv.facebookIdLogin(user.id))
       )

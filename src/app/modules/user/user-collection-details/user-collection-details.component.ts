@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { first } from 'rxjs';
+import { take } from 'rxjs';
 
 import { Collection, Item, User, UserService } from 'src/app/core';
 
@@ -29,7 +29,7 @@ export class UserCollectionDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.userSrv.getCollectionInfo(this.user.id, this.collection.id)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe(col => {
         this.collection = col;
         this.userWishing = col.userData?.wishlist || [];

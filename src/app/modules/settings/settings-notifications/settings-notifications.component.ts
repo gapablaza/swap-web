@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first, Subscription } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 
 import { AuthService, User, UserService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
@@ -51,7 +51,7 @@ export class SettingsNotificationsComponent implements OnInit {
     this.isSaving = true;
     this.authSrv
       .updateNotifications(e.checked)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe((res) => {
         if (res) {
           this.uiSrv.showSuccess('Configuración actualizada exitosamente');
@@ -78,7 +78,7 @@ export class SettingsNotificationsComponent implements OnInit {
 
     this.authSrv
       .changeEmail(this.emailForm.get('email')?.value)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe((res) => {
         if (res) {
           this.uiSrv.showSuccess(

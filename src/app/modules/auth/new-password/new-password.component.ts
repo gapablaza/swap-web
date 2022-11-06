@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { first } from 'rxjs';
+import { take } from 'rxjs';
 
 import { AuthService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
@@ -95,7 +95,7 @@ export class NewPasswordComponent implements OnInit {
         this.route.snapshot.queryParams['userId'],
         this.route.snapshot.queryParams['hash']
       )
-      .pipe(first())
+      .pipe(take(1))
       .subscribe({
         next: (resp) => {
           this.uiSrv.showSuccess(resp);

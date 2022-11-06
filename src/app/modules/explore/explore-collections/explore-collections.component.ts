@@ -3,7 +3,7 @@ import es from '@angular/common/locales/es';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { filter, first, Subscription, switchMap, tap } from 'rxjs';
+import { filter, Subscription, switchMap, take, tap } from 'rxjs';
 
 import {
   AuthService,
@@ -109,7 +109,7 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
               page: this.pageSelected,
               sortBy: this.sortOptionSelected,
             })
-            .pipe(first());
+            .pipe(take(1));
         })
       )
       .subscribe((data) => {

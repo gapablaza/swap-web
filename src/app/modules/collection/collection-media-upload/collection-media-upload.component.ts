@@ -6,7 +6,7 @@ import {
   ImageCropperComponent,
   ImageTransform,
 } from 'ngx-image-cropper';
-import { first } from 'rxjs';
+import { take } from 'rxjs';
 import { AuthService, MediaService, MediaUpload } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 
@@ -118,7 +118,7 @@ export class CollectionMediaUploadComponent implements OnInit {
 
     this.mediaSrv
       .add(tempMediaUpload, this.croppedImage)
-      .pipe(first())
+      .pipe(take(1))
       .subscribe((newId) => {
         this.uiSrv.showSuccess('Imagen subida, a esperar que un moderador la valide!');
         this.dialogRef.close({

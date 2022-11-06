@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { MatDialog } from '@angular/material/dialog';
-import { first, Subscription } from 'rxjs';
+import { first, Subscription, take } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 
 import { AuthService, User } from 'src/app/core';
@@ -54,7 +54,7 @@ export class MessageComponent implements OnInit, OnDestroy {
   }
 
   requestPermission() {
-    this.afMessaging.requestToken.pipe(first()).subscribe({
+    this.afMessaging.requestToken.pipe(take(1)).subscribe({
       next: (token) => {
         this.authSrv.saveFirebaseToken();
       },

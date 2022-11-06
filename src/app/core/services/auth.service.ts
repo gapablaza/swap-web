@@ -11,7 +11,6 @@ import {
 import {
   concatMap,
   distinctUntilChanged,
-  first,
   map,
   take,
 } from 'rxjs/operators';
@@ -213,7 +212,7 @@ export class AuthService {
     let tempAuthUser = this.getCurrentUser();
     if (tempAuthUser.id == null) return;
 
-    this.afMessaging.getToken.pipe(first()).subscribe((token) => {
+    this.afMessaging.getToken.pipe(take(1)).subscribe((token) => {
       if (token) {
         this.afDB
           .object(`users/userId_${tempAuthUser.id}/notificationTokens/${token}`)
@@ -228,7 +227,7 @@ export class AuthService {
     // remove FB device token
     this.afMessaging.getToken
       .pipe(
-        first(),
+        take(1),
         concatMap((token) => {
           if (token) {
             if (tempAuthUser.id != null) {
@@ -239,13 +238,13 @@ export class AuthService {
                   )
                   .remove()
               );
-              const client$ = this.afMessaging.deleteToken(token).pipe(first());
+              const client$ = this.afMessaging.deleteToken(token).pipe(take(1));
 
               return combineLatest([server$, client$]).pipe(
                 map(([server, client]) => client)
               );
             } else {
-              return this.afMessaging.deleteToken(token).pipe(first());
+              return this.afMessaging.deleteToken(token).pipe(take(1));
             }
           } else {
             return of(false);

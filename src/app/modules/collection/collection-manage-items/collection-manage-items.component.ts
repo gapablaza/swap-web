@@ -7,7 +7,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { concatMap, filter, first, Subscription, take, tap } from 'rxjs';
+import { concatMap, filter, Subscription, take, tap } from 'rxjs';
 import {
   Collection,
   CollectionService,
@@ -69,7 +69,7 @@ export class CollectionManageItemsComponent
           (col) =>
             (col.userData?.collecting ? true : false) && this.items.length == 0
         ),
-        concatMap((col) => this.colSrv.getItems(col.id).pipe(first()))
+        concatMap((col) => this.colSrv.getItems(col.id).pipe(take(1)))
       )
       .subscribe((data) => {
         console.log('CollectionManageItemsComponent - Sub colOnlySrv');
@@ -135,7 +135,7 @@ export class CollectionManageItemsComponent
     if (item.wishlist) {
       this.itemSrv
         .incrementWishlist(item.id)
-        .pipe(first())
+        .pipe(take(1))
         .subscribe({
           next: (resp) => {
             item.wishlistQuantity = resp.newQuantity;
@@ -154,7 +154,7 @@ export class CollectionManageItemsComponent
     } else {
       this.itemSrv
         .addToWishlist(item.id)
-        .pipe(first())
+        .pipe(take(1))
         .subscribe({
           next: (resp) => {
             item.wishlist = true;
@@ -191,7 +191,7 @@ export class CollectionManageItemsComponent
 
       this.itemSrv
         .decrementWishlist(item.id)
-        .pipe(first())
+        .pipe(take(1))
         .subscribe({
           next: (resp) => {
             item.wishlistQuantity = resp.newQuantity;
@@ -213,7 +213,7 @@ export class CollectionManageItemsComponent
 
       this.itemSrv
         .removeFromWishlist(item.id)
-        .pipe(first())
+        .pipe(take(1))
         .subscribe({
           next: (resp) => {
             item.wishlist = false;
@@ -252,7 +252,7 @@ export class CollectionManageItemsComponent
     if (item.tradelist) {
       this.itemSrv
         .incrementTradelist(item.id)
-        .pipe(first())
+        .pipe(take(1))
         .subscribe({
           next: (resp) => {
             item.tradelistQuantity = resp.newQuantity;
@@ -271,7 +271,7 @@ export class CollectionManageItemsComponent
     } else {
       this.itemSrv
         .addToTradelist(item.id)
-        .pipe(first())
+        .pipe(take(1))
         .subscribe({
           next: (resp) => {
             item.tradelist = true;
@@ -308,7 +308,7 @@ export class CollectionManageItemsComponent
 
       this.itemSrv
         .decrementTradelist(item.id)
-        .pipe(first())
+        .pipe(take(1))
         .subscribe({
           next: (resp) => {
             item.tradelistQuantity = resp.newQuantity;
@@ -330,7 +330,7 @@ export class CollectionManageItemsComponent
 
       this.itemSrv
         .removeFromTradelist(item.id)
-        .pipe(first())
+        .pipe(take(1))
         .subscribe({
           next: (resp) => {
             item.tradelist = false;

@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { filter, first, Subscription, switchMap } from 'rxjs';
+import { filter, Subscription, switchMap, take } from 'rxjs';
 
 import {
   CollectionService,
@@ -46,7 +46,7 @@ export class CollectionItemsComponent implements OnInit, OnDestroy {
     let colSub = this.colOnlySrv.collection$
       .pipe(
         filter((col) => col.id != null),
-        switchMap((col) => this.colSrv.getItems(col.id).pipe(first()))
+        switchMap((col) => this.colSrv.getItems(col.id).pipe(take(1)))
       )
       .subscribe((items) => {
         console.log('CollectionItemsComponent - Sub colOnlySrv');
