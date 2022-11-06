@@ -44,15 +44,27 @@
                             </div>
                         </div>
                         <div class="list-item-actions">
-                            <button [disabled]="item.isSaving" mat-raised-button (click)="onAddWish(item)"
+                            <!-- <button [disabled]="item.isSaving" mat-raised-button (click)="onAddWish(item)"
                                 [color]="item.wishlist ? 'accent' : 'basic'" (contextmenu)="onRemoveWish(item)"
                                 longPress (mouseLongPress)="onRemoveWish(item)" [matBadge]="item.wishlistQuantity"
                                 [matBadgeHidden]="!item.wishlist">
                                 <mat-icon inline="true">search</mat-icon> Busco
+                            </button> -->
+                            <button [disabled]="item.isSaving" mat-raised-button (click)="onAddWish(item)"
+                                [color]="item.wishlist ? 'accent' : 'basic'" (contextmenu)="onRemoveWish(item)"
+                                (press)="onRemoveWish(item)" [matBadge]="item.wishlistQuantity"
+                                [matBadgeHidden]="!item.wishlist">
+                                <mat-icon inline="true">search</mat-icon> Busco
                             </button>
-                            <button [disabled]="item.isSaving" mat-raised-button
+                            <!-- <button [disabled]="item.isSaving" mat-raised-button
                                 [color]="item.tradelist ? 'accent' : 'basic'" (click)="onAddTrade(item)"
                                 (contextmenu)="onRemoveTrade(item)" longPress (mouseLongPress)="onRemoveTrade(item)"
+                                [matBadge]="item.tradelistQuantity" [matBadgeHidden]="!item.tradelist">
+                                <mat-icon inline="true">swap_horiz</mat-icon> Cambio
+                            </button> -->
+                            <button [disabled]="item.isSaving" mat-raised-button
+                                [color]="item.tradelist ? 'accent' : 'basic'" (click)="onAddTrade(item)"
+                                (contextmenu)="onRemoveTrade(item)" (press)="onRemoveTrade(item)"
                                 [matBadge]="item.tradelistQuantity" [matBadgeHidden]="!item.tradelist">
                                 <mat-icon inline="true">swap_horiz</mat-icon> Cambio
                             </button>

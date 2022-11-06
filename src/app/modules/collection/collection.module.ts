@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
+import { MaterialModule } from 'src/app/shared/material.module';
+import { AdsModule } from 'src/app/shared/ads.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CollectionRoutingModule } from './collection-routing.module';
 
@@ -14,12 +17,7 @@ import { CollectionManageComponent } from './collection-manage/collection-manage
 import { CollectionManageWishlistComponent } from './collection-manage-wishlist/collection-manage-wishlist.component';
 import { CollectionManageTradelistComponent } from './collection-manage-tradelist/collection-manage-tradelist.component';
 import { CollectionManageItemsComponent } from './collection-manage-items/collection-manage-items.component';
-import { MaterialModule } from 'src/app/shared/material.module';
-import { AdsModule } from 'src/app/shared/ads.module';
 import { CollectionMediaUploadComponent } from './collection-media-upload/collection-media-upload.component';
-import { ImageCropperModule } from 'ngx-image-cropper';
-
-import 'hammerjs'; import { HammerModule } from '@angular/platform-browser';
 
 @NgModule({
   declarations: [
@@ -42,6 +40,6 @@ import 'hammerjs'; import { HammerModule } from '@angular/platform-browser';
     AdsModule,
     ImageCropperModule,
     CollectionRoutingModule,
-  ]
+  ],
 })
-export class CollectionModule { }
+export class CollectionModule {}

@@ -1,5 +1,6 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { Injectable, NgModule } from '@angular/core';
+import { BrowserModule, HammerGestureConfig, HammerModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import 'hammerjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgProgressModule } from 'ngx-progressbar';
 import { NgProgressHttpModule } from 'ngx-progressbar/http';
@@ -32,6 +33,17 @@ import { FooterComponent } from './modules/navigation/footer/footer.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
+@Injectable()
+export class HammerConfig extends HammerGestureConfig {
+  override overrides = <any> {
+      // I will only use the swap gesture so 
+      // I will deactivate the others to avoid overlaps
+      // pinch: { enable: false },
+      // rotate: { enable: false }
+      'press': { time: 501 }
+  }
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,6 +56,7 @@ import { environment } from '../environments/environment';
     BrowserModule,
     BrowserAnimationsModule,
     CoreModule,
+    HammerModule,
 
     SharedModule,
     MatBottomSheetModule,
@@ -77,6 +90,7 @@ import { environment } from '../environments/environment';
   ],
   providers: [
     UIService,
+    { provide: HAMMER_GESTURE_CONFIG, useClass: HammerConfig },
     { provide: VAPID_KEY, useValue: environment.vapidKey },
     { provide: SERVICE_WORKER, useFactory: () => typeof navigator !== 'undefined' && navigator.serviceWorker?.register('firebase-messaging-sw.js', { scope: '__' }) || undefined },
   ],

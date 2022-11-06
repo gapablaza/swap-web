@@ -126,7 +126,7 @@ export class CollectionManageItemsComponent
   }
 
   onAddWish(item: CustomItem) {
-    console.log(item);
+    // console.log(item);
 
     item.isSaving = true;
     this.cdr.detectChanges();
@@ -182,7 +182,7 @@ export class CollectionManageItemsComponent
   }
 
   onRemoveWish(item: CustomItem) {
-    console.log(item);
+    // console.log(item);
 
     // if item already in wishlist and quantity > 1, decrement -1
     if (item.wishlist && (item.wishlistQuantity || 0) > 1) {
@@ -243,7 +243,7 @@ export class CollectionManageItemsComponent
   }
 
   onAddTrade(item: CustomItem) {
-    console.log(item);
+    // console.log(item);
 
     item.isSaving = true;
     this.cdr.detectChanges();
@@ -299,7 +299,7 @@ export class CollectionManageItemsComponent
   }
 
   onRemoveTrade(item: CustomItem) {
-    console.log(item);
+    // console.log(item);
 
     // if item already in tradelist and quantity > 1, decrement -1
     if (item.tradelist && (item.tradelistQuantity || 0) > 1) {

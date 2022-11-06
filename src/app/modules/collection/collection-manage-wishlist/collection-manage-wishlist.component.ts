@@ -76,6 +76,7 @@ export class CollectionManageWishlistComponent implements OnInit {
   }
 
   onRemoveWish(item: Item) {
+    // console.log(item);
     if (this.isSaving) return;
 
     // if item already in wishlist and quantity > 1, decrement -1
