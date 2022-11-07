@@ -40,6 +40,7 @@ export class HammerConfig extends HammerGestureConfig {
       // I will deactivate the others to avoid overlaps
       // pinch: { enable: false },
       // rotate: { enable: false }
+      'tap': { time: 500 },
       'press': { time: 501 }
   }
 }

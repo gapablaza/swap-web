@@ -26,7 +26,7 @@
     <div class="manage-list-buttons">
       <button mat-raised-button *ngFor="let tradeItem of items; let i = index; trackBy: trackById"
         [color]="tradeItem.tradelist && tradeItem.wishlist ? 'warn' : tradeItem.tradelist ? 'accent' : 'basic'"
-        [matBadge]="tradeItem.tradelistQuantity" [matBadgeHidden]="!tradeItem.tradelist" (click)="onAddTrade(tradeItem)"
+        [matBadge]="tradeItem.tradelistQuantity" [matBadgeHidden]="!tradeItem.tradelist" (tap)="onAddTrade(tradeItem)"
         (contextmenu)="onRemoveTrade(tradeItem)" (press)="onRemoveTrade(tradeItem)">
         {{ tradeItem.name }}
       </button>

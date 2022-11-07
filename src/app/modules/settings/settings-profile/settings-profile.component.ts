@@ -11,7 +11,7 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
-import { first, Subscription, take } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { AuthService, DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';

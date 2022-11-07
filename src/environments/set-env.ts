@@ -12,7 +12,9 @@ const setEnv = () => {
   });
 
   // `environment.ts` file structure
-  const envConfigFile = `export const environment = {
+  const envConfigFile = `import packageJson from '../../package.json';
+
+  export const environment = {
     cloudinary: {
       uploadPreset: '${process.env['CLOUDINARY_UPLOADPRESET']}',
       cloudName: '${process.env['CLOUDINARY_CLOUDNAME']}',
@@ -37,6 +39,7 @@ const setEnv = () => {
     },
     analytics: '${process.env['ANALYTICS']}',
     vapidKey: '${process.env['VAPIDKEY']}',
+    appVersion: packageJson.version,
     production: ${process.env['PRODUCTION']},
     api_url: '${process.env['API_URL']}',
   };
