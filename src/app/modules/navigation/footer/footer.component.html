@@ -2,13 +2,20 @@
     <div class="content">
         <p class="help">
             <a routerLink="/p/faqs">FAQS</a>
-            <a href="https://trello.com/b/EWDOVXHM/intercambia-roadmap" target="_blank" rel="noopener noreferrer">Roadmap</a>
+            <a href="https://trello.com/b/EWDOVXHM/intercambia-roadmap" target="_blank"
+                rel="noopener noreferrer">Roadmap</a>
         </p>
         <p class="legal">
             <a routerLink="/p/tos">Condiciones de uso</a>
             <a routerLink="/p/privacy">Política de privacidad</a>
             <a routerLink="/p/about">Quiénes somos</a>
         </p>
-        <p class="copyright">&copy;2015+ IntercambiaLáminas - v{{ version }}</p>
+        <p class="copyright">
+            <span>&copy;2015+ IntercambiaLáminas</span>
+            <span>v{{ version }}</span>
+        </p>
+        <p class="copyright2">
+            <span>{{ counter$ | async | number:'':'es' }} sesiones activas</span>
+        </p>
     </div>
 </footer>

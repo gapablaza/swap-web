@@ -12,6 +12,7 @@
     },
 
     "onlineUsers": {
+      ".indexOn": ["status"],
       ".read": true,
       ".write": true
     },
