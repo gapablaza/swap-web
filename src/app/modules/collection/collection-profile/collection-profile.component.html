@@ -1,7 +1,4 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-  <mat-spinner></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="collection">
+<section *ngIf="isLoaded else loading" class="collection">
   <div class="collection-info card">
 
     <div class="collection-header">
@@ -34,7 +31,7 @@
             [routerLink]="['manage']">
             <mat-icon inline="true">edit</mat-icon> Editar
           </a>
-          <button mat-stroked-button [matMenuTriggerFor]="menu">
+          <button mat-stroked-button [matMenuTriggerFor]="menu" aria-label="Opciones">
             <mat-icon inline="true">more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
@@ -149,7 +146,7 @@
       </mat-expansion-panel>
     </mat-accordion>
 
-    <h3>Secciones</h3>
+    <h2>Secciones</h2>
     <mat-nav-list>
       <a mat-list-item [routerLink]="['./items']">
         <div mat-line>
@@ -188,6 +185,67 @@
     </div>
   </div>
 </section>
+
+<ng-template #loading>
+  <section class="collection">
+    <div class="collection-info card">
+
+      <div class="collection-header">
+        <div class="collection-image-background" style="background-image: url('/assets/img/profile_collection.jpeg')">
+        </div>
+        <div class="collection-subheader">
+          <div class="collection-image-container">
+            <img class="collection-image" src="/assets/img/profile_collection.jpeg">
+          </div>
+          <div class="collection-actions">
+            <button mat-stroked-button aria-label="Opciones">
+              <mat-icon inline="true">more_vert</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="collection-main">
+        <h1>Cargando nombre de la colección</h1>
+        <p class="subtitle">Cargando editorial, cargando año</p>
+
+        <!-- <p *ngIf="collection.description" class="collection-description"
+        [innerHTML]="collection.description| sanitizeHtml"></p> -->
+      </div>
+
+      <h2>Secciones</h2>
+      <mat-nav-list>
+        <a mat-list-item>
+          <div mat-line>
+            Tiene
+            <strong>???</strong>
+            ítems (láminas | stickers | figuritas | estampas | cromos)
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+        <a mat-list-item>
+          <div mat-line>
+            <strong>???</strong> usuarios lo coleccionan
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+        <a mat-list-item>
+          <div mat-line>
+            Se han agregado <strong>???</strong> elementos multimedia
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+      </mat-nav-list>
+
+      <hr />
+
+      <div class="collection-publisher">
+        <p>Cargando editorial</p>
+      </div>
+    </div>
+  </section>
+</ng-template>
+
 <ng-template #confirmDeleteDialog>
   <p matDialogContent>Estás seguro de quitar esta colección? Esta acción no se puede deshacer.</p>
   <mat-dialog-actions align="end">
@@ -197,3 +255,7 @@
     </button>
   </mat-dialog-actions>
 </ng-template>
+
+<div *ngIf="!isLoaded" class="loading-indicator">
+  <mat-spinner aria-label="cargando"></mat-spinner>
+</div>

@@ -1,6 +1,6 @@
 <mat-toolbar color="primary">
   <div class="logo">
-    <button mat-icon-button (click)="onToggleSidenav()">
+    <button mat-icon-button (click)="onToggleSidenav()" aria-label="Menu">
       <mat-icon>menu</mat-icon>
     </button>
     <a routerLink="/">
@@ -21,7 +21,7 @@
   <span class="example-spacer"></span>
   <ul class="navigation-items">
     <li>
-      <a mat-icon-button routerLink="/search">
+      <a mat-icon-button routerLink="/search" aria-label="Buscar">
         <mat-icon>search</mat-icon>
       </a>
     </li>
