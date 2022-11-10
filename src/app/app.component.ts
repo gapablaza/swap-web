@@ -1,11 +1,11 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { MatSidenav, MatDrawerMode } from '@angular/material/sidenav';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { filter } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
-import { AuthService } from './core';
+import { AuthService, SEOService } from './core';
 import { UIService } from './shared';
 
 declare const gtag: Function;
@@ -22,6 +22,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private authSrv: AuthService,
+    private SEOSrv: SEOService,
     private afMessaging: AngularFireMessaging,
     private uiSrv: UIService,
     private router: Router
@@ -75,6 +76,12 @@ export class AppComponent implements OnInit {
         if (window.innerWidth < 768) {
           this.sidenav.close();
         }
+      }
+
+      // limpia la data SEO antes de cambiar de ruta
+      // para que se inicialice correctamente
+      if (event instanceof NavigationStart) {
+        this.SEOSrv.cleanSEO();
       }
     });
 

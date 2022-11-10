@@ -6,6 +6,7 @@ import {
   Collection, 
   CollectionService, 
   DEFAULT_USER_PROFILE_IMG, 
+  SEOService, 
   User } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
 
@@ -50,6 +51,7 @@ export class CollectionUsersComponent implements OnInit, OnDestroy {
   constructor(
     private colSrv: CollectionService,
     private colOnlySrv: CollectionOnlyService,
+    private SEOSrv: SEOService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -57,7 +59,16 @@ export class CollectionUsersComponent implements OnInit, OnDestroy {
     let colSub = this.colOnlySrv.collection$
       .pipe(
         filter(col => col.id != null),
-        tap(col => this.collection = col),
+        tap(col => {
+          this.collection = col;
+
+          this.SEOSrv.set({
+            title: `Usuarios coleccionando ${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
+            description: `Revisa los distintos usuarios que están juntando el álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}).`,
+            isCanonical: true,
+          })
+        }
+        ),
         concatMap((col) => this.colSrv.getUsers(col.id).pipe(take(1)))
       )
       .subscribe((users) => {

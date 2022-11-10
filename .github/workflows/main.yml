@@ -20,6 +20,7 @@ jobs:
       env:
         ANALYTICS: ${{ secrets.ANALYTICS }}
         API_URL: ${{ secrets.API_URL }}
+        APP_URL: ${{ secrets.APP_URL }}
         CLOUDINARY_UPLOADPRESET: ${{ secrets.CLOUDINARY_UPLOADPRESET }}
         CLOUDINARY_CLOUDNAME: ${{ secrets.CLOUDINARY_CLOUDNAME }}
         CLOUDINARY_SITE: ${{ secrets.CLOUDINARY_SITE }}

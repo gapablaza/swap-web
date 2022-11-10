@@ -14,6 +14,7 @@ import {
   CollectionService,
   Media,
   MediaService,
+  SEOService,
 } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
 import { UIService } from 'src/app/shared';
@@ -80,6 +81,7 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
     private colOnlySrv: CollectionOnlyService,
     private mediaSrv: MediaService,
     private authSrv: AuthService,
+    private SEOSrv: SEOService,
     private uiSrv: UIService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef
@@ -89,7 +91,16 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
     let colSub = this.colOnlySrv.collection$
       .pipe(
         filter((col) => col.id != null),
-        tap((col) => (this.collection = col)),
+        tap((col) => {
+          this.collection = col;
+          
+          this.SEOSrv.set({
+            title: `Media compartida asociada a ${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
+            description: `Revisa los distintos elementos multimedia subidos por los usuarios, asociados al álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}).`,
+            isCanonical: true,
+          })
+        }
+        ),
         concatMap((col) => this.colSrv.getMedia(col.id).pipe(take(1))),
         // filter only approved images
         map((media) =>

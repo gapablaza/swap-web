@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
-import { concatMap, filter, Subscription, take } from 'rxjs';
+import { concatMap, filter, Subscription, take, tap } from 'rxjs';
 
 import {
   AuthService,
   CollectionService,
+  SEOService,
   TopsCategory,
   User,
 } from 'src/app/core';
@@ -28,6 +29,7 @@ export class CollectionTopsComponent implements OnInit, OnDestroy {
     private colSrv: CollectionService,
     private colOnlySrv: CollectionOnlyService,
     private authSrv: AuthService,
+    private SEOSrv: SEOService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -44,6 +46,13 @@ export class CollectionTopsComponent implements OnInit, OnDestroy {
     let colSub = this.colOnlySrv.collection$
       .pipe(
         filter((col) => col.id != null),
+        tap((col) => {
+          this.SEOSrv.set({
+            title: `TOP ítems en ${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
+            description: `Revisa los ítems clasificados por dificultad en el álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}).`,
+            isCanonical: true,
+          })
+        }),
         concatMap((col) => this.colSrv.getTops(col.id).pipe(take(1)))
       )
       .subscribe({

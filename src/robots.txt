@@ -7,4 +7,5 @@ Disallow: /mod/
 Disallow: /collaborate/
 Disallow: /forgot-password/
 Disallow: /new-password/
+Disallow: /item/
 Sitemap: https://intercambialaminas.com/sitemap.xml

@@ -8,11 +8,12 @@ import {
 } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { filter, Subscription, switchMap, take } from 'rxjs';
+import { filter, Subscription, switchMap, take, tap } from 'rxjs';
 
 import {
   CollectionService,
   Item,
+  SEOService,
 } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
 
@@ -39,6 +40,7 @@ export class CollectionItemsComponent implements OnInit, OnDestroy {
   constructor(
     private colSrv: CollectionService,
     private colOnlySrv: CollectionOnlyService,
+    private SEOSrv: SEOService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -46,6 +48,13 @@ export class CollectionItemsComponent implements OnInit, OnDestroy {
     let colSub = this.colOnlySrv.collection$
       .pipe(
         filter((col) => col.id != null),
+        tap((col) => {
+          this.SEOSrv.set({
+            title: `Itemizado ${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
+            description: `Revisa el itemizado del álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}). Son ${col.items} ítems a coleccionar (láminas / stickers / figuritas / pegatinas / cromos / estampas / barajitas).`,
+            isCanonical: true,
+          })
+        }),
         switchMap((col) => this.colSrv.getItems(col.id).pipe(take(1)))
       )
       .subscribe((items) => {

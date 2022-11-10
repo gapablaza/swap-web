@@ -5,4 +5,5 @@ export * from './item.service';
 export * from './media.service';
 export * from './jwt.service';
 export * from './search.service';
+export * from './seo.service';
 export * from './user.service';

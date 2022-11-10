@@ -11,6 +11,7 @@ import {
   DEFAULT_COLLECTION_IMG,
   Pagination,
   SearchService,
+  SEOService,
   User,
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
@@ -63,6 +64,7 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private authSrv: AuthService,
+    private SEOSrv: SEOService,
     private uiSrv: UIService,
   ) {}
 
@@ -87,6 +89,13 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
     // process pagination params
     this.activatedRoute.queryParamMap
       .pipe(
+        tap(() => {
+          this.SEOSrv.set({
+            title: 'Explorar Colecciones - Intercambia Láminas',
+            description: 'Revisa el listado completo de colecciones que tenemos disponible, marca tus repetidas/faltantes y encuentra con quién intercambiar!',
+            isCanonical: true
+          });
+        }),
         switchMap((paramMap) => {
           this.isLoaded = false;
           const page = paramMap.get('page');

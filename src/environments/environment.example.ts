@@ -30,6 +30,7 @@ export const environment = {
   vapidKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
   appVersion: packageJson.version,
   production: false,
+  appUrl: 'http://localhost:4200',
   api_url: 'https://api.intercambialaminas.com',
 };
 

@@ -41,6 +41,7 @@ const setEnv = () => {
     vapidKey: '${process.env['VAPIDKEY']}',
     appVersion: packageJson.version,
     production: ${process.env['PRODUCTION']},
+    appUrl: '${process.env['APP_URL']}',
     api_url: '${process.env['API_URL']}',
   };
   `;

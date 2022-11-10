@@ -18,6 +18,7 @@ import {
   CollectionService,
   DEFAULT_COLLECTION_IMG,
   Item,
+  SEOService,
   User,
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
@@ -46,6 +47,7 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
     private colSrv: CollectionService,
     private colOnlySrv: CollectionOnlyService,
     private authSrv: AuthService,
+    private SEOSrv: SEOService,
     private dialog: MatDialog,
     private uiSrv: UIService,
     private cdr: ChangeDetectorRef
@@ -58,7 +60,7 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
     let authSub = this.authSrv.authUser
       .pipe(
         tap((user) => {
-          if(!user.id || (user.accountTypeId == 1)) {
+          if (!user.id || user.accountTypeId == 1) {
             this.loadAds();
           }
         }),
@@ -76,6 +78,13 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
         filter((col) => col.id != null),
         tap((col) => {
           this.collection = col;
+
+          this.SEOSrv.set({
+            title: `${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
+            description: `Marca tus repetidas/faltantes del álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}) para encontrar con quien poder cambiar. Son ${col.items} ítems a coleccionar (láminas / stickers / figuritas / pegatinas / cromos / estampas / barajitas).`,
+            isCanonical: true,
+          })
+
           this.isLoaded = true;
           this.cdr.markForCheck();
         }),
@@ -108,7 +117,7 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
     this.uiSrv.loadAds().then(() => {
       this.isAdsLoaded = true;
       this.cdr.markForCheck();
-    })
+    });
   }
 
   onAdd() {

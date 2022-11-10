@@ -176,6 +176,12 @@ section.collection {
       }
     }
 
+    h2 {
+      margin-top: 3rem;
+      margin-bottom: 0;
+      font-weight: bold;
+    }
+
     .collection-tags {
       margin-bottom: 40px;
     }
@@ -187,12 +193,6 @@ section.collection {
     .collection-help {
       color: #4f4f4d;
     }
-  }
-
-  h2 {
-    margin-top: 3rem;
-    margin-bottom: 0;
-    font-weight: bold;
   }
 
   hr {

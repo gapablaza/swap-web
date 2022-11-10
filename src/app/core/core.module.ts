@@ -9,6 +9,7 @@ import {
   JwtService,
   MediaService,
   SearchService,
+  SEOService,
   UserService
 } from './services';
 import { AuthGuard, FBAuthGuard, ModGuard, NoAuthGuard } from './guards';
@@ -33,6 +34,7 @@ import { ErrorInterceptor, HttpTokenInterceptor } from './interceptors';
     ModGuard,
     NoAuthGuard,
     SearchService,
+    SEOService,
     UserService,
   ]
 })
