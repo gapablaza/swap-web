@@ -72,7 +72,6 @@ export class CollectionManageItemsComponent
         concatMap((col) => this.colSrv.getItems(col.id).pipe(take(1)))
       )
       .subscribe((data) => {
-        console.log('CollectionManageItemsComponent - Sub colOnlySrv');
         this.items = data.map((item: CustomItem) => {
           return {
             ...item,

@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { concatMap, filter, map, Subscription, tap } from 'rxjs';
@@ -9,6 +15,7 @@ import {
   Collection,
   DEFAULT_COLLECTION_IMG,
   DEFAULT_USER_PROFILE_IMG,
+  SEOService,
   User,
   UserService,
 } from 'src/app/core';
@@ -72,20 +79,30 @@ export class UserCollectionsComponent implements OnInit, OnDestroy {
     private userSrv: UserService,
     private userOnlySrv: UserOnlyService,
     private authSrv: AuthService,
+    private SEOSrv: SEOService,
     private dialog: MatDialog,
-    private cdr: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     let userSub = this.userOnlySrv.user$
       .pipe(
         filter((user) => user.id != null),
-        tap(user => this.user = user),
-        concatMap((user) => this.userSrv.getCollections(user.id).pipe(
+        tap((user) => {
+          this.SEOSrv.set({
+            title: `Colecciones agregadas por ${user.displayName} (ID ${user.id}) - Intercambia Láminas`,
+            description: `Revisa el detalle de las colecciones agregadas por ${user.displayName} (ID ${user.id}).`,
+            isCanonical: true,
+          });
+          this.user = user;
+        }),
+        concatMap((user) =>
+          this.userSrv.getCollections(user.id).pipe(
             map((data: { collections: Collection[]; trades: any }) => {
               return data.collections;
             })
-          ))
+          )
+        )
       )
       .subscribe((collections) => {
         this.collections = [...collections];
@@ -103,8 +120,6 @@ export class UserCollectionsComponent implements OnInit, OnDestroy {
         this.showEditButton = authUser.id == this.user.id;
       });
     this.subs.add(authSub);
-
-    console.log('from UserCollectionsComponent');
   }
 
   onOpenDetails(col: Collection) {

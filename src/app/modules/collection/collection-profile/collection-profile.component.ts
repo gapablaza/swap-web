@@ -67,7 +67,6 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
         filter((user) => user.id != null)
       )
       .subscribe((user) => {
-        console.log('CollectionProfileComponent - Sub authSrv');
         this.authUser = user;
       });
     this.subs.add(authSub);
@@ -98,7 +97,6 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((items) => {
-        console.log('CollectionProfileComponent - Sub colOnlySrv');
         this.items = items;
         items.forEach((item) => {
           if (item.wishlist) {

@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, filter, first, of, switchMap, take, tap } from 'rxjs';
 
-import { Collection, Pagination, SearchService, User } from 'src/app/core';
+import { Collection, Pagination, SearchService, SEOService, User } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 
 @Component({
@@ -32,6 +32,7 @@ export class SearchComponent implements OnInit {
     private searchSrv: SearchService,
     private route: ActivatedRoute,
     private router: Router,
+    private SEOSrv: SEOService,
     private uiSrv: UIService
   ) {}
 
@@ -41,6 +42,12 @@ export class SearchComponent implements OnInit {
     this.route.queryParamMap
       .pipe(
         tap((params) => {
+          this.SEOSrv.set({
+            title: 'Resultado búsqueda - Intercambia Láminas',
+            description: 'Busca colecciones y usuarios registrados en nuestro catálogo',
+            isCanonical: true
+          });
+
           // inicializa variables
           this.isLoaded = false;
           this.showSerchHint = false;

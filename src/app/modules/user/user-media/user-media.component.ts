@@ -13,6 +13,7 @@ import {
   DEFAULT_USER_PROFILE_IMG,
   Media,
   MediaService,
+  SEOService,
   User,
   UserService,
 } from 'src/app/core';
@@ -78,6 +79,7 @@ export class UserMediaComponent implements OnInit, OnDestroy {
     private userOnlySrv: UserOnlyService,
     private mediaSrv: MediaService,
     private authSrv: AuthService,
+    private SEOSrv: SEOService,
     private uiSrv: UIService,
     private cdr: ChangeDetectorRef
   ) {}
@@ -86,7 +88,14 @@ export class UserMediaComponent implements OnInit, OnDestroy {
     let userSub = this.userOnlySrv.user$
       .pipe(
         filter((user) => user.id != null),
-        tap((user) => (this.user = user)),
+        tap((user) => {
+          this.SEOSrv.set({
+            title: `Elementos multimedia publicados por ${user.displayName} (ID ${user.id}) - Intercambia Láminas`,
+            description: `Revisa el detalle de los elementos multimedia publicados por ${user.displayName} (ID ${user.id}).`,
+            isCanonical: true,
+          });
+          this.user = user;
+        }),
         concatMap((user) => this.userSrv.getMedia(user.id))
       )
       .subscribe((medias) => {

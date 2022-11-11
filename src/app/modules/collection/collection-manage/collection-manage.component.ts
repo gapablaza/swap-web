@@ -66,7 +66,6 @@ export class CollectionManageComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((col) => {
-        console.log('CollectionManageComponent - Sub colOnlySrv');
         this.collection = col;
         this.totalWishing = col.userData?.wishing || 0;
         this.totalTrading = col.userData?.trading || 0;

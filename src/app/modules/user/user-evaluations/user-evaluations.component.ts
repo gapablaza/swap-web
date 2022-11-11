@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { concatMap, filter, Subscription, take, tap } from 'rxjs';
 import orderBy from 'lodash/orderBy';
 
@@ -6,6 +12,7 @@ import {
   AuthService,
   DEFAULT_USER_PROFILE_IMG,
   Evaluation,
+  SEOService,
   User,
   UserService,
 } from 'src/app/core';
@@ -43,6 +50,7 @@ export class UserEvaluationsComponent implements OnInit, OnDestroy {
     private userOnlySrv: UserOnlyService,
     private authSrv: AuthService,
     private formBuilder: FormBuilder,
+    private SEOSrv: SEOService,
     private uiSrv: UIService,
     private cdr: ChangeDetectorRef
   ) {}
@@ -52,6 +60,12 @@ export class UserEvaluationsComponent implements OnInit, OnDestroy {
       .pipe(
         filter((user) => user.id != null),
         tap((user) => {
+          this.SEOSrv.set({
+            title: `Evaluaciones recibidas de ${user.displayName} (ID ${user.id}) - Intercambia Láminas`,
+            description: `Revisa el detalle de las evaluaciones recibidas de ${user.displayName} (ID ${user.id}).`,
+            isCanonical: true,
+          });
+
           this.isSaving = false;
           this.isLoaded = false;
           this.user = user;

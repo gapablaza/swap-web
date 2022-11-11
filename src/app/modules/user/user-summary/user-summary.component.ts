@@ -51,8 +51,6 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
         this.isLoaded = true;
       });
     this.subs.add(userSub);
-
-    console.log('from UserSummaryComponent', this.user);
   }
 
   loadAds() {

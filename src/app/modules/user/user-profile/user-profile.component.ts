@@ -1,12 +1,26 @@
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { combineLatest, filter, Subscription, switchMap, take, tap } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import {
+  combineLatest,
+  filter,
+  Subscription,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs';
 
 import {
   AuthService,
   DEFAULT_COLLECTION_IMG,
   DEFAULT_USER_PROFILE_IMG,
+  SEOService,
   TradesWithUserCollection,
   User,
   UserService,
@@ -36,15 +50,24 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     private userOnlySrv: UserOnlyService,
     private userSrv: UserService,
     private authSrv: AuthService,
+    private SEOSrv: SEOService,
     private uiSrv: UIService,
-    private cdr: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     registerLocaleData(es);
     this.user = this.userOnlySrv.getCurrentUser();
+    this.SEOSrv.set({
+      title: `Perfil de ${this.user.displayName} (ID ${this.user.id}) - Intercambia Láminas`,
+      description: `Revisa el resumen de las colecciones, evaluaciones recibidas y media publicada de ${this.user.displayName} (ID ${this.user.id}).`,
+      isCanonical: true,
+    });
 
-    let dataSub = combineLatest([this.authSrv.authUser, this.userSrv.getMedia(this.user.id)])
+    let dataSub = combineLatest([
+      this.authSrv.authUser,
+      this.userSrv.getMedia(this.user.id),
+    ])
       .pipe(
         tap(([authUser, media]) => {
           this.authUser = authUser;
@@ -52,7 +75,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             return m.mediaTypeId == 1 && m.mediaStatusId == 2;
           }).length;
 
-          if(!authUser.id || (authUser.accountTypeId == 1)) {
+          if (!authUser.id || authUser.accountTypeId == 1) {
             this.loadAds();
           }
 
@@ -93,15 +116,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       });
     this.subs.add(dataSub);
-
-    console.log('from UserProfileComponent');
   }
 
   loadAds() {
     this.uiSrv.loadAds().then(() => {
       this.isAdsLoaded = true;
       this.cdr.markForCheck();
-    })
+    });
   }
 
   onShare(): void {

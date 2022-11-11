@@ -51,7 +51,6 @@ export class CollectionSummaryComponent implements OnInit, OnDestroy {
         filter((user) => user.id != null)
       )
       .subscribe((user) => {
-        console.log('CollectionSummaryComponent - Sub authSrv');
         this.authUser = user;
       });
     this.subs.add(authSub);
@@ -63,7 +62,6 @@ export class CollectionSummaryComponent implements OnInit, OnDestroy {
         take(1),
       )
       .subscribe((col) => {
-        console.log('CollectionSummaryComponent - Sub colOnlySrv');
         this.collection = col;
         this.isLoaded = true;
         this.cdr.markForCheck();

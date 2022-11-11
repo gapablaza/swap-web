@@ -58,7 +58,6 @@ export class CollectionItemsComponent implements OnInit, OnDestroy {
         switchMap((col) => this.colSrv.getItems(col.id).pipe(take(1)))
       )
       .subscribe((items) => {
-        console.log('CollectionItemsComponent - Sub colOnlySrv');
         this.items = [...items];
         this.dataSource.data = this.items;
         this.isLoaded = true;
