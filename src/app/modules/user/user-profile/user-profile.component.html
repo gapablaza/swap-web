@@ -1,7 +1,4 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-  <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="user">
+<section *ngIf="isLoaded else loading" class="user">
   <div class="user-info card">
 
     <div class="user-header">
@@ -134,7 +131,7 @@
       </div>
     </mat-expansion-panel>
 
-    <h3>Secciones</h3>
+    <h2>Secciones</h2>
     <mat-nav-list>
       <a mat-list-item [routerLink]="['./evaluation']">
         <div mat-line>
@@ -171,3 +168,76 @@
     </div>
   </div>
 </section>
+
+<ng-template #loading>
+  <section class="user">
+    <div class="user-info card">
+  
+      <div class="user-header">
+        <div class="user-image-background" style="background-image: url('/assets/img/profile_user.png');">
+        </div>
+        <div class="user-subheader">
+          <div class="user-image-container">
+            <img class="user-image" src="/assets/img/profile_user.png">
+          </div>
+          <div class="user-actions">
+            <a class="btn" mat-stroked-button aria-label="Opciones">
+              <mat-icon inline="true">more_vert</mat-icon>
+            </a>
+          </div>
+        </div>
+      </div>
+  
+      <div class="user-main">
+        <h1>Cargando nombre del usuario</h1>
+        <p class="subtitle">ID de usuario: <strong>???</strong></p>
+  
+        <p class="user-description">Cargando descripción del usuario</p>
+  
+        <div class="user-details">
+          <span>
+            <mat-icon inline="true">my_location</mat-icon>
+            <span>Cargando ubicación</span>
+          </span>
+          <span>
+            <mat-icon inline="true">av_timer</mat-icon>Visto el
+            <strong>??/??/????</strong>
+          </span>
+        </div>
+      </div>
+  
+      <h2>Secciones</h2>
+      <mat-nav-list>
+        <a mat-list-item [routerLink]="['./evaluation']">
+          <div mat-line>
+            Evaluaciones recibidas&nbsp;
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+        <a mat-list-item [routerLink]="['./collection']">
+          <div mat-line>
+            Tiene <strong>???</strong> colecciones, <strong>???</strong> completadas
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+        <a mat-list-item [routerLink]="['./media']">
+          <div mat-line>
+            Ha agregado <strong>???</strong> elemento(s) multimedia
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+      </mat-nav-list>
+  
+      <hr />
+  
+      <div class="user-publisher">
+        <p>Busca <strong>???</strong> ítems, cambia <strong>???</strong> ítems</p>
+        <p>Cuenta creada el ??/??/????</p>
+      </div>
+    </div>
+  </section>
+</ng-template>
+
+<div *ngIf="!isLoaded" class="loading-indicator">
+  <mat-spinner aria-label="cargando"></mat-spinner>
+</div>

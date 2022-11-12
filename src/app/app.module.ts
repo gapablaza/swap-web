@@ -79,6 +79,7 @@ export class HammerConfig extends HammerGestureConfig {
     // provideAuth(() => getAuth()),
     provideAuth(() => initializeAuth(getApp(), {
       persistence: [indexedDBLocalPersistence, browserLocalPersistence],
+      popupRedirectResolver: undefined
     })),
     provideDatabase(() => getDatabase()),
     // provideFirebaseApp(() => initializeApp(environment.firebase)),
