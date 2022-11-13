@@ -9,6 +9,8 @@ import {
   SEOService, 
   User } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
+import { environment } from 'src/environments/environment';
+import { SlugifyPipe } from 'src/app/shared';
 
 @Component({
   selector: 'app-collection-users',
@@ -65,6 +67,7 @@ export class CollectionUsersComponent implements OnInit, OnDestroy {
           this.SEOSrv.set({
             title: `Usuarios coleccionando ${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
             description: `Revisa los distintos usuarios que están juntando el álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}).`,
+            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(col.name)}/${col.id}/users`,
             isCanonical: true,
           })
         }

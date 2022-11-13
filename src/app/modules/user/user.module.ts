@@ -12,7 +12,7 @@ import { UserCollectionsComponent } from './user-collections/user-collections.co
 import { UserCollectionDetailsComponent } from './user-collection-details/user-collection-details.component';
 import { UserMediaComponent } from './user-media/user-media.component';
 import { UserTradesComponent } from './user-trades/user-trades.component';
-import { AdsModule } from 'src/app/shared/ads.module';
+// import { AdsModule } from 'src/app/shared/ads.module';
 
 @NgModule({
     declarations: [
@@ -28,7 +28,7 @@ import { AdsModule } from 'src/app/shared/ads.module';
     imports: [
         SharedModule,
         MaterialModule,
-        AdsModule,
+        // AdsModule,
         UserRoutingModule,
     ]
 })

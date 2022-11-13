@@ -42,7 +42,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   trades: TradesWithUserCollection[] = [];
   possibleTrades = 0;
   showTrades = false;
-  isAdsLoaded = false;
+  // isAdsLoaded = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
 
@@ -75,9 +75,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             return m.mediaTypeId == 1 && m.mediaStatusId == 2;
           }).length;
 
-          if (!authUser.id || authUser.accountTypeId == 1) {
-            this.loadAds();
-          }
+          // if (!authUser.id || authUser.accountTypeId == 1) {
+          //   this.loadAds();
+          // }
 
           this.showTrades = false;
 
@@ -118,12 +118,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.subs.add(dataSub);
   }
 
-  loadAds() {
-    this.uiSrv.loadAds().then(() => {
-      this.isAdsLoaded = true;
-      this.cdr.markForCheck();
-    });
-  }
+  // loadAds() {
+  //   this.uiSrv.loadAds().then(() => {
+  //     this.isAdsLoaded = true;
+  //     this.cdr.markForCheck();
+  //   });
+  // }
 
   onShare(): void {
     this.uiSrv.shareUrl();

@@ -21,7 +21,8 @@ import {
   SEOService,
   User,
 } from 'src/app/core';
-import { UIService } from 'src/app/shared';
+import { SlugifyPipe, UIService } from 'src/app/shared';
+import { environment } from 'src/environments/environment';
 import { CollectionOnlyService } from '../collection-only.service';
 
 @Component({
@@ -38,7 +39,7 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
   defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   userWishing: Item[] = [];
   userTrading: Item[] = [];
-  isAdsLoaded = false;
+  // isAdsLoaded = false;
   isSaving = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
@@ -59,11 +60,11 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
     // get possible auth User
     let authSub = this.authSrv.authUser
       .pipe(
-        tap((user) => {
-          if (!user.id || user.accountTypeId == 1) {
-            this.loadAds();
-          }
-        }),
+        // tap((user) => {
+        //   if (!user.id || user.accountTypeId == 1) {
+        //     this.loadAds();
+        //   }
+        // }),
         filter((user) => user.id != null)
       )
       .subscribe((user) => {
@@ -81,6 +82,7 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
           this.SEOSrv.set({
             title: `${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
             description: `Marca tus repetidas/faltantes del álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}) para encontrar con quien poder cambiar. Son ${col.items} ítems a coleccionar (láminas / stickers / figuritas / pegatinas / cromos / estampas / barajitas).`,
+            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(col.name)}/${col.id}`,
             isCanonical: true,
           })
 
@@ -111,12 +113,12 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
     this.subs.add(colSub);
   }
 
-  loadAds() {
-    this.uiSrv.loadAds().then(() => {
-      this.isAdsLoaded = true;
-      this.cdr.markForCheck();
-    });
-  }
+  // loadAds() {
+  //   this.uiSrv.loadAds().then(() => {
+  //     this.isAdsLoaded = true;
+  //     this.cdr.markForCheck();
+  //   });
+  // }
 
   onAdd() {
     this.isSaving = true;

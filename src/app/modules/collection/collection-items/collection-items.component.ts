@@ -15,6 +15,8 @@ import {
   Item,
   SEOService,
 } from 'src/app/core';
+import { SlugifyPipe } from 'src/app/shared';
+import { environment } from 'src/environments/environment';
 import { CollectionOnlyService } from '../collection-only.service';
 
 @Component({
@@ -52,6 +54,7 @@ export class CollectionItemsComponent implements OnInit, OnDestroy {
           this.SEOSrv.set({
             title: `Itemizado ${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
             description: `Revisa el itemizado del álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}). Son ${col.items} ítems a coleccionar (láminas / stickers / figuritas / pegatinas / cromos / estampas / barajitas).`,
+            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(col.name)}/${col.id}/items`,
             isCanonical: true,
           })
         }),

@@ -17,7 +17,7 @@ import {
   SEOService,
 } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
-import { UIService } from 'src/app/shared';
+import { SlugifyPipe, UIService } from 'src/app/shared';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { CollectionMediaUploadComponent } from '../collection-media-upload/collection-media-upload.component';
 import { environment } from 'src/environments/environment';
@@ -97,6 +97,7 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
           this.SEOSrv.set({
             title: `Media compartida asociada a ${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
             description: `Revisa los distintos elementos multimedia subidos por los usuarios, asociados al álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}).`,
+            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(col.name)}/${col.id}/media`,
             isCanonical: true,
           })
         }

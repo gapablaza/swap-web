@@ -77,7 +77,9 @@ export class SEOService {
 
     // creamos la definición para la url canónica
     if (options.isCanonical) {
-      this.setCanonicalLink();
+      this.setCanonicalLink(
+        options.url !== undefined ? options.url : undefined
+      );
     }
   }
 

@@ -17,6 +17,7 @@ import {
   Message,
   User,
 } from 'src/app/core';
+import { UIService } from 'src/app/shared';
 
 @Component({
   selector: 'app-message-list',
@@ -25,7 +26,8 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MessageListComponent implements OnInit, OnDestroy {
-  authUser: User = {} as User;
+  // authUser: User = {} as User;
+  authUser = this.authSrv.getCurrentUser();
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   messagesRef!: AngularFireList<any>;
   messages: any[] = [];
@@ -36,17 +38,19 @@ export class MessageListComponent implements OnInit, OnDestroy {
   typeSelected = '1';
 
   showFilters = true;
+  isAdsLoaded = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
 
   constructor(
     private afDB: AngularFireDatabase,
     private authSrv: AuthService,
+    private uiSrv: UIService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.authUser = this.authSrv.getCurrentUser();
+    // this.authUser = this.authSrv.getCurrentUser();
     this.messagesRef = this.afDB.list(
       `userResume/userId_${this.authUser.id}`,
       (ref) => ref.orderByChild('timestamp')
@@ -142,6 +146,16 @@ export class MessageListComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       });
     this.subs.add(messagesSub);
+
+    if(this.authUser.accountTypeId == 1) {
+      this.loadAds();
+    }
+  }
+
+  loadAds() {
+    this.uiSrv.loadAds().then(() => {
+      this.isAdsLoaded = true;
+    })
   }
 
   trackByUsers(index: number, item: any): number {

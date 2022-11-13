@@ -9,6 +9,8 @@ import {
   TopsCategory,
   User,
 } from 'src/app/core';
+import { SlugifyPipe } from 'src/app/shared';
+import { environment } from 'src/environments/environment';
 import { CollectionOnlyService } from '../collection-only.service';
 
 @Component({
@@ -50,6 +52,7 @@ export class CollectionTopsComponent implements OnInit, OnDestroy {
           this.SEOSrv.set({
             title: `TOP ítems en ${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
             description: `Revisa los ítems clasificados por dificultad en el álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}).`,
+            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(col.name)}/${col.id}/tops`,
             isCanonical: true,
           })
         }),

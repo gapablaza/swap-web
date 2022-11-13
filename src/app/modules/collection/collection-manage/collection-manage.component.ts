@@ -9,7 +9,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription, take, tap } from 'rxjs';
 
-import { Collection, CollectionService, CollectionUserData } from 'src/app/core';
+import {
+  AuthService,
+  Collection,
+  CollectionService,
+  CollectionUserData,
+} from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { CollectionOnlyService } from '../collection-only.service';
 
@@ -22,9 +27,11 @@ import { CollectionOnlyService } from '../collection-only.service';
 export class CollectionManageComponent implements OnInit, OnDestroy {
   commentForm!: FormGroup;
   collection: Collection = {} as Collection;
+  authUser = this.authSrv.getCurrentUser();
   totalWishing: number = 0;
   totalTrading: number = 0;
   actualPage = '';
+  isAdsLoaded = false;
   isSaving = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
@@ -32,6 +39,7 @@ export class CollectionManageComponent implements OnInit, OnDestroy {
   constructor(
     private colOnlySrv: CollectionOnlyService,
     private colSrv: CollectionService,
+    private authSrv: AuthService,
     private router: Router,
     private route: ActivatedRoute,
     private uiSrv: UIService,
@@ -80,6 +88,16 @@ export class CollectionManageComponent implements OnInit, OnDestroy {
       .subscribe((data: any) => {
         this.actualPage = data.url.split('/').pop() || '';
       });
+
+    if (this.authUser.accountTypeId == 1) {
+      this.loadAds();
+    }
+  }
+
+  loadAds() {
+    this.uiSrv.loadAds().then(() => {
+      this.isAdsLoaded = true;
+    });
   }
 
   get form() {
@@ -102,12 +120,12 @@ export class CollectionManageComponent implements OnInit, OnDestroy {
 
         let tempUserData = {
           ...this.collection.userData,
-          publicComment: this.commentForm.value.comment
+          publicComment: this.commentForm.value.comment,
         } as CollectionUserData;
 
         this.colOnlySrv.setCurrentCollection({
           ...this.collection,
-          userData: tempUserData
+          userData: tempUserData,
         });
       });
   }
@@ -123,12 +141,12 @@ export class CollectionManageComponent implements OnInit, OnDestroy {
 
         let tempUserData = {
           ...this.collection.userData,
-          publicComment: undefined
+          publicComment: undefined,
         } as CollectionUserData;
 
         this.colOnlySrv.setCurrentCollection({
           ...this.collection,
-          userData: tempUserData
+          userData: tempUserData,
         });
 
         this.isSaving = false;

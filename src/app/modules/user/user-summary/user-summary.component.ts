@@ -16,7 +16,7 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
   user: User = {} as User;
   authUser: User = {} as User;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
-  isAdsLoaded = false;
+  // isAdsLoaded = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
 
@@ -31,11 +31,11 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     // get possible auth User
     let authSub = this.authSrv.authUser
       .pipe(
-        tap((user) => {
-          if(!user.id || (user.accountTypeId == 1)) {
-            this.loadAds();
-          }
-        }),
+        // tap((user) => {
+        //   if(!user.id || (user.accountTypeId == 1)) {
+        //     this.loadAds();
+        //   }
+        // }),
         filter((user) => user.id != null)
       )
       .subscribe((user) => {
@@ -53,12 +53,12 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     this.subs.add(userSub);
   }
 
-  loadAds() {
-    this.uiSrv.loadAds().then(() => {
-      this.isAdsLoaded = true;
-      this.cdr.markForCheck();
-    })
-  }
+  // loadAds() {
+  //   this.uiSrv.loadAds().then(() => {
+  //     this.isAdsLoaded = true;
+  //     this.cdr.markForCheck();
+  //   })
+  // }
 
   onShare(): void {
     this.uiSrv.shareUrl();

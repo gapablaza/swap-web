@@ -1,5 +1,10 @@
 import { Injectable, NgModule } from '@angular/core';
-import { BrowserModule, HammerGestureConfig, HammerModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import {
+  BrowserModule,
+  HammerGestureConfig,
+  HammerModule,
+  HAMMER_GESTURE_CONFIG,
+} from '@angular/platform-browser';
 import 'hammerjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgProgressModule } from 'ngx-progressbar';
@@ -8,9 +13,20 @@ import { NgProgressHttpModule } from 'ngx-progressbar/http';
 import { AngularFireModule } from '@angular/fire/compat';
 import { getApp } from '@angular/fire/app';
 // import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { provideAuth, getAuth, initializeAuth, indexedDBLocalPersistence, browserLocalPersistence } from '@angular/fire/auth';
+import {
+  provideAuth,
+  getAuth,
+  initializeAuth,
+  indexedDBLocalPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+} from '@angular/fire/auth';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
-import { AngularFireMessagingModule, SERVICE_WORKER, VAPID_KEY } from '@angular/fire/compat/messaging';
+import {
+  AngularFireMessagingModule,
+  SERVICE_WORKER,
+  VAPID_KEY,
+} from '@angular/fire/compat/messaging';
 
 import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core';
@@ -35,14 +51,14 @@ import { environment } from '../environments/environment';
 
 @Injectable()
 export class HammerConfig extends HammerGestureConfig {
-  override overrides = <any> {
-      // I will only use the swap gesture so 
-      // I will deactivate the others to avoid overlaps
-      // pinch: { enable: false },
-      // rotate: { enable: false }
-      'tap': { time: 500 },
-      'press': { time: 501 }
-  }
+  override overrides = <any>{
+    // I will only use the swap gesture so
+    // I will deactivate the others to avoid overlaps
+    // pinch: { enable: false },
+    // rotate: { enable: false }
+    tap: { time: 500 },
+    press: { time: 501 },
+  };
 }
 
 @NgModule({
@@ -72,15 +88,20 @@ export class HammerConfig extends HammerGestureConfig {
       enabled: environment.production,
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
+      registrationStrategy: 'registerWhenStable:30000',
     }),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireMessagingModule,
     // provideAuth(() => getAuth()),
-    provideAuth(() => initializeAuth(getApp(), {
-      persistence: [indexedDBLocalPersistence, browserLocalPersistence],
-      popupRedirectResolver: undefined
-    })),
+    provideAuth(() =>
+      initializeAuth(getApp(), {
+        persistence: [
+          indexedDBLocalPersistence,
+          browserLocalPersistence,
+          browserSessionPersistence,
+        ],
+      })
+    ),
     provideDatabase(() => getDatabase()),
     // provideFirebaseApp(() => initializeApp(environment.firebase)),
     HomeModule,
@@ -94,7 +115,15 @@ export class HammerConfig extends HammerGestureConfig {
     UIService,
     { provide: HAMMER_GESTURE_CONFIG, useClass: HammerConfig },
     { provide: VAPID_KEY, useValue: environment.vapidKey },
-    { provide: SERVICE_WORKER, useFactory: () => typeof navigator !== 'undefined' && navigator.serviceWorker?.register('firebase-messaging-sw.js', { scope: '__' }) || undefined },
+    {
+      provide: SERVICE_WORKER,
+      useFactory: () =>
+        (typeof navigator !== 'undefined' &&
+          navigator.serviceWorker?.register('firebase-messaging-sw.js', {
+            scope: '__',
+          })) ||
+        undefined,
+    },
   ],
   bootstrap: [AppComponent],
 })

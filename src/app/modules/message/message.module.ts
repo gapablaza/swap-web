@@ -7,6 +7,7 @@ import { MessageRoutingModule } from './message-routing.module';
 import { MessageComponent } from './message.component';
 import { MessageListComponent } from './message-list/message-list.component';
 import { MessageWithUserComponent } from './message-with-user/message-with-user.component';
+import { AdsModule } from 'src/app/shared/ads.module';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { MessageWithUserComponent } from './message-with-user/message-with-user.
   imports: [
     SharedModule,
     MaterialModule,
+    AdsModule,
     MessageRoutingModule,
   ]
 })

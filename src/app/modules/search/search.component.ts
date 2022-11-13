@@ -1,10 +1,25 @@
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, filter, first, of, switchMap, take, tap } from 'rxjs';
+import {
+  catchError,
+  filter,
+  of,
+  Subscription,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs';
 
-import { Collection, Pagination, SearchService, SEOService, User } from 'src/app/core';
+import {
+  AuthService,
+  Collection,
+  Pagination,
+  SearchService,
+  SEOService,
+  User,
+} from 'src/app/core';
 import { UIService } from 'src/app/shared';
 
 @Component({
@@ -12,8 +27,9 @@ import { UIService } from 'src/app/shared';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
   users: User[] = [];
+  authUser: User = {} as User;
   collections: Collection[] = [];
   paginator: Pagination = {} as Pagination;
   tabsRoute = ['collection', 'user', 'publisher'];
@@ -26,12 +42,15 @@ export class SearchComponent implements OnInit {
   searchTxt = '';
 
   showSerchHint = false;
+  isAdsLoaded = false;
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private searchSrv: SearchService,
     private route: ActivatedRoute,
     private router: Router,
+    private authSrv: AuthService,
     private SEOSrv: SEOService,
     private uiSrv: UIService
   ) {}
@@ -39,13 +58,29 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
     registerLocaleData(es);
 
+    // get possible auth User
+    let authSub = this.authSrv.authUser
+      .pipe(
+        tap((user) => {
+          if (!user.id || user.accountTypeId == 1) {
+            this.loadAds();
+          }
+        }),
+        filter((user) => user.id != null)
+      )
+      .subscribe((user) => {
+        this.authUser = user;
+      });
+    this.subs.add(authSub);
+
     this.route.queryParamMap
       .pipe(
         tap((params) => {
           this.SEOSrv.set({
             title: 'Resultado búsqueda - Intercambia Láminas',
-            description: 'Busca colecciones y usuarios registrados en nuestro catálogo',
-            isCanonical: true
+            description:
+              'Busca colecciones y usuarios registrados en nuestro catálogo',
+            isCanonical: true,
           });
 
           // inicializa variables
@@ -77,8 +112,11 @@ export class SearchComponent implements OnInit {
           let tempIndex = this.tabsRoute.findIndex((route) => route == type);
           this.selectedTabIndex = tempIndex >= 0 ? tempIndex : 0;
 
-          let tempOrder = this.ordersOptions.findIndex((order) => order == sortBy);
-          this.orderSelected = tempOrder >= 0 ? this.ordersOptions[tempOrder] : 'relevance';
+          let tempOrder = this.ordersOptions.findIndex(
+            (order) => order == sortBy
+          );
+          this.orderSelected =
+            tempOrder >= 0 ? this.ordersOptions[tempOrder] : 'relevance';
         }),
         filter((params) => {
           if ((params.get('q') || '').trim().length >= 2) {
@@ -124,6 +162,12 @@ export class SearchComponent implements OnInit {
           this.isLoaded = true;
         },
       });
+  }
+
+  loadAds() {
+    this.uiSrv.loadAds().then(() => {
+      this.isAdsLoaded = true;
+    });
   }
 
   onSearch() {
@@ -181,5 +225,9 @@ export class SearchComponent implements OnInit {
         sortBy: $event,
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }
