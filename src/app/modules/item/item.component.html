@@ -8,7 +8,8 @@
             Ítem {{ item.name }}: {{ item.description }}
         </h1>
         <h2>
-            <a [routerLink]="['/c', collection.name | slugify, collection.id]">{{ collection.name }}</a>, {{
+            <a [routerLink]="['/c', collection.name + ' ' + collection.publisher.data.name | slugify, collection.id]">{{
+                collection.name }}</a>, {{
             collection.publisher.data.name }}
         </h2>
         <div class="card">

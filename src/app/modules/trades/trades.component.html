@@ -147,7 +147,8 @@
 
                 <div *ngFor="let col of user.collections" class="trades-collection">
                     <div class="trades-collection-info">
-                        <a [routerLink]="['/c', col.collectionData.name| slugify, col.collectionData.id]">
+                        <a
+                            [routerLink]="['/c', col.collectionData.name + ' ' + col.collectionData.name | slugify, col.collectionData.id]">
                             <img [defaultImage]="defaultCollectionImage" [lazyLoad]="col.collectionData.image"
                                 [alt]="col.collectionData.name + ' de ' + col.collectionData.publisherName"
                                 crossorigin="anonymous">

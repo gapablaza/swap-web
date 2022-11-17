@@ -92,6 +92,12 @@ section.user {
       flex: auto;
     }
 
+    h2 {
+      margin-top: 2rem;
+      margin-bottom: 0;
+      font-weight: bold;
+    }
+
     .user-header {
       display: flex;
       flex-direction: column;
@@ -191,11 +197,11 @@ section.user {
     }
   }
 
-  h2 {
-    margin-top: 2rem;
-    margin-bottom: 0;
-    font-weight: bold;
-  }
+  // h2 {
+  //   margin-top: 2rem;
+  //   margin-bottom: 0;
+  //   font-weight: bold;
+  // }
 
   hr {
     margin: var(--gap-vertical) 0;

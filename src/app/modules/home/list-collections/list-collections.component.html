@@ -5,7 +5,7 @@
   <div class="mini-card-grid">
     <!-- <app-collection-item *ngFor="let col of collections" [collection]="col"></app-collection-item> -->
     <div *ngFor="let col of collections" class="mini-card module">
-      <a [routerLink]="['/c', col.name | slugify, col.id]">
+      <a [routerLink]="['/c', col.name + ' ' + col.publisher.data.name | slugify, col.id]">
         <img [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image"
           [alt]="col.name + ' de ' + col.publisher.data.name" [title]="col.name + ' de ' + col.publisher.data.name"
           height="250" class="mini-card-image" crossorigin="anonymous">

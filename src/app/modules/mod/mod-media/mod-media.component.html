@@ -25,7 +25,7 @@
                         <tr *ngFor="let image of medias; let i = index;">
                             <td>{{ i+1 }}</td>
                             <td>
-                                <a [routerLink]="['/c', image.collection?.data?.name | slugify, image.collection?.data?.id, 'media']"
+                                <a [routerLink]="['/c', image.collection?.data?.name + ' ' + image.collection?.data?.publisher?.data?.name | slugify, image.collection?.data?.id, 'media']"
                                     target="_blank">
                                     {{ image.collection?.data?.name + ' de ' +
                                     image.collection?.data?.publisher?.data?.name }}

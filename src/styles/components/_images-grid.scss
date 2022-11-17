@@ -37,6 +37,10 @@
             opacity: 1;
             transform: translateY(0px);
           }
+
+          .images-grid-details {
+            opacity: 1;
+          }
         }
   
         &:before {
@@ -68,7 +72,7 @@
         z-index: 3;
         opacity: 0;
         transform: translateY(30px);
-            transition: 0.5s;
+        transition: 0.5s;
         
         a {
           color: white;
@@ -76,6 +80,19 @@
           text-decoration: none;
         }
       }
+
+      .images-grid-details {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 5;
+        opacity: 0;
+        transition: 0.5s;
+
+        .mat-raised-button {
+          padding: 0 12px;
+        }
+    }
   
       .images-grid-likes {
         position: absolute;
