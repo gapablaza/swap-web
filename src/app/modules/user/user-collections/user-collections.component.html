@@ -89,7 +89,7 @@
               <div></div>
             </div>
             <a *ngIf="showEditButton" class="btn" mat-raised-button color="accent"
-              [routerLink]="['/c', col.name | slugify, col.id, 'manage']">
+              [routerLink]="['/c', col.name + ' ' + col.publisher.data.name | slugify, col.id, 'manage']">
               <mat-icon inline="true">edit</mat-icon> Editar
             </a>
             <div class="list-item-progress" [style]="'width: ' + col.userSummary?.progress + '%;'"></div>

@@ -20,6 +20,8 @@ import {
 import { UserOnlyService } from '../user-only.service';
 import { UIService } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
+import { Gallery, GalleryItem, ImageItem } from 'ng-gallery';
+import { Lightbox } from 'ng-gallery/lightbox';
 
 @Component({
   selector: 'app-user-media',
@@ -32,7 +34,12 @@ export class UserMediaComponent implements OnInit, OnDestroy {
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   medias: Media[] = [];
   showedImages: Media[] = [];
+
+  items: GalleryItem[] = [];
+  lightboxRef = this.gallery.ref('lightbox');
+
   baseImageUrl = `https://res.cloudinary.com/${environment.cloudinary.cloudName}/image/upload/t_il_media_wm/${environment.cloudinary.site}/collectionMedia/`;
+  baseFullImageUrl = `https://res.cloudinary.com/${environment.cloudinary.cloudName}/image/upload/t_il_full_media_wm/${environment.cloudinary.site}/collectionMedia/`;
 
   searchText = '';
   sortOptionSelected = 'likes';
@@ -80,6 +87,8 @@ export class UserMediaComponent implements OnInit, OnDestroy {
     private mediaSrv: MediaService,
     private authSrv: AuthService,
     private SEOSrv: SEOService,
+    public gallery: Gallery,
+    public lightbox: Lightbox,
     private uiSrv: UIService,
     private cdr: ChangeDetectorRef
   ) {}
@@ -96,7 +105,7 @@ export class UserMediaComponent implements OnInit, OnDestroy {
           });
           this.user = user;
         }),
-        concatMap((user) => this.userSrv.getMedia(user.id))
+        concatMap((user) => this.userSrv.getMedia(user.id).pipe(take(1)))
       )
       .subscribe((medias) => {
         // new array with only approved images
@@ -113,10 +122,6 @@ export class UserMediaComponent implements OnInit, OnDestroy {
 
     let authSub = this.authSrv.isAuth.subscribe((auth) => (this.isAuth = auth));
     this.subs.add(authSub);
-
-    // Load items into gallery
-    // const galleryRef = this.gallery.ref(this.galleryId);
-    // galleryRef.load(this.galleryItems);
   }
 
   toggleLike(item: Media) {
@@ -179,6 +184,17 @@ export class UserMediaComponent implements OnInit, OnDestroy {
       sortParams?.arrayFields,
       sortParams?.arrayOrders as ['asc' | 'desc']
     );
+
+    this.lightboxRef.setConfig({
+      thumb: false,
+      loadingError: 'No se pudo cargar la imagen',
+      loop: false,
+    });
+    this.items = [...this.showedImages.map(img => new ImageItem({
+      src: `${this.baseFullImageUrl}${img.id}`,
+      alt: `${img.description} en ${img.collection?.data.name} de ${img.collection?.data.publisher.data.name}`
+    }))];
+    this.lightboxRef.load(this.items);
   }
 
   filterShowedImages() {

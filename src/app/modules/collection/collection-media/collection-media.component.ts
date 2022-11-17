@@ -21,6 +21,8 @@ import { SlugifyPipe, UIService } from 'src/app/shared';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { CollectionMediaUploadComponent } from '../collection-media-upload/collection-media-upload.component';
 import { environment } from 'src/environments/environment';
+import { Gallery, GalleryItem, ImageItem } from 'ng-gallery';
+import { Lightbox } from 'ng-gallery/lightbox';
 
 @Component({
   selector: 'app-collection-media',
@@ -32,8 +34,14 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
   medias: Media[] = [];
   showedImages: Media[] = [];
   imagesForModeration: Media[] = [];
+
+  // @ViewChild('itemTemplate') itemTemplate!: TemplateRef<any>;
+  items: GalleryItem[] = [];
+  lightboxRef = this.gallery.ref('lightbox');
+
   collection: Collection = {} as Collection;
   baseImageUrl = `https://res.cloudinary.com/${environment.cloudinary.cloudName}/image/upload/t_il_media_wm/${environment.cloudinary.site}/collectionMedia/`;
+  baseFullImageUrl = `https://res.cloudinary.com/${environment.cloudinary.cloudName}/image/upload/t_il_full_media_wm/${environment.cloudinary.site}/collectionMedia/`;
   baseForModImageUrl = `https://res.cloudinary.com/${environment.cloudinary.cloudName}/image/upload/v1/${environment.cloudinary.site}/collectionMedia/`;
 
   searchText = '';
@@ -82,6 +90,8 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
     private mediaSrv: MediaService,
     private authSrv: AuthService,
     private SEOSrv: SEOService,
+    public gallery: Gallery,
+    public lightbox: Lightbox,
     private uiSrv: UIService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef
@@ -97,7 +107,7 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
           this.SEOSrv.set({
             title: `Media compartida asociada a ${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
             description: `Revisa los distintos elementos multimedia subidos por los usuarios, asociados al álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}).`,
-            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(col.name)}/${col.id}/media`,
+            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(col.name + ' ' + col.publisher.data.name)}/${col.id}/media`,
             isCanonical: true,
           })
         }
@@ -114,6 +124,7 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
         this.medias = [...data];
         this.showedImages = [...data];
         this.sortShowedImages();
+        
         this.isLoaded = true;
         this.cdr.markForCheck();
       });
@@ -129,7 +140,7 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
             // filter only images
             map((media) =>
               media.filter((elem: Media) => {
-                return elem.mediaTypeId == 1;
+                return elem.mediaTypeId == 1 && elem.collection?.data.id == this.collection.id
               })
             ),
             take(1)
@@ -271,6 +282,32 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
       sortParams?.arrayFields,
       sortParams?.arrayOrders as ['asc' | 'desc']
     );
+
+    // this.lightboxRef.reset();
+    // this.lightboxRef.setConfig({
+    //   imageSize: 'contain',
+    //   thumb: false,
+    //   itemTemplate: this.itemTemplate
+    // });
+
+    // this.showedImages.forEach(img => {
+    //   this.lightboxRef.addImage({
+    //     src: `${this.baseImageUrl}${img.id}`, // TO DO: Full image with wm
+    //     // thumb: `${this.baseImageUrl}${img.id}.jpg`,
+    //     text: 'Prueba de texto',
+    //   });
+    // })
+
+    this.lightboxRef.setConfig({
+      thumb: false,
+      loadingError: 'No se pudo cargar la imagen',
+      loop: false,
+    });
+    this.items = [...this.showedImages.map(img => new ImageItem({
+      src: `${this.baseFullImageUrl}${img.id}`,
+      alt: `${img.description} en ${this.collection.name} de ${this.collection.publisher.data.name}`
+    }))];
+    this.lightboxRef.load(this.items);
   }
 
   filterShowedImages() {

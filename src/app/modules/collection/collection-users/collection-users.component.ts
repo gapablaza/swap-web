@@ -67,7 +67,7 @@ export class CollectionUsersComponent implements OnInit, OnDestroy {
           this.SEOSrv.set({
             title: `Usuarios coleccionando ${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
             description: `Revisa los distintos usuarios que están juntando el álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}).`,
-            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(col.name)}/${col.id}/users`,
+            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(col.name + ' ' + col.publisher.data.name)}/${col.id}/users`,
             isCanonical: true,
           })
         }

@@ -82,7 +82,7 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
           this.SEOSrv.set({
             title: `${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
             description: `Marca tus repetidas/faltantes del álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}) para encontrar con quien poder cambiar. Son ${col.items} ítems a coleccionar (láminas / stickers / figuritas / pegatinas / cromos / estampas / barajitas).`,
-            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(col.name)}/${col.id}`,
+            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(col.name + ' ' + col.publisher.data.name)}/${col.id}`,
             isCanonical: true,
           })
 

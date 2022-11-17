@@ -31,7 +31,7 @@
             <div class="list-item-main">
                 <div class="list-item-content flex-full">
                     <div class="list-item-title">
-                        <a [routerLink]="['/c', col.name | slugify, col.id]">
+                        <a [routerLink]="['/c', col.name + ' ' + col.publisher.data.name | slugify, col.id]">
                             {{ col.name }}
                         </a>
                     </div>

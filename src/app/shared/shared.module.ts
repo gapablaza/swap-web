@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 // import { AdsenseModule } from 'ng2-adsense';
 // import { MaterialModule } from './material.module';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { LightboxModule } from 'ng-gallery/lightbox';
 
 import { SanitizeHtmlPipe, SlugifyPipe } from './pipes';
 import {
@@ -41,9 +42,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatListModule,
     MatIconModule,
     LazyLoadImageModule,
-    // AdsenseModule.forRoot({
-    //   adClient: 'ca-pub-6782496264167512',
-    // }),
+    LightboxModule,
   ],
   exports: [
     CommonModule,
@@ -53,7 +52,7 @@ import { MatIconModule } from '@angular/material/icon';
     RouterModule,
     // MaterialModule,
     LazyLoadImageModule,
-    // AdsenseModule,
+    LightboxModule,
     SanitizeHtmlPipe,
     SlugifyPipe,
     DaysSinceLoginDirective,
