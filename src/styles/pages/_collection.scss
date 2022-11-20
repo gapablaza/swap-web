@@ -253,6 +253,36 @@ section.collection {
         margin-bottom: 1.5rem;
       }
 
+      .collection-manage-list {
+        .controls-std {
+          margin-top: 1.5rem;
+          margin-bottom: 2rem;
+
+          .mat-form-field-type-mat-select {
+            width: 150px;
+          }
+        }
+      }
+
+      .manage-bytext {
+        .manage-bytext-main {}
+        .manage-bytext-container {
+          h2 {
+            margin-bottom: 0.5rem;
+          }
+          p {
+            margin-top: 0;
+          }
+          .mat-form-field {
+            width: 100%;
+
+            .mat-form-field-infix {
+              padding: 0;
+            }
+          }
+        }
+      }
+
       .manage-list-main {
         margin-top: 1rem;
         text-align: right;

@@ -1,14 +1,56 @@
 <div *ngIf="!isLoaded" class="loading-indicator">
   <mat-spinner aria-label="cargando"></mat-spinner>
 </div>
-<section *ngIf="isLoaded" class="collection collection-section">
+<section *ngIf="isLoaded" class="collection-manage-list">
 
-  <div class="manage-list">
-    <div class="manage-list-main">
+  <div class="controls-std">
+    <div class="controls-std-main">
+      <div class="controls-std-order">
+        <mat-form-field appearance="outline">
+          <mat-label>Modo de Gestión</mat-label>
+          <mat-select (selectionChange)="onChangeMode()" [(value)]="typeSelected"
+            [disabled]="isSaving">
+            <mat-option value="botones">Con Botones</mat-option>
+            <mat-option value="texto">Por Texto</mat-option>
+          </mat-select>
+        </mat-form-field>  
+      </div>
+      <div class="controls-std-settings">
+        <button mat-raised-button color="accent" [disabled]="isSaving" (click)="onSave()">
+          <mat-icon inline="true">save</mat-icon> Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="typeSelected == 'texto'" class="manage-bytext">
+    <div class="manage-bytext-container">
+      <h2>Buscadas ({{ wishingQ }})</h2>
+      <p>Ingresa a continuación el listado de los ítems que estás buscando y luego presiona en el botón Guardar. Revisa el
+        formato a utilizar en el "Listado de Referencia" que está a continuación. Si quieres marcar mas de 1 vez un
+        ítem ingresa la cantidad de veces entre paréntesis a continuación del nombre del ítem, por ejemplo:
+        3(2),5(8).</p>
+      <mat-form-field appearance="outline">
+        <textarea matInput maxlength="5000" rows="10" [(ngModel)]="itemsText"></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="manage-bytext-container">
+      <h2>Listado de Referencia</h2>
+      <p>Puedes utilizar este listado de referencia para copiarlo, y dejar en el área de texto anterior sólo los que buscas.</p>
+      <mat-form-field appearance="outline">
+        <textarea matInput rows="10" readonly="true" [value]="itemsRef"></textarea>
+      </mat-form-field>
+    </div>
+
+  </div>
+
+  <div *ngIf="typeSelected == 'botones'" class="manage-list">
+    <!-- <div class="manage-list-main">
       <button mat-raised-button color="accent" [disabled]="isSaving" (click)="onSaveWishlist()">
         Guardar Buscando
       </button>
-    </div>
+    </div> -->
     <div class="manage-list-controls">
       <div class="manage-list-info">
         <p>(+1): Click izquierdo / Tap</p>
@@ -31,10 +73,30 @@
         {{ wishItem.name }}
       </button>
     </div>
-    <div class="manage-list-main">
+    <!-- <div class="manage-list-main">
       <button mat-raised-button color="accent" [disabled]="isSaving" (click)="onSaveWishlist()">
         Guardar Buscando
       </button>
+    </div> -->
+  </div>
+
+  <div class="controls-std">
+    <div class="controls-std-main">
+      <div class="controls-std-order">
+        <mat-form-field appearance="outline">
+          <mat-label>Modo de Gestión</mat-label>
+          <mat-select (selectionChange)="onChangeMode()" [(value)]="typeSelected"
+            [disabled]="isSaving">
+            <mat-option value="botones">Con Botones</mat-option>
+            <mat-option value="texto">Por Texto</mat-option>
+          </mat-select>
+        </mat-form-field>  
+      </div>
+      <div class="controls-std-settings">
+        <button mat-raised-button color="accent" [disabled]="isSaving" (click)="onSave()">
+          <mat-icon inline="true">save</mat-icon> Guardar
+        </button>
+      </div>
     </div>
   </div>
 </section>

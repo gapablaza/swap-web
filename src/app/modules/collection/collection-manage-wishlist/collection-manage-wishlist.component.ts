@@ -1,6 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { concatMap, filter, tap } from 'rxjs';
+import { concatMap, filter, Subscription, take, tap } from 'rxjs';
 import {
   Collection,
   CollectionService,
@@ -16,11 +22,17 @@ import { CollectionOnlyService } from '../collection-only.service';
   styleUrls: ['./collection-manage-wishlist.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CollectionManageWishlistComponent implements OnInit {
+export class CollectionManageWishlistComponent implements OnInit, OnDestroy {
   collection: Collection = {} as Collection;
   items: Item[] = [];
+  typeSelected = 'botones';
+  itemsText = '';
+  itemsRef = '';
+  wishingQ = 0;
+  itemsSepator = ',';
   isSaving = false;
   isLoaded = false;
+  subs: Subscription = new Subscription();
 
   constructor(
     private colSrv: CollectionService,
@@ -32,8 +44,13 @@ export class CollectionManageWishlistComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.colOnlySrv.collection$
+    let colSub = this.colOnlySrv.collection$
       .pipe(
+        tap(() => {
+          this.itemsText = '';
+          this.wishingQ = 0;
+          this.isLoaded = false;
+        }),
         filter((col) => col.id != null),
         tap((col) => {
           if (!col.userData?.collecting) {
@@ -51,9 +68,35 @@ export class CollectionManageWishlistComponent implements OnInit {
       )
       .subscribe((data) => {
         this.items = data;
+
+        data.forEach((item) => {
+          // generamos la lista de referencia
+          if (this.itemsRef) {
+            this.itemsRef += this.itemsSepator;
+          }
+          this.itemsRef += item.name;
+
+          // generamos la lista de buscadas por el usuario
+          if (item.wishlist) {
+            if (this.itemsText) {
+              this.itemsText += this.itemsSepator;
+            }
+            this.itemsText += item.name;
+            if ((item.wishlistQuantity || 0) > 1) {
+              this.itemsText += `(${item.wishlistQuantity})`;
+            }
+            this.wishingQ++;
+          }
+        });
+
         this.isLoaded = true;
         this.cdr.detectChanges();
       });
+    this.subs.add(colSub);
+  }
+
+  onChangeMode() {
+    // console.log(this.typeSelected);
   }
 
   trackById(index: number, item: Item): number {
@@ -103,13 +146,23 @@ export class CollectionManageWishlistComponent implements OnInit {
 
   onUncheckAllWishlist() {
     if (this.isSaving) return;
-    
+
     this.items.forEach((item: Item) => {
       if (item.wishlist) {
         item.wishlist = false;
         item.wishlistQuantity = 0;
       }
     });
+  }
+
+  onSave() {
+    if (this.typeSelected == 'botones') {
+      this.onSaveWishlist();
+    }
+
+    if (this.typeSelected == 'texto') {
+      this.onSaveWishlistByText();
+    }
   }
 
   onSaveWishlist() {
@@ -131,39 +184,84 @@ export class CollectionManageWishlistComponent implements OnInit {
         }
       }
     });
-    this.colSrv.setWishlist(this.collection.id, wishingItems).subscribe({
-      next: (resp) => {
-        let message = resp.message;
-        if (resp.bothListsTotal > 1) {
-          message +=
-            ', pero atención! porque tienes ' +
-            resp.bothListsTotal +
-            ' ítems marcados como faltantes y repetidos';
-        } else if (resp.bothListsTotal == 1) {
-          message +=
-            ', pero atención! porque tienes ' +
-            resp.bothListsTotal +
-            ' ítem marcado como faltante y repetido';
-        }
+    this.colSrv
+      .setWishlist(this.collection.id, wishingItems)
+      .pipe(take(1))
+      .subscribe({
+        next: (resp) => {
+          let message = resp.message;
+          if (resp.bothListsTotal > 1) {
+            message +=
+              ', pero atención! porque tienes ' +
+              resp.bothListsTotal +
+              ' ítems marcados como faltantes y repetidos';
+          } else if (resp.bothListsTotal == 1) {
+            message +=
+              ', pero atención! porque tienes ' +
+              resp.bothListsTotal +
+              ' ítem marcado como faltante y repetido';
+          }
 
-        this.colOnlySrv.setCurrentCollection({
-          ...this.collection,
-          userData: {
-            ...this.collection.userData,
-            wishing: totalWishing,
-          } as CollectionUserData,
-        });
+          this.colOnlySrv.setCurrentCollection({
+            ...this.collection,
+            userData: {
+              ...this.collection.userData,
+              wishing: totalWishing,
+            } as CollectionUserData,
+          });
 
-        this.uiSrv.showSuccess(message);
-      },
-      error: (error) => {
-        console.log('setWishlist error: ', error);
-        this.uiSrv.showError(error.error.message);
-      },
-      complete: () => {
-        this.isSaving = false;
-        this.cdr.detectChanges();
-      }
-    });
+          this.uiSrv.showSuccess(message);
+        },
+        error: (error) => {
+          console.log('setWishlist error: ', error);
+          this.uiSrv.showError(error.error.message);
+        },
+        complete: () => {
+          this.isSaving = false;
+          this.cdr.detectChanges();
+        },
+      });
+  }
+
+  onSaveWishlistByText() {
+    this.isSaving = true;
+    this.cdr.detectChanges();
+
+    this.colSrv
+      .setWishlist(this.collection.id, this.itemsText)
+      .pipe(
+        tap((resp) => {
+          let message = resp.message;
+          if (resp.bothListsTotal > 1) {
+            message +=
+              ', pero atención! porque tienes ' +
+              resp.bothListsTotal +
+              ' ítems marcados como faltantes y repetidos';
+          } else if (resp.bothListsTotal == 1) {
+            message +=
+              ', pero atención! porque tienes ' +
+              resp.bothListsTotal +
+              ' ítem marcado como faltante y repetido';
+          }
+
+          this.uiSrv.showSuccess(message);
+        }),
+        concatMap(() => this.colSrv.get(this.collection.id).pipe(take(1)))
+      )
+      .subscribe({
+        next: (col) => this.colOnlySrv.setCurrentCollection(col),
+        error: (error) => {
+          console.log('setWishlist error: ', error);
+          this.uiSrv.showError(error.error.message);
+        },
+        complete: () => {
+          this.isSaving = false;
+          this.cdr.detectChanges();
+        },
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }
