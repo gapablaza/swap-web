@@ -21,6 +21,16 @@ footer {
           font-weight: bold;
         }
       }
+
+      &.social {
+        a {
+          margin: 0 0.5rem;
+
+          &::before {
+            display: none;
+          }
+        }
+      }
     }
 
     a, span {

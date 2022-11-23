@@ -8,12 +8,7 @@ import {
   of,
   combineLatest,
 } from 'rxjs';
-import {
-  concatMap,
-  distinctUntilChanged,
-  map,
-  take,
-} from 'rxjs/operators';
+import { concatMap, distinctUntilChanged, map, take } from 'rxjs/operators';
 
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireMessaging } from '@angular/fire/compat/messaging';
@@ -447,6 +442,12 @@ export class AuthService {
         userId,
         hash,
       })
+      .pipe(map((data: { message: string }) => data.message));
+  }
+
+  delete(): Observable<string> {
+    return this.apiSrv
+      .delete('/v2/me')
       .pipe(map((data: { message: string }) => data.message));
   }
 }

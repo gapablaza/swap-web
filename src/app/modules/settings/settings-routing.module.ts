@@ -6,6 +6,7 @@ import { SettingsComponent } from './settings.component';
 import { SettingsProfileComponent } from './settings-profile/settings-profile.component';
 import { SettingsConnectComponent } from './settings-connect/settings-connect.component';
 import { SettingsNotificationsComponent } from './settings-notifications/settings-notifications.component';
+import { SettingsDeleteComponent } from './settings-delete/settings-delete.component';
 
 const routes: Routes = [
   {
@@ -28,11 +29,11 @@ const routes: Routes = [
         component: SettingsNotificationsComponent,
         title: 'Configuración - Notificaciones - Intercambia Láminas'
       },
-      // {
-      //   path: 'delete',
-      //   component: SettingsNotificationsComponent,
-      //   title: 'Configuración - Eliminar Cuenta - Intercambia Láminas'
-      // },
+      {
+        path: 'delete',
+        component: SettingsDeleteComponent,
+        title: 'Configuración - Eliminar Cuenta - Intercambia Láminas'
+      },
       {
         path: '**',
         redirectTo: '',

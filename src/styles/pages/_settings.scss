@@ -199,6 +199,26 @@ section.settings {
                 }
             }
         }
+
+        .settings-delete {
+            p > a {
+                text-decoration: none;
+                color: var(--color-accent);
+                font-weight: bold;
+            }
+
+            .delete-account-actions {
+                display: flex;
+                flex-direction: row;
+                row-gap: 1rem;
+                column-gap: 1rem;
+                margin-top: 1.5rem;
+
+                a {
+                    margin-top: 0;
+                }
+            }
+        }
     }
 }
 

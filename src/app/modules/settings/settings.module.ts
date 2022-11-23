@@ -11,6 +11,7 @@ import { SettingsConnectComponent } from './settings-connect/settings-connect.co
 import { SettingsNotificationsComponent } from './settings-notifications/settings-notifications.component';
 import { SettingsProfileComponent } from './settings-profile/settings-profile.component';
 import { SettingsProfileImageComponent } from './settings-profile-image/settings-profile-image.component';
+import { SettingsDeleteComponent } from './settings-delete/settings-delete.component';
 
 @NgModule({
     declarations: [
@@ -18,7 +19,8 @@ import { SettingsProfileImageComponent } from './settings-profile-image/settings
         SettingsConnectComponent,
         SettingsNotificationsComponent,
         SettingsProfileComponent,
-        SettingsProfileImageComponent
+        SettingsProfileImageComponent,
+        SettingsDeleteComponent
     ],
     imports: [
         SharedModule,

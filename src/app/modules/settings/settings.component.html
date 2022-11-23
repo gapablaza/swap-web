@@ -5,7 +5,7 @@
     <section *ngIf="isLoaded" class="settings">
         <div class="settings-header">
             <img class="" [defaultImage]="defaultUserImage" [lazyLoad]="authUser.image || defaultUserImage"
-            [alt]="authUser.displayName" crossorigin="anonymous">
+                [alt]="authUser.displayName" crossorigin="anonymous">
             <div class="settings-title">
                 <h1>
                     <a [routerLink]="['/user', authUser.id]">{{ authUser.displayName }}</a>
@@ -28,8 +28,8 @@
                         <a [routerLink]="['./notifications']">Notificaciones</a>
                     </li>
                     <li class="separator"></li>
-                    <li class="warning">
-                        <a>Eliminar cuenta</a>
+                    <li class="warning" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                        <a [routerLink]="['./delete']">Eliminar cuenta</a>
                     </li>
                 </ul>
             </div>
