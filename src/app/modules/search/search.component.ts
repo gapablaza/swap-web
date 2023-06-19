@@ -35,7 +35,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   tabsRoute = ['collection', 'user', 'publisher'];
   selectedTabIndex = 0;
   pageSelected = 1;
-  ordersOptions = ['relevance', 'title-ASC', 'title-DESC'];
+  ordersOptions = ['relevance', 'published-DESC', 'published-ASC', 'title-ASC', 'title-DESC'];
   orderSelected = 'relevance';
 
   searchedTxt = '';

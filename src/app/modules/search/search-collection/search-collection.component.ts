@@ -24,6 +24,14 @@ export class SearchCollectionComponent implements OnInit {
       selectValue: 'relevance',
     },
     {
+      selectName: 'Últimos publicados',
+      selectValue: 'published-DESC',
+    },
+    {
+      selectName: 'Más antiguos',
+      selectValue: 'published-ASC',
+    },
+    {
       selectName: 'Nombre A-Z',
       selectValue: 'title-ASC',
     },
