@@ -18,7 +18,7 @@ import {
 } from './directives';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { CollectionItemComponent } from './components/collection-item/collection-item.component';
-import { MatListModule } from '@angular/material/list';
+import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-list';
 import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({

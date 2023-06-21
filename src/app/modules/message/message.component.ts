@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { AngularFireMessaging } from '@angular/fire/compat/messaging';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { first, Subscription, take } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 
