@@ -26,7 +26,7 @@ import { SettingsDeleteComponent } from './settings-delete/settings-delete.compo
         SharedModule,
         SocialModule,
         MaterialModule,
-        GooglePlaceModule,
+        // GooglePlaceModule,
         SettingsRoutingModule,
         ImageCropperModule,
     ]

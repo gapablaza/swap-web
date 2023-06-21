@@ -41,9 +41,9 @@
 
                 <mat-form-field appearance="outline" *ngIf="isApiLoaded">
                     <mat-label>Ubicación</mat-label>
-                    <input matInput #location formControlName="location" maxlength="100"
+                    <!-- <input matInput #location formControlName="location" maxlength="100"
                         ngx-google-places-autocomplete [options]="placesOptions" 
-                        (onAddressChange)="handleAddressChange($event)" (blur)="onBlur($event)" (change)="onChange($event)"/>
+                        (onAddressChange)="handleAddressChange($event)" (blur)="onBlur($event)" (change)="onChange($event)"/> -->
                     <mat-hint align="start">
                         Indica la ciudad donde vives actualmente para que así los demás usuarios sepan cuán cerca estás
                         de ellos, lo que facilitará los futuros intercambios.
