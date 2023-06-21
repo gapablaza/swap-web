@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  Resolve,
-  Router,
-  RouterStateSnapshot,
-} from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { catchError, filter, map, Observable } from 'rxjs';
 
 import { AuthService, Collection, User, UserService } from 'src/app/core';
@@ -12,7 +7,7 @@ import { AuthService, Collection, User, UserService } from 'src/app/core';
 @Injectable({
   providedIn: 'root',
 })
-export class TradesResolver implements Resolve<Collection[]> {
+export class TradesResolver  {
   authUser: User = {} as User;
 
   constructor(

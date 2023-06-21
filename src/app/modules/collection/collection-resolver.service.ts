@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  Resolve,
-  Router,
-  RouterStateSnapshot,
-} from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { catchError, Observable } from 'rxjs';
 
 import { Collection, CollectionService } from 'src/app/core';
@@ -12,7 +7,7 @@ import { Collection, CollectionService } from 'src/app/core';
 @Injectable({
   providedIn: 'root',
 })
-export class CollectionResolver implements Resolve<Collection> {
+export class CollectionResolver  {
   constructor(private colSrv: CollectionService, private router: Router) {}
 
   resolve(

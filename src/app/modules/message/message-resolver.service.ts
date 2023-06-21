@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  Resolve,
-  Router,
-  RouterStateSnapshot,
-} from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { catchError, Observable } from 'rxjs';
 
 import { User, UserService } from 'src/app/core';
@@ -12,7 +7,7 @@ import { User, UserService } from 'src/app/core';
 @Injectable({
   providedIn: 'root',
 })
-export class MessageResolver implements Resolve<User> {
+export class MessageResolver  {
   constructor(private userSrv: UserService, private router: Router) {}
 
   resolve(

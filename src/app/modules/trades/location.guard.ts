@@ -1,17 +1,12 @@
 import { Injectable } from '@angular/core';
-import {
-  Router,
-  CanActivate,
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-} from '@angular/router';
+import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { filter, map, take } from 'rxjs';
 
 import { AuthService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 
 @Injectable()
-export class LocationGuard implements CanActivate {
+export class LocationGuard  {
   constructor(
     private router: Router,
     private authSrv: AuthService,
