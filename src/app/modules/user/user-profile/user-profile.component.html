@@ -132,7 +132,39 @@
     </mat-expansion-panel>
 
     <h2>Secciones</h2>
-    <mat-nav-list>
+    <ul class="nav-vert-std">
+      <li>
+        <a class="nav-vert-std-a" [routerLink]="['./evaluation']">
+          <div>
+            Evaluaciones recibidas&nbsp;
+            <span *ngIf="(user.userSummary?.positives || 0) > 0" class="positives-label">+{{ user.userSummary?.positives
+              }}</span>
+            <span *ngIf="(user.userSummary?.negatives || 0) > 0" class="negatives-label">-{{ user.userSummary?.negatives
+              }}</span>
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+      </li>
+      <li>
+        <a class="nav-vert-std-a" [routerLink]="['./collection']">
+          <div>
+            Tiene <strong>{{ user.userSummary?.collections | number:'':'es' }}</strong> colecciones, <strong>{{
+              user.userSummary?.completed| number:'':'es' }}</strong> completadas
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+      </li>
+      <li>
+        <a class="nav-vert-std-a" [routerLink]="['./media']">
+          <div>
+            Ha agregado <strong>{{ user.contributions || 0 }}</strong> elemento(s) multimedia
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+      </li>
+    </ul>
+
+    <!-- <mat-nav-list>
       <a mat-list-item [routerLink]="['./evaluation']">
         <div mat-line>
           Evaluaciones recibidas&nbsp;
@@ -156,7 +188,7 @@
         </div>
         <mat-icon>navigate_next</mat-icon>
       </a>
-    </mat-nav-list>
+    </mat-nav-list> -->
 
     <hr />
 
@@ -207,26 +239,32 @@
       </div>
 
       <h2>Secciones</h2>
-      <mat-nav-list>
-        <a mat-list-item [routerLink]="['./evaluation']">
-          <div mat-line>
-            Evaluaciones recibidas&nbsp;
-          </div>
-          <mat-icon>navigate_next</mat-icon>
-        </a>
-        <a mat-list-item [routerLink]="['./collection']">
-          <div mat-line>
-            Tiene <strong>???</strong> colecciones, <strong>???</strong> completadas
-          </div>
-          <mat-icon>navigate_next</mat-icon>
-        </a>
-        <a mat-list-item [routerLink]="['./media']">
-          <div mat-line>
-            Ha agregado <strong>???</strong> elemento(s) multimedia
-          </div>
-          <mat-icon>navigate_next</mat-icon>
-        </a>
-      </mat-nav-list>
+      <ul class="nav-vert-std">
+        <li>
+          <a class="nav-vert-std-a" [routerLink]="['./evaluation']">
+            <div>
+              Evaluaciones recibidas&nbsp;
+            </div>
+            <mat-icon>navigate_next</mat-icon>
+          </a>
+        </li>
+        <li>
+          <a class="nav-vert-std-a" [routerLink]="['./collection']">
+            <div>
+              Tiene <strong>???</strong> colecciones, <strong>???</strong> completadas
+            </div>
+            <mat-icon>navigate_next</mat-icon>
+          </a>
+        </li>
+        <li>
+          <a class="nav-vert-std-a" [routerLink]="['./media']">
+            <div>
+              Ha agregado <strong>???</strong> elemento(s) multimedia
+            </div>
+            <mat-icon>navigate_next</mat-icon>
+          </a>
+        </li>
+      </ul>
 
       <hr />
 

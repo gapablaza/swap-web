@@ -255,11 +255,11 @@ section.user {
       margin-top: 1rem;
     }
 
-    .mat-button-base {
+    .mat-mdc-button-base {
       margin-top: 1rem;
     }
 
-    .mat-hint {
+    .mat-mdc-form-field-hint {
       font-size: 90%;
       line-height: 1.125;
       color: rgba(0, 0, 0, 0.6);
@@ -389,7 +389,7 @@ section.user {
 }
 
 .user-collection {
-  .mat-dialog-actions {
+  .mat-mdc-dialog-actions {
     justify-content: space-between;
   }
 }

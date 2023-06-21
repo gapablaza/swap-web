@@ -273,9 +273,9 @@ section.collection {
           p {
             margin-top: 0;
           }
-          .mat-form-field {
+          .mat-mdc-form-field {
             width: 100%;
-
+            /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
             .mat-form-field-infix {
               padding: 0;
             }
@@ -419,7 +419,7 @@ section.collection {
           margin-top: 1rem;
         }
 
-        .mat-button-base {
+        .mat-mdc-button-base {
           margin-top: 2rem;
           margin-right: 1rem;
         }
@@ -436,7 +436,7 @@ section.collection {
     flex: 1 1 auto;
     flex-direction: column;
 
-    .mat-dialog-content {
+    .mat-mdc-dialog-content {
       flex: 1 1 auto;
       // display: flex;
       // flex-direction: column;
@@ -471,17 +471,17 @@ section.collection {
       justify-content: space-between;
       align-items: center;
 
-      .mat-slider {
+      .mat-mdc-slider {
         flex-grow: 1;
         min-width: 80px;
       }
     }
 
     .upload-image-description {
-      .mat-form-field {
+      .mat-mdc-form-field {
         font-size: 0.85rem;
         width: 100%;
-
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
         .mat-form-field-wrapper {
           margin-bottom: 0;
           padding-bottom: 0.5rem;
@@ -489,7 +489,7 @@ section.collection {
       }
     }
 
-    .mat-dialog-actions {
+    .mat-mdc-dialog-actions {
       justify-content: space-between;
     }
 

@@ -41,6 +41,7 @@
 
                 <mat-form-field appearance="outline" *ngIf="isApiLoaded">
                     <mat-label>Ubicación</mat-label>
+                    <input matInput #name formControlName="location">
                     <!-- <input matInput #location formControlName="location" maxlength="100"
                         ngx-google-places-autocomplete [options]="placesOptions" 
                         (onAddressChange)="handleAddressChange($event)" (blur)="onBlur($event)" (change)="onChange($event)"/> -->

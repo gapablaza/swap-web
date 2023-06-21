@@ -147,13 +147,49 @@
     </mat-accordion>
 
     <h2>Secciones</h2>
-    <mat-nav-list>
+    <ul class="nav-vert-std">
+      <li>
+        <a class="nav-vert-std-a" [routerLink]="['./items']">
+          <div>
+            Tiene
+            <strong *ngIf="collection.items">{{ collection.items }}</strong>
+            <strong *ngIf="!collection.items">???</strong>
+            ítems (láminas | stickers | figuritas | estampas | cromos)
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+      </li>
+      <li *ngIf="authUser.id">
+        <a class="nav-vert-std-a" [routerLink]="['./tops']">
+          <div>
+            <strong>TOP</strong> ítems <span class="pro-label">PRO</span> (clasificados por dificultad)
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+      </li>
+      <li>
+        <a class="nav-vert-std-a" [routerLink]="['./users']">
+          <div>
+            <strong>{{ collection.totalCollecting }}</strong> usuarios lo coleccionan
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+      </li>
+      <li>
+        <a class="nav-vert-std-a" [routerLink]="['./media']">
+          <div>
+            Se han agregado <strong>{{ collection.totalMedia}}</strong> elementos multimedia
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+      </li>
+    </ul>
+    <!-- <mat-nav-list>
       <a mat-list-item [routerLink]="['./items']">
         <div mat-line>
           Tiene
           <strong *ngIf="collection.items">{{ collection.items }}</strong>
           <strong *ngIf="!collection.items">???</strong>
-          <!-- ítems -->
           ítems (láminas | stickers | figuritas | estampas | cromos)
         </div>
         <mat-icon>navigate_next</mat-icon>
@@ -176,7 +212,7 @@
         </div>
         <mat-icon>navigate_next</mat-icon>
       </a>
-    </mat-nav-list>
+    </mat-nav-list> -->
 
     <hr />
 
@@ -214,28 +250,34 @@
       </div>
 
       <h2>Secciones</h2>
-      <mat-nav-list>
-        <a mat-list-item>
-          <div mat-line>
-            Tiene
-            <strong>???</strong>
-            ítems (láminas | stickers | figuritas | estampas | cromos)
-          </div>
-          <mat-icon>navigate_next</mat-icon>
-        </a>
-        <a mat-list-item>
-          <div mat-line>
-            <strong>???</strong> usuarios lo coleccionan
-          </div>
-          <mat-icon>navigate_next</mat-icon>
-        </a>
-        <a mat-list-item>
-          <div mat-line>
-            Se han agregado <strong>???</strong> elementos multimedia
-          </div>
-          <mat-icon>navigate_next</mat-icon>
-        </a>
-      </mat-nav-list>
+      <ul class="nav-vert-std">
+        <li>
+          <a class="nav-vert-std-a">
+            <div>
+              Tiene
+              <strong>???</strong>
+              ítems (láminas | stickers | figuritas | estampas | cromos)
+            </div>
+            <mat-icon>navigate_next</mat-icon>
+          </a>
+        </li>
+        <li>
+          <a class="nav-vert-std-a">
+            <div>
+              <strong>???</strong> usuarios lo coleccionan
+            </div>
+            <mat-icon>navigate_next</mat-icon>
+          </a>
+        </li>
+        <li>
+          <a class="nav-vert-std-a">
+            <div>
+              Se han agregado <strong>???</strong> elementos multimedia
+            </div>
+            <mat-icon>navigate_next</mat-icon>
+          </a>
+        </li>
+      </ul>
 
       <hr />
 

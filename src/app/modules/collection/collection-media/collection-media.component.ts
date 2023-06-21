@@ -18,7 +18,7 @@ import {
 } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
 import { SlugifyPipe, UIService } from 'src/app/shared';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { CollectionMediaUploadComponent } from '../collection-media-upload/collection-media-upload.component';
 import { environment } from 'src/environments/environment';
 import { Gallery, GalleryItem, ImageItem } from 'ng-gallery';

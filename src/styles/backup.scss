@@ -159,7 +159,7 @@ ul {
   padding: 0 var(--gap);
 }
 
-table.mat-table {
+table.mat-mdc-table {
   width: 100%;
 }
 
@@ -443,12 +443,12 @@ section.user {
   display: flex;
   align-items: center;
 
-  mat-form-field.mat-form-field,
-  mat-slide-toggle.mat-slide-toggle {
+  mat-form-field.mat-mdc-form-field,
+  mat-slide-toggle.mat-mdc-slide-toggle {
     font-size: 0.85rem;
   }
 
-  .mat-form-field {
+  .mat-mdc-form-field {
     margin-right: 6px;
   }
 

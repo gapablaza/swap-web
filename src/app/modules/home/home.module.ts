@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { SharedModule } from 'src/app/shared/shared.module';
 import { HomeComponent } from './home.component';

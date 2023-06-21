@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
-import { MatLegacySliderChange as MatSliderChange } from '@angular/material/legacy-slider';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSliderChange } from '@angular/material/slider';
 import {
   ImageCroppedEvent,
   ImageCropperComponent,
