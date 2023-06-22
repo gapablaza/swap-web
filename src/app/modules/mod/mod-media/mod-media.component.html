@@ -47,11 +47,11 @@
                             <td>
                                 <button (click)="onSanctionImage(image.id, 2)" [disabled]="isSaving" mat-raised-button
                                     color="accent" aria-label="Autorizar imagen">
-                                    <mat-icon>done</mat-icon>
+                                    <mat-icon class="only-icon-button">done</mat-icon>
                                 </button>
                                 <button (click)="onSanctionImage(image.id, 3)" [disabled]="isSaving" mat-raised-button
                                     color="warn" aria-label="Rechazar imagen">
-                                    <mat-icon>close</mat-icon>
+                                    <mat-icon class="only-icon-button">close</mat-icon>
                                 </button>
                             </td>
                         </tr>

@@ -145,10 +145,11 @@ section.settings {
                     margin-bottom: 0.5rem;
                 }
 
-                .mat-mdc-form-field-hint {
-                    font-size: 75%;
+                .mat-hint {
+                    font-size: 70%;
                     line-height: 1.125;
-                    color: rgba(0, 0, 0, 0.6);
+                    color: rgba(0, 0, 0, 0.87);
+                    letter-spacing: 0.4px;
                 }
             }
 
@@ -179,24 +180,38 @@ section.settings {
 
         .settings-connect {
             .mat-mdc-list {
+                margin: 0 -16px;
+
                 .mat-mdc-subheader {
                     padding-left: 0;
                     padding-right: 0;
                 }
-                /* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version.*/
-                .mat-list-item-content {
-                    padding: 0;
 
-                    .mat-line {
-                        @media (min-width: 576px) {
-                            white-space: inherit;
-                        }
+                .mat-mdc-list-item {
+                    > .mat-icon {
+                        color: rgba(0, 0, 0, 0.87);
+                        margin-right: 16px;
                     }
 
                     button {
-                        flex-shrink: 0;
+                        display: flex;
+                        margin-top: 16px;
                     }
                 }
+                /* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version.*/
+                // .mat-list-item-content {
+                //     padding: 0;
+
+                //     .mat-line {
+                //         @media (min-width: 576px) {
+                //             white-space: inherit;
+                //         }
+                //     }
+
+                //     button {
+                //         flex-shrink: 0;
+                //     }
+                // }
             }
         }
 

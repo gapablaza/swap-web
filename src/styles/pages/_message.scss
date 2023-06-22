@@ -142,6 +142,7 @@ section.messages-conversation {
     .chat-header {
         display: flex;
         height: 4.5rem;
+        justify-content: flex-start;
         flex: 0 0 auto;
         align-items: center;
         border-bottom: 1px solid #ccc;
@@ -175,14 +176,14 @@ section.messages-conversation {
             }
         }
 
-        a {
-            margin-left: auto;
-            font-size: 1.5rem;
-        }
-
-        a:first-child {
+        button {
             margin-right: 1rem;
-            margin-left: 0;
+            font-size: 1.5rem;
+
+            &.last {
+                margin-right: 0;
+                margin-left: auto;    
+            }
         }
     }
 

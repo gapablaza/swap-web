@@ -292,6 +292,10 @@ img.ng-lazyloaded {
   transition: all 0.5s;
 }
 
+mat-icon.mat-icon.only-icon-button {
+  margin-left: 0;
+  margin-right: 0;
+}
 
 .bga-section-vert {
   display: none !important;

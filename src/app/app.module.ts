@@ -6,6 +6,9 @@ import {
   HAMMER_GESTURE_CONFIG,
 } from '@angular/platform-browser';
 import 'hammerjs';
+
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgProgressModule } from 'ngx-progressbar';
 import { NgProgressHttpModule } from 'ngx-progressbar/http';
@@ -124,6 +127,13 @@ export class HammerConfig extends HammerGestureConfig {
           })) ||
         undefined,
     },
+    {
+      // https://stackoverflow.com/a/75107066
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {
+        subscriptSizing: 'dynamic'
+      }
+    }
   ],
   bootstrap: [AppComponent],
 })

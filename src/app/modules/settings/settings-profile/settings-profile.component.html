@@ -9,10 +9,10 @@
                 [alt]="authUser.displayName" crossorigin="anonymous">
             <div class="avatar-actions">
                 <a class="btn" mat-raised-button color="accent" (click)="onNewImage()">
-                    <mat-icon inline="true">upload</mat-icon> Nueva imagen
+                    <mat-icon>upload</mat-icon> Nueva imagen
                 </a>
                 <a *ngIf="authUser.image" class="btn" mat-stroked-button (click)="onDeleteImage()">
-                    <mat-icon inline="true">delete</mat-icon> Eliminar
+                    <mat-icon>delete</mat-icon> Eliminar
                 </a>
             </div>
         </div>

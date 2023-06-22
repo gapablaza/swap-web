@@ -481,10 +481,14 @@ section.collection {
       .mat-mdc-form-field {
         font-size: 0.85rem;
         width: 100%;
+        
         /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-        .mat-form-field-wrapper {
-          margin-bottom: 0;
-          padding-bottom: 0.5rem;
+        // .mat-form-field-wrapper {
+        //   margin-bottom: 0;
+        //   padding-bottom: 0.5rem;
+        // }
+        .mat-mdc-text-field-wrapper {
+          margin-bottom: 0.5rem;
         }
       }
     }

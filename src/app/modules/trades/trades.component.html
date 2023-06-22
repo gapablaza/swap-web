@@ -46,7 +46,7 @@
                     </div>
                     <div class="controls-std-settings">
                         <a class="btn" mat-raised-button color="accent" (click)="onSearchTrades()">
-                            <mat-icon inline="true">manage_search</mat-icon> Buscar
+                            <mat-icon>manage_search</mat-icon> Buscar
                         </a>
                         <!-- <p>
                             Registros {{ paginator.from | number:'':'es' }} a {{ paginator.to | number:'':'es' }}
@@ -60,9 +60,6 @@
             <div class="empty-content">
                 <h2>(;—;)</h2>
                 <p>No encontramos posibles cambios para los filtros utilizados</p>
-                <!-- <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
-                <mat-icon inline="true">add</mat-icon> Agregar colección
-              </a> -->
             </div>
         </div>
 
@@ -82,7 +79,7 @@
                     <li class="pagination-prev">
                         <a role="button" (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))"
                             [disabled]="pageSelected == 1" class="btn" mat-raised-button tabindex="-1">
-                            <mat-icon inline="true">west</mat-icon>
+                            <mat-icon class="only-icon-button">west</mat-icon>
                         </a>
                     </li>
                     <li>
@@ -97,7 +94,7 @@
                         <a role="button"
                             (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
                             [disabled]="pageSelected == paginator.last_page" class="btn" mat-raised-button>
-                            <mat-icon inline="true">east</mat-icon>
+                            <mat-icon class="only-icon-button">east</mat-icon>
                         </a>
                     </li>
                 </ul>
@@ -185,7 +182,7 @@
                     <li class="pagination-prev">
                         <a role="button" (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))"
                             [disabled]="pageSelected == 1" class="btn" mat-raised-button tabindex="-1">
-                            <mat-icon inline="true">west</mat-icon>
+                            <mat-icon class="only-icon-button">west</mat-icon>
                         </a>
                     </li>
                     <li>
@@ -200,7 +197,7 @@
                         <a role="button"
                             (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
                             [disabled]="pageSelected == paginator.last_page" class="btn" mat-raised-button>
-                            <mat-icon inline="true">east</mat-icon>
+                            <mat-icon class="only-icon-button">east</mat-icon>
                         </a>
                     </li>
                 </ul>

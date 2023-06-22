@@ -42,7 +42,13 @@
 //     $input:         mat.define-typography-level(16px, 1.25, 400)
 // );
 
-$base-font-config: mat.define-legacy-typography-config($font-family: 'Inter, sans-serif');
+// $base-font-config: mat.define-legacy-typography-config($font-family: 'Inter, sans-serif');
+
+  // Typography config based on the default, but using "Comic Sans" as the
+  // default font family for all levels.
+  $my-theme-typography: mat.define-typography-config(
+    $font-family: 'Inter, sans-serif',
+  );
 
 // always include only once per project
 // TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
@@ -53,9 +59,9 @@ $base-font-config: mat.define-legacy-typography-config($font-family: 'Inter, san
 //  If you don't need the default component typographies but still want the hierarchy styles,
 //  you can delete this line and instead use:
 //    `@include mat.legacy-typography-hierarchy($base-font-config);`
-@include mat.all-legacy-component-typographies($base-font-config);
-@include mat.legacy-core();
-// @include mat.core();
+// @include mat.all-legacy-component-typographies($base-font-config); COMENTADO
+// @include mat.legacy-core(); COMENTADO
+@include mat.core();
 
 // define 3 theme color
 // mat-palette accepts $palette-name, main, lighter and darker variants
@@ -81,12 +87,14 @@ $my-theme: mat.define-light-theme((
   ),
   // typography: $base-typography-config,
   // typography: $base-font-config,
+  typography: $my-theme-typography,
 ));
 
 // specify theme class eg: <body class="swap-theme"> ... </body>
 .swap-theme {
   // @include mat.core-theme($my-theme);
-  @include mat.all-legacy-component-themes($my-theme);
+  // @include mat.all-legacy-component-themes($my-theme); COMENTADO
+  @include mat.all-component-themes($my-theme);
 
   .mat-drawer-container {
     background-color: inherit;

@@ -31,7 +31,7 @@
                     </div>
                     <div class="controls-std-settings">
                         <!-- <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
-                          <mat-icon inline="true">filter_list</mat-icon> Filtros
+                          <mat-icon>filter_list</mat-icon> Filtros
                         </a> -->
                         <p>
                             Registros {{ paginator.from | number:'':'es' }} a {{ paginator.to | number:'':'es' }}
@@ -64,7 +64,7 @@
                             (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))" 
                             [disabled]="pageSelected == 1"
                             class="btn" mat-raised-button tabindex="-1">
-                            <mat-icon inline="true">navigate_before</mat-icon>
+                            <mat-icon class="only-icon-button">navigate_before</mat-icon>
                         </a>
                     </li>
                     <li>
@@ -81,7 +81,7 @@
                             (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
                             [disabled]="pageSelected == paginator.last_page" 
                             class="btn" mat-raised-button>
-                            <mat-icon inline="true">navigate_next</mat-icon>
+                            <mat-icon class="only-icon-button">navigate_next</mat-icon>
                         </a>
                     </li>
                 </ul>

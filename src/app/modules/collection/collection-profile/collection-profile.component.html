@@ -25,14 +25,14 @@
         <div class="collection-actions">
           <button *ngIf="authUser.id && !collection.userData?.collecting" (click)="onAdd()" [disabled]="isSaving"
             mat-raised-button color="accent">
-            <mat-icon inline="true">add</mat-icon> Agregar
+            <mat-icon>add</mat-icon> Agregar
           </button>
           <a *ngIf="authUser.id && collection.userData?.collecting" class="btn" mat-raised-button color="accent"
             [routerLink]="['manage']">
-            <mat-icon inline="true">edit</mat-icon> Editar
+            <mat-icon>edit</mat-icon> Editar
           </a>
           <button mat-stroked-button [matMenuTriggerFor]="menu" aria-label="Opciones">
-            <mat-icon inline="true">more_vert</mat-icon>
+            <mat-icon class="only-icon-button">more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onShare()">Compartir</button>
@@ -235,7 +235,7 @@
           </div>
           <div class="collection-actions">
             <button mat-stroked-button aria-label="Opciones">
-              <mat-icon inline="true">more_vert</mat-icon>
+              <mat-icon class="only-icon-button">more_vert</mat-icon>
             </button>
           </div>
         </div>

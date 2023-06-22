@@ -75,7 +75,7 @@
             <li class="pagination-prev">
                 <a role="button" (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))"
                     [disabled]="pageSelected == 1" class="btn" mat-raised-button tabindex="-1">
-                    <mat-icon inline="true">navigate_before</mat-icon>
+                    <mat-icon class="only-icon-button">navigate_before</mat-icon>
                 </a>
             </li>
             <li>
@@ -90,7 +90,7 @@
                 <a role="button"
                     (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
                     [disabled]="pageSelected == paginator.last_page" class="btn" mat-raised-button>
-                    <mat-icon inline="true">navigate_next</mat-icon>
+                    <mat-icon class="only-icon-button">navigate_next</mat-icon>
                 </a>
             </li>
         </ul>

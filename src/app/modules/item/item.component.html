@@ -20,16 +20,13 @@
                     <div class="empty-content" *ngIf="!usersTrading.length">
                         <h2>(¬‿¬)</h2>
                         <p>Nadie está cambiando este ítem... serás el primero?</p>
-                        <!-- <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
-                            <mat-icon inline="true">add</mat-icon> Agregar colección
-                        </a> -->
                     </div>
 
                     <div *ngIf="usersTrading.length" class="controls-std">
                         <div class="controls-std-main">
                             <div class="controls-std-settings">
                                 <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
-                                    <mat-icon inline="true">filter_list</mat-icon> Filtros
+                                    <mat-icon>filter_list</mat-icon> Filtros
                                 </a>
                             </div>
                         </div>
@@ -98,16 +95,13 @@
                     <div class="empty-content" *ngIf="!usersWishing.length">
                         <h2>(¬‿¬)</h2>
                         <p>Nadie está buscando este ítem... serás el primero?</p>
-                        <!-- <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
-                            <mat-icon inline="true">add</mat-icon> Agregar colección
-                        </a> -->
                     </div>
 
                     <div *ngIf="usersWishing.length" class="controls-std">
                         <div class="controls-std-main">
                             <div class="controls-std-settings">
                                 <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
-                                    <mat-icon inline="true">filter_list</mat-icon> Filtros
+                                    <mat-icon>filter_list</mat-icon> Filtros
                                 </a>
                             </div>
                         </div>
