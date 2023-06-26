@@ -39,18 +39,20 @@
                     </mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" *ngIf="isApiLoaded">
-                    <mat-label>Ubicación</mat-label>
-                    <input matInput #name formControlName="location">
-                    <!-- <input matInput #location formControlName="location" maxlength="100"
-                        ngx-google-places-autocomplete [options]="placesOptions" 
-                        (onAddressChange)="handleAddressChange($event)" (blur)="onBlur($event)" (change)="onChange($event)"/> -->
-                    <mat-hint align="start">
-                        Indica la ciudad donde vives actualmente para que así los demás usuarios sepan cuán cerca estás
-                        de ellos, lo que facilitará los futuros intercambios.
-                    </mat-hint>
-                    <mat-error *ngIf="form['location'].errors">Campo obligatorio. Debes escribir y seleccionar una ubicación del listado.</mat-error>
-                </mat-form-field>
+                <ng-container *ngIf="isApiLoaded">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Ubicación</mat-label>
+                        <input matInput formControlName="location" type="text" maxlength="100"
+                            (keydown.enter)="$event.preventDefault()" (change)="onChange($event)"
+                            (blur)="onBlur($event)" placeholder="Search Location" #search />
+                        <mat-hint align="start">
+                            Indica la ciudad donde vives actualmente para que así los demás usuarios sepan cuán cerca
+                            estás de ellos, lo que facilitará los futuros intercambios.
+                        </mat-hint>
+                        <mat-error *ngIf="form['location'].errors">Campo obligatorio. Debes escribir y seleccionar una
+                            ubicación del listado.</mat-error>
+                    </mat-form-field>
+                </ng-container>
 
                 <mat-form-field appearance="outline">
                     <mat-label>Descripción</mat-label>

@@ -1,16 +1,18 @@
 .mat-mdc-snack-bar-container {
 
     &.snackbar-error {
-        background-color: #dd4c39;
-        color: white;
+        .mdc-snackbar__surface {
+            background-color: #dd4c39;
+            color: white;
+        }
     }
     
     &.snackbar-success {
-        background-color: #46be9c;
-        color: white;
+        .mdc-snackbar__surface {
+            background-color: #46be9c;
+            color: white;
+        }
     }
     
-    &.snackbar-info {
-        // background-color: blue;
-    }
+    // &.snackbar-info {}
 }

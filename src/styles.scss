@@ -103,6 +103,11 @@ $my-theme: mat.define-light-theme((
   .mat-mdc-select-panel {
     max-width: 400px;
   }
+
+  .mat-mdc-raised-button.mat-accent {
+    // --mdc-protected-button-container-color: #45be9c;
+    --mdc-protected-button-label-text-color: #fff;
+  }
 }
 
 

@@ -9,6 +9,8 @@ import 'hammerjs';
 
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
+import { GoogleMapsModule } from '@angular/google-maps';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgProgressModule } from 'ngx-progressbar';
 import { NgProgressHttpModule } from 'ngx-progressbar/http';
@@ -77,6 +79,8 @@ export class HammerConfig extends HammerGestureConfig {
     BrowserAnimationsModule,
     CoreModule,
     HammerModule,
+
+    GoogleMapsModule,
 
     SharedModule,
     MatBottomSheetModule,

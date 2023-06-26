@@ -7,10 +7,13 @@ import {
   OnInit,
   TemplateRef,
   ViewChild,
+
+  NgZone,
+  AfterViewInit,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
+
 import { Subscription, take } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
@@ -24,7 +27,9 @@ import { SettingsProfileImageComponent } from '../settings-profile-image/setting
   templateUrl: './settings-profile.component.html',
   styleUrls: ['./settings-profile.component.scss'],
 })
-export class SettingsProfileComponent implements OnInit, OnDestroy {
+export class SettingsProfileComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('search') public searchElementRef!: ElementRef;
+
   @ViewChild('confirmDeleteDialog') deleteDialog!: TemplateRef<any>;
   updateForm!: FormGroup;
   authUser: User = {} as User;
@@ -44,12 +49,43 @@ export class SettingsProfileComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     
     @Inject(DOCUMENT) private document: Document,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+
+    private ngZone: NgZone,
   ) {}
 
-  ngOnInit(): void {
-    console.log('SettingsProfileComponent');
+  ngAfterViewInit(): void {
+    let timeout = setTimeout(() => {
 
+      let autocomplete = new google.maps.places.Autocomplete(
+        this.searchElementRef.nativeElement,
+        {
+          types: ['(cities)'],
+          fields: ['address_components', 'formatted_address'],
+        }
+      );
+  
+      autocomplete.addListener('place_changed', () => {
+        this.ngZone.run(() => {
+          let place: google.maps.places.PlaceResult = autocomplete.getPlace();
+  
+          if (!place.address_components) {
+            // console.log('nada');
+            return;
+          }
+  
+          // console.log(place);
+          this.updateForm
+            .get('addressComponents')
+            ?.setValue(place.address_components);
+        });
+      });
+
+    }, 400);
+    // clearTimeout(timeout);
+  }
+
+  ngOnInit(): void {
     if(!this.uiSrv.isGMapsLoaded()) {
       this.loadScript().then(() =>{
         this.isApiLoaded = true;
@@ -62,11 +98,6 @@ export class SettingsProfileComponent implements OnInit, OnDestroy {
     this.setOnlySrv.setTitles({
       title: 'Editar perfil',
       subtitle: 'Define tus datos de acceso público',
-    });
-
-    this.placesOptions = new Options({
-      types: ['(cities)'],
-      fields: ['address_components', 'formatted_address'],
     });
 
     let authSub = this.authSrv.authUser.subscribe((user) => {
@@ -110,16 +141,9 @@ export class SettingsProfileComponent implements OnInit, OnDestroy {
     return this.updateForm.controls;
   }
 
-  handleAddressChange(address: any) {
-    if (address.address_components) {
-      this.updateForm
-        .get('addressComponents')
-        ?.setValue(address.address_components);
-    }
-  }
-
   onChange(a: any) {
     this.updateForm.get('addressComponents')?.setValue('');
+    // console.log('onChange', this.updateForm.value);
   }
 
   onBlur(a: any) {
@@ -129,6 +153,7 @@ export class SettingsProfileComponent implements OnInit, OnDestroy {
       }
     }, 400);
     clearTimeout(timeout);
+    // console.log('onBlur', this.updateForm.value);
   }
 
   onSubmit() {
