@@ -292,16 +292,21 @@ section.collection {
 
       .manage-list-controls {
         margin-top: 1rem;
-        display: flex;
+        display: block;
         // flex-direction: column;
-        row-gap: 0.5rem;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
+        // row-gap: 0.5rem;
+        // flex-wrap: wrap;
+        // justify-content: space-between;
+        // align-items: center;
         font-size: 0.8rem;
 
+        // @media (min-width: 1200px) {
+        //   display: flex;
+        // }
+
         .controls-std-filters {
-          width: 45%;
+          width: 100%;
+          margin-bottom: 0.5rem;
 
           .controls-search {
             width: 100%;

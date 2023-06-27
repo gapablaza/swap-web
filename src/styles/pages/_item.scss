@@ -22,8 +22,18 @@ section.item {
             color: var(--text-secondary);
         }
 
+        .mat-mdc-tab-body-wrapper {
+            margin: 0 -1.5rem;
+        }
+
         .controls-std {
             margin-top: 1rem;
+            margin-left: 1.5rem;
+            margin-right: 1.5rem;
+        }
+
+        .list-std {
+            margin: 0;
         }
     }
 }
