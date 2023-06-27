@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 
 // import { AdsenseModule } from 'ng2-adsense';
 // import { MaterialModule } from './material.module';
@@ -36,7 +36,6 @@ import { MatIconModule } from '@angular/material/icon';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientJsonpModule,
     HttpClientModule,
     RouterModule,
     // MaterialModule,
@@ -49,7 +48,6 @@ import { MatIconModule } from '@angular/material/icon';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientJsonpModule,
     HttpClientModule,
     RouterModule,
     // MaterialModule,

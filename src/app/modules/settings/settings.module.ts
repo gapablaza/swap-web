@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { ImageCropperModule } from 'ngx-image-cropper';
-// import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import { GoogleMapsModule } from '@angular/google-maps';
 
 import { MaterialModule } from 'src/app/shared/material.module';
@@ -28,7 +27,6 @@ import { SettingsDeleteComponent } from './settings-delete/settings-delete.compo
         SocialModule,
         MaterialModule,
         GoogleMapsModule,
-        // GooglePlaceModule,
         SettingsRoutingModule,
         ImageCropperModule,
     ]
