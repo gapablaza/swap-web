@@ -1,0 +1,117 @@
+<div class="nc-links">
+    <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+        <mat-icon>arrow_back</mat-icon> Volver
+    </a>
+</div>
+<div *ngIf="isLoaded" class="card">
+    <div class="nc-container">
+        <div class="nc-main flex-full">
+            <h2 class="nc-title">{{ newCollection.name }}</h2>
+            <div class="custom-separator">
+                <span>{{ newCollection.year }}</span>
+                <span>{{ newCollection.publisher.data.name }}</span>
+                <!-- <span>{{ votes.length }} votos</span>
+                <span>2 comentarios</span> -->
+            </div>
+
+            <div class="alert alert-warning">
+                <div class="alert-container">
+                    <div class="alert-content">
+                        <div class="alert-info">{{ newCollection.statusName }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nc-p">
+                <h3>Numeración general</h3>
+                <p [innerHTML]="newCollection.checklistDescription | linebreaks"></p>
+            </div>
+            <div class="nc-p">
+                <h3>Archivo con itemizado</h3>
+                <p>
+                    <input type="file" class="d-none" accept=".xlsx, .xls" (change)="onFileChange($event)" #fileUpload>
+                    <button *ngIf="fileUpload.value == ''" mat-raised-button color="primary"
+                        (click)="fileUpload.click()">
+                        <mat-icon>upload</mat-icon> Seleccionar .xls o .xlsx
+                    </button>
+                    <span *ngIf="fileUpload.value !== ''">{{ fileName }}</span>
+                    <button *ngIf="fileUpload.value !== ''" [disabled]="isSaving" mat-stroked-button color="warn"
+                        (click)="cleanFileInput(fileUpload)">
+                        <mat-icon>delete</mat-icon> Quitar archivo
+                    </button>
+                </p>
+            </div>
+
+            <div *ngIf="errors.length" class="alert alert-warning">
+                <div class="alert-container">
+                    <div class="alert-content">
+                        <div class="alert-info">
+                            <ul class="error-list">
+                                <li *ngFor="let error of errors">{{ error }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ng-container *ngIf="errors.length == 0 && checklist.length > 0">
+                <div class="alert alert-info">
+                    <div class="alert-container">
+                        <div class="alert-content">
+                            <div class="alert-info">Revisa que tu propuesta de itemizado obtenida desde el archivo EXCEL
+                                seleccionado ({{ checklist.length }} ítems) se visualice correctamente antes de
+                                continuar. Una vez registrada una propuesta de itemizado no se puede modificar.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nc-p">
+                    <h3>Itemizado Propuesto</h3>
+                    <table mat-table matSort [dataSource]="dataSource" class="collection-items-table mat-elevation-z8">
+                        <ng-container matColumnDef="NRO">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nro. </th>
+                            <td mat-cell *matCellDef="let element"> {{element.NRO}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="TIPO">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </th>
+                            <td mat-cell *matCellDef="let element"> {{element.TIPO}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="TITULO">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Título </th>
+                            <td mat-cell *matCellDef="let element"> {{element.TITULO}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="SECCION">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Sección </th>
+                            <td mat-cell *matCellDef="let element"> {{element.SECCION}} </td>
+                        </ng-container>
+
+                        <!-- <ng-container matColumnDef="position">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Orden </th>
+                                <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+                            </ng-container> -->
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </div>
+
+                <div class="nc-p">
+                    <!-- <h3>Archivo con itemizado</h3> -->
+                    <p>
+                        <button mat-stroked-button [disabled]="isSaving" color="warn"
+                            (click)="cleanFileInput(fileUpload)">
+                            <mat-icon>delete</mat-icon> Quitar archivo
+                        </button>
+                        <button mat-raised-button color="accent">
+                            <mat-icon>save</mat-icon> Enviar itemizado
+                        </button>
+                    </p>
+                </div>
+            </ng-container>
+
+        </div>
+    </div>
+</div>

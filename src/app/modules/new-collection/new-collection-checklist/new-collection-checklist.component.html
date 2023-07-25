@@ -1,0 +1,72 @@
+<mat-dialog-content>
+    <div *ngIf="!isLoaded" class="loading-indicator">
+        <mat-spinner aria-label="cargando"></mat-spinner>
+    </div>
+
+    <div *ngIf="isLoaded" class="user-collection-modal">
+        <div class="user-collection-modal-content">
+            <div class="user-collection-modal-heading">
+                <p class="h2">
+                    Itemizado ID<strong>1234</strong> en<br />
+                    <strong>Luchas de Animales</strong>
+                </p>
+                <div class="collection-meta custom-separator">
+                    <span>2023</span>
+                    <span>Big Bang</span>
+                </div>
+                <div class="user-collection-modal-bg"
+                    style="background-image: url('https://ik.imagekit.io/nfd3o4hfi/tr:n-il_col_wm/collections/collection_1630.jpg');">
+                    <div></div>
+                </div>
+            </div>
+
+            <table mat-table matSort [dataSource]="dataSource" class="collection-items-table mat-elevation-z8">
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Nro. </th>
+                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="category">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </th>
+                    <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="section">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Sección </th>
+                    <td mat-cell *matCellDef="let element"> {{element.section}} </td>
+                </ng-container>
+                
+                <ng-container matColumnDef="description">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Título </th>
+                    <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="position">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Orden </th>
+                    <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+                </ng-container>
+
+                <!-- <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element">
+                        <a mat-stroked-button [routerLink]="['/item', element.id]">Detalles</a>
+                    </td>
+                </ng-container> -->
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <p class="user-collection-modal-udpate">
+                Itemizado enviado el 01/07/2023 a las 20:54 hrs. por <a href="">Juan Soto</a>
+            </p>
+        </div>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-raised-button (click)="onClose()">Cerrar</button>
+    <a mat-raised-button mat-dialog-close color="accent">
+        Descargar XLSX
+    </a>
+</mat-dialog-actions>

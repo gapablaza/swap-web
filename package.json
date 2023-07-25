@@ -1,6 +1,6 @@
 {
   "name": "swap-web",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -41,6 +41,7 @@
     "rxfire": "^6.0.3",
     "rxjs": "~7.8.1",
     "tslib": "^2.5.3",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.13.1"
   },
   "devDependencies": {

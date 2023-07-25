@@ -1,0 +1,159 @@
+<div class="nc-links">
+    <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+        <mat-icon>arrow_back</mat-icon> Volver
+    </a>
+    <a class="btn" mat-stroked-button>
+        <mat-icon>share</mat-icon> Compartir
+    </a>
+</div>
+<div *ngIf="isLoaded" class="card">
+    <div class="nc-container">
+        <div class="nc-main flex-full">
+            <h2 class="nc-title">{{ newCollection.name }}</h2>
+            <div class="custom-separator">
+                <span>{{ newCollection.year }}</span>
+                <span>{{ newCollection.publisher.data.name }}</span>
+                <span>{{ votes.length }} votos</span>
+                <span>2 comentarios</span>
+            </div>
+
+            <div class="alert alert-warning">
+                <div class="alert-container">
+                    <div class="alert-content">
+                        <div class="alert-info">{{ newCollection.statusName }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nc-p">
+                <h3>Descripción</h3>
+                <p [innerHTML]="newCollection.description | linebreaks"></p>
+            </div>
+            <div class="nc-p">
+                <h3>Numeración general</h3>
+                <p [innerHTML]="newCollection.checklistDescription | linebreaks"></p>
+            </div>
+            <div class="nc-list">
+                <h3>Itemizados enviados</h3>
+                <ul>
+                    <li>
+                        <a [routerLink]="['./']" (click)="onOpenChecklist()">N1234, 30/06/2023</a>, enviado por <a
+                            href="">Juan Pérez</a>
+                    </li>
+                    <li>
+                        <a [routerLink]="['./']" (click)="onOpenChecklist()">N2345, 30/06/2023</a>, enviado por <a
+                            href="">John Smith</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="nc-p">
+                <h3>Subido por</h3>
+                <p><a [routerLink]="['/user', newCollection.user.data?.id]">{{ newCollection.user.data?.displayName
+                        }}</a>, el {{
+                    newCollection.created * 1000 | date:'dd/MM/yy \'a las \' HH:MM \'hrs.\'' }}</p>
+            </div>
+            <div class="nc-p">
+                <h3>Actualizaciones</h3>
+                <ul>
+                    <li>
+                        <a href="">Nombre usuario 2</a>, el 01/07/2023 a las 20:54 hrs.
+                    </li>
+                    <li>
+                        <a href="">Nombre usuario 3</a>, el 02/07/2023 a las 20:54 hrs.
+                    </li>
+                </ul>
+            </div>
+            <div class="nc-p">
+                <h3>Votos recibidos ({{ votes.length }})</h3>
+                <p>
+                    <ng-container *ngFor="let vote of votes; last as isLast">
+                        <a [routerLink]="['/user', vote.id]">{{ vote.displayName
+                        }}</a>
+                        <span *ngIf="!isLast">, </span> 
+                    </ng-container>
+                </p>
+            </div>
+        </div>
+        <div class="nc-side">
+            <div class="nc-side-img">
+                <a href="">
+                    <img [src]="newCollection.image.data?.base64" alt="Portada">
+                </a>
+            </div>
+            <div class="nc-side-votes">
+                <button *ngIf="!hasVoted" (click)="onVote(true)" [disabled]="isSaving" mat-raised-button color="">
+                    <mat-icon>add</mat-icon> Vota para que se agregue esta colección!
+                </button>
+                <button *ngIf="hasVoted" (click)="onVote(false)" [disabled]="isSaving" mat-raised-button color="accent">
+                    <mat-icon>check</mat-icon> Ya votaste por esta colección
+                </button>
+            </div>
+            <div class="nc-side-actions">
+                <a [routerLink]="['/new-collection', newCollection.id, 'add-checklist']" mat-raised-button>
+                    Agregar propuesta de itemizado
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p></p>
+
+<div class="card">
+    <h3>Comentarios</h3>
+    <ul class="list-std">
+        <li class="list-std-item pro-account">
+            <div class="list-item-main">
+                <div class="list-item-image">
+                    <a [routerLink]="['/user', 1]">
+                        <img src="/assets/img/profile_user.png" alt="Imagen de Perfil" crossorigin="anonymous">
+                    </a>
+                </div>
+                <div class="list-item-content flex-full">
+                    <div class="list-item-title">
+                        <a [routerLink]="['/user', 1]">
+                            Nombre de usuario
+                            <span class="pro-label">PRO</span>
+                            <span class="positives-label">+8</span>
+                            <span class="negatives-label">-1</span>
+                        </a>
+                    </div>
+                    <div class="list-item-meta">
+                        19/05/2023 a las 23:05 hrs.
+                    </div>
+                    <div class="list-item-desc evaluation-positive">
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor quae ullam quo similique,
+                            reiciendis sed ea vel quia, eum neque tempore molestias repudiandae quam nam, reprehenderit
+                            quidem iure asperiores voluptatum.</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="list-std-item">
+            <div class="list-item-main">
+                <div class="list-item-image">
+                    <a [routerLink]="['/user', 1]">
+                        <img src="/assets/img/profile_user.png" alt="Imagen de Perfil" crossorigin="anonymous">
+                    </a>
+                </div>
+                <div class="list-item-content flex-full">
+                    <div class="list-item-title">
+                        <a [routerLink]="['/user', 1]">
+                            Nombre de usuario
+                            <span class="positives-label">+8</span>
+                            <span class="negatives-label">-1</span>
+                        </a>
+                    </div>
+                    <div class="list-item-meta">
+                        19/05/2023 a las 23:05 hrs.
+                    </div>
+                    <div class="list-item-desc evaluation-positive">
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor quae ullam quo similique,
+                            reiciendis sed ea vel quia, eum neque tempore molestias repudiandae quam nam, reprehenderit
+                            quidem iure asperiores voluptatum.</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>

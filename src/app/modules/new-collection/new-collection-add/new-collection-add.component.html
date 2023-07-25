@@ -1,0 +1,121 @@
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="">
+    <h1>Agregar colección</h1>
+    <div class="card">
+
+        <!-- <div class="avatar-preview">
+            <img class="" [defaultImage]="defaultUserImage" [lazyLoad]="authUser.image || defaultUserImage"
+                [alt]="authUser.displayName" crossorigin="anonymous">
+            <div class="avatar-actions">
+                <a class="btn" mat-raised-button color="accent" (click)="onNewImage()">
+                    <mat-icon>upload</mat-icon> Nueva imagen
+                </a>
+                <a *ngIf="authUser.image" class="btn" mat-stroked-button (click)="onDeleteImage()">
+                    <mat-icon>delete</mat-icon> Eliminar
+                </a>
+            </div>
+        </div> -->
+
+        <div class="nc-form-container">
+            <form [formGroup]="newCollectionForm" (ngSubmit)="onSubmit()">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Título</mat-label>
+                    <input matInput #name formControlName="name">
+                    <mat-hint align="start">
+                        Asegúrate de usar el nombre que se visualiza en la portada de la colección, dando preferencia a
+                        la versión en idioma español.
+                    </mat-hint>
+                    <mat-hint align="end">{{name.value.length || 0}}/100</mat-hint>
+                    <mat-error *ngIf="form['name'].errors">Campo obligatorio. Debe tener entre 2 y 100 caracteres.
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Año de publicación</mat-label>
+                    <mat-select #year formControlName="year" [(value)]="selectedYear">
+                        <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+                    </mat-select>
+                    <mat-hint align="start">
+                        Selecciona el año de primera publicación independiente del país en que haya sido.
+                    </mat-hint>
+                    <mat-error *ngIf="form['year'].errors">Campo obligatorio.
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Editorial</mat-label>
+                    <mat-select #publisher formControlName="publisher">
+                        <mat-option *ngFor="let pub of publishers" [value]="pub.id">{{ pub.name }}</mat-option>
+                        <!-- <mat-option value="Big Bang">Big Bang</mat-option>
+                        <mat-option value="...">...</mat-option>
+                        <mat-option value="independiente">independiente</mat-option> -->
+                    </mat-select>
+                    <mat-hint align="start">
+                        Sino se encuentra disponible la editorial escríbenos a contacto@intercambialaminas.com para
+                        agregarla.
+                    </mat-hint>
+                    <mat-error *ngIf="form['publisher'].errors">Campo obligatorio.
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Descripción</mat-label>
+                    <textarea #description matInput formControlName="description" maxlength="400" rows="4"></textarea>
+                    <mat-hint align="start">
+                        Ingresa una breve descripción de la colección, para que los demás usuarios puedan identificarla
+                        sin problemas
+                        (opcional).
+                    </mat-hint>
+                    <mat-hint align="end">{{description.value.length || 0}}/1000</mat-hint>
+                    <mat-error *ngIf="form['description'].errors">Debes ingresar como máximo 1.000 caracteres.</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Numeración general</mat-label>
+                    <textarea #numbers matInput formControlName="numbers" maxlength="400" rows="4"></textarea>
+                    <mat-hint align="start">
+                        Puedes indicar de manera general la numeración o itemizado utilizado por la colección
+                        (opcional).
+                    </mat-hint>
+                    <mat-hint align="end">{{numbers.value.length || 0}}/250</mat-hint>
+                    <mat-error *ngIf="form['numbers'].errors">Debes ingresar como máximo 250 caracteres.</mat-error>
+                </mat-form-field>
+
+                <div class="nc-form-file">
+                    <!-- <input type="file" class="d-none" name="cover-image" accept="image/*"
+                        (change)="onFileSelected($event)" #fileUpload> -->
+                    <button *ngIf="preview == ''" mat-raised-button color="primary" (click)="onNewImage()">
+                        <mat-icon>upload</mat-icon> Imagen de portada
+                    </button>
+                    <button *ngIf="preview !== ''" mat-stroked-button color="warn" (click)="onRemoveImage()">
+                        <mat-icon>delete</mat-icon> Eliminar imagen
+                    </button>
+                    <div *ngIf="preview !== ''" class="nc-image-preview">
+                        <img [src]="preview" />
+                    </div>
+                    <!-- <mat-error *ngIf="form['cover'].errors">Debes seleccionar una imagen de máximo 2 Mb.</mat-error> -->
+                </div>
+                <!-- <mat-hint align="start">
+                    La imagen de portada debe estar completa, en buena calidad, con un ancho entre 400px-1200px y
+                    2mb de peso máximo.
+                </mat-hint> -->
+
+                <button mat-raised-button [disabled]="newCollectionForm.invalid" color="accent">Guardar</button>
+
+            </form>
+        </div>
+
+    </div>
+</section>
+<!-- <ng-template #confirmDeleteDialog>
+    <p matDialogContent>Estás seguro de eliminar tu foto de perfil?</p>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close [disabled]="isDeleting">Cancelar</button>
+        <button mat-raised-button (click)="onConfirmDelete()" [disabled]="isDeleting" color="accent">
+            Eliminar
+        </button>
+    </mat-dialog-actions>
+</ng-template> -->

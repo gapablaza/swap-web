@@ -1,0 +1,200 @@
+<!-- <div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div> -->
+<section *ngIf="isLoaded" class="new-collections new-collections-section">
+    <div class="collections-list flex-full">
+        <h1>
+            Nuevas colecciones <span class="text-secondary">({{ paginator.total }})</span>
+        </h1>
+        <p>
+            <a [routerLink]="['./add']" mat-raised-button color="accent">
+                <mat-icon>add</mat-icon> Agregar colección
+            </a>
+        </p>
+        <div class="card">
+            <div class="controls-std">
+                <div class="controls-std-main">
+                    <div class="controls-std-order">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Ordenar por</mat-label>
+                            <mat-select (selectionChange)="onSort()" [(value)]="orderSelected">
+                                <mat-option *ngFor="let option of ordersOptions" [value]="option.selectValue">
+                                    {{ option.selectName }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="controls-std-settings">
+                        <p>
+                            Registros {{ paginator.from | number:'':'es' }} - {{ paginator.to | number:'':'es' }} de {{
+                            paginator.total | number:'':'es' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="list-nc">
+                <li *ngFor="let col of newCollections ; trackBy: trackByCollection" class="list-nc-item">
+                    <div class="nc-container">
+                        <div class="nc-main flex-full">
+                            <h2 class="nc-title">
+                                <a [routerLink]="['./', col.id]">{{ col.name }}</a>
+                            </h2>
+                            <div class="custom-separator">
+                                <span>{{ col.year }}</span>
+                                <span>{{ col.publisher.data.name }}</span>
+                                <span>{{ col.votesQty }} votos</span>
+                                <span>2 comentarios</span>
+                            </div>
+
+                            <div class="alert alert-warning">
+                                <div class="alert-container">
+                                    <div class="alert-content">
+                                        <div class="alert-info">{{ col.statusName }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="nc-p">
+                                <h3>Descripción</h3>
+                                <p>{{ col.description }}</p>
+                            </div>
+                            <div class="nc-p">
+                                <h3>Numeración general</h3>
+                                <p>{{ col.checklistDescription }}</p>
+                            </div>
+                            <div class="nc-list">
+                                <h3>Itemizados enviados</h3>
+                                <ul>
+                                    <li>
+                                        <a href="">N1234, 30/06/2023</a>, enviado por <a href="">Juan Pérez</a>
+                                    </li>
+                                    <li>
+                                        <a href="">N2345, 30/06/2023</a>, enviado por <a href="">John Smith</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="nc-side">
+                            <div class="nc-side-img">
+                                <a [routerLink]="['./', col.id]">
+                                    <img [src]="col.image.data?.base64" alt="Portada">
+                                </a>
+                            </div>
+                            <div class="nc-side-action">
+                                <a [routerLink]="['./', col.id]" mat-raised-button>
+                                    <mat-icon>zoom_in</mat-icon> Ver detalles
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <!-- <li class="list-nc-item">
+                    <div class="nc-container">
+                        <div class="nc-main flex-full2">
+                            <h2 class="nc-title">
+                                <a href="">Hello Kitty & Amigos - Las Aventuras de la Pandilla</a>
+                            </h2>
+                            <div class="custom-separator">
+                                <span>2022</span>
+                                <span>Panini</span>
+                                <span>0 comentario(s)</span>
+                            </div>
+                            <div class="nc-p">
+                                <h3>Descripción</h3>
+                                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Commodi quidem ex quos labore vero inventore asperiores recusandae alias cumque similique repellat nostrum corrupti, nihil, laborum voluptatem cupiditate doloremque error. Praesentium!</p>
+                            </div>
+                            <div class="nc-p">
+                                <h3>Numeración general</h3>
+                                <p>1-90, C1-C9, P1-P12, R1-R9, T1-T3</p>
+                            </div>
+                        </div>
+                        <div class="nc-side">
+                            <div class="nc-side-img">
+                                <a href="">
+                                    <img src="https://ik.imagekit.io/nfd3o4hfi/tr:n-il_col_wm/collections/collection_2161.jpg" alt="" srcset="">
+                                </a>
+                            </div>
+                            <div class="nc-side-votes">
+                                <button mat-raised-button color="accent">
+                                    <mat-icon>add</mat-icon> 17 Votos
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-nc-item">
+                    <div class="nc-container">
+                        <div class="nc-main flex-full2">
+                            <h2 class="nc-title">
+                                <a href="">FIFA World Cup Qatar 2022 - EXTRAS</a>
+                            </h2>
+                            <div class="custom-separator">
+                                <span>2022</span>
+                                <span>Panini</span>
+                                <span>10 comentario(s)</span>
+                            </div>
+                            <div class="nc-p">
+                                <h3>Descripción</h3>
+                                <p>Los Stickers Extra son un contenido adicional del producto Panini dedicado a la Copa Mundial de la FIFA Catar 2022, pero no forman parte de la colección principal de stickers y son insertados aleatoriamente en los sobres. Se diferencian de los stickers estándar de la colección, porque son imágenes en acción de los jugadores, sin numeración en la parte de atrás del sticker y tienen un nuevo logo de Panini. En total, hay 20 jugadores, cada uno con 4 versiones de colores: burdeos (color principal del evento), bronce, plata, oro (14 jugadores leyendas y 6 rookies)</p>
+                            </div>
+                            <div class="nc-p">
+                                <h3>Numeración general</h3>
+                                <p>personalizada</p>
+                            </div>
+                            <div class="nc-list">
+                                <h3>Itemizados enviados</h3>
+                                <ul>
+                                    <li>
+                                        <a href="">N1234, 30/06/2023</a>, enviado por <a href="">Juan Pérez</a>
+                                    </li>
+                                    <li>
+                                        <a href="">N2345, 30/06/2023</a>, enviado por <a href="">John Smith</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="nc-side">
+                            <div class="nc-side-img">
+                                <a href="">
+                                    <img src="https://ik.imagekit.io/nfd3o4hfi/tr:n-il_col_wm/collections/collection_2106.jpg" alt="" srcset="">
+                                </a>
+                            </div>
+                            <div class="nc-side-votes">
+                                <button mat-raised-button color="accent">
+                                    <mat-icon>add</mat-icon> 17 Votos
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </li> -->
+            </ul>
+
+            <div *ngIf="paginator.last_page > 1" class="pagination-wrapper">
+                <ul class="pagination">
+                    <li class="pagination-prev">
+                        <a role="button" (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))"
+                            [disabled]="pageSelected == 1" class="btn" mat-raised-button tabindex="-1">
+                            <mat-icon class="only-icon-button">navigate_before</mat-icon>
+                        </a>
+                    </li>
+                    <li>
+                        <select name="" (change)="onPageChange(selectPage.value)" #selectPage>
+                            <option *ngFor="let item of [].constructor(paginator.last_page); index as i" [value]="i+1"
+                                [selected]="(i+1) == pageSelected">
+                                Página {{ i+1 }} de {{ paginator.last_page }}
+                            </option>
+                        </select>
+                    </li>
+                    <li class="pagination-next">
+                        <a role="button"
+                            (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
+                            [disabled]="pageSelected == paginator.last_page" class="btn" mat-raised-button>
+                            <mat-icon class="only-icon-button">navigate_next</mat-icon>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>

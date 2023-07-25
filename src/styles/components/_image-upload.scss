@@ -1,0 +1,61 @@
+.std-image-uploader {
+    .mat-mdc-dialog-surface > .ng-star-inserted {
+      display: flex;
+      height: 100%;
+      flex: 1 1 auto;
+      flex-direction: column;
+  
+      .mat-mdc-dialog-content {
+        flex: 1 1 auto;
+  
+        .upload-image-center {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          min-height: 200px;
+        }
+  
+        .upload-image-main {
+          position: relative;
+        }
+  
+        .upload-image-input {
+          padding-bottom: 1rem;
+        }
+      }
+  
+      .upload-image-actions {
+        display: flex;
+        flex-direction: revert;
+        column-gap: 1rem;
+        justify-content: space-between;
+        align-items: center;
+  
+        .mat-mdc-slider {
+          flex-grow: 1;
+          min-width: 80px;
+        }
+      }
+  
+    //   .upload-image-description {
+    //     .mat-mdc-form-field {
+    //       font-size: 0.85rem;
+    //       width: 100%;
+          
+    //       /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    //       // .mat-form-field-wrapper {
+    //       //   margin-bottom: 0;
+    //       //   padding-bottom: 0.5rem;
+    //       // }
+    //       .mat-mdc-text-field-wrapper {
+    //         margin-bottom: 0.5rem;
+    //       }
+    //     }
+    //   }
+  
+      .mat-mdc-dialog-actions {
+        justify-content: space-between;
+      }
+    }
+  }

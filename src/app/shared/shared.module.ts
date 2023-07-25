@@ -9,7 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { LightboxModule } from 'ng-gallery/lightbox';
 
-import { SanitizeHtmlPipe, SlugifyPipe } from './pipes';
+import { LinebreaksPipe, SanitizeHtmlPipe, SlugifyPipe } from './pipes';
 import {
   DaysSinceLoginDirective,
   GoogleButtonDirective,
@@ -23,6 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
+    LinebreaksPipe,
     SanitizeHtmlPipe,
     SlugifyPipe,
     DaysSinceLoginDirective,
@@ -53,6 +54,7 @@ import { MatIconModule } from '@angular/material/icon';
     // MaterialModule,
     LazyLoadImageModule,
     LightboxModule,
+    LinebreaksPipe,
     SanitizeHtmlPipe,
     SlugifyPipe,
     DaysSinceLoginDirective,
