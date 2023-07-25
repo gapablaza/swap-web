@@ -4,6 +4,7 @@ import { MaterialModule } from 'src/app/shared/material.module';
 import { SignupRoutingModule } from './signup-routing.module';
 import { SharedModule, SocialModule } from 'src/app/shared';
 import { SignupComponent } from './signup.component';
+import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 
 @NgModule({
   declarations: [
@@ -12,6 +13,7 @@ import { SignupComponent } from './signup.component';
   imports: [
     SharedModule,
     SocialModule,
+    GoogleSigninButtonModule,
     MaterialModule,
     SignupRoutingModule,
   ]
