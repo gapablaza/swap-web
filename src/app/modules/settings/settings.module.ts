@@ -12,6 +12,7 @@ import { SettingsNotificationsComponent } from './settings-notifications/setting
 import { SettingsProfileComponent } from './settings-profile/settings-profile.component';
 import { SettingsProfileImageComponent } from './settings-profile-image/settings-profile-image.component';
 import { SettingsDeleteComponent } from './settings-delete/settings-delete.component';
+import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 
 @NgModule({
     declarations: [
@@ -27,6 +28,7 @@ import { SettingsDeleteComponent } from './settings-delete/settings-delete.compo
         SocialModule,
         MaterialModule,
         GoogleMapsModule,
+        GoogleSigninButtonModule,
         SettingsRoutingModule,
         ImageCropperModule,
     ]

@@ -18,7 +18,10 @@
                     <div *ngIf="!authUser.google" matListItemLine>Conecta Google y podrás iniciar sesión con
                         esa plataforma</div>
                     <div *ngIf="authUser.google" matListItemLine>Ya estás conectado!</div>
-                    <google-button *ngIf="!authUser.google" [selectable]="isLoaded" matListItemMeta></google-button>
+                    <!-- <google-button *ngIf="!authUser.google" [selectable]="isLoaded" matListItemMeta></google-button> -->
+                    <asl-google-signin-button *ngIf="!authUser.google" type='standard' size='large' width='200px'
+                        theme='filled_blue' matListItemMeta>
+                    </asl-google-signin-button>
                     <button *ngIf="authUser.google" (click)="onUnlink('google')" mat-stroked-button color="warn"
                         [disabled]="isSaving" matListItemMeta style="color: #f44336">
                         <mat-icon>delete</mat-icon> Remover
