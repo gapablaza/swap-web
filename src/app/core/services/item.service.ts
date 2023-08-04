@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Collection, Item, User } from '../models';
+import { Collection, Item, ItemType, User } from '../models';
 
 import { ApiService } from './api.service';
 
@@ -17,6 +17,12 @@ export class ItemService {
   }> {
     return this.apiSrv
       .get('/v3/items/' + itemId + '?include=collection.publisher');
+  }
+
+  getTypes(): Observable<ItemType[]> {
+    return this.apiSrv
+        .get('/v3/items/types')
+        .pipe(map((resp: { data: ItemType[] }) => resp.data));
   }
 
   addToWishlist(itemId: number): Observable<string> {

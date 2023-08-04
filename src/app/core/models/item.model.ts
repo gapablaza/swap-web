@@ -15,3 +15,19 @@ export interface Item {
   wishlist?: boolean,
   wishlistQuantity?: number,
 }
+
+// export interface ChecklistItem {
+//   description?: string,
+//   itemType?: string,
+//   itemTypeId?: number,
+//   name: string,
+//   position?: number,
+//   section?: string,
+// }
+
+export interface ItemType {
+  id: number,
+  name: string,
+  sort: number,
+}
+

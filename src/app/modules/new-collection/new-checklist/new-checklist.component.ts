@@ -1,10 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription, take } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription, combineLatest, take } from 'rxjs';
 
 import * as XLSX from 'xlsx';
 import {
   AuthService,
+  ChecklistItem,
+  ItemService,
+  ItemType,
   NewCollection,
   NewCollectionService,
   Publisher,
@@ -20,6 +23,7 @@ export interface CheckItem {
   TITULO?: string;
   SECCION?: string;
   __rowNum__?: number;
+  typeName?: string;
 }
 
 @Component({
@@ -31,19 +35,22 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
   authUser: User = {} as User;
   publishers: Publisher[] = [];
   newCollection: NewCollection = {} as NewCollection;
-  validTypes = [1, 2, 3, 4, 6];
+
+  types: ItemType[] = [];
+  validTypes: number[] = [];
 
   errors: string[] = [];
-  checklist: CheckItem[] = [];
+  checklist: ChecklistItem[] = [];
 
   displayedColumns: string[] = [
-    'NRO',
-    'TIPO',
-    'TITULO',
-    'SECCION',
+    'name',
+    'itemTypeId',
+    'itemTypeDescription',
+    'description',
+    'section',
     // 'position',
   ];
-  dataSource = new MatTableDataSource<CheckItem>([]);
+  dataSource = new MatTableDataSource<ChecklistItem>([]);
   @ViewChild(MatSort, { static: false }) set content(sort: MatSort) {
     this.dataSource.sort = sort;
   }
@@ -55,8 +62,10 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
 
   constructor(
     private newColSrv: NewCollectionService,
+    private itemSrv: ItemService,
     private authSrv: AuthService,
     private uiSrv: UIService,
+    private router: Router,
     private activatedRoute: ActivatedRoute
   ) {}
 
@@ -76,23 +85,20 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
     //   });
     // this.subs.add(pubsSub);
 
-    let newColSub = this.newColSrv
-      .get(Number(this.activatedRoute.snapshot.params['id']))
-      // .pipe(
-      //   tap((resp) => {
-      //     this.hasVoted =
-      //       resp.votes.findIndex((vote) => vote.id == this.authUser.id) >= 0
-      //         ? true
-      //         : false;
-      //   })
-      // )
+    let dataSub = combineLatest([
+      this.newColSrv
+        .get(Number(this.activatedRoute.snapshot.params['id'])),
+      this.itemSrv.getTypes()
+    ])
       .pipe(take(1))
-      .subscribe((resp) => {
-        this.newCollection = resp.newCollection;
+      .subscribe(([colResp, typeResp]) => {
+        this.newCollection = colResp.newCollection;
+        this.types = typeResp;
+        this.validTypes = typeResp.map(a => a.id);
 
         this.isLoaded = true;
       });
-    this.subs.add(newColSub);
+    this.subs.add(dataSub);
   }
 
   onFileChange(ev: any) {
@@ -194,7 +200,14 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
           );
         }
 
-        this.checklist.push(row);
+        this.checklist.push({
+          description: row.TITULO,
+          itemTypeDescription: this.getTIPOName(row.TIPO || ''),
+          itemTypeId: Number(row.TIPO),
+          name: row.NRO,
+          position: row.__rowNum__,
+          section: row.SECCION
+        });
         rowNumber++;
       });
 
@@ -232,11 +245,37 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
     return true;
   }
 
+  getTIPOName(type: any): string {
+    if (!Number.isInteger(type)) return '';
+    if (!this.validTypes.includes(type)) return '';
+    return this.types.find(i => i.id == Number(type))?.name || '';
+  }
+
   cleanFileInput(file: HTMLInputElement): void {
     file.value = '';
     this.errors = [];
     this.checklist = [];
     this.fileName = '';
+  }
+
+  saveChecklist(): void {
+    if (this.errors.length > 0) return;
+
+    this.isSaving = true;
+    this.newColSrv.addChecklist(
+      this.newCollection.id, this.checklist
+    )
+    .pipe(take(1))
+    .subscribe({
+      next: (resp) => {
+        this.uiSrv.showSuccess(resp.message);
+        this.router.navigate(['new-collection/', this.newCollection.id]);
+      },
+      error: (error) => {
+        console.log('saveChecklist error: ', error);
+        this.isSaving = false;
+      },
+    })
   }
 
   ngOnDestroy(): void {

@@ -68,24 +68,29 @@
                 <div class="nc-p">
                     <h3>Itemizado Propuesto</h3>
                     <table mat-table matSort [dataSource]="dataSource" class="collection-items-table mat-elevation-z8">
-                        <ng-container matColumnDef="NRO">
+                        <ng-container matColumnDef="name">
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> Nro. </th>
-                            <td mat-cell *matCellDef="let element"> {{element.NRO}} </td>
+                            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
                         </ng-container>
 
-                        <ng-container matColumnDef="TIPO">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </th>
-                            <td mat-cell *matCellDef="let element"> {{element.TIPO}} </td>
+                        <ng-container matColumnDef="itemTypeId">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo - ID</th>
+                            <td mat-cell *matCellDef="let element"> {{element.itemTypeId}} </td>
                         </ng-container>
 
-                        <ng-container matColumnDef="TITULO">
+                        <ng-container matColumnDef="itemTypeDescription">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo - Nombre</th>
+                            <td mat-cell *matCellDef="let element"> {{element.itemTypeDescription}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="description">
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> Título </th>
-                            <td mat-cell *matCellDef="let element"> {{element.TITULO}} </td>
+                            <td mat-cell *matCellDef="let element"> {{element.description}} </td>
                         </ng-container>
 
-                        <ng-container matColumnDef="SECCION">
+                        <ng-container matColumnDef="section">
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> Sección </th>
-                            <td mat-cell *matCellDef="let element"> {{element.SECCION}} </td>
+                            <td mat-cell *matCellDef="let element"> {{element.section}} </td>
                         </ng-container>
 
                         <!-- <ng-container matColumnDef="position">
@@ -105,7 +110,7 @@
                             (click)="cleanFileInput(fileUpload)">
                             <mat-icon>delete</mat-icon> Quitar archivo
                         </button>
-                        <button mat-raised-button color="accent">
+                        <button mat-raised-button [disabled]="isSaving" color="accent" (click)="saveChecklist()">
                             <mat-icon>save</mat-icon> Enviar itemizado
                         </button>
                     </p>

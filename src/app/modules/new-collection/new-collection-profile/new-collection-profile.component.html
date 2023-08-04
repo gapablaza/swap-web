@@ -35,15 +35,19 @@
             </div>
             <div class="nc-list">
                 <h3>Itemizados enviados</h3>
-                <ul>
-                    <li>
-                        <a [routerLink]="['./']" (click)="onOpenChecklist()">N1234, 30/06/2023</a>, enviado por <a
-                            href="">Juan Pérez</a>
+                <p *ngIf="checklists.length == 0">
+                    Aun no se han enviado itemizados para esta solicitud
+                </p>
+                <ul *ngIf="checklists.length > 0">
+                    <li *ngFor="let check of checklists">
+                        <a [routerLink]="['./']" (click)="onOpenChecklist(check.id)">N{{ check.id }}</a>, enviado por <a
+                            [routerLink]="['/user', check.user.data.id]">{{ check.user.data.displayName }}</a> el {{
+                            check.created * 1000 | date:'dd/MM/yy \'a las \' HH:MM \'hrs.\'' }} 
                     </li>
-                    <li>
+                    <!-- <li>
                         <a [routerLink]="['./']" (click)="onOpenChecklist()">N2345, 30/06/2023</a>, enviado por <a
                             href="">John Smith</a>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
             <div class="nc-p">

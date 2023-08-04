@@ -7,6 +7,9 @@ import { ActivatedRoute } from '@angular/router';
 import { NewCollectionChecklistComponent } from '../new-collection-checklist/new-collection-checklist.component';
 import {
   AuthService,
+  ItemService,
+  ItemType,
+  NewChecklist,
   NewCollection,
   NewCollectionService,
   User,
@@ -23,7 +26,9 @@ export class NewCollectionProfileComponent implements OnInit, OnDestroy {
   newCollection: NewCollection = {} as NewCollection;
 
   // comments: Comment[] = [];
-  // checklists: Checklist[] = [];
+  checklists: NewChecklist[] = [];
+  types: ItemType[] = [];
+
   votes: User[] = [];
   hasVoted = false;
 
@@ -33,6 +38,7 @@ export class NewCollectionProfileComponent implements OnInit, OnDestroy {
 
   constructor(
     private newColSrv: NewCollectionService,
+    private itemSrv: ItemService,
     private authSrv: AuthService,
     private uiSrv: UIService,
     private activatedRoute: ActivatedRoute,
@@ -42,7 +48,7 @@ export class NewCollectionProfileComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authUser = this.authSrv.getCurrentUser();
 
-    this.newColSrv
+    let newColSub = this.newColSrv
       .get(Number(this.activatedRoute.snapshot.params['id']))
       .pipe(
         tap((resp) => {
@@ -55,6 +61,7 @@ export class NewCollectionProfileComponent implements OnInit, OnDestroy {
       .subscribe((resp) => {
         console.log(resp);
         this.newCollection = resp.newCollection;
+        this.checklists = resp.checklists;
         this.votes = resp.votes.sort((a, b) => {
           return (a.displayName || '').toLocaleLowerCase() >
             (b.displayName || '').toLocaleLowerCase()
@@ -63,6 +70,12 @@ export class NewCollectionProfileComponent implements OnInit, OnDestroy {
         });
         this.isLoaded = true;
       });
+    this.subs.add(newColSub);
+
+    let typesSub = this.itemSrv.getTypes()
+      .pipe(take(1))
+      .subscribe(resp => this.types = resp);
+    this.subs.add(typesSub);
   }
 
   onVote(action: boolean) {
@@ -85,7 +98,7 @@ export class NewCollectionProfileComponent implements OnInit, OnDestroy {
       });
   }
 
-  onOpenChecklist() {
+  onOpenChecklist(checklistId: number) {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = false;
@@ -93,6 +106,11 @@ export class NewCollectionProfileComponent implements OnInit, OnDestroy {
     dialogConfig.panelClass = ['checklist-modal'];
     dialogConfig.width = '80%';
     dialogConfig.maxWidth = '1280px';
+    dialogConfig.data = {
+      newCollection: this.newCollection,
+      checklist: this.checklists.find(e => e.id == checklistId),
+      types: this.types
+    };
 
     this.dialog.open(NewCollectionChecklistComponent, dialogConfig);
   }

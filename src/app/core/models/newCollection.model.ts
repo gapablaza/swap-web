@@ -32,3 +32,23 @@ export interface NewCollection {
   checklistsQty?: number;
   votesQty?: number;
 }
+
+export interface NewChecklist {
+  created: number;
+  items: ChecklistItem[];
+  id: number;
+  updated: number;
+  user: {
+    data: User
+  }
+}
+
+export interface ChecklistItem {
+  name: string;
+  itemTypeId?: number;
+  description?: string;
+  section?: string;
+  position?: number;
+
+  itemTypeDescription?: string;
+}

@@ -1,91 +1,55 @@
-import { Component, Inject, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+
+import { ChecklistItem, ItemType, NewChecklist, NewCollection } from 'src/app/core';
 
 @Component({
   selector: 'app-new-collection-checklist',
   templateUrl: './new-collection-checklist.component.html',
   styleUrls: ['./new-collection-checklist.component.scss'],
 })
-export class NewCollectionChecklistComponent {
-  items: any[] = [];
+export class NewCollectionChecklistComponent implements OnInit {
+  validTypes: number[] = [];
   displayedColumns: string[] = [
     'name',
-    'category',
-    'section',
+    'itemTypeId',
+    'itemTypeDescription',
     'description',
+    'section',
     // 'position',
   ];
-  dataSource = new MatTableDataSource<any>([]);
+  dataSource = new MatTableDataSource<ChecklistItem>([]);
   @ViewChild(MatSort, { static: false }) set content(sort: MatSort) {
     this.dataSource.sort = sort;
   }
   isLoaded = true;
 
   constructor(
-    private dialogRef: MatDialogRef<NewCollectionChecklistComponent>,
-    @Inject(MAT_DIALOG_DATA) data: any
-  ) {
-    this.items = [
-      {
-        name: '1',
-        category: 'Sticker',
-        section: 'Sección uno',
-        description: 'Descripción 1',
-        position: '10',
-      },
-      {
-        name: '2',
-        category: 'Sticker',
-        section: 'Sección uno',
-        description: 'Descripción 2',
-        position: '20',
-      },
-      {
-        name: 3,
-        category: 'Sticker',
-        section: 'Sección uno',
-        description: 'Descripción 3',
-        position: '30',
-      },
-      {
-        name: 4,
-        category: 'Sticker',
-        section: 'Sección dos',
-        description: 'Descripción 4',
-        position: '40',
-      },
-      {
-        name: 5,
-        category: 'Sticker',
-        section: 'Sección dos',
-        description: 'Descripción 5',
-        position: '50',
-      },
-      {
-        name: 'C1',
-        category: 'Carta',
-        section: 'Cartas',
-        description: 'Descripción 6',
-        position: '100',
-      },
-      {
-        name: 'C2',
-        category: 'Carta',
-        section: 'Cartas',
-        description: 'Descripción 7',
-        position: '200',
-      },
-      {
-        name: 'C3',
-        category: 'Carta',
-        section: 'Cartas',
-        description: 'Descripción 8',
-        position: '300',
-      },
-    ];
-    this.dataSource.data = this.items;
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      newCollection: NewCollection;
+      checklist: NewChecklist;
+      types: ItemType[];
+    },
+    private dialogRef: MatDialogRef<NewCollectionChecklistComponent>
+  ) {}
+
+  ngOnInit(): void {
+    this.validTypes = this.data.types.map(a => a.id);
+    this.dataSource.data = this.data.checklist.items.map(elem => {
+      return {
+        ...elem,
+        itemTypeDescription: this.getTIPOName(elem.itemTypeId)
+      }
+    });
+  }
+
+  getTIPOName(type: any): string {
+    if (!Number.isInteger(type)) return '';
+    if (!this.validTypes.includes(type)) return '';
+    return this.data.types.find(i => i.id == Number(type))?.name || '';
   }
 
   onClose() {
