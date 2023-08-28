@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { AuthService, User } from 'src/app/core';
@@ -16,11 +17,15 @@ export class NewCollectionComponent implements OnInit, OnDestroy {
 
   constructor(
     private authSrv: AuthService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
     this.authUser = this.authSrv.getCurrentUser();
-    console.log(this.authUser);
+
+    if (this.authUser.disabled) {
+      this.router.navigate(['']);
+    }
   }
 
   ngOnDestroy(): void {

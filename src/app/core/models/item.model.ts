@@ -5,6 +5,8 @@ export interface Item {
   difficultyCategoryId?: number,
   id: number,
   image?: string | null,
+  itemType: string | null,
+  itemTypeId: number | null,
   name: string,
   position?: number,
   quantity?: number,
@@ -15,15 +17,6 @@ export interface Item {
   wishlist?: boolean,
   wishlistQuantity?: number,
 }
-
-// export interface ChecklistItem {
-//   description?: string,
-//   itemType?: string,
-//   itemTypeId?: number,
-//   name: string,
-//   position?: number,
-//   section?: string,
-// }
 
 export interface ItemType {
   id: number,

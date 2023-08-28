@@ -1,14 +1,37 @@
-<!-- <div *ngIf="!isLoaded" class="loading-indicator">
+<div *ngIf="!isLoaded" class="loading-indicator">
     <mat-spinner aria-label="cargando"></mat-spinner>
-</div> -->
-<section *ngIf="isLoaded" class="new-collections new-collections-section">
+</div>
+<section *ngIf="isLoaded" class="new-collections">
     <div class="collections-list flex-full">
         <h1>
-            Nuevas colecciones <span class="text-secondary">({{ paginator.total }})</span>
+            Solicitudes de nuevas colecciones <span class="text-secondary">({{ paginator.total }})</span>
         </h1>
-        <p>
+
+        <div class="alert alert-warning">
+            <div class="alert-container">
+                <div class="alert-content">
+                    <div class="alert-title">Atención</div>
+                    <div class="alert-message">
+                        <p>
+                            Puedes revisar la lógica y funcionamiento para esta opción de realizar solicitudes de
+                            nuevas colecciones presionando en <a
+                                href="https://trello.com/c/N6Fg34jN/14-26-permitir-a-los-usuarios-agregar-colecciones"
+                                target="_blank" rel="noopener noreferrer">este enlace</a>.
+                        </p>
+                        <p>
+                            Ten en consideración que esta nueva funcionalidad, si bien se encuentra totalmente
+                            operativa, estamos monitoreando su correcto funcionamiento y podrían ocurrir problemas
+                            inesperados. Por lo que solicitamos tu ayuda para informarnos cuando detectes algo "fuerea
+                            de lo normal", o también, si tienes ideas o propuestas de mejora.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="wp">
             <a [routerLink]="['./add']" mat-raised-button color="accent">
-                <mat-icon>add</mat-icon> Agregar colección
+                <mat-icon>add</mat-icon> Nueva solicitud
             </a>
         </p>
         <div class="card">
@@ -17,18 +40,36 @@
                     <div class="controls-std-order">
                         <mat-form-field appearance="outline">
                             <mat-label>Ordenar por</mat-label>
-                            <mat-select (selectionChange)="onSort()" [(value)]="orderSelected">
+                            <mat-select [(value)]="orderSelected">
                                 <mat-option *ngFor="let option of ordersOptions" [value]="option.selectValue">
                                     {{ option.selectName }}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Filtrar por estado</mat-label>
+                            <mat-select [(value)]="statusSelected">
+                                <mat-option value="">Cualquiera</mat-option>
+                                <mat-option value="1">Para revisión</mat-option>
+                                <mat-option value="2">Requiere info</mat-option>
+                                <mat-option value="3">Cancelada</mat-option>
+                                <mat-option value="4">Para publicar</mat-option>
+                                <mat-option value="5">Publicada</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Filtrar por texto</mat-label>
+                            <input matInput type="text" [(ngModel)]="searchTxt">
+                        </mat-form-field>
                     </div>
                     <div class="controls-std-settings">
-                        <p>
+                        <!-- <p>
                             Registros {{ paginator.from | number:'':'es' }} - {{ paginator.to | number:'':'es' }} de {{
                             paginator.total | number:'':'es' }}
-                        </p>
+                        </p> -->
+                        <a (click)="onFilter()" class="btn" mat-raised-button color="accent">
+                            <mat-icon>manage_search</mat-icon> Filtrar
+                        </a>
                     </div>
                 </div>
             </div>
@@ -41,40 +82,31 @@
                                 <a [routerLink]="['./', col.id]">{{ col.name }}</a>
                             </h2>
                             <div class="custom-separator">
+                                <span>ID {{ col.id }}</span>
                                 <span>{{ col.year }}</span>
                                 <span>{{ col.publisher.data.name }}</span>
-                                <span>{{ col.checklistsQty }} itemizados</span>
-                                <span>{{ col.votesQty }} votos</span>
-                                <span>2 comentarios</span>
+                                <span>{{ col.votesQty }} voto<ng-container
+                                        *ngIf="col.votesQty !== 1">s</ng-container></span>
                             </div>
 
-                            <div class="alert alert-warning">
-                                <div class="alert-container">
-                                    <div class="alert-content">
-                                        <div class="alert-info">{{ col.statusName }}</div>
-                                    </div>
+                            <div class="alert-small-container">
+                                <div [class]="'alert-small new-collection-status-' + col.statusId">
+                                    {{ col.statusName }}
+                                </div>
+                                <div *ngIf="col.checklistsQty == 0 && [1,2].includes(col.statusId)"
+                                    class="alert-small alert-warning">
+                                    Requiere Itemizado
                                 </div>
                             </div>
 
                             <div class="nc-p">
                                 <h3>Descripción</h3>
-                                <p>{{ col.description }}</p>
+                                <p [innerHTML]="col.description || 'Sin información' | linebreaks"></p>
                             </div>
                             <div class="nc-p">
                                 <h3>Numeración general</h3>
-                                <p>{{ col.checklistDescription }}</p>
+                                <p [innerHTML]="col.checklistDescription || 'Sin información' | linebreaks"></p>
                             </div>
-                            <!-- <div class="nc-list">
-                                <h3>Itemizados enviados</h3>
-                                <ul>
-                                    <li>
-                                        <a href="">N1234, 30/06/2023</a>, enviado por <a href="">Juan Pérez</a>
-                                    </li>
-                                    <li>
-                                        <a href="">N2345, 30/06/2023</a>, enviado por <a href="">John Smith</a>
-                                    </li>
-                                </ul>
-                            </div> -->
                         </div>
                         <div class="nc-side">
                             <div class="nc-side-img">
@@ -90,85 +122,6 @@
                         </div>
                     </div>
                 </li>
-                <!-- <li class="list-nc-item">
-                    <div class="nc-container">
-                        <div class="nc-main flex-full2">
-                            <h2 class="nc-title">
-                                <a href="">Hello Kitty & Amigos - Las Aventuras de la Pandilla</a>
-                            </h2>
-                            <div class="custom-separator">
-                                <span>2022</span>
-                                <span>Panini</span>
-                                <span>0 comentario(s)</span>
-                            </div>
-                            <div class="nc-p">
-                                <h3>Descripción</h3>
-                                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Commodi quidem ex quos labore vero inventore asperiores recusandae alias cumque similique repellat nostrum corrupti, nihil, laborum voluptatem cupiditate doloremque error. Praesentium!</p>
-                            </div>
-                            <div class="nc-p">
-                                <h3>Numeración general</h3>
-                                <p>1-90, C1-C9, P1-P12, R1-R9, T1-T3</p>
-                            </div>
-                        </div>
-                        <div class="nc-side">
-                            <div class="nc-side-img">
-                                <a href="">
-                                    <img src="https://ik.imagekit.io/nfd3o4hfi/tr:n-il_col_wm/collections/collection_2161.jpg" alt="" srcset="">
-                                </a>
-                            </div>
-                            <div class="nc-side-votes">
-                                <button mat-raised-button color="accent">
-                                    <mat-icon>add</mat-icon> 17 Votos
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li class="list-nc-item">
-                    <div class="nc-container">
-                        <div class="nc-main flex-full2">
-                            <h2 class="nc-title">
-                                <a href="">FIFA World Cup Qatar 2022 - EXTRAS</a>
-                            </h2>
-                            <div class="custom-separator">
-                                <span>2022</span>
-                                <span>Panini</span>
-                                <span>10 comentario(s)</span>
-                            </div>
-                            <div class="nc-p">
-                                <h3>Descripción</h3>
-                                <p>Los Stickers Extra son un contenido adicional del producto Panini dedicado a la Copa Mundial de la FIFA Catar 2022, pero no forman parte de la colección principal de stickers y son insertados aleatoriamente en los sobres. Se diferencian de los stickers estándar de la colección, porque son imágenes en acción de los jugadores, sin numeración en la parte de atrás del sticker y tienen un nuevo logo de Panini. En total, hay 20 jugadores, cada uno con 4 versiones de colores: burdeos (color principal del evento), bronce, plata, oro (14 jugadores leyendas y 6 rookies)</p>
-                            </div>
-                            <div class="nc-p">
-                                <h3>Numeración general</h3>
-                                <p>personalizada</p>
-                            </div>
-                            <div class="nc-list">
-                                <h3>Itemizados enviados</h3>
-                                <ul>
-                                    <li>
-                                        <a href="">N1234, 30/06/2023</a>, enviado por <a href="">Juan Pérez</a>
-                                    </li>
-                                    <li>
-                                        <a href="">N2345, 30/06/2023</a>, enviado por <a href="">John Smith</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="nc-side">
-                            <div class="nc-side-img">
-                                <a href="">
-                                    <img src="https://ik.imagekit.io/nfd3o4hfi/tr:n-il_col_wm/collections/collection_2106.jpg" alt="" srcset="">
-                                </a>
-                            </div>
-                            <div class="nc-side-votes">
-                                <button mat-raised-button color="accent">
-                                    <mat-icon>add</mat-icon> 17 Votos
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </li> -->
             </ul>
 
             <div *ngIf="paginator.last_page > 1" class="pagination-wrapper">

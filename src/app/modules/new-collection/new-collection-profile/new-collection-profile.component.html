@@ -1,163 +1,254 @@
-<div class="nc-links">
-    <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
-        <mat-icon>arrow_back</mat-icon> Volver
-    </a>
-    <a class="btn" mat-stroked-button>
-        <mat-icon>share</mat-icon> Compartir
-    </a>
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
 </div>
-<div *ngIf="isLoaded" class="card">
-    <div class="nc-container">
-        <div class="nc-main flex-full">
-            <h2 class="nc-title">{{ newCollection.name }}</h2>
-            <div class="custom-separator">
-                <span>{{ newCollection.year }}</span>
-                <span>{{ newCollection.publisher.data.name }}</span>
-                <span>{{ votes.length }} votos</span>
-                <span>2 comentarios</span>
+<section *ngIf="isLoaded" class="new-collections">
+    <div class="nc-links">
+        <!-- <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+            <mat-icon>arrow_back</mat-icon> Volver
+        </a> -->
+        <button (click)="onBack()" type="button" mat-stroked-button color="primary">
+            <mat-icon>arrow_back</mat-icon> Volver
+        </button>
+        <a class="btn" (click)="onShare()" mat-stroked-button>
+            <mat-icon>share</mat-icon> Compartir
+        </a>
+        <p></p>
+    </div>
+    <div class="card">
+        <div class="nc-container">
+            <div class="nc-main flex-full">
+                <h2 class="nc-title">{{ newCollection.name }}</h2>
+                <div class="custom-separator">
+                    <span>ID {{ newCollection.id }}</span>
+                    <span>{{ newCollection.year }}</span>
+                    <span>{{ newCollection.publisher.data.name }}</span>
+                    <span>{{ votes.length }} voto<ng-container *ngIf="votes.length !== 1">s</ng-container></span>
+                </div>
+
+                <div [class]="'alert alert-' + statusClasses[newCollection.statusId]">
+                    <div class="alert-container">
+                        <div class="alert-content">
+                            <div class="alert-title">{{ newCollection.statusName }}</div>
+                            <div class="alert-message" [innerHTML]="newCollection.statusComment || '' | linebreaks">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nc-p">
+                    <h3>Descripción</h3>
+                    <p [innerHTML]="newCollection.description || 'Sin información' | linebreaks"></p>
+                </div>
+                <div *ngIf="authUser.isMod" class="nc-p">
+                    <h3>Detalles</h3>
+                    <p [innerHTML]="newCollection.details || 'Sin información' | linebreaks"></p>
+                </div>
+                <div class="nc-p">
+                    <h3>Numeración general</h3>
+                    <p [innerHTML]="newCollection.checklistDescription || 'Sin información' | linebreaks"></p>
+                </div>
+                <div *ngIf="authUser.isMod" class="nc-p">
+                    <h3>Fecha de publicación</h3>
+                    <p>{{ newCollection.released?.substring(0, 10) || 'S/I'}}</p>
+                </div>
+                <div class="nc-list">
+                    <h3>Itemizados enviados</h3>
+                    <p *ngIf="checklists.length == 0" class="danger">
+                        Aun no se han enviado itemizados para esta solicitud
+                    </p>
+                    <ul *ngIf="checklists.length > 0">
+                        <li *ngFor="let check of checklists">
+                            <span *ngIf="check.id == newCollection.checklistId" class="selected">Seleccionado</span>
+                            <a [routerLink]="['./']" (click)="onOpenChecklist(check.id)">N{{ check.id }}</a>, enviado
+                            por <a [routerLink]="['/user', check.user.data.id]" target="_blank">{{ check.user.data.displayName }}</a> el
+                            {{
+                            check.created * 1000 | date:'dd/MM/yy \'a las \' HH:mm \'hrs.\'' }}
+                            <button *ngIf="canSetChecklist && (check.id !== newCollection.checklistId)"
+                                mat-stroked-button (click)="onSetChecklist(check.id)" color="primary"
+                                [disabled]="isSaving">Seleccionar</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="nc-p">
+                    <h3>Solicitud realizada por</h3>
+                    <p><a [routerLink]="['/user', newCollection.user.data?.id]" target="_blank">{{ newCollection.user.data?.displayName
+                            }}</a>, el {{
+                        newCollection.created * 1000 | date:'dd/MM/yy \'a las \' HH:mm \'hrs.\'' }}</p>
+                </div>
+                <div class="nc-p">
+                    <h3>Votos recibidos ({{ votes.length }})</h3>
+                    <p>
+                        <ng-container *ngFor="let vote of votes; last as isLast">
+                            <a [routerLink]="['/user', vote.id]" target="_blank">{{ vote.displayName
+                                }}</a>
+                            <span *ngIf="!isLast">, </span>
+                        </ng-container>
+                    </p>
+                </div>
             </div>
+            <div class="nc-side">
+                <div class="nc-side-img">
+                    <h3>Portada propuesta</h3>
+                    <img [src]="newCollection.image.data?.base64" alt="Portada">
+                </div>
+                <div *ngIf="canVote" class="nc-side-votes">
+                    <button *ngIf="!hasVoted" (click)="onVote(true)" [disabled]="isSaving" mat-raised-button color="">
+                        <mat-icon>favorite</mat-icon> Votar
+                    </button>
+                    <button *ngIf="hasVoted" (click)="onVote(false)" [disabled]="isSaving" mat-raised-button
+                        color="accent">
+                        <mat-icon>favorite</mat-icon> Ya votaste
+                    </button>
+                </div>
+                <div class="nc-side-actions">
+                    <a *ngIf="canAddChecklist" [routerLink]="['/new-collection', newCollection.id, 'add-checklist']"
+                        mat-raised-button>
+                        Agregar itemizado
+                    </a>
+                    <a *ngIf="canUpdate" [routerLink]="['/new-collection', newCollection.id, 'edit']" mat-raised-button>
+                        Modificar solicitud
+                    </a>
+                    <button type="button" *ngIf="canSend" (click)="onSend()" mat-raised-button>Enviar a
+                        revisión</button>
+                    <button type="button" *ngIf="canSanction" (click)="onSanctionOptions()" mat-raised-button>Sancionar
+                        solicitud</button>
+                </div>
+                <div *ngIf="authUser.isMod && newCollection.cover.data?.base64" class="nc-side-img">
+                    <h3>Portada validada</h3>
+                    <img [src]="newCollection.cover.data?.base64" alt="Cover">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p></p>
+
+    <div class="card">
+        <h3>Comentarios ({{ comments.length }})</h3>
+        <div *ngIf="!isCommentsLoaded" class="loading-indicator">
+            <mat-spinner aria-label="cargando"></mat-spinner>
+        </div>
+        <p *ngIf="comments.length == 0">No se han registrado comentarios</p>
+        <ul *ngIf="comments.length" class="list-std">
+            <li *ngFor="let com of comments; trackBy: trackByComments" class="list-std-item"
+                [ngClass]="{'pro-account': com.user.data.accountTypeId == 2}">
+                <div class="list-item-main">
+                    <div class="list-item-image">
+                        <a [routerLink]="['/user', com.user.data.id]">
+                            <img [defaultImage]="defaultUserImage" [lazyLoad]="com.user.data.image || defaultUserImage"
+                                alt="Imagen de Perfil" crossorigin="anonymous">
+                        </a>
+                    </div>
+                    <div class="list-item-content flex-full">
+                        <div class="list-item-title">
+                            <a [routerLink]="['/user', com.user.data.id]">
+                                {{ com.user.data.displayName }}
+                                <span *ngIf="com.user.data.accountTypeId == 2" class="pro-label">PRO</span>
+                                <!-- <span class="positives-label">+8</span>
+                                <span class="negatives-label">-1</span> -->
+                            </a>
+                        </div>
+                        <div class="list-item-meta">
+                            {{ com.created * 1000 | date:'dd/MM/YYYY \'a las \'HH:mm \'hrs.\'' }}
+                        </div>
+                    </div>
+                </div>
+                <div class="list-item-desc">
+                    <p [innerHTML]="com.comment | linebreaks"></p>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div *ngIf="canComment" class="new-comment card">
+        <form [formGroup]="commentForm" (ngSubmit)="onComment()">
+            <h3>Agregar comentario</h3>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Comentario</mat-label>
+                <textarea #newComment matInput formControlName="newComment" maxlength="1000" rows="4"></textarea>
+                <mat-hint align="end">{{ newComment.value.length || 0 }}/1.000</mat-hint>
+            </mat-form-field>
 
             <div class="alert alert-warning">
                 <div class="alert-container">
                     <div class="alert-content">
-                        <div class="alert-info">{{ newCollection.statusName }}</div>
+                        <div class="alert-title">Atención</div>
+                        <div class="alert-message">Los comentarios no pueden ser modificados una vez registrados y son
+                            visibles públicamente.</div>
                     </div>
                 </div>
             </div>
 
-            <div class="nc-p">
-                <h3>Descripción</h3>
-                <p [innerHTML]="newCollection.description | linebreaks"></p>
-            </div>
-            <div class="nc-p">
-                <h3>Numeración general</h3>
-                <p [innerHTML]="newCollection.checklistDescription | linebreaks"></p>
-            </div>
-            <div class="nc-list">
-                <h3>Itemizados enviados</h3>
-                <p *ngIf="checklists.length == 0">
-                    Aun no se han enviado itemizados para esta solicitud
-                </p>
-                <ul *ngIf="checklists.length > 0">
-                    <li *ngFor="let check of checklists">
-                        <a [routerLink]="['./']" (click)="onOpenChecklist(check.id)">N{{ check.id }}</a>, enviado por <a
-                            [routerLink]="['/user', check.user.data.id]">{{ check.user.data.displayName }}</a> el {{
-                            check.created * 1000 | date:'dd/MM/yy \'a las \' HH:MM \'hrs.\'' }} 
-                    </li>
-                    <!-- <li>
-                        <a [routerLink]="['./']" (click)="onOpenChecklist()">N2345, 30/06/2023</a>, enviado por <a
-                            href="">John Smith</a>
-                    </li> -->
-                </ul>
-            </div>
-            <div class="nc-p">
-                <h3>Subido por</h3>
-                <p><a [routerLink]="['/user', newCollection.user.data?.id]">{{ newCollection.user.data?.displayName
-                        }}</a>, el {{
-                    newCollection.created * 1000 | date:'dd/MM/yy \'a las \' HH:MM \'hrs.\'' }}</p>
-            </div>
-            <div class="nc-p">
-                <h3>Actualizaciones</h3>
-                <ul>
-                    <li>
-                        <a href="">Nombre usuario 2</a>, el 01/07/2023 a las 20:54 hrs.
-                    </li>
-                    <li>
-                        <a href="">Nombre usuario 3</a>, el 02/07/2023 a las 20:54 hrs.
-                    </li>
-                </ul>
-            </div>
-            <div class="nc-p">
-                <h3>Votos recibidos ({{ votes.length }})</h3>
-                <p>
-                    <ng-container *ngFor="let vote of votes; last as isLast">
-                        <a [routerLink]="['/user', vote.id]">{{ vote.displayName
-                        }}</a>
-                        <span *ngIf="!isLast">, </span> 
-                    </ng-container>
-                </p>
-            </div>
-        </div>
-        <div class="nc-side">
-            <div class="nc-side-img">
-                <a href="">
-                    <img [src]="newCollection.image.data?.base64" alt="Portada">
-                </a>
-            </div>
-            <div class="nc-side-votes">
-                <button *ngIf="!hasVoted" (click)="onVote(true)" [disabled]="isSaving" mat-raised-button color="">
-                    <mat-icon>add</mat-icon> Vota para que se agregue esta colección!
-                </button>
-                <button *ngIf="hasVoted" (click)="onVote(false)" [disabled]="isSaving" mat-raised-button color="accent">
-                    <mat-icon>check</mat-icon> Ya votaste por esta colección
-                </button>
-            </div>
-            <div class="nc-side-actions">
-                <a [routerLink]="['/new-collection', newCollection.id, 'add-checklist']" mat-raised-button>
-                    Agregar propuesta de itemizado
-                </a>
-            </div>
-        </div>
+            <button mat-raised-button color="accent" [disabled]="isSaving || commentForm.invalid">
+                Agregar
+            </button>
+        </form>
     </div>
-</div>
+</section>
 
-<p></p>
+<ng-template #sendDialog>
+    <h2 mat-dialog-title>Enviar a revisión</h2>
+    <div matDialogContent>
+        <p>Agrega un comentario y envía tu solicitud a revisión. Recuerda que una vez enviada no podrás modificar los
+            datos de ésta, así que asegúrate de haber dado respuesta a lo indicado en la revisión anterior.</p>
+        <form [formGroup]="sendForm">
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Comentario</mat-label>
+                <textarea #sendComment matInput formControlName="sendComment" maxlength="250" rows="4"></textarea>
+                <mat-hint align="end">{{sendComment.value.length || 0}}/250</mat-hint>
+            </mat-form-field>
 
-<div class="card">
-    <h3>Comentarios</h3>
-    <ul class="list-std">
-        <li class="list-std-item pro-account">
-            <div class="list-item-main">
-                <div class="list-item-image">
-                    <a [routerLink]="['/user', 1]">
-                        <img src="/assets/img/profile_user.png" alt="Imagen de Perfil" crossorigin="anonymous">
-                    </a>
-                </div>
-                <div class="list-item-content flex-full">
-                    <div class="list-item-title">
-                        <a [routerLink]="['/user', 1]">
-                            Nombre de usuario
-                            <span class="pro-label">PRO</span>
-                            <span class="positives-label">+8</span>
-                            <span class="negatives-label">-1</span>
-                        </a>
-                    </div>
-                    <div class="list-item-meta">
-                        19/05/2023 a las 23:05 hrs.
-                    </div>
-                    <div class="list-item-desc evaluation-positive">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor quae ullam quo similique,
-                            reiciendis sed ea vel quia, eum neque tempore molestias repudiandae quam nam, reprehenderit
-                            quidem iure asperiores voluptatum.</p>
+            <div class="sanction-actions">
+                <button type="button" mat-raised-button color="accent" [disabled]="isSaving || sendForm.invalid"
+                    (click)="onSanction('send')">Enviar</button>
+            </div>
+        </form>
+    </div>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close [disabled]="isSaving">Cerrar sin enviar</button>
+    </mat-dialog-actions>
+</ng-template>
+
+<ng-template #sanctionOptionsDialog>
+    <h2 mat-dialog-title>Sancionar solicitud</h2>
+    <div matDialogContent>
+        <p>Define el nuevo estado para la solicitud agregando un comentario y eligiendo la opción
+            respectiva.</p>
+        <form [formGroup]="sanctionForm">
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Comentario</mat-label>
+                <textarea #sanctionComment matInput formControlName="sanctionComment" maxlength="250" rows="4"></textarea>
+                <mat-hint align="end">{{sanctionComment.value.length || 0}}/250</mat-hint>
+            </mat-form-field>
+
+            <div class="sanction-actions">
+                <button type="button" mat-raised-button [disabled]="isSaving || sanctionForm.invalid"
+                    (click)="onSanction('info')">
+                    <mat-icon>info</mat-icon> Requiere info
+                </button>
+                <button type="button" mat-raised-button color="warn" [disabled]="isSaving || sanctionForm.invalid"
+                    (click)="onSanction('reject')">
+                    <mat-icon>close</mat-icon> Rechaza
+                </button>
+                <button type="button" mat-raised-button color="accent"
+                    [disabled]="isSaving || sanctionForm.invalid || !newCollection.checklistId"
+                    (click)="onSanction('ok')">
+                    <mat-icon>done</mat-icon> Aprueba
+                </button>
+            </div>
+
+            <div *ngIf="!newCollection.checklistId" class="alert alert-info">
+                <div class="alert-container">
+                    <div class="alert-content">
+                        <div class="alert-message">Para "Aprobar" una solicitud, necesariamente debe tener seleccionado
+                            un itemizado de los propuestos.</div>
                     </div>
                 </div>
             </div>
-        </li>
-        <li class="list-std-item">
-            <div class="list-item-main">
-                <div class="list-item-image">
-                    <a [routerLink]="['/user', 1]">
-                        <img src="/assets/img/profile_user.png" alt="Imagen de Perfil" crossorigin="anonymous">
-                    </a>
-                </div>
-                <div class="list-item-content flex-full">
-                    <div class="list-item-title">
-                        <a [routerLink]="['/user', 1]">
-                            Nombre de usuario
-                            <span class="positives-label">+8</span>
-                            <span class="negatives-label">-1</span>
-                        </a>
-                    </div>
-                    <div class="list-item-meta">
-                        19/05/2023 a las 23:05 hrs.
-                    </div>
-                    <div class="list-item-desc evaluation-positive">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor quae ullam quo similique,
-                            reiciendis sed ea vel quia, eum neque tempore molestias repudiandae quam nam, reprehenderit
-                            quidem iure asperiores voluptatum.</p>
-                    </div>
-                </div>
-            </div>
-        </li>
-    </ul>
-</div>
+        </form>
+    </div>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close [disabled]="isSaving">Cerrar sin sancionar</button>
+    </mat-dialog-actions>
+</ng-template>

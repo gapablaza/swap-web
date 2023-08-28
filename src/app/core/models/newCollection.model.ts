@@ -5,11 +5,12 @@ import { User } from './user.model';
 export interface NewCollection {
   checklistDescription: string | null;
   checklistId: number | null;
-  cover?: {
+  cover: {
     data: Image | null
   };
   created: number;
   description: string | null;
+  details: string | null;
   id: number;
   image: {
     data: Image | null
@@ -19,6 +20,7 @@ export interface NewCollection {
     data: Publisher
   };
   released?: string | null;
+  statusComment?: string | null;
   statusId: number;
   statusName: string;
   updated: number;
@@ -51,4 +53,14 @@ export interface ChecklistItem {
   position?: number;
 
   itemTypeDescription?: string;
+}
+
+export interface NewCollectionComment {
+  comment: string;
+  created: number;
+  id: number;
+  updated: number;
+  user: {
+    data: User
+  }
 }

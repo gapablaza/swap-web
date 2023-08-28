@@ -1,0 +1,83 @@
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="moderation moderation-section">
+    <div class="moderation-media flex-full">
+        <h1>Nuevas colecciones</h1>
+
+        <ng-container *ngIf="newCollections.length">
+            <h2>Para publicar ({{ newCollections.length }})</h2>
+            <div class="table-responsive">
+                <table class="table-std">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>ID</th>
+                            <th>Colección</th>
+                            <th>Editorial</th>
+                            <th>Año</th>
+                            <th>Votos</th>
+                            <th>Subido por</th>
+                            <th>F. subida</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let col of newCollections; let i = index;">
+                            <td>{{ i+1 }}</td>
+                            <td>{{ col.id }}</td>
+                            <td>{{ col.name }}</td>
+                            <td>{{ col.publisher.data.name }}</td>
+                            <td>{{ col.year }}</td>
+                            <td>{{ col.votesQty }}</td>
+                            <td>
+                                <a [routerLink]="['/user', col.user.data?.id]" target="_blank">
+                                    {{ col.user.data?.displayName }}
+                                </a>
+                            </td>
+                            <td>{{ col.created * 1000 | date:'dd/MM/YYYY HH:MM \'hrs.\'' }}</td>
+                            <td>
+                                <a class="btn" mat-flat-button [routerLink]="['/new-collection/', col.id]" target="_blank">
+                                    <mat-icon>link</mat-icon> Ver
+                                </a>
+                                <button (click)="onPublish(col.id)" [disabled]="isSaving" mat-raised-button
+                                    color="accent" aria-label="Publicar colección">
+                                    <mat-icon>done</mat-icon> Confirmar
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ng-container>
+
+        <div *ngIf="!newCollections.length" class="card">
+            <div class="empty-content">
+                <h2>(｡◕‿‿◕｡)</h2>
+                <p>No hay solicitudes de nuevas colecciones para publicar.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<ng-template let-data #publishDialog>
+    <h2 mat-dialog-title>Publicar colección</h2>
+    <div matDialogContent>
+        <p>Ingresa la frase de seguridad para confirmar la publicación de esta colección. Esta acción no se puede deshacer.</p>
+        <form [formGroup]="publishForm">
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Frase de seguridad</mat-label>
+                <input matInput #security formControlName="security" maxlength="100">
+                <!-- <textarea #security matInput formControlName="security" maxlength="100" rows="4"></textarea> -->
+            </mat-form-field>
+
+            <div class="sanction-actions">
+                <button type="button" mat-raised-button color="accent" [disabled]="isSaving || publishForm.invalid"
+                    (click)="onConfirm(data.id)">Publicar</button>
+            </div>
+        </form>
+    </div>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close [disabled]="isSaving">Cerrar sin publicar</button>
+    </mat-dialog-actions>
+</ng-template>

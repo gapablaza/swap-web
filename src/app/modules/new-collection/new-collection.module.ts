@@ -6,7 +6,6 @@ import { MaterialModule } from 'src/app/shared/material.module';
 import { NewCollectionComponent } from './new-collection.component';
 import { NewCollectionAddComponent } from './new-collection-add/new-collection-add.component';
 import { NewCollectionProfileComponent } from './new-collection-profile/new-collection-profile.component';
-import { NewCollectionEditComponent } from './new-collection-edit/new-collection-edit.component';
 import { NewCollectionRoutingModule } from './new-collection-routing.module';
 import { NewCollectionChecklistComponent } from './new-collection-checklist/new-collection-checklist.component';
 import { NewCollectionImageComponent } from './new-collection-image/new-collection-image.component';
@@ -19,7 +18,6 @@ import { NewChecklistComponent } from './new-checklist/new-checklist.component';
     NewCollectionComponent,
     NewCollectionAddComponent,
     NewCollectionProfileComponent,
-    NewCollectionEditComponent,
     NewCollectionChecklistComponent,
     NewCollectionImageComponent,
     NewCollectionListComponent,

@@ -18,7 +18,6 @@ export class NewCollectionChecklistComponent implements OnInit {
     'itemTypeDescription',
     'description',
     'section',
-    // 'position',
   ];
   dataSource = new MatTableDataSource<ChecklistItem>([]);
   @ViewChild(MatSort, { static: false }) set content(sort: MatSort) {

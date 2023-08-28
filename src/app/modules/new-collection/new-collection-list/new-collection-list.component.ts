@@ -2,7 +2,7 @@ import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, catchError, filter, of, switchMap, take, tap } from 'rxjs';
+import { Subscription, catchError, of, switchMap, take, tap } from 'rxjs';
 
 import { AuthService, NewCollection, NewCollectionService, Pagination, User } from 'src/app/core';
 import { UIService } from 'src/app/shared';
@@ -45,6 +45,7 @@ export class NewCollectionListComponent implements OnInit, OnDestroy {
     },
   ];
   orderSelected = 'requested-DESC';
+  statusSelected = '';
 
   searchedTxt = '';
   searchTxt = '';
@@ -62,10 +63,7 @@ export class NewCollectionListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     registerLocaleData(es);
-
     this.authUser = this.authSrv.getCurrentUser();
-    console.log(this.authUser);
-
 
     this.route.queryParamMap
       .pipe(
@@ -75,6 +73,7 @@ export class NewCollectionListComponent implements OnInit, OnDestroy {
           this.searchedTxt = '';
           this.pageSelected = 1;
           this.orderSelected = 'requested-DESC';
+          this.statusSelected = '';
           this.newCollections = [];
           this.paginator = {} as Pagination;
 
@@ -82,6 +81,7 @@ export class NewCollectionListComponent implements OnInit, OnDestroy {
           const query = params.get('q');
           const page = params.get('page');
           const sortBy = params.get('sortBy');
+          const filterByStatus = params.get('status') || '';
 
           if (query && query.trim().length >= 2) {
             this.searchTxt = query.trim();
@@ -98,20 +98,13 @@ export class NewCollectionListComponent implements OnInit, OnDestroy {
           );
           this.orderSelected =
             tempOrder >= 0 ? this.ordersOptions[tempOrder].selectValue : 'requested-DESC';
+          this.statusSelected = [1, 2, 3, 4, 5].includes(Number(filterByStatus)) ? filterByStatus : '';
         }),
-        // filter((params) => {
-        //   if ((params.get('q') || '').trim().length >= 2) {
-        //     return true;
-        //   } else {
-        //     this.showSerchHint = true;
-        //     this.isLoaded = true;
-        //     return false;
-        //   }
-        // }),
         switchMap((params) => {
           return this.newColSrv
             .list({
               query: this.searchedTxt,
+              status: this.statusSelected == '' ? undefined : Number(this.statusSelected), 
               page: this.pageSelected,
               sortBy: this.orderSelected,
             })
@@ -131,7 +124,6 @@ export class NewCollectionListComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (result) => {
-          console.log(result);
           this.newCollections = result.newCollections;
           this.paginator = result.paginator;
           this.isLoaded = true;
@@ -147,15 +139,49 @@ export class NewCollectionListComponent implements OnInit, OnDestroy {
     return item.id;
   }
 
-  onSort() {
-    let actualParams = this.route.snapshot.queryParams;
+  // onSort() {
+  //   let actualParams = this.route.snapshot.queryParams;
     
+  //   this.router.navigate(['/new-collection'], {
+  //     relativeTo: this.route,
+  //     queryParams: {
+  //       ...actualParams,
+  //       sortBy: this.orderSelected,
+  //     },
+  //   });
+  // }
+
+  // onFilterByStatus() {
+  //   let actualParams = this.route.snapshot.queryParams;
+    
+  //   this.router.navigate(['/new-collection'], {
+  //     relativeTo: this.route,
+  //     queryParams: {
+  //       ...actualParams,
+  //       status: this.statusSelected,
+  //     },
+  //   });
+  // }
+
+  onFilter() {
+    if (this.searchTxt.trim().length == 1) {
+      this.uiSrv.showSnackbar('Debes ingresasr al menos 2 caracteres para filtrar por texto');
+      return;
+    }
+
+    let actualParams = this.route.snapshot.queryParams;
     this.router.navigate(['/new-collection'], {
       relativeTo: this.route,
       queryParams: {
         ...actualParams,
-        sortBy: this.orderSelected,
+        ...(this.searchTxt.trim().length > 1) && { q: this.searchTxt.trim() },
+        ...(this.searchTxt.trim().length <= 1) && { q: null },
+        ...(this.statusSelected !== '') && { status: this.statusSelected },
+        ...(this.statusSelected == '') && { status: null },
+        ...{ sortBy: this.orderSelected },
+        page: null,
       },
+      queryParamsHandling: 'merge',
     });
   }
 

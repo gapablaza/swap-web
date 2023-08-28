@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, combineLatest, take } from 'rxjs';
-
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 import * as XLSX from 'xlsx';
+
 import {
   AuthService,
   ChecklistItem,
@@ -14,8 +16,6 @@ import {
   User,
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
 
 export interface CheckItem {
   NRO: string;
@@ -35,9 +35,12 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
   authUser: User = {} as User;
   publishers: Publisher[] = [];
   newCollection: NewCollection = {} as NewCollection;
+  votesQty = 0;
 
   types: ItemType[] = [];
   validTypes: number[] = [];
+
+  canAddChecklist = false;
 
   errors: string[] = [];
   checklist: ChecklistItem[] = [];
@@ -48,7 +51,6 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
     'itemTypeDescription',
     'description',
     'section',
-    // 'position',
   ];
   dataSource = new MatTableDataSource<ChecklistItem>([]);
   @ViewChild(MatSort, { static: false }) set content(sort: MatSort) {
@@ -72,29 +74,23 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authUser = this.authSrv.getCurrentUser();
 
-    // let pubsSub = this.newColSrv
-    //   .getPublishers()
-    //   .pipe(take(1))
-    //   .subscribe((pubs) => {
-    //     this.publishers = pubs.sort((a, b) => {
-    //       return (a.name || '').toLocaleLowerCase() >
-    //         (b.name || '').toLocaleLowerCase()
-    //         ? 1
-    //         : -1;
-    //     });
-    //   });
-    // this.subs.add(pubsSub);
-
     let dataSub = combineLatest([
-      this.newColSrv
-        .get(Number(this.activatedRoute.snapshot.params['id'])),
-      this.itemSrv.getTypes()
+      this.newColSrv.get(Number(this.activatedRoute.snapshot.params['id'])),
+      this.itemSrv.getTypes(),
     ])
       .pipe(take(1))
       .subscribe(([colResp, typeResp]) => {
         this.newCollection = colResp.newCollection;
-        this.types = typeResp;
-        this.validTypes = typeResp.map(a => a.id);
+        this.votesQty = colResp.votes.length;
+        this.types = typeResp.sort((a, b) => a.sort - b.sort);
+        this.validTypes = typeResp.map((a) => a.id);
+
+        // Define si puede agregar un itemizado
+        this.canAddChecklist =
+          this.authUser.daysSinceRegistration >= 30 &&
+          ([1, 2].includes(this.newCollection.statusId) ||
+            ([1, 2, 3, 4].includes(this.newCollection.statusId) &&
+              this.authUser.id == 1));
 
         this.isLoaded = true;
       });
@@ -167,9 +163,7 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
         // se valida que el NRO no está repetido
         if (uniqueNro.includes(String(row.NRO))) {
           this.errors.push(
-            `Celda A${
-              rowNumber + 1
-            } está repetido y debe ser único.`
+            `Celda A${rowNumber + 1} está repetido y debe ser único.`
           );
         } else {
           uniqueNro.push(String(row.NRO));
@@ -206,17 +200,14 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
           itemTypeId: Number(row.TIPO),
           name: row.NRO,
           position: row.__rowNum__,
-          section: row.SECCION
+          section: row.SECCION,
         });
         rowNumber++;
       });
 
-      console.log(this.checklist);
       if (this.errors.length == 0) {
         this.dataSource.data = this.checklist;
       }
-
-      // const dataString = JSON.stringify(jsonData);
     };
     reader.readAsBinaryString(file);
   }
@@ -248,7 +239,7 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
   getTIPOName(type: any): string {
     if (!Number.isInteger(type)) return '';
     if (!this.validTypes.includes(type)) return '';
-    return this.types.find(i => i.id == Number(type))?.name || '';
+    return this.types.find((i) => i.id == Number(type))?.name || '';
   }
 
   cleanFileInput(file: HTMLInputElement): void {
@@ -262,20 +253,30 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
     if (this.errors.length > 0) return;
 
     this.isSaving = true;
-    this.newColSrv.addChecklist(
-      this.newCollection.id, this.checklist
-    )
-    .pipe(take(1))
-    .subscribe({
-      next: (resp) => {
-        this.uiSrv.showSuccess(resp.message);
-        this.router.navigate(['new-collection/', this.newCollection.id]);
-      },
-      error: (error) => {
-        console.log('saveChecklist error: ', error);
-        this.isSaving = false;
-      },
-    })
+    this.newColSrv
+      .addChecklist(this.newCollection.id, this.checklist)
+      .pipe(take(1))
+      .subscribe({
+        next: (resp) => {
+          this.uiSrv.showSuccess(resp.message);
+          this.router.navigate(['new-collection/', this.newCollection.id]);
+        },
+        error: (error) => {
+          console.log('saveChecklist error: ', error);
+          this.isSaving = false;
+        },
+      });
+  }
+
+  downloadTemplate(): void {
+    let link = document.createElement('a');
+    let excelFile = 'intercambia v20230826';
+    link.setAttribute('type', 'hidden');
+    link.href = `/assets/files/${excelFile}.xlsx`;
+    link.download = `${excelFile}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   }
 
   ngOnDestroy(): void {

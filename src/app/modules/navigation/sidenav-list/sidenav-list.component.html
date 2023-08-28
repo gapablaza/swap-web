@@ -105,13 +105,13 @@
           </div>
         </div>
 
-        <div class="vertical-navigation-basic-item">
+        <div *ngIf="authUser.isMod" class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
-            <a [routerLink]="['./collaborate/']"class="vertical-navigation-item">
-              <mat-icon>volunteer_activism</mat-icon>
+            <a routerLink="/new-collection" class="vertical-navigation-item">
+              <mat-icon>library_add</mat-icon>
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
-                  <span>Colabora</span>
+                  <span>Agregar colección</span>
                 </div>
               </div>
             </a>
@@ -120,13 +120,11 @@
 
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
-            <!-- <a href="https://goo.gl/forms/LqbSCNkr36be0PAc2" target="_blank" rel="noopener noreferrer"
-              class="vertical-navigation-item"> -->
-            <a routerLink="/new-collection" class="vertical-navigation-item">
-              <mat-icon>library_add</mat-icon>
+            <a [routerLink]="['./collaborate/']"class="vertical-navigation-item">
+              <mat-icon>volunteer_activism</mat-icon>
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
-                  <span>Agregar colección</span>
+                  <span>Colabora</span>
                 </div>
               </div>
             </a>
@@ -169,6 +167,19 @@
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
                   <span>Media</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="vertical-navigation-basic-item">
+          <div class="vertical-navigation-item-wrapper">
+            <a routerLink="/mod/publish" class="vertical-navigation-item">
+              <mat-icon>publish</mat-icon>
+              <div class="vertical-navigation-item-title-wrapper">
+                <div class="vertical-navigation-item-title">
+                  <span>Publicar</span>
                 </div>
               </div>
             </a>

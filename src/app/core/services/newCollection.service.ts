@@ -5,6 +5,7 @@ import {
   ChecklistItem,
   NewChecklist,
   NewCollection,
+  NewCollectionComment,
   Pagination,
   Publisher,
   User,
@@ -17,9 +18,7 @@ import { HttpParams } from '@angular/common/http';
 export class NewCollectionService {
   constructor(private apiSrv: ApiService) {}
 
-  get(
-    id: number
-  ): Observable<{
+  get(id: number): Observable<{
     newCollection: NewCollection;
     checklists: NewChecklist[];
     votes: User[];
@@ -41,24 +40,98 @@ export class NewCollectionService {
     );
   }
 
+  getComments(id: number): Observable<NewCollectionComment[]> {
+    return this.apiSrv
+      .get(`/v3/newCollections/${id}/comments`)
+      .pipe(map((resp: { data: NewCollectionComment[] }) => resp.data));
+  }
+
+  addComment(
+    collectionId: number,
+    newComment: string
+  ): Observable<{ message: string; newId: number }> {
+    return this.apiSrv
+      .post(`/v3/newCollections/${collectionId}/comments`, {
+        comment: newComment,
+      })
+      .pipe(map((data: { message: string; newId: number }) => data));
+  }
+
   add(data: {
     name: string;
     year: number;
+    released?: string;
     publisher: number;
-    description?: string;
+    description: string;
+    details?: string;
     numbers?: string;
-    cover: number;
+    image: number;
+    cover?: number;
   }): Observable<{ message: string; newId: number }> {
     return this.apiSrv
       .post('/v3/newCollections', {
         title: data.name,
         year: data.year,
+        released: data.released ? data.released : null,
         publisher: data.publisher,
-        description: data.description ? data.description : null,
+        description: data.description,
+        details: data.details ? data.details : null,
         numbers: data.numbers ? data.numbers : null,
-        cover: data.cover,
+        image: data.image,
+        cover: data.cover ? data.cover : null,
       })
       .pipe(map((data: { message: string; newId: number }) => data));
+  }
+
+  update(data: {
+    id: number;
+    name: string;
+    year: number;
+    released?: string;
+    publisher: number;
+    description: string;
+    details?: string;
+    numbers?: string;
+    image: number;
+    cover?: number;
+  }): Observable<string> {
+    return this.apiSrv
+      .put(`/v3/newCollections/${data.id}`, {
+        title: data.name,
+        year: data.year,
+        released: data.released ? data.released : null,
+        publisher: data.publisher,
+        description: data.description,
+        details: data.details ? data.details : null,
+        numbers: data.numbers ? data.numbers : null,
+        image: data.image,
+        cover: data.cover ? data.cover : null,
+      })
+      .pipe(map((data: { message: string }) => data.message));
+  }
+
+  sanction(data: {
+    newCollectionId: number;
+    newStatus: number;
+    comment: string;
+  }): Observable<string> {
+    return this.apiSrv
+      .put(`/v3/newCollections/${data.newCollectionId}/sanction`, {
+        comment: data.comment,
+        sanction: data.newStatus,
+      })
+      .pipe(map((data: { message: string }) => data.message));
+  }
+
+  setChecklist(data: {
+    newCollectionId: number;
+    checklistId: number;
+  }): Observable<string> {
+    return this.apiSrv
+      .put(`/v3/newCollections/${data.newCollectionId}/setChecklist`, {
+        checklist: data.checklistId,
+      })
+      .pipe(map((data: { message: string }) => data.message));
   }
 
   getPublishers(): Observable<Publisher[]> {
@@ -100,6 +173,17 @@ export class NewCollectionService {
     return this.apiSrv
       .post(`/v3/newCollections/${collectionId}/checklist`, {
         items: JSON.stringify(newItems),
+      })
+      .pipe(map((data: { message: string; newId: number }) => data));
+  }
+
+  publish(
+    newCollectionId: number,
+    security: string
+  ): Observable<{ message: string; newId: number }> {
+    return this.apiSrv
+      .post(`/v3/newCollections/${newCollectionId}/publish`, {
+        security: security,
       })
       .pipe(map((data: { message: string; newId: number }) => data));
   }

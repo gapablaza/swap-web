@@ -1,122 +1,168 @@
-<div class="nc-links">
-    <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
-        <mat-icon>arrow_back</mat-icon> Volver
-    </a>
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
 </div>
-<div *ngIf="isLoaded" class="card">
-    <div class="nc-container">
-        <div class="nc-main flex-full">
-            <h2 class="nc-title">{{ newCollection.name }}</h2>
-            <div class="custom-separator">
-                <span>{{ newCollection.year }}</span>
-                <span>{{ newCollection.publisher.data.name }}</span>
-                <!-- <span>{{ votes.length }} votos</span>
-                <span>2 comentarios</span> -->
-            </div>
-
-            <div class="alert alert-warning">
-                <div class="alert-container">
-                    <div class="alert-content">
-                        <div class="alert-info">{{ newCollection.statusName }}</div>
-                    </div>
+<section *ngIf="isLoaded && canAddChecklist" class="new-collections">
+    <div class="nc-links">
+        <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+            <mat-icon>arrow_back</mat-icon> Volver
+        </a>
+        <p></p>
+    </div>
+    <h1>Agregar itemizado</h1>
+    <div class="card">
+        <div class="nc-container">
+            <div class="nc-main flex-full">
+                <h2 class="nc-title">{{ newCollection.name }}</h2>
+                <div class="custom-separator">
+                    <span>ID {{ newCollection.id }}</span>
+                    <span>{{ newCollection.year }}</span>
+                    <span>{{ newCollection.publisher.data.name }}</span>
+                    <span>{{ votesQty }} voto<ng-container *ngIf="votesQty !== 1">s</ng-container></span>
                 </div>
-            </div>
 
-            <div class="nc-p">
-                <h3>Numeración general</h3>
-                <p [innerHTML]="newCollection.checklistDescription | linebreaks"></p>
-            </div>
-            <div class="nc-p">
-                <h3>Archivo con itemizado</h3>
-                <p>
-                    <input type="file" class="d-none" accept=".xlsx, .xls" (change)="onFileChange($event)" #fileUpload>
-                    <button *ngIf="fileUpload.value == ''" mat-raised-button color="primary"
-                        (click)="fileUpload.click()">
-                        <mat-icon>upload</mat-icon> Seleccionar .xls o .xlsx
-                    </button>
-                    <span *ngIf="fileUpload.value !== ''">{{ fileName }}</span>
-                    <button *ngIf="fileUpload.value !== ''" [disabled]="isSaving" mat-stroked-button color="warn"
-                        (click)="cleanFileInput(fileUpload)">
-                        <mat-icon>delete</mat-icon> Quitar archivo
-                    </button>
-                </p>
-            </div>
-
-            <div *ngIf="errors.length" class="alert alert-warning">
-                <div class="alert-container">
-                    <div class="alert-content">
-                        <div class="alert-info">
-                            <ul class="error-list">
-                                <li *ngFor="let error of errors">{{ error }}</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <ng-container *ngIf="errors.length == 0 && checklist.length > 0">
                 <div class="alert alert-info">
                     <div class="alert-container">
                         <div class="alert-content">
-                            <div class="alert-info">Revisa que tu propuesta de itemizado obtenida desde el archivo EXCEL
-                                seleccionado ({{ checklist.length }} ítems) se visualice correctamente antes de
-                                continuar. Una vez registrada una propuesta de itemizado no se puede modificar.</div>
+                            <div class="alert-title">Tipos de ítems disponibles</div>
+                            <div class="alert-message">
+                                <p>
+                                    Los siguientes son los actuales tipos de ítems vigentes, que puedes utilizar al
+                                    momento de enviar tu propuesta de itemizado para esta solicitud de colección:
+                                </p>
+                                <ul>
+                                    <li *ngFor="let type of types">
+                                        ID {{ type.id }}: {{ type.name }}
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="nc-p">
-                    <h3>Itemizado Propuesto</h3>
-                    <table mat-table matSort [dataSource]="dataSource" class="collection-items-table mat-elevation-z8">
-                        <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nro. </th>
-                            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="itemTypeId">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo - ID</th>
-                            <td mat-cell *matCellDef="let element"> {{element.itemTypeId}} </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="itemTypeDescription">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo - Nombre</th>
-                            <td mat-cell *matCellDef="let element"> {{element.itemTypeDescription}} </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="description">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Título </th>
-                            <td mat-cell *matCellDef="let element"> {{element.description}} </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="section">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Sección </th>
-                            <td mat-cell *matCellDef="let element"> {{element.section}} </td>
-                        </ng-container>
-
-                        <!-- <ng-container matColumnDef="position">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Orden </th>
-                                <td mat-cell *matCellDef="let element"> {{element.position}} </td>
-                            </ng-container> -->
-
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                    </table>
+                    <h3>Numeración general</h3>
+                    <p [innerHTML]="newCollection.checklistDescription || 'Sin información' | linebreaks"></p>
                 </div>
-
                 <div class="nc-p">
-                    <!-- <h3>Archivo con itemizado</h3> -->
+                    <h3>Formato para subida</h3>
                     <p>
-                        <button mat-stroked-button [disabled]="isSaving" color="warn"
-                            (click)="cleanFileInput(fileUpload)">
-                            <mat-icon>delete</mat-icon> Quitar archivo
-                        </button>
-                        <button mat-raised-button [disabled]="isSaving" color="accent" (click)="saveChecklist()">
-                            <mat-icon>save</mat-icon> Enviar itemizado
+                        <button type="button" mat-raised-button color="" (click)="downloadTemplate()">
+                            <mat-icon>download</mat-icon> Descargar plantilla
                         </button>
                     </p>
                 </div>
-            </ng-container>
+                <div class="nc-p">
+                    <h3>Archivo con itemizado</h3>
+                    <p>
+                        <input type="file" class="d-none" accept=".xlsx, .xls" (change)="onFileChange($event)"
+                            #fileUpload>
+                        <button *ngIf="fileUpload.value == ''" mat-raised-button color="primary"
+                            (click)="fileUpload.click()">
+                            <mat-icon>upload</mat-icon> Seleccionar .xls o .xlsx
+                        </button>
+                        <span *ngIf="fileUpload.value !== ''">{{ fileName }}</span>
+                        <button *ngIf="fileUpload.value !== ''" [disabled]="isSaving" mat-stroked-button color="warn"
+                            (click)="cleanFileInput(fileUpload)">
+                            <mat-icon>delete</mat-icon> Quitar archivo
+                        </button>
+                    </p>
+                </div>
 
+                <div *ngIf="errors.length" class="alert alert-warning">
+                    <div class="alert-container">
+                        <div class="alert-content">
+                            <div class="alert-info">
+                                <ul class="error-list">
+                                    <li *ngFor="let error of errors">{{ error }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <ng-container *ngIf="errors.length == 0 && checklist.length > 0">
+                    <div class="alert alert-info">
+                        <div class="alert-container">
+                            <div class="alert-content">
+                                <div class="alert-info">Revisa que tu propuesta de itemizado obtenida desde el archivo
+                                    EXCEL
+                                    seleccionado ({{ checklist.length }} ítems) se visualice correctamente antes de
+                                    continuar. Una vez registrada una propuesta de itemizado no se puede modificar.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nc-p">
+                        <h3>Itemizado Propuesto</h3>
+                        <table mat-table matSort [dataSource]="dataSource"
+                            class="collection-items-table mat-elevation-z8">
+                            <ng-container matColumnDef="name">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Nro. </th>
+                                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="itemTypeId">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo - ID</th>
+                                <td mat-cell *matCellDef="let element"> {{element.itemTypeId}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="itemTypeDescription">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo - Nombre</th>
+                                <td mat-cell *matCellDef="let element"> {{element.itemTypeDescription}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="description">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Título </th>
+                                <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="section">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Sección </th>
+                                <td mat-cell *matCellDef="let element"> {{element.section}} </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </div>
+
+                    <div class="nc-p checklist-actions">
+                        <!-- <h3>Archivo con itemizado</h3> -->
+                        <p>
+                            <button mat-stroked-button [disabled]="isSaving" color="warn"
+                                (click)="cleanFileInput(fileUpload)">
+                                <mat-icon>delete</mat-icon> Quitar archivo
+                            </button>
+                            <button mat-raised-button [disabled]="isSaving" color="accent" (click)="saveChecklist()">
+                                <mat-icon>save</mat-icon> Enviar itemizado
+                            </button>
+                        </p>
+                    </div>
+                </ng-container>
+            </div>
         </div>
     </div>
-</div>
+</section>
+<section *ngIf="isLoaded && !canAddChecklist" class="new-collections">
+    <div class="nc-links">
+        <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+            <mat-icon>arrow_back</mat-icon> Volver
+        </a>
+        <p></p>
+    </div>
+    <div class="card">
+        <div class="alert alert-warning">
+            <div class="alert-container">
+                <div class="alert-content">
+                    <div class="alert-title">Atención!</div>
+                    <div class="alert-message">
+                        En este momento no puedes registrar un itemizado para esta solicitud.
+                        <ng-container *ngIf="authUser.daysSinceRegistration < 30"><br />Recuerda que debes haberte
+                            registrado hace al menos 30 días.</ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

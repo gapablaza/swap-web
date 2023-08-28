@@ -107,4 +107,19 @@
             color: rgb(185,28,28);
         }
     }
+
+    &.alert-success {
+
+        .alert-container {
+            background-color: rgb(240,253,244);
+        }
+
+        .alert-title {
+            color: rgb(20,83,45);
+        }
+
+        .alert-message {
+            color: rgb(21,128,61);
+        }
+    }
 }

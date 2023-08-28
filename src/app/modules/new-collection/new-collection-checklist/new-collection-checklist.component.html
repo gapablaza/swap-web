@@ -7,7 +7,8 @@
         <div class="user-collection-modal-content">
             <div class="user-collection-modal-heading">
                 <p class="h2">
-                    Itemizado <strong>N{{ this.data.checklist.id }} ({{ this.data.checklist.items.length }} ítems)</strong> en<br />
+                    Itemizado <strong>N{{ this.data.checklist.id }} ({{ this.data.checklist.items.length }}
+                        ítems)</strong> en<br />
                     <strong>{{ this.data.newCollection.name }}</strong>
                 </p>
                 <div class="collection-meta custom-separator">
@@ -52,8 +53,9 @@
 
             <p class="user-collection-modal-udpate">
                 Itemizado enviado el {{
-                data.checklist.created * 1000 | date:'dd/MM/yy \'a las \' HH:MM \'hrs.\'' }} por
-                <a [routerLink]="['/user', data.checklist.user.data.id]">{{ data.checklist.user.data.displayName
+                data.checklist.created * 1000 | date:'dd/MM/yy \'a las \' HH:mm \'hrs.\'' }} por
+                <a [routerLink]="['/user', data.checklist.user.data.id]" target="_blank">{{
+                    data.checklist.user.data.displayName
                     }}</a>
             </p>
         </div>
@@ -62,7 +64,4 @@
 
 <mat-dialog-actions>
     <button mat-raised-button (click)="onClose()">Cerrar</button>
-    <!-- <a mat-raised-button mat-dialog-close color="accent">
-        Descargar XLSX
-    </a> -->
 </mat-dialog-actions>

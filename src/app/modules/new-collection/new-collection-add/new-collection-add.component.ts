@@ -1,11 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Subscription, take } from 'rxjs';
-import { NewCollectionService, Publisher } from 'src/app/core';
+
+import {
+  AuthService,
+  NewCollectionService,
+  Publisher,
+  User,
+} from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { NewCollectionImageComponent } from '../new-collection-image/new-collection-image.component';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-collection-add',
@@ -13,22 +19,33 @@ import { Router } from '@angular/router';
   styleUrls: ['./new-collection-add.component.scss'],
 })
 export class NewCollectionAddComponent implements OnInit, OnDestroy {
+  authUser: User = {} as User;
   publishers: Publisher[] = [];
-  file?: File;
-  fileName = '';
+
+  title = 'Nueva solicitud';
   preview = '';
+  coverPreview = '';
+
+  newColId?: string;
+
   newCollectionForm!: FormGroup;
   selectedYear: number;
+  selectedPublisher!: number;
   years: number[] = [];
+
+  canAddOrUpdate = false;
+
   isSaving = false;
-  isLoaded = true;
+  isLoaded = false;
   subs: Subscription = new Subscription();
 
   constructor(
-    private dialog: MatDialog,
     private newColSrv: NewCollectionService,
+    private authSrv: AuthService,
     private uiSrv: UIService,
+    private route: ActivatedRoute,
     private router: Router,
+    private dialog: MatDialog,
     private formBuilder: FormBuilder
   ) {
     this.selectedYear = new Date().getFullYear();
@@ -38,13 +55,37 @@ export class NewCollectionAddComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.authUser = this.authSrv.getCurrentUser();
+    this.newColId = this.route.snapshot.params['id'];
+
     this.newCollectionForm = this.formBuilder.group({
-      name: ['Título de prueba', Validators.required],
-      year: ['2021', Validators.required],
-      publisher: ['1', Validators.required],
-      description: ['Descripción de prueba', Validators.maxLength(1000)],
-      numbers: ['Numeración de prueba', Validators.maxLength(250)],
-      cover: [10, Validators.required],
+      name: [
+        '',
+        [Validators.required, Validators.maxLength(100)],
+      ],
+      year: [this.selectedYear, Validators.required],
+      released: [
+        `${this.selectedYear}-01-01`,
+        [
+          ...(this.authUser.isMod
+            ? [
+                Validators.required,
+                Validators.pattern(
+                  /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/
+                ),
+              ]
+            : []),
+        ],
+      ],
+      publisher: [null, Validators.required],
+      description: [
+        '',
+        [Validators.required, Validators.maxLength(1000)],
+      ],
+      details: ['', Validators.maxLength(1000)],
+      numbers: ['', Validators.maxLength(250)],
+      image: [null, Validators.required],
+      cover: [],
     });
 
     let pubsSub = this.newColSrv
@@ -59,54 +100,59 @@ export class NewCollectionAddComponent implements OnInit, OnDestroy {
         });
       });
     this.subs.add(pubsSub);
+
+    // Estamos en modo edición
+    if (this.newColId) {
+      this.title = `Editar solicitud de colección ID ${this.newColId}`;
+
+      let newColSub = this.newColSrv
+        .get(Number(this.newColId))
+        .pipe(take(1))
+        .subscribe((resp) => {
+          this.newCollectionForm.patchValue({
+            name: resp.newCollection.name,
+            year: resp.newCollection.year,
+            released: resp.newCollection.released?.substring(0, 10) || null,
+            publisher: resp.newCollection.publisher.data.id,
+            description: resp.newCollection.description,
+            details: resp.newCollection.details || null,
+            numbers: resp.newCollection.checklistDescription || null,
+            image: resp.newCollection.image.data?.id || null,
+            cover: resp.newCollection.cover?.data?.id || null,
+          });
+          this.preview = resp.newCollection.image.data?.base64 || '';
+          this.coverPreview = resp.newCollection.cover?.data?.base64 || '';
+          this.selectedPublisher = resp.newCollection.publisher.data.id;
+
+          // Define si puede modificar la solicitud
+          this.canAddOrUpdate =
+            ([1, 2].includes(resp.newCollection.statusId) &&
+              this.authUser.isMod) ||
+            (resp.newCollection.statusId == 2 &&
+              this.authUser.id == resp.newCollection.user.data?.id) ||
+            ([1, 2, 3, 4].includes(resp.newCollection.statusId) &&
+              this.authUser.id == 1);
+
+          this.isLoaded = true;
+        });
+      this.subs.add(newColSub);
+    }
+    // Estamos en modo registro
+    else {
+      this.canAddOrUpdate = this.authUser.daysSinceRegistration >= 30;
+      this.isLoaded = true;
+    }
   }
 
   get form() {
     return this.newCollectionForm.controls;
   }
 
-  // onFileSelected(event: any) {
-  //   const file: File = event.target.files[0];
-  //   // const file = (event.target as HTMLInputElement).files[0];
+  onNewImage(type: string) {
+    if (type !== 'proposed' && type !== 'validated') {
+      return;
+    }
 
-  //   if (file) {
-  //     this.file = file;
-  //     this.fileName = file.name;
-  //     console.log(file);
-  //     this.newCollectionForm.patchValue({
-  //       cover: file,
-  //     });
-  //     this.newCollectionForm.get('cover')?.updateValueAndValidity();
-
-  //     // File preview
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       this.preview = reader.result as string;
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // }
-
-  // onUpload() {
-  //   console.log('upload image');
-
-  //   // this.isSaving = true;
-  //   // this.newColSrv.uploadImage(this.file as File)
-  //   //   .pipe(take(1))
-  //   //   .subscribe({
-  //   //     next: (newId) => {
-  //   //       console.log(newId);
-  //   //       this.isSaving = false;
-  //   //     },
-  //   //     error: (error) => {
-  //   //       console.log('delete error: ', error);
-  //   //       this.uiSrv.showError(error.error.message);
-  //   //       this.isSaving = false;
-  //   //     },
-  //   //   })
-  // }
-
-  onNewImage() {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
@@ -116,47 +162,85 @@ export class NewCollectionAddComponent implements OnInit, OnDestroy {
     // dialogConfig.maxWidth = '500px';
 
     let dialogRef = this.dialog.open(NewCollectionImageComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(res => {
+    let dialogSub = dialogRef.afterClosed().subscribe((res) => {
       if (res && res.id) {
-        this.newCollectionForm.patchValue({
-          cover: res.id,
-        });
-        this.newCollectionForm.get('cover')?.updateValueAndValidity();
-        this.preview = res.base64;
-      } 
+        if (type == 'proposed') {
+          this.newCollectionForm.patchValue({
+            image: res.id,
+          });
+          this.newCollectionForm.get('image')?.updateValueAndValidity();
+          this.preview = res.base64;
+        } else if (type == 'validated') {
+          this.newCollectionForm.patchValue({
+            cover: res.id,
+          });
+          this.newCollectionForm.get('cover')?.updateValueAndValidity();
+          this.coverPreview = res.base64;
+        }
+      }
     });
+    this.subs.add(dialogSub);
   }
 
-  onRemoveImage() {
-    this.newCollectionForm.patchValue({
-      cover: null,
-    });
-    this.newCollectionForm.get('cover')?.updateValueAndValidity();
-    this.preview = '';
+  onRemoveImage(type: string) {
+    if (type !== 'proposed' && type !== 'validated') {
+      return;
+    }
+
+    if (type == 'proposed') {
+      this.newCollectionForm.patchValue({
+        image: null,
+      });
+      this.newCollectionForm.get('image')?.updateValueAndValidity();
+      this.preview = '';
+    } else if (type == 'validated') {
+      this.newCollectionForm.patchValue({
+        cover: null,
+      });
+      this.newCollectionForm.get('cover')?.updateValueAndValidity();
+      this.coverPreview = '';
+    }
   }
 
   onSubmit() {
-    console.log(this.newCollectionForm.value);
-    // this.router.navigate(['new-collection/', 1]); return;
-
     if (this.newCollectionForm.invalid) {
       return;
     }
 
     this.isSaving = true;
-    this.newColSrv
-      .add(this.newCollectionForm.value)
-      .pipe(take(1))
-      .subscribe({
-        next: (resp) => {
-          this.uiSrv.showSuccess(resp.message);
-          this.router.navigate(['new-collection/', resp.newId]);
-        },
-        error: (error) => {
-          console.log('add error: ', error);
-          this.isSaving = false;
-        },
-      });
+
+    if (this.newColId) {
+      this.newColSrv
+        .update({
+          ...this.newCollectionForm.value,
+          id: Number(this.newColId),
+        })
+        .pipe(take(1))
+        .subscribe({
+          next: (resp) => {
+            this.uiSrv.showSuccess(resp);
+            this.router.navigate(['new-collection/', this.newColId]);
+          },
+          error: (error) => {
+            console.log('update error: ', error);
+            this.isSaving = false;
+          },
+        });
+    } else {
+      this.newColSrv
+        .add(this.newCollectionForm.value)
+        .pipe(take(1))
+        .subscribe({
+          next: (resp) => {
+            this.uiSrv.showSuccess(resp.message);
+            this.router.navigate(['new-collection/', resp.newId]);
+          },
+          error: (error) => {
+            console.log('add error: ', error);
+            this.isSaving = false;
+          },
+        });
+    }
   }
 
   ngOnDestroy(): void {
