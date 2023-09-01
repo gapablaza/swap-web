@@ -12,6 +12,7 @@ import { Subscription, take, tap } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { NewCollectionChecklistComponent } from '../new-collection-checklist/new-collection-checklist.component';
+import { NewCollectionHistoryComponent } from '../new-collection-history/new-collection-history.component';
 import {
   AuthService,
   DEFAULT_USER_PROFILE_IMG,
@@ -242,6 +243,21 @@ export class NewCollectionProfileComponent implements OnInit, OnDestroy {
     this.dialog.open(NewCollectionChecklistComponent, dialogConfig);
   }
 
+  onOpenHistory() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.panelClass = ['history-modal'];
+    dialogConfig.width = '80%';
+    dialogConfig.maxWidth = '1280px';
+    dialogConfig.data = {
+      newCollection: this.newCollection,
+    };
+
+    this.dialog.open(NewCollectionHistoryComponent, dialogConfig);
+  }
+
   onSend() {
     this.dialog.open(this.sendDialog, { disableClose: true });
   }
@@ -375,7 +391,7 @@ export class NewCollectionProfileComponent implements OnInit, OnDestroy {
     if (this.canBack) {
       this.location.back();
     } else {
-      this.router.navigate(["new-collection"]);
+      this.router.navigate(['new-collection']);
     }
   }
 

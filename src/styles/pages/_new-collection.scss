@@ -115,6 +115,10 @@ section.new-collections {
                 border-radius: 4px;
             }
         }
+
+        a {
+            color: black;
+        }
     }
 
     .nc-side {
@@ -173,6 +177,11 @@ section.new-collections {
     form .nc-links {
         padding: 0;
     }
+}
+
+.history-modal a {
+    text-decoration: none;
+    color: black;
 }
 
 .alert-small {

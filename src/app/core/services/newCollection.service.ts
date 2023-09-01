@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import {
   ChecklistItem,
+  History,
   NewChecklist,
   NewCollection,
   NewCollectionComment,
@@ -186,6 +187,12 @@ export class NewCollectionService {
         security: security,
       })
       .pipe(map((data: { message: string; newId: number }) => data));
+  }
+
+  getHistory(newCollectionId: number): Observable<History[]> {
+    return this.apiSrv
+      .get(`/v3/newCollections/${newCollectionId}/history`)
+      .pipe(map((resp: { data: History[] }) => resp.data));
   }
 
   list(options: {

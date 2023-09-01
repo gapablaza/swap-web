@@ -1,31 +1,6 @@
-<!-- <mat-nav-list>
-  <a *ngIf="!isAuth" mat-list-item routerLink="/signup" (click)="onClose()">
-    <mat-icon>face</mat-icon>
-    <span class="nav-caption">Signup</span>
-  </a>
-  <a *ngIf="!isAuth" mat-list-item routerLink="/login" (click)="onClose()">
-    <mat-icon>input</mat-icon>
-    <span class="nav-caption">Login</span>
-  </a>
-  <a *ngIf="isAuth" mat-list-item routerLink="/training" (click)="onClose()">
-    <mat-icon>fitness_center</mat-icon>
-    <span class="nav-caption">Training</span>
-  </a>
-  <mat-list-item *ngIf="isAuth">
-    <button mat-icon-button (click)="onLogout()">
-      <mat-icon>eject</mat-icon>
-      <span class="nav-caption">Logout</span>
-    </button>
-  </mat-list-item>
-</mat-nav-list> -->
-
 <div class="vertical-navigation">
   <div class="vertical-navigation-wrapper">
     <div class="vertical-navigation-content">
-      <!-- <div class="vertical-navigation-content-header">
-        <h1>Intercambia</h1>
-        <img src="" alt="">
-      </div> -->
 
       <div *ngIf="isAuth" class="vertical-navigation-group-item">
         <div class="vertical-navigation-item-wrapper">

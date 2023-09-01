@@ -12,6 +12,7 @@ import { NewCollectionImageComponent } from './new-collection-image/new-collecti
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { NewCollectionListComponent } from './new-collection-list/new-collection-list.component';
 import { NewChecklistComponent } from './new-checklist/new-checklist.component';
+import { NewCollectionHistoryComponent } from './new-collection-history/new-collection-history.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { NewChecklistComponent } from './new-checklist/new-checklist.component';
     NewCollectionChecklistComponent,
     NewCollectionImageComponent,
     NewCollectionListComponent,
-    NewChecklistComponent
+    NewChecklistComponent,
+    NewCollectionHistoryComponent
   ],
   imports: [
     ImageCropperModule,

@@ -1,5 +1,6 @@
 export * from './collection.model';
 export * from './evaluation.model';
+export * from './history.model';
 export * from './image.model';
 export * from './item.model';
 export * from './media.model';
