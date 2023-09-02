@@ -8,6 +8,7 @@ import {
   ItemService,
   JwtService,
   MediaService,
+  NewCollectionService,
   SearchService,
   SEOService,
   UserService
@@ -31,6 +32,7 @@ import { ErrorInterceptor, HttpTokenInterceptor } from './interceptors';
     ItemService,
     JwtService,
     MediaService,
+    NewCollectionService,
     ModGuard,
     NoAuthGuard,
     SearchService,

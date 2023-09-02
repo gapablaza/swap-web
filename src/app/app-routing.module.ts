@@ -94,6 +94,11 @@ const routes: Routes = [
       import('./modules/collaborate/collaborate.module').then((m) => m.CollaborateModule),
   },
   {
+    path: 'new-collection',
+    loadChildren: () =>
+      import('./modules/new-collection/new-collection.module').then((m) => m.NewCollectionModule),
+  },
+  {
     path: '**',
     pathMatch: 'full',
     component: CustomErrorComponent,

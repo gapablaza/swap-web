@@ -29,7 +29,7 @@ export class CollectionItemsComponent implements OnInit, OnDestroy {
   items: Item[] = [];
   // displayedColumns: string[] = ['name', 'description', 'difficulty'];
   
-  displayedColumns: string[] = ['name', 'description', 'actions'];
+  displayedColumns: string[] = ['name', 'description', 'itemType', 'section', 'actions'];
   dataSource = new MatTableDataSource<Item>([]);
   @ViewChild(MatSort, {static: false}) set content(sort: MatSort) {
     this.dataSource.sort = sort;

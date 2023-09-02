@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard, ModGuard } from 'src/app/core';
 import { ModMediaComponent } from './mod-media/mod-media.component';
 import { ModComponent } from './mod.component';
+import { ModPublishComponent } from './mod-publish/mod-publish.component';
 
 const routes: Routes = [
   {
@@ -15,12 +16,11 @@ const routes: Routes = [
         path: 'media',
         component: ModMediaComponent,
         title: 'Moderar elementos multimedia - Intercambia Láminas',
-        // children: [
-        //   {
-        //     path: ':userId',
-        //     component: MessageWithUserComponent
-        //   }
-        // ]
+      },
+      {
+        path: 'publish',
+        component: ModPublishComponent,
+        title: 'Publicar nuevas colecciones - Intercambia Láminas',
       },
     ],
   },

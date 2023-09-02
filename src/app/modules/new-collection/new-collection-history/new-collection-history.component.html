@@ -1,0 +1,67 @@
+<mat-dialog-content>
+    <div *ngIf="!isLoaded" class="loading-indicator">
+        <mat-spinner aria-label="cargando"></mat-spinner>
+    </div>
+
+    <div *ngIf="isLoaded" class="user-collection-modal">
+        <div class="user-collection-modal-content">
+            <div class="user-collection-modal-heading">
+                <p class="h2">
+                    Historial de <strong>{{ this.data.newCollection.name }}</strong>
+                </p>
+                <div class="collection-meta custom-separator">
+                    <span>ID {{ this.data.newCollection.id }}</span>
+                    <span>{{ this.data.newCollection.year }}</span>
+                    <span>{{ this.data.newCollection.publisher.data.name }}</span>
+                </div>
+                <div class="user-collection-modal-bg"
+                    [style.background-image]="'url(' + this.data.newCollection.image.data?.base64 + ')'">
+                    <div></div>
+                </div>
+            </div>
+
+            <table mat-table matSort [dataSource]="dataSource" class="collection-items-table mat-elevation-z8">
+                <ng-container matColumnDef="index">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> #</th>
+                    <td mat-cell *matCellDef="let element; let i = index;">{{ i +1 }}</td>
+                  </ng-container>
+                
+                <ng-container matColumnDef="created">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Cuándo</th>
+                    <td mat-cell *matCellDef="let element"> {{ element.created * 1000 | date:'dd/MM/yy HH:mm' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="displayName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Quién</th>
+                    <td mat-cell *matCellDef="let element">
+                        <a [routerLink]="['/user', element.user.data.id]" target="_blank">
+                            {{ element.user.data.displayName }}
+                            <span *ngIf="element.user.data.accountTypeId == 2" class="pro-label">PRO</span>
+                        </a>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="rememberedStatusName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Qué estado</th>
+                    <td mat-cell *matCellDef="let element"> {{ element.rememberedStatusName }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="changes">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Qué cambió</th>
+                    <td mat-cell *matCellDef="let element">
+                        <ng-container *ngFor="let change of element.changes">
+                            <i>{{ change.field }}</i>: {{ change.value }}<br>
+                        </ng-container>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-raised-button (click)="onClose()">Cerrar</button>
+</mat-dialog-actions>

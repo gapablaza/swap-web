@@ -75,7 +75,7 @@
               </div>
               <!-- BEGIN last evaluation -->
               <div class="list-item-meta">
-                {{ evaluation.creationTime | date:'dd/MM/YYYY \'a las \'HH:MM \'hrs.\'' }}
+                {{ evaluation.creationTime | date:'dd/MM/YYYY \'a las \'HH:mm \'hrs.\'' }}
               </div>
               <div class="list-item-desc" [ngClass]="{
                 'evaluation-positive': evaluation.evaluationTypeId == 1,
@@ -87,7 +87,7 @@
               <!-- BEGIN previous evaluations -->
               <div *ngFor="let prevEval of evaluation.previousEvaluationsData">
                 <div class="list-item-meta">
-                  {{ prevEval.creationTime | date:'dd/MM/YYYY \'a las \'HH:MM \'hrs.\'' }}
+                  {{ prevEval.creationTime | date:'dd/MM/YYYY \'a las \'HH:mm \'hrs.\'' }}
                 </div>
                 <div class="list-item-desc" [ngClass]="{
                   'evaluation-positive': prevEval.evaluationTypeId == 1,

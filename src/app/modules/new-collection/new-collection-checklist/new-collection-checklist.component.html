@@ -1,0 +1,67 @@
+<mat-dialog-content>
+    <div *ngIf="!isLoaded" class="loading-indicator">
+        <mat-spinner aria-label="cargando"></mat-spinner>
+    </div>
+
+    <div *ngIf="isLoaded" class="user-collection-modal">
+        <div class="user-collection-modal-content">
+            <div class="user-collection-modal-heading">
+                <p class="h2">
+                    Itemizado <strong>N{{ this.data.checklist.id }} ({{ this.data.checklist.items.length }}
+                        ítems)</strong> en<br />
+                    <strong>{{ this.data.newCollection.name }}</strong>
+                </p>
+                <div class="collection-meta custom-separator">
+                    <span>{{ this.data.newCollection.year }}</span>
+                    <span>{{ this.data.newCollection.publisher.data.name }}</span>
+                </div>
+                <div class="user-collection-modal-bg"
+                    [style.background-image]="'url(' + this.data.newCollection.image.data?.base64 + ')'">
+                    <div></div>
+                </div>
+            </div>
+
+            <table mat-table matSort [dataSource]="dataSource" class="collection-items-table mat-elevation-z8">
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Nro. </th>
+                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="itemTypeId">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo - ID</th>
+                    <td mat-cell *matCellDef="let element"> {{element.itemTypeId}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="itemTypeDescription">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo - Nombre</th>
+                    <td mat-cell *matCellDef="let element"> {{element.itemTypeDescription}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="description">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Título </th>
+                    <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="section">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Sección </th>
+                    <td mat-cell *matCellDef="let element"> {{element.section}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <p class="user-collection-modal-udpate">
+                Itemizado enviado el {{
+                data.checklist.created * 1000 | date:'dd/MM/yy \'a las \' HH:mm \'hrs.\'' }} por
+                <a [routerLink]="['/user', data.checklist.user.data.id]" target="_blank">{{
+                    data.checklist.user.data.displayName
+                    }}</a>
+            </p>
+        </div>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-raised-button (click)="onClose()">Cerrar</button>
+</mat-dialog-actions>

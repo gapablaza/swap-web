@@ -1,0 +1,154 @@
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="new-collections">
+    <div class="collections-list flex-full">
+        <h1>
+            Solicitudes de nuevas colecciones <span class="text-secondary">({{ paginator.total }})</span>
+        </h1>
+
+        <div class="alert alert-warning">
+            <div class="alert-container">
+                <div class="alert-content">
+                    <div class="alert-title">Atención</div>
+                    <div class="alert-message">
+                        <p>
+                            Puedes revisar la lógica y funcionamiento para esta opción de realizar solicitudes de
+                            nuevas colecciones presionando en <a
+                                href="https://trello.com/c/N6Fg34jN/14-26-permitir-a-los-usuarios-agregar-colecciones"
+                                target="_blank" rel="noopener noreferrer">este enlace</a>.
+                        </p>
+                        <p>
+                            Ten en consideración que esta nueva funcionalidad, si bien se encuentra totalmente
+                            operativa, estamos monitoreando su correcto funcionamiento y podrían ocurrir problemas
+                            inesperados. Por lo que solicitamos tu ayuda para informarnos cuando detectes algo "fuerea
+                            de lo normal", o también, si tienes ideas o propuestas de mejora.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="wp">
+            <a [routerLink]="['./add']" mat-raised-button color="accent">
+                <mat-icon>add</mat-icon> Nueva solicitud
+            </a>
+        </p>
+        <div class="card">
+            <div class="controls-std">
+                <div class="controls-std-main">
+                    <div class="controls-std-order">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Ordenar por</mat-label>
+                            <mat-select [(value)]="orderSelected">
+                                <mat-option *ngFor="let option of ordersOptions" [value]="option.selectValue">
+                                    {{ option.selectName }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Filtrar por estado</mat-label>
+                            <mat-select [(value)]="statusSelected">
+                                <mat-option value="">Cualquiera</mat-option>
+                                <mat-option value="1">Para revisión</mat-option>
+                                <mat-option value="2">Requiere info</mat-option>
+                                <mat-option value="3">Cancelada</mat-option>
+                                <mat-option value="4">Para publicar</mat-option>
+                                <mat-option value="5">Publicada</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Filtrar por texto</mat-label>
+                            <input matInput type="text" [(ngModel)]="searchTxt">
+                        </mat-form-field>
+                    </div>
+                    <div class="controls-std-settings">
+                        <!-- <p>
+                            Registros {{ paginator.from | number:'':'es' }} - {{ paginator.to | number:'':'es' }} de {{
+                            paginator.total | number:'':'es' }}
+                        </p> -->
+                        <a (click)="onFilter()" class="btn" mat-raised-button color="accent">
+                            <mat-icon>manage_search</mat-icon> Filtrar
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="list-nc">
+                <li *ngFor="let col of newCollections ; trackBy: trackByCollection" class="list-nc-item">
+                    <div class="nc-container">
+                        <div class="nc-main flex-full">
+                            <h2 class="nc-title">
+                                <a [routerLink]="['./', col.id]">{{ col.name }}</a>
+                            </h2>
+                            <div class="custom-separator">
+                                <span>ID {{ col.id }}</span>
+                                <span>{{ col.year }}</span>
+                                <span>{{ col.publisher.data.name }}</span>
+                                <span>{{ col.votesQty }} voto<ng-container
+                                        *ngIf="col.votesQty !== 1">s</ng-container></span>
+                            </div>
+
+                            <div class="alert-small-container">
+                                <div [class]="'alert-small new-collection-status-' + col.statusId">
+                                    {{ col.statusName }}
+                                </div>
+                                <div *ngIf="col.checklistsQty == 0 && [1,2].includes(col.statusId)"
+                                    class="alert-small alert-warning">
+                                    Requiere Itemizado
+                                </div>
+                            </div>
+
+                            <div class="nc-p">
+                                <h3>Descripción</h3>
+                                <p [innerHTML]="col.description || 'Sin información' | linebreaks"></p>
+                            </div>
+                            <div class="nc-p">
+                                <h3>Numeración general</h3>
+                                <p [innerHTML]="col.checklistDescription || 'Sin información' | linebreaks"></p>
+                            </div>
+                        </div>
+                        <div class="nc-side">
+                            <div class="nc-side-img">
+                                <a [routerLink]="['./', col.id]">
+                                    <img [src]="col.image.data?.base64" alt="Portada">
+                                </a>
+                            </div>
+                            <div class="nc-side-action">
+                                <a [routerLink]="['./', col.id]" mat-raised-button>
+                                    <mat-icon>zoom_in</mat-icon> Ver detalles
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <div *ngIf="paginator.last_page > 1" class="pagination-wrapper">
+                <ul class="pagination">
+                    <li class="pagination-prev">
+                        <a role="button" (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))"
+                            [disabled]="pageSelected == 1" class="btn" mat-raised-button tabindex="-1">
+                            <mat-icon class="only-icon-button">navigate_before</mat-icon>
+                        </a>
+                    </li>
+                    <li>
+                        <select name="" (change)="onPageChange(selectPage.value)" #selectPage>
+                            <option *ngFor="let item of [].constructor(paginator.last_page); index as i" [value]="i+1"
+                                [selected]="(i+1) == pageSelected">
+                                Página {{ i+1 }} de {{ paginator.last_page }}
+                            </option>
+                        </select>
+                    </li>
+                    <li class="pagination-next">
+                        <a role="button"
+                            (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
+                            [disabled]="pageSelected == paginator.last_page" class="btn" mat-raised-button>
+                            <mat-icon class="only-icon-button">navigate_next</mat-icon>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
