@@ -210,7 +210,7 @@ export class NewCollectionService {
       new HttpParams({
         fromObject: {
           status: options.status || '',
-          perPage: options.perPage || 20,
+          perPage: options.perPage || 10,
           page: options.page || 1,
           sortBy: options.sortBy || 'requested-DESC',
         },

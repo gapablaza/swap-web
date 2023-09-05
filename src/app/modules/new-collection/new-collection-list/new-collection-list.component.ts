@@ -139,30 +139,6 @@ export class NewCollectionListComponent implements OnInit, OnDestroy {
     return item.id;
   }
 
-  // onSort() {
-  //   let actualParams = this.route.snapshot.queryParams;
-    
-  //   this.router.navigate(['/new-collection'], {
-  //     relativeTo: this.route,
-  //     queryParams: {
-  //       ...actualParams,
-  //       sortBy: this.orderSelected,
-  //     },
-  //   });
-  // }
-
-  // onFilterByStatus() {
-  //   let actualParams = this.route.snapshot.queryParams;
-    
-  //   this.router.navigate(['/new-collection'], {
-  //     relativeTo: this.route,
-  //     queryParams: {
-  //       ...actualParams,
-  //       status: this.statusSelected,
-  //     },
-  //   });
-  // }
-
   onFilter() {
     if (this.searchTxt.trim().length == 1) {
       this.uiSrv.showSnackbar('Debes ingresasr al menos 2 caracteres para filtrar por texto');
