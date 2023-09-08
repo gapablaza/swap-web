@@ -425,6 +425,24 @@ export class AuthService {
       );
   }
 
+  getBlacklist(): Observable<User[]> {
+    return this.apiSrv
+      .get(`/v2/me/blacklist`)
+      .pipe(map((resp: { data: User[] }) => resp.data));    
+  }
+
+  addToBlacklist(userId: number): Observable<string> {
+    return this.apiSrv
+      .post(`/v2/me/blacklist/${userId}`)
+      .pipe(map((data: { message: string }) => data.message));    
+  }
+
+  removeFromBlacklist(userId: number): Observable<string> {
+    return this.apiSrv
+      .delete(`/v2/me/blacklist/${userId}`)
+      .pipe(map((data: { message: string }) => data.message));    
+  }
+
   resetPassword(email: string): Observable<string> {
     return this.apiSrv
       .post('/v2/auth/forgotPassword', { email })

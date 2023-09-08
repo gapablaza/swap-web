@@ -7,6 +7,7 @@ import { SettingsProfileComponent } from './settings-profile/settings-profile.co
 import { SettingsConnectComponent } from './settings-connect/settings-connect.component';
 import { SettingsNotificationsComponent } from './settings-notifications/settings-notifications.component';
 import { SettingsDeleteComponent } from './settings-delete/settings-delete.component';
+import { SettingsBlacklistComponent } from './settings-blacklist/settings-blacklist.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,11 @@ const routes: Routes = [
         path: 'delete',
         component: SettingsDeleteComponent,
         title: 'Configuración - Eliminar Cuenta - Intercambia Láminas'
+      },
+      {
+        path: 'blacklist',
+        component: SettingsBlacklistComponent,
+        title: 'Configuración - Usuarios Bloqueados - Intercambia Láminas'
       },
       {
         path: '**',

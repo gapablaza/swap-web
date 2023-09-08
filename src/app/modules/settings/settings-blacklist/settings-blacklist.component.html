@@ -1,0 +1,29 @@
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="settings-section">
+    <div class="settings-blacklist">
+
+        <div class="card">
+            <div *ngIf="!blacklist.length" class="empty-content" >
+                <h2>(¬‿¬)</h2>
+                <p>Todavía no tienes a ningún usuario bloqueado!</p>
+            </div>
+
+            <mat-list *ngIf="blacklist.length">
+                <div mat-subheader>Usuarios bloqueados ({{ blacklist.length }})</div>
+                <mat-list-item *ngFor="let bl of blacklist">
+                    <div matListItemTitle>
+                        <a [routerLink]="['/user', bl.id]">{{ bl.displayName }}</a>
+                    </div>
+                    <div matListItemLine>ID {{ bl.id }}</div>
+                    <button (click)="onRemove(bl.id)" mat-stroked-button color="warn" [disabled]="isSaving" matListItemMeta
+                        style="color: #f44336">
+                        <mat-icon>delete</mat-icon> Desbloquear
+                    </button>
+                </mat-list-item>
+            </mat-list>
+        </div>
+
+    </div>
+</section>

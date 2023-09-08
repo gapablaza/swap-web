@@ -13,6 +13,7 @@ import { SettingsProfileComponent } from './settings-profile/settings-profile.co
 import { SettingsProfileImageComponent } from './settings-profile-image/settings-profile-image.component';
 import { SettingsDeleteComponent } from './settings-delete/settings-delete.component';
 import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
+import { SettingsBlacklistComponent } from './settings-blacklist/settings-blacklist.component';
 
 @NgModule({
     declarations: [
@@ -21,7 +22,8 @@ import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
         SettingsNotificationsComponent,
         SettingsProfileComponent,
         SettingsProfileImageComponent,
-        SettingsDeleteComponent
+        SettingsDeleteComponent,
+        SettingsBlacklistComponent
     ],
     imports: [
         SharedModule,

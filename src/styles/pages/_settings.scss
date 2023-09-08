@@ -215,6 +215,19 @@ section.settings {
             }
         }
 
+        .settings-blacklist {
+            a {
+                text-decoration: none;
+                color: var(--text-default);
+                font-weight: bold;
+            }
+
+            button {
+                display: flex;
+                margin-top: 16px;
+            }
+        }
+
         .settings-delete {
             p > a {
                 text-decoration: none;

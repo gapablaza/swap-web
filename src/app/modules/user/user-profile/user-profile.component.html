@@ -24,6 +24,10 @@
           </a>
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onShare()">Compartir</button>
+            <button *ngIf="authUser.id && (authUser.id != user.id) && !user.inBlacklist" mat-menu-item
+              (click)="onShowConfirm()" [disabled]="isSaving">Bloquear</button>
+            <button *ngIf="authUser.id && (authUser.id != user.id) && user.inBlacklist" mat-menu-item
+              (click)="toggleBlacklist(false)" [disabled]="isSaving">Desbloquear</button>
           </mat-menu>
         </div>
       </div>
@@ -45,6 +49,9 @@
           <mat-icon>av_timer</mat-icon>Visto el
           <strong>{{ user.lastLogin | date:'dd/MM/YYYY' }}</strong>
           (<span appDaysSinceLogin="{{ user.daysSinceLogin }}" [preText]="''"></span>)
+        </span>
+        <span *ngIf="user.inBlacklist" class="danger">
+          <mat-icon>person_off</mat-icon>Bloqueado
         </span>
       </div>
 
@@ -274,6 +281,24 @@
       </div>
     </div>
   </section>
+</ng-template>
+
+<ng-template #confirmDialog>
+  <h2 mat-dialog-title>Bloquear usuario</h2>
+  <div matDialogContent>
+    <p>Estás seguro de bloquear a este usuario? Si confirmas:</p>
+    <ul>
+      <li>Este usuario no aparecerá en tus posibles cambios</li>
+      <li>Este usuario no aparecerá en tu lista de mensajes</li>
+      <li>No te llegarán notificaciones de nuevos mensajes de este usaurio</li>
+    </ul>
+  </div>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close [disabled]="isSaving">Cancelar</button>
+    <button mat-raised-button (click)="toggleBlacklist(true)" [disabled]="isSaving" color="warn">
+      Bloquear
+    </button>
+  </mat-dialog-actions>
 </ng-template>
 
 <div *ngIf="!isLoaded" class="loading-indicator">

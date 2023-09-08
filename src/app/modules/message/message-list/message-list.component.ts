@@ -5,17 +5,16 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-
 import {
   AngularFireDatabase,
   AngularFireList,
 } from '@angular/fire/compat/database';
 import { combineLatest, map, Subscription } from 'rxjs';
+
 import {
   AuthService,
   DEFAULT_USER_PROFILE_IMG,
   Message,
-  User,
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 
@@ -26,7 +25,6 @@ import { UIService } from 'src/app/shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MessageListComponent implements OnInit, OnDestroy {
-  // authUser: User = {} as User;
   authUser = this.authSrv.getCurrentUser();
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   messagesRef!: AngularFireList<any>;
@@ -50,69 +48,27 @@ export class MessageListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // this.authUser = this.authSrv.getCurrentUser();
-    this.messagesRef = this.afDB.list(
-      `userResume/userId_${this.authUser.id}`,
-      (ref) => ref.orderByChild('timestamp')
-    );
-
-    // const unreads$ = this.afDB
-    //   .list(`unreadUserMessages/userId_${this.authUser.id}`)
-    //   .snapshotChanges()
-    //   .pipe(
-    //     map((unreads) =>
-    //       unreads.map((unread) => Number(unread.key?.split('_')[1]))
-    //     )
-    //   );
-
-    // const resume$ = this.afDB
-    //   .list(`userResume/userId_${this.authUser.id}`, (ref) =>
-    //     ref.orderByChild('timestamp')
-    //   )
-    //   .snapshotChanges();
-
-    // let messSub = combineLatest([unreads$, resume$])
-    //   .pipe(
-    //     map(([unreads, resume]) => {
-    //       console.log('resume', resume);
-    //       return resume.map((mess) => {
-    //         let payload = mess.payload.val() as Message;
-    //         return {
-    //           withUserId:
-    //             payload.toUserId == this.authUser.id
-    //               ? payload.fromUserId
-    //               : payload.toUserId,
-    //           withUserName:
-    //             payload.toUserId == this.authUser.id
-    //               ? payload.fromUserName
-    //               : payload.toUserName,
-    //           withUserImage:
-    //             payload.toUserId == this.authUser.id
-    //               ? payload.fromUserImage
-    //               : payload.toUserImage,
-    //           withUserText: payload.body,
-    //           withUserTime: payload.timestamp,
-    //           fromAuthUser:
-    //             payload.fromUserId == this.authUser.id ? true : false,
-    //           // unread: payload.unread === false ? false : true,
-    //           unread: unreads.includes(payload.fromUserId) ? true : false,
-    //           archived: payload.archived === true ? true : false,
-    //         };
-    //       });
-    //     })
-    //   )
-    //   .subscribe((list) => {
-    //     console.log('list', list);
-    //     this.messages = list;
-    //     this.filterShowedMessages();
-    //     this.isLoaded = true;
-    //     this.cdr.markForCheck();
-    //   });
-    // this.subs.add(messSub);
-
-    let messagesSub = this.messagesRef
+    const usersBL$ = this.afDB
+      .list(`userBlacklist/userId_${this.authUser.id}`)
       .snapshotChanges()
       .pipe(
+        map((users) =>
+          // users.map((user) => Number(user.key?.split('_')[1]))
+          users.map((user) => user.key)
+        )
+      );
+
+    const resume$ = this.afDB
+      .list(`userResume/userId_${this.authUser.id}`, (ref) =>
+        ref.orderByChild('timestamp')
+      )
+      .snapshotChanges();
+
+    let blacklistSub = combineLatest([usersBL$, resume$])
+      .pipe(
+        map(([users, resume]) => {
+          return resume.filter((mess) => !users.includes(mess.key));
+        }),
         map((messages) => {
           return messages.map((mess) => {
             let payload = mess.payload.val() as Message;
@@ -145,9 +101,51 @@ export class MessageListComponent implements OnInit, OnDestroy {
         this.isLoaded = true;
         this.cdr.markForCheck();
       });
-    this.subs.add(messagesSub);
+    this.subs.add(blacklistSub);
 
-    if(this.authUser.accountTypeId == 1) {
+    // this.messagesRef = this.afDB.list(
+    //   `userResume/userId_${this.authUser.id}`,
+    //   (ref) => ref.orderByChild('timestamp')
+    // );
+
+    // let messagesSub = this.messagesRef
+    //   .snapshotChanges()
+    //   .pipe(
+    //     map((messages) => {
+    //       return messages.map((mess) => {
+    //         let payload = mess.payload.val() as Message;
+    //         return {
+    //           withUserId:
+    //             payload.toUserId == this.authUser.id
+    //               ? payload.fromUserId
+    //               : payload.toUserId,
+    //           withUserName:
+    //             payload.toUserId == this.authUser.id
+    //               ? payload.fromUserName
+    //               : payload.toUserName,
+    //           withUserImage:
+    //             payload.toUserId == this.authUser.id
+    //               ? payload.fromUserImage
+    //               : payload.toUserImage,
+    //           withUserText: payload.body,
+    //           withUserTime: payload.timestamp,
+    //           fromAuthUser:
+    //             payload.fromUserId == this.authUser.id ? true : false,
+    //           unread: payload.unread === false ? false : true,
+    //           archived: payload.archived === true ? true : false,
+    //         };
+    //       });
+    //     })
+    //   )
+    //   .subscribe((list) => {
+    //     this.messages = list;
+    //     this.filterShowedMessages();
+    //     this.isLoaded = true;
+    //     this.cdr.markForCheck();
+    //   });
+    // this.subs.add(messagesSub);
+
+    if (this.authUser.accountTypeId == 1) {
       this.loadAds();
     }
   }
@@ -155,7 +153,7 @@ export class MessageListComponent implements OnInit, OnDestroy {
   loadAds() {
     this.uiSrv.loadAds().then(() => {
       this.isAdsLoaded = true;
-    })
+    });
   }
 
   trackByUsers(index: number, item: any): number {

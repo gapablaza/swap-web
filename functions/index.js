@@ -24,12 +24,22 @@ exports.notifyNewMessage = functions.database
     
     if (!change.after.val()) {
       return functions.logger.log(
-        'Mensaje de ',
+        'notifyNewMessage: Mensaje de ',
         otherUserId,
         ' ya leído por ',
         userId
       );
     }
+
+    // Se verifica que el "user" no tenga en su blacklist al "otherUser"
+    const blacklistSnapshot = await admin
+      .database()
+      .ref(`/userBlacklist/userId_${userId}/userId_${otherUserId}`)
+      .once('value');
+
+    if (blacklistSnapshot.val() && blacklistSnapshot.val() == true) {
+      return functions.logger.log(`userId_${userId} tiene en su blacklist al userId_${otherUserId}`);
+    } 
 
     functions.logger.log(
       'El usuario ',
@@ -115,9 +125,9 @@ exports.updateUnreadStatus = functions.database
     const otherUserId = context.params.otherUserId;
 
     functions.logger.log(
-      'Hay un nuevo mensaje de ',
+      'updateUnreadStatus: De ',
       otherUserId,
-      ' para el usuario ',
+      ' para ',
       userId
     );
 

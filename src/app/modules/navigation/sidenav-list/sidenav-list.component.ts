@@ -7,12 +7,11 @@ import {
   Output,
 } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { filter, map, Subscription } from 'rxjs';
+import { combineLatest, map, Subscription } from 'rxjs';
 
 import {
   AuthService,
   DEFAULT_USER_PROFILE_IMG,
-  Message,
   User,
 } from 'src/app/core';
 
@@ -49,38 +48,40 @@ export class SidenavListComponent implements OnInit {
     });
 
     this.authSrv.isFBAuth
-      // .pipe(filter((FBState) => FBState))
       .subscribe((state) => {
-        // this.afDB
-        //   // .list(`userResume/userId_${this.authUser.id}`, (ref) =>
-        //   //   ref.orderByChild('toUserId').equalTo(this.authUser.id)
-        //   // )
-        //   .list(`userResume/userId_${this.authUser.id}`)
-        //   .valueChanges()
-        //   .pipe(
-        //     map((resp: any) => {
-        //       return resp.filter((mess: Message) => {
-        //         return (
-        //           (mess.unread === false ? false : true) &&
-        //           mess.toUserId == this.authUser.id
-        //         );
-        //       });
-        //     })
-        //   )
-        //   .subscribe((resp: any) => {
-        //     this.unreadCount = resp.length;
-        //     this.cdr.markForCheck();
-        //   });
 
         if (state) {
-          this.unreadCountSub = this.afDB
+          const usersBL$ = this.afDB
+            .list(`userBlacklist/userId_${this.authUser.id}`)
+            .snapshotChanges()
+            .pipe(map((users) => users.map((user) => user.key)));
+
+          const unreads$ = this.afDB
             .list(`unreadUserMessages/userId_${this.authUser.id}`)
-            .valueChanges()
-            .pipe(map((unreads) => unreads.length))
+            .snapshotChanges();
+
+          this.unreadCountSub = combineLatest([usersBL$, unreads$])
+            .pipe(
+              map(([users, unreads]) => {
+                return unreads.filter((mess) => !users.includes(mess.key));
+              }),
+              map((unreads) => unreads.length)
+            )
             .subscribe((unreadQ) => {
               this.unreadCount = unreadQ;
               this.cdr.markForCheck();
             });
+
+          // this.unreadCountSub = this.afDB
+          //   .list(`unreadUserMessages/userId_${this.authUser.id}`)
+          //   .valueChanges()
+          //   .pipe(
+          //     map((unreads) => unreads.length)
+          //   )
+          //   .subscribe((unreadQ) => {
+          //     this.unreadCount = unreadQ;
+          //     this.cdr.markForCheck();
+          //   });
         } else {
           if (this.unreadCountSub) {
             this.unreadCountSub.unsubscribe();

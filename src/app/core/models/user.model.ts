@@ -49,6 +49,8 @@ export interface User {
   contributions?: number; //OK - HOME MEDIA
   totalItems?: number; //OK - HOME ITEMS
 
+  inBlacklist?: boolean; // PERFIL USUARIO
+
   collectionData?: UserCollection;
   userSummary?: UserSummary;
 }

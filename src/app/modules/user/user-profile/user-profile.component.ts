@@ -6,6 +6,8 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  TemplateRef,
+  ViewChild,
 } from '@angular/core';
 import {
   combineLatest,
@@ -27,6 +29,7 @@ import {
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { UserOnlyService } from '../user-only.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-profile',
@@ -35,6 +38,7 @@ import { UserOnlyService } from '../user-only.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
+  @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;
   user: User = {} as User;
   authUser: User = {} as User;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
@@ -43,6 +47,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   possibleTrades = 0;
   showTrades = false;
   // isAdsLoaded = false;
+  isSaving = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
 
@@ -51,6 +56,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     private userSrv: UserService,
     private authSrv: AuthService,
     private SEOSrv: SEOService,
+    private dialog: MatDialog,
     private uiSrv: UIService,
     private cdr: ChangeDetectorRef
   ) {}
@@ -127,6 +133,50 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   onShare(): void {
     this.uiSrv.shareUrl();
+  }
+
+  onShowConfirm(): void {
+    this.dialog.open(this.confirmDialog, { disableClose: true });
+  }
+
+  toggleBlacklist(toggle: boolean): void {
+    this.isSaving = true;
+    if (toggle) {
+      this.authSrv
+        .addToBlacklist(this.user.id)
+        .pipe(take(1))
+        .subscribe({
+          next: (resp) => {
+            this.user.inBlacklist = true;
+            this.userOnlySrv.setCurrentUser(this.user);
+            this.uiSrv.showSuccess(resp);
+            this.dialog.closeAll();
+            this.isSaving = false;
+            this.cdr.markForCheck();
+          },
+          error: (err) => {
+            console.log('addToBlacklist', err);
+            this.isSaving = false;
+          },
+        });
+    } else {
+      this.authSrv
+        .removeFromBlacklist(this.user.id)
+        .pipe(take(1))
+        .subscribe({
+          next: (resp) => {
+            this.user.inBlacklist = false;
+            this.userOnlySrv.setCurrentUser(this.user);
+            this.uiSrv.showSuccess(resp);
+            this.isSaving = false;
+            this.cdr.markForCheck();
+          },
+          error: (err) => {
+            console.log('removeFromBlacklist', err);
+            this.isSaving = false;
+          },
+        });
+    }
   }
 
   ngOnDestroy(): void {
