@@ -38,7 +38,7 @@
                             </td>
                             <td>{{ image.mediaTypeName }}</td>
                             <td>{{ image.description }}</td>
-                            <td>{{ image.created * 1000 | date:'dd/MM/YYYY HH:MM \'hrs.\'' }}</td>
+                            <td>{{ image.created * 1000 | date:'dd/MM/YYYY HH:mm \'hrs.\'' }}</td>
                             <td>
                                 <a class="btn" mat-flat-button [href]="baseForModImageUrl + image.id" target="_blank">
                                     <mat-icon>link</mat-icon> Ver

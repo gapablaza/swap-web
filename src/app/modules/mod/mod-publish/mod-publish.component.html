@@ -35,7 +35,7 @@
                                     {{ col.user.data?.displayName }}
                                 </a>
                             </td>
-                            <td>{{ col.created * 1000 | date:'dd/MM/YYYY HH:MM \'hrs.\'' }}</td>
+                            <td>{{ col.created * 1000 | date:'dd/MM/YYYY HH:mm \'hrs.\'' }}</td>
                             <td>
                                 <a class="btn" mat-flat-button [routerLink]="['/new-collection/', col.id]" target="_blank">
                                     <mat-icon>link</mat-icon> Ver
