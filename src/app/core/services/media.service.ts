@@ -54,6 +54,18 @@ export class MediaService {
       );
   }
 
+  addImage(description: string, img: string, collectionId: number): Observable<number> {
+    return this.apiSrv
+      .post('/v2/media/image', {
+        image: img,
+        description,
+        collectionId
+      })
+      .pipe(
+        map((data: { message: string, newId: number }) => data.newId)
+      );
+  }
+
   listForModerationByUser(): Observable<Media[]> {
     return this.apiSrv
       .get('/v2/media/forModerationByMe?include=collection.publisher')

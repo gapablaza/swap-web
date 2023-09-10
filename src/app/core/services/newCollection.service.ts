@@ -155,6 +155,22 @@ export class NewCollectionService {
       );
   }
 
+  uploadImageToCloudinary(
+    newImage: string
+  ): Observable<{ message: string; id: number; url: string }> {
+    return this.apiSrv
+      .post('/v3/images/cloudinary', {
+        image: newImage,
+        functionalityId: 1,
+      })
+      .pipe(
+        take(1),
+        map((data: { message: string; newId: number; url: string }) => {
+          return { message: data.message, id: data.newId, url: data.url };
+        })
+      );
+  }
+
   setVote(collectionId: number, vote: boolean): Observable<string> {
     if (vote) {
       return this.apiSrv

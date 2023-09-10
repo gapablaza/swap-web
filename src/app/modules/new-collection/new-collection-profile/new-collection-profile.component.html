@@ -89,7 +89,7 @@
             <div class="nc-side">
                 <div class="nc-side-img">
                     <h3>Portada propuesta</h3>
-                    <img [src]="newCollection.image.data?.base64" alt="Portada">
+                    <img [src]="newCollection.image.data?.base64 || newCollection.image.data?.url" alt="Portada">
                 </div>
                 <div *ngIf="canVote" class="nc-side-votes">
                     <button *ngIf="!hasVoted" (click)="onVote(true)" [disabled]="isSaving" mat-raised-button color="">
@@ -118,7 +118,7 @@
                 </div>
                 <div *ngIf="authUser.isMod && newCollection.cover.data?.base64" class="nc-side-img">
                     <h3>Portada validada</h3>
-                    <img [src]="newCollection.cover.data?.base64" alt="Cover">
+                    <img [src]="newCollection.cover.data?.base64 || newCollection.cover.data?.url" alt="Cover">
                 </div>
             </div>
         </div>

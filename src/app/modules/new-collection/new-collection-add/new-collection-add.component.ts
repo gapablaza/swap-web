@@ -120,8 +120,8 @@ export class NewCollectionAddComponent implements OnInit, OnDestroy {
             image: resp.newCollection.image.data?.id || null,
             cover: resp.newCollection.cover?.data?.id || null,
           });
-          this.preview = resp.newCollection.image.data?.base64 || '';
-          this.coverPreview = resp.newCollection.cover?.data?.base64 || '';
+          this.preview = resp.newCollection.image.data?.base64 || resp.newCollection.image.data?.url || '';
+          this.coverPreview = resp.newCollection.cover?.data?.base64 || resp.newCollection.cover?.data?.url || '';
           this.selectedPublisher = resp.newCollection.publisher.data.id;
 
           // Define si puede modificar la solicitud
@@ -160,6 +160,9 @@ export class NewCollectionAddComponent implements OnInit, OnDestroy {
     dialogConfig.panelClass = ['std-image-uploader'];
     dialogConfig.width = '375px';
     // dialogConfig.maxWidth = '500px';
+    dialogConfig.data = {
+      type: type,
+    };
 
     let dialogRef = this.dialog.open(NewCollectionImageComponent, dialogConfig);
     let dialogSub = dialogRef.afterClosed().subscribe((res) => {
@@ -169,7 +172,8 @@ export class NewCollectionAddComponent implements OnInit, OnDestroy {
             image: res.id,
           });
           this.newCollectionForm.get('image')?.updateValueAndValidity();
-          this.preview = res.base64;
+          // this.preview = res.base64;
+          this.preview = res.url;
         } else if (type == 'validated') {
           this.newCollectionForm.patchValue({
             cover: res.id,

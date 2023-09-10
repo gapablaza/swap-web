@@ -5,8 +5,8 @@ export interface Image {
   created: number;
   description: string | null;
   id: number;
-  filename: string | null;
   functionalityId: number;
   updated: number;
+  url: string | null;
   user?: User;
 }

@@ -1,13 +1,17 @@
-import { Component, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { ImageCroppedEvent, ImageCropperComponent, ImageTransform } from 'ngx-image-cropper';
+import { Component, Inject, ViewChild } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  ImageCroppedEvent,
+  ImageCropperComponent,
+  ImageTransform,
+} from 'ngx-image-cropper';
 import { NewCollectionService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 
 @Component({
   selector: 'app-new-collection-image',
   templateUrl: './new-collection-image.component.html',
-  styleUrls: ['./new-collection-image.component.scss']
+  styleUrls: ['./new-collection-image.component.scss'],
 })
 export class NewCollectionImageComponent {
   @ViewChild(ImageCropperComponent) cropper!: ImageCropperComponent;
@@ -20,6 +24,10 @@ export class NewCollectionImageComponent {
   isSaving = false;
 
   constructor(
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      type: 'proposed' | 'validated';
+    },
     private dialogRef: MatDialogRef<NewCollectionImageComponent>,
     private newColSrv: NewCollectionService,
     private uiSrv: UIService
@@ -98,14 +106,24 @@ export class NewCollectionImageComponent {
     const newImage = this.cropper.crop();
     this.croppedImage = newImage?.base64;
 
-    this.newColSrv.uploadImage(this.croppedImage as string).subscribe((res) => {
-      if (res) {
-        // this.uiSrv.showSuccess('Imagen subida con éxito');
-        this.dialogRef.close(res);
-      } else {
-        this.uiSrv.showError('No se pudo subir la imagen');
-        this.isSaving = false;
-      }
-    });
+    if (this.data.type == 'proposed') {
+      this.newColSrv
+        .uploadImageToCloudinary(this.croppedImage as string)
+        .subscribe({
+          next: (res) => this.dialogRef.close(res),
+          error: (err) => {
+            console.log('uploadImageToCloudinary', err);
+            this.isSaving = false;
+          },
+        });
+    } else if (this.data.type == 'validated') {
+      this.newColSrv.uploadImage(this.croppedImage as string).subscribe({
+        next: (res) => this.dialogRef.close(res),
+        error: (err) => {
+          console.log('uploadImageToCloudinary', err);
+          this.isSaving = false;
+        },
+      });
+    }
   }
 }

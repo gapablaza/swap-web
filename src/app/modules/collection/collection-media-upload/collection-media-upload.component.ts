@@ -7,7 +7,7 @@ import {
   ImageTransform,
 } from 'ngx-image-cropper';
 import { take } from 'rxjs';
-import { AuthService, MediaService, MediaUpload } from 'src/app/core';
+import { MediaService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 
 @Component({
@@ -29,7 +29,6 @@ export class CollectionMediaUploadComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { collectionId: number },
     private dialogRef: MatDialogRef<CollectionMediaUploadComponent>,
-    private authSrv: AuthService,
     private mediaSrv: MediaService,
     private uiSrv: UIService
   ) {}
@@ -109,23 +108,24 @@ export class CollectionMediaUploadComponent implements OnInit {
     const newImage = this.cropper.crop();
     this.croppedImage = newImage?.base64;
 
-    let tempMediaUpload: MediaUpload = {
-      description: this.imgDescription,
-      url: null,
-      mediaTypeId: 1,
-      collectionId: this.data.collectionId,
-    };
-
     this.mediaSrv
-      .add(tempMediaUpload, this.croppedImage)
+      .addImage(this.imgDescription, this.croppedImage, this.data.collectionId)
       .pipe(take(1))
-      .subscribe((newId) => {
-        this.uiSrv.showSuccess('Imagen subida, a esperar que un moderador la valide!');
-        this.dialogRef.close({
-          created: Math.floor((new Date).getTime()/1000), 
-          description: this.imgDescription,
-          id: newId,
-        });
+      .subscribe({
+        next: (resp) => {
+          this.uiSrv.showSuccess(
+            'Imagen subida, a esperar que un moderador la valide!'
+          );
+          this.dialogRef.close({
+            created: Math.floor(new Date().getTime() / 1000),
+            description: this.imgDescription,
+            id: resp,
+          });
+        },
+        error: (err) => {
+          console.log('addImage', err);
+          this.isSaving = false;
+        },
       });
   }
 }

@@ -22,11 +22,24 @@
                 </div>
 
                 <div class="upload-image-cropper">
-                    <image-cropper #cropper [allowMoveImage]="true" [autoCrop]="false" [canvasRotation]="canvasRotation"
-                        format="jpeg" output="base64" [hideResizeSquares]="false" [imageChangedEvent]="imageChangedEvent"
-                        [imageQuality]="100" [maintainAspectRatio]="false" [transform]="transform"
-                        (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
-                        (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()"></image-cropper>
+                    <image-cropper #cropper 
+                        [allowMoveImage]="true" 
+                        [autoCrop]="false" 
+                        [canvasRotation]="canvasRotation"
+                        format="jpeg" 
+                        output="base64" 
+                        [hideResizeSquares]="false" 
+                        [imageChangedEvent]="imageChangedEvent"
+                        [imageQuality]="100" 
+                        [maintainAspectRatio]="false" 
+                        [resizeToWidth]="1400"
+                        [onlyScaleDown]="true"
+                        [transform]="transform"
+                        (imageCropped)="imageCropped($event)" 
+                        (imageLoaded)="imageLoaded()"
+                        (cropperReady)="cropperReady()" 
+                        (loadImageFailed)="loadImageFailed()"
+                    ></image-cropper>
                 </div>
 
                 <!-- <img [src]="croppedImage" /> -->

@@ -111,7 +111,7 @@
                         <div class="nc-side">
                             <div class="nc-side-img">
                                 <a [routerLink]="['./', col.id]">
-                                    <img [src]="col.image.data?.base64" alt="Portada">
+                                    <img [src]="col.image.data?.base64 || col.image.data?.url" alt="Portada">
                                 </a>
                             </div>
                             <div class="nc-side-action">
