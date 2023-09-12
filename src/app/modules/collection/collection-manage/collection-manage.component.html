@@ -46,7 +46,7 @@
       </div>
 
       <ng-container *ngIf="collection.items">
-        <nav mat-tab-nav-bar>
+        <nav mat-tab-nav-bar [tabPanel]="tabPanel">
           <a mat-tab-link [routerLink]="['.']" [active]="actualPage == 'manage'">Listado ({{ collection.items }})</a>
           <a mat-tab-link [routerLink]="['wishlist']" [active]="actualPage == 'wishlist'">Buscando ({{ totalWishing
             }})</a>
@@ -54,7 +54,9 @@
             }})</a>
         </nav>
 
-        <router-outlet></router-outlet>
+        <mat-tab-nav-panel #tabPanel>
+          <router-outlet></router-outlet>
+        </mat-tab-nav-panel>
       </ng-container>
     </div>
   </div>

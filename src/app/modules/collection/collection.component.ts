@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { CollectionOnlyService } from './collection-only.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-collection',
@@ -9,7 +10,8 @@ import { CollectionOnlyService } from './collection-only.service';
   providers: [CollectionOnlyService],
   styleUrls: ['./collection.component.scss'],
 })
-export class CollectionComponent implements OnInit {
+export class CollectionComponent implements OnInit, OnDestroy {
+  subs: Subscription = new Subscription();
 
   constructor(
     private route: ActivatedRoute,
@@ -32,9 +34,13 @@ export class CollectionComponent implements OnInit {
     //   });
 
     // TO DO: Manejar el caso cuando no se encuentre la colección solicitada
-    this.route.data.subscribe((data) => {
-      this.colOnlySrv.setCurrentCollection(data['collectionData']);
+    let routeSub = this.route.data.subscribe((data) => {
+      this.colOnlySrv.setCurrentCollection(data['collectionData']['collection']);
     });
+    this.subs.add(routeSub);
   }
 
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
 }

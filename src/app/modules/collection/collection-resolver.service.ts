@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { catchError, Observable } from 'rxjs';
 
-import { Collection, CollectionService } from 'src/app/core';
+import { CollectionService } from 'src/app/core';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +16,8 @@ export class CollectionResolver  {
   ): Observable<any> {
     return this.colSrv
       .get(Number(route.params['id']))
-      .pipe(catchError((err) => this.router.navigateByUrl('/')));
+      .pipe(
+        catchError((err) => this.router.navigateByUrl('/')),
+      );
   }
 }

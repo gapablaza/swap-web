@@ -17,13 +17,16 @@ import {
   Collection,
   CollectionService,
   DEFAULT_COLLECTION_IMG,
+  DEFAULT_USER_PROFILE_IMG,
   Item,
+  Media,
   SEOService,
   User,
 } from 'src/app/core';
 import { SlugifyPipe, UIService } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
 import { CollectionOnlyService } from '../collection-only.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-collection-profile',
@@ -34,9 +37,15 @@ import { CollectionOnlyService } from '../collection-only.service';
 export class CollectionProfileComponent implements OnInit, OnDestroy {
   @ViewChild('confirmDeleteDialog') deleteDialog!: TemplateRef<any>;
   collection: Collection = {} as Collection;
+  lastCollectors: User[] = [];
+  lastMedia: Media[] = [];
   items: Item[] = [];
   authUser: User = {} as User;
+
   defaultCollectionImage = DEFAULT_COLLECTION_IMG;
+  defaultUserImage = DEFAULT_USER_PROFILE_IMG;
+  baseImageUrl = `https://res.cloudinary.com/${environment.cloudinary.cloudName}/image/upload/t_il_media_wm/${environment.cloudinary.site}/collectionMedia/`;
+
   userWishing: Item[] = [];
   userTrading: Item[] = [];
   // isAdsLoaded = false;
@@ -51,6 +60,7 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
     private SEOSrv: SEOService,
     private dialog: MatDialog,
     private uiSrv: UIService,
+    private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -82,9 +92,11 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
           this.SEOSrv.set({
             title: `${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
             description: `Marca tus repetidas/faltantes del álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}) para encontrar con quien poder cambiar. Son ${col.items} ítems a coleccionar (láminas / stickers / figuritas / pegatinas / cromos / estampas / barajitas).`,
-            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(col.name + ' ' + col.publisher.data.name)}/${col.id}`,
+            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(
+              col.name + ' ' + col.publisher.data.name
+            )}/${col.id}`,
             isCanonical: true,
-          })
+          });
 
           this.isLoaded = true;
           this.cdr.markForCheck();
@@ -111,6 +123,13 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       });
     this.subs.add(colSub);
+
+    // obtiene los datos adicionales de la colección
+    let parentRouteSub = this.route.parent?.data.subscribe((data) => {
+      this.lastCollectors = data['collectionData']['lastCollectors'];
+      this.lastMedia = data['collectionData']['lastMedia'];
+    });
+    this.subs.add(parentRouteSub);
   }
 
   // loadAds() {

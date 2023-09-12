@@ -19,11 +19,11 @@ import {
 export class CollectionService {
   constructor(private apiSrv: ApiService) {}
 
-  get(collectionId: number): Observable<Collection> {
+  get(collectionId: number): Observable<{ collection: Collection; lastCollectors: User[]; lastMedia: Media[] }> {
     return this.apiSrv
       .get('/v2/collections/' + collectionId + '?include=publisher')
       .pipe(
-        map((data: { data: any }) => {
+        map((data: { data: any, lastCollectors: User[], lastMedia: Media[] }) => {
           let tempCollectionUserData = {} as CollectionUserData;
           tempCollectionUserData = {
             collecting: data.data.collecting,
@@ -34,9 +34,13 @@ export class CollectionService {
           };
 
           return {
-            ...(data.data as Collection),
-            userData: tempCollectionUserData,
-          } as Collection;
+            collection: {
+              ...(data.data as Collection),
+              userData: tempCollectionUserData,
+            } as Collection,
+            lastCollectors: data.lastCollectors,
+            lastMedia: data.lastMedia
+          }
         })
       );
   }

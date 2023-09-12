@@ -87,6 +87,7 @@ section.collection {
 
   .collection-info {
     flex: 0 0 100%;
+    width: 100%;
 
     @media (min-width: 768px) {
       flex: auto;
@@ -192,6 +193,54 @@ section.collection {
 
     .collection-help {
       color: #4f4f4d;
+    }
+
+    .nav-vert-std {
+      padding-top: 0;
+    }
+
+    .user-card-list {
+      margin: 10px 0 2px 16px;
+      padding: 4px 8px 0;
+
+      .user-card {
+        padding: 1rem;
+        min-width: 10rem;
+
+        &.placeholder-link a {
+          display: flex;
+          height: 100%;
+          align-items: center;
+        }
+      }
+    }
+
+    .images-grid {
+      display: flex;
+      overflow-x: scroll;
+      margin-top: 10px;
+      margin-left: 16px;
+
+      .images-grid-card {
+        min-width: 190px;
+        max-width: 400px;
+        margin-bottom: 10px;
+
+        .images-grid-content:before {
+          display: none;
+        }
+        
+        .images-grid-content:hover:before {
+          opacity: 0;
+        }
+
+        .images-grid-content.placeholder-link a {
+          display: flex;
+          text-decoration: none;
+          color: inherit;
+          align-items: center;
+        }
+      }
     }
   }
 

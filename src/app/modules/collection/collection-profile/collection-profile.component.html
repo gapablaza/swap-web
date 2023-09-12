@@ -53,24 +53,12 @@
     <div class="collection-main">
       <h1>{{ collection.name }}</h1>
       <p class="subtitle">{{ collection.publisher.data.name }}, {{ collection.year }}</p>
-
-      <p *ngIf="collection.description" class="collection-description"
-        [innerHTML]="collection.description| sanitizeHtml"></p>
     </div>
 
     <!-- <ng-container *ngIf="isAdsLoaded">
       <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="9177899059" [adFormat]="'auto'"
         [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
     </ng-container> -->
-
-    <!-- <div class="collection-tags">
-      <mat-chip-list aria-label="Etiquetas de la colección">
-        <mat-chip>Tag #1</mat-chip>
-        <mat-chip>Tag #2</mat-chip>
-        <mat-chip>Tag ...</mat-chip>
-        <mat-chip>Tag #N</mat-chip>
-      </mat-chip-list>
-    </div> -->
 
     <!-- <hr /> -->
     <mat-accordion *ngIf="collection.userData?.collecting">
@@ -79,9 +67,6 @@
           <mat-panel-title>
             Tus listados
           </mat-panel-title>
-          <!-- <mat-panel-description>
-          Tus listados
-        </mat-panel-description> -->
         </mat-expansion-panel-header>
 
         <div class="trades-collection">
@@ -133,9 +118,6 @@
           <mat-panel-title>
             Tu comentario público
           </mat-panel-title>
-          <!-- <mat-panel-description>
-          Tus anotaciones
-        </mat-panel-description> -->
         </mat-expansion-panel-header>
         <p *ngIf="collection.userData?.publicComment">
           {{ collection.userData?.publicComment }}
@@ -154,7 +136,7 @@
             Tiene
             <strong *ngIf="collection.items">{{ collection.items }}</strong>
             <strong *ngIf="!collection.items">???</strong>
-            ítems (láminas | stickers | figuritas | estampas | cromos)
+            ítems (láminas | stickers | figuritas | estampas | cromos | cartas)
           </div>
           <mat-icon>navigate_next</mat-icon>
         </a>
@@ -175,6 +157,31 @@
           <mat-icon>navigate_next</mat-icon>
         </a>
       </li>
+    </ul>
+
+    <ul *ngIf="lastCollectors.length >= 6" class="user-card-list">
+      <li *ngFor="let user of lastCollectors" class="user-card card">
+        <a [routerLink]="['/user', user.id]">
+          <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || '/assets/img/profile_user.png'"
+            [alt]="'Perfil público de ' + user.displayName" [title]="'Perfil público de ' + user.displayName"
+            class="user-card-image" crossorigin="anonymous">
+          <h3 class="user-card-title">{{ user.displayName }}</h3>
+        </a>
+        <p class="user-card-subtitle">{{ user.location }}</p>
+        <!-- <hr />
+        <div class="user-card-info">
+          <span appDaysSinceLogin="{{ user.daysSinceLogin }}" [preText]="'Actualizado '"></span>
+        </div> -->
+      </li>
+      <li class="user-card placeholder-link card">
+        <a [routerLink]="['./users']">
+          Ver todos 
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+      </li>
+    </ul>
+
+    <ul class="nav-vert-std">
       <li>
         <a class="nav-vert-std-a" [routerLink]="['./media']">
           <div>
@@ -184,37 +191,36 @@
         </a>
       </li>
     </ul>
-    <!-- <mat-nav-list>
-      <a mat-list-item [routerLink]="['./items']">
-        <div mat-line>
-          Tiene
-          <strong *ngIf="collection.items">{{ collection.items }}</strong>
-          <strong *ngIf="!collection.items">???</strong>
-          ítems (láminas | stickers | figuritas | estampas | cromos)
+
+    <div *ngIf="lastMedia.length >= 4" class="images-grid">
+      <div *ngFor="let image of lastMedia; let i = index;" class="images-grid-card">
+        <div class="images-grid-content">
+          <img [lazyLoad]="baseImageUrl + image.id"
+            [alt]="image.description + ' en ' + collection.name + ' de ' + collection.publisher.data.name"
+            class="images-grid-image" crossorigin="anonymous">
+          <!-- <p class="images-grid-author">
+            por <a [routerLink]="['/user', image.user?.data?.id]">{{ image.user?.data?.displayName }}</a> el {{
+            image.created * 1000 | date:'dd/MM/yy' }}
+          </p> -->
         </div>
-        <mat-icon>navigate_next</mat-icon>
-      </a>
-      <a *ngIf="authUser.id" mat-list-item [routerLink]="['./tops']">
-        <div mat-line>
-          <strong>TOP</strong> ítems <span class="pro-label">PRO</span> (clasificados por dificultad)
+        <p class="images-grid-title">
+          #{{ i + 1 }} - {{ image.description }}
+        </p>
+      </div>
+      <div class="images-grid-card">
+        <div class="images-grid-content placeholder-link">
+          <a [routerLink]="['./media']">
+            Ver todos 
+            <mat-icon>navigate_next</mat-icon>
+          </a>
         </div>
-        <mat-icon>navigate_next</mat-icon>
-      </a>
-      <a mat-list-item [routerLink]="['./users']">
-        <div mat-line>
-          <strong>{{ collection.totalCollecting }}</strong> usuarios lo coleccionan
-        </div>
-        <mat-icon>navigate_next</mat-icon>
-      </a>
-      <a mat-list-item [routerLink]="['./media']">
-        <div mat-line>
-          Se han agregado <strong>{{ collection.totalMedia}}</strong> elementos multimedia
-        </div>
-        <mat-icon>navigate_next</mat-icon>
-      </a>
-    </mat-nav-list> -->
+      </div>
+    </div>
 
     <hr />
+
+    <p *ngIf="collection.description" class="collection-description" [innerHTML]="collection.description| sanitizeHtml">
+    </p>
 
     <div class="collection-publisher">
       <p>{{ collection.publisher.data.name }}</p>
@@ -244,9 +250,6 @@
       <div class="collection-main">
         <h1>Cargando nombre de la colección</h1>
         <p class="subtitle">Cargando editorial, cargando año</p>
-
-        <!-- <p *ngIf="collection.description" class="collection-description"
-        [innerHTML]="collection.description| sanitizeHtml"></p> -->
       </div>
 
       <h2>Secciones</h2>

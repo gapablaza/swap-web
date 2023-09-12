@@ -249,7 +249,7 @@ export class CollectionManageTradelistComponent implements OnInit, OnDestroy {
         concatMap(() => this.colSrv.get(this.collection.id).pipe(take(1)))
       )
       .subscribe({
-        next: (col) => this.colOnlySrv.setCurrentCollection(col),
+        next: (col) => this.colOnlySrv.setCurrentCollection(col.collection),
         error: (error) => {
           console.log('setTradelist error: ', error);
           this.uiSrv.showError(error.error.message);
