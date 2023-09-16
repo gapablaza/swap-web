@@ -6,7 +6,6 @@ import { provideRouter } from '@angular/router';
 import {
   HAMMER_GESTURE_CONFIG,
   HammerGestureConfig,
-//   BrowserModule,
   HammerModule,
   bootstrapApplication,
 } from '@angular/platform-browser';
@@ -27,17 +26,12 @@ import {
   AngularFireMessagingModule,
 } from '@angular/fire/compat/messaging';
 
-// import { MatToolbarModule } from '@angular/material/toolbar';
-// import { MatSidenavModule } from '@angular/material/sidenav';
-// import { MatIconModule } from '@angular/material/icon';
-// import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 import { NgProgressHttpModule } from 'ngx-progressbar/http';
 import { NgProgressModule } from 'ngx-progressbar';
-// import { GoogleMapsModule } from '@angular/google-maps';
 
 import { environment } from './environments/environment';
 import { AppComponent } from './app/app.component';
@@ -68,18 +62,10 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(
       CoreModule,
       HammerModule,
-      //   BrowserModule,
-      //   GoogleMapsModule,
-
-      //   MatToolbarModule,
-      //   MatButtonModule,
-      //   MatSidenavModule,
-      //   MatIconModule,
 
       MatSnackBarModule, // UIService lo necesita
       MatBottomSheetModule, // UIService lo necesita
 
-      //   AppRoutingModule,
       ServiceWorkerModule.register('ngsw-worker.js', {
         enabled: environment.production,
         // Register the ServiceWorker as soon as the application is stable

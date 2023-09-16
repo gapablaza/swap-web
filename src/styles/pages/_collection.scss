@@ -122,6 +122,7 @@ section.collection {
 
       .collection-image-container {
         width: 140px;
+        min-height: 100px;
         z-index: 1;
         position: relative;
 
@@ -204,13 +205,18 @@ section.collection {
       padding: 4px 8px 0;
 
       .user-card {
-        padding: 1rem;
+        padding: 0.75rem;
         min-width: 10rem;
 
         &.placeholder-link a {
           display: flex;
           height: 100%;
           align-items: center;
+        }
+
+        .user-card-image {
+          width: 6rem;
+          height: 6rem;
         }
       }
     }
@@ -535,7 +541,7 @@ section.collection {
 
     .upload-image-description {
       .mat-mdc-form-field {
-        font-size: 0.85rem;
+        font-size: 0.88rem;
         width: 100%;
         
         /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/

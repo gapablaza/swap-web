@@ -1,30 +1,25 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
-import { AngularFireMessaging } from '@angular/fire/compat/messaging';
-import {
-  MatSidenav,
-  MatDrawerMode,
-  MatSidenavModule,
-} from '@angular/material/sidenav';
 import {
   NavigationEnd,
   NavigationStart,
   Router,
   RouterOutlet,
 } from '@angular/router';
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { filter } from 'rxjs';
+import {
+  MatSidenav,
+  MatDrawerMode,
+  MatSidenavModule,
+} from '@angular/material/sidenav';
+import { NgProgressModule } from 'ngx-progressbar';
 
 import { environment } from 'src/environments/environment';
 import { AuthService, SEOService } from './core';
 import { UIService } from './shared';
 import { FooterComponent } from './modules/navigation/footer/footer.component';
 import { SidenavListComponent } from './modules/navigation/sidenav-list/sidenav-list.component';
-import { NgProgressModule } from 'ngx-progressbar';
 import { HeaderComponent } from './modules/navigation/header/header.component';
-// import { MatToolbarModule } from '@angular/material/toolbar';
-// import { MatButtonModule } from '@angular/material/button';
-// import { MatIconModule } from '@angular/material/icon';
-// import { MatSnackBarModule } from '@angular/material/snack-bar';
-// import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 
 declare const gtag: Function;
 
@@ -38,11 +33,6 @@ declare const gtag: Function;
     NgProgressModule,
 
     MatSidenavModule,
-    // MatToolbarModule,
-    // MatButtonModule,
-    // MatIconModule,
-    // MatSnackBarModule,
-    // MatBottomSheetModule,
     
     HeaderComponent,
     SidenavListComponent,

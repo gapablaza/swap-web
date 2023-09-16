@@ -5,9 +5,12 @@
       <div class="collection-image-background" [lazyLoad]="collection.image || defaultCollectionImage"></div>
       <div class="collection-subheader">
         <div class="collection-image-container">
-          <img class="collection-image" [defaultImage]="defaultCollectionImage"
+          <img class="collection-image" [src]="collection.image || defaultCollectionImage"
+            [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous"
+            fetchpriority="high">
+          <!-- <img class="collection-image" [defaultImage]="defaultCollectionImage"
             [lazyLoad]="collection.image || defaultCollectionImage"
-            [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous">
+            [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous" fetchpriority="high"> -->
 
           <div *ngIf="collection.userData?.completed" class="ribbon up">
             <div class="content">
@@ -175,7 +178,7 @@
       </li>
       <li class="user-card placeholder-link card">
         <a [routerLink]="['./users']">
-          Ver todos 
+          Ver todos
           <mat-icon>navigate_next</mat-icon>
         </a>
       </li>
@@ -210,7 +213,7 @@
       <div class="images-grid-card">
         <div class="images-grid-content placeholder-link">
           <a [routerLink]="['./media']">
-            Ver todos 
+            Ver todos
             <mat-icon>navigate_next</mat-icon>
           </a>
         </div>
@@ -272,6 +275,66 @@
             <mat-icon>navigate_next</mat-icon>
           </a>
         </li>
+      </ul>
+
+      <ul class="user-card-list">
+        <li class="user-card card">
+          <a>
+            <img src="/assets/img/profile_user.png"
+              class="user-card-image">
+            <h3 class="user-card-title">Cargando nombre</h3>
+          </a>
+          <p class="user-card-subtitle">Cargando ubicación</p>
+        </li>
+        <li class="user-card card">
+          <a>
+            <img src="/assets/img/profile_user.png"
+              class="user-card-image">
+            <h3 class="user-card-title">Cargando nombre</h3>
+          </a>
+          <p class="user-card-subtitle">Cargando ubicación</p>
+        </li>
+        <li class="user-card card">
+          <a>
+            <img src="/assets/img/profile_user.png"
+              class="user-card-image">
+            <h3 class="user-card-title">Cargando nombre</h3>
+          </a>
+          <p class="user-card-subtitle">Cargando ubicación</p>
+        </li>
+        <li class="user-card card">
+          <a>
+            <img src="/assets/img/profile_user.png"
+              class="user-card-image">
+            <h3 class="user-card-title">Cargando nombre</h3>
+          </a>
+          <p class="user-card-subtitle">Cargando ubicación</p>
+        </li>
+        <li class="user-card card">
+          <a>
+            <img src="/assets/img/profile_user.png"
+              class="user-card-image">
+            <h3 class="user-card-title">Cargando nombre</h3>
+          </a>
+          <p class="user-card-subtitle">Cargando ubicación</p>
+        </li>
+        <li class="user-card card">
+          <a>
+            <img src="/assets/img/profile_user.png"
+              class="user-card-image">
+            <h3 class="user-card-title">Cargando nombre</h3>
+          </a>
+          <p class="user-card-subtitle">Cargando ubicación</p>
+        </li>
+        <li class="user-card placeholder-link card">
+          <a>
+            Ver todos
+            <mat-icon>navigate_next</mat-icon>
+          </a>
+        </li>
+      </ul>
+      
+      <ul class="nav-vert-std">
         <li>
           <a class="nav-vert-std-a">
             <div>

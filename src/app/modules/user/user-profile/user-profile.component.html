@@ -6,8 +6,10 @@
       </div>
       <div class="user-subheader">
         <div class="user-image-container">
-          <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
-            [alt]="user.displayName" crossorigin="anonymous">
+          <img class="user-image" [src]="user.image || defaultUserImage"
+            [alt]="user.displayName" crossorigin="anonymous" fetchpriority="high">
+          <!-- <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
+            [alt]="user.displayName" crossorigin="anonymous"> -->
           <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
         </div>
         <div class="user-actions">

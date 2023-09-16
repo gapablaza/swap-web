@@ -1,10 +1,9 @@
 import { Routes } from '@angular/router';
-// import { HomeComponent } from './modules/home/home.component';
-import { CustomErrorComponent } from './modules/navigation/custom-error/custom-error.component';
+
 import { authorizedGuard, unauthorizedGuard } from './core';
+import { locatedGuard } from './modules/trades/located.guard';
 import { HomeAuthResolver } from './modules/home/home-auth-resolver.service';
 import { ItemResolver } from './modules/item/item-resolver.service';
-import { locatedGuard } from './modules/trades/located.guard';
 import { TradesResolver } from './modules/trades/trades-resolver.service';
 
 export const APP_ROUTES: Routes = [
@@ -37,16 +36,20 @@ export const APP_ROUTES: Routes = [
   },
   {
     path: 'forgot-password',
-    loadChildren: () =>
-      import('./modules/auth/reset-password/reset-password.module').then(
-        (m) => m.ResetPasswordModule
+    title: 'Resetear contraseña - Intercambia Láminas',
+    canActivate: [unauthorizedGuard],
+    loadComponent: () =>
+      import('./modules/auth/reset-password/reset-password.component').then(
+        (c) => c.ResetPasswordComponent
       ),
   },
   {
     path: 'new-password',
-    loadChildren: () =>
-      import('./modules/auth/new-password/new-password.module').then(
-        (m) => m.NewPasswordModule
+    title: 'Configura una nueva contraseña - Intercambia Láminas',
+    canActivate: [unauthorizedGuard],
+    loadComponent: () =>
+      import('./modules/auth/new-password/new-password.component').then(
+        (c) => c.NewPasswordComponent
       ),
   },
   {
@@ -127,7 +130,11 @@ export const APP_ROUTES: Routes = [
   {
     path: '**',
     pathMatch: 'full',
-    component: CustomErrorComponent,
+    title: 'Página no encontrada - Error 404 - Intercambia Láminas',
+    loadComponent: () =>
+      import('./modules/navigation/custom-error/custom-error.component').then(
+        (c) => c.CustomErrorComponent
+      ),
   },
 ];
 
