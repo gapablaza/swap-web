@@ -1,44 +1,36 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpEvent,
-  HttpInterceptor,
-  HttpHandler,
-  HttpRequest,
-} from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { catchError, throwError } from 'rxjs';
 
 import { AuthService } from '../services';
 import { UIService } from 'src/app/shared';
 
-@Injectable()
-export class ErrorInterceptor implements HttpInterceptor {
-  constructor(
-    private authSrv: AuthService,
-    private uiSrv: UIService,
-  ) {}
+export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+  const authSrv = inject(AuthService);
+  const uiSrv = inject(UIService);
 
-  intercept(
-    req: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
-    return next.handle(req).pipe(
-      catchError((err) => {
-        const authUser = this.authSrv.getCurrentUser();
-        if ([401, 403].includes(err.status) && authUser.id) {
-          // auto logout if 401 or 403 response returned from api
-          this.authSrv.logout();
-        }
+  return next(req).pipe(
+    catchError((err) => {
+      const authUser = authSrv.getCurrentUser();
+      if ([401, 403].includes(err.status) && authUser.id) {
+        // auto logout if 401 or 403 response returned from api
+        authSrv.logout();
+      }
 
-        let error = err.statusText;
-        if (err && err.error && err.error.message) {
-          error = err.error.message;
-        } else if (err && err.error && err.error.error && err.error.error.message) {
-          error = err.error.error.message;
-        }
+      let error = err.statusText;
+      if (err && err.error && err.error.message) {
+        error = err.error.message;
+      } else if (
+        err &&
+        err.error &&
+        err.error.error &&
+        err.error.error.message
+      ) {
+        error = err.error.error.message;
+      }
 
-        this.uiSrv.showError(error);
-        return throwError(() => err);
-      })
-    );
-  }
-}
+      uiSrv.showError(error);
+      return throwError(() => err);
+    })
+  );
+};

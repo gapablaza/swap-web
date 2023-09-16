@@ -11,24 +11,13 @@ import {
   NewCollectionService,
   SearchService,
   SEOService,
-  UserService
+  UserService,
 } from './services';
-// import { AuthGuard, FBAuthGuard, ModGuard, NoAuthGuard } from './guards';
 
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
   providers: [
-    // { provide: HTTP_INTERCEPTORS, useClass: HttpTokenInterceptor, multi: true },
-    // { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    
-    // AuthGuard,
-    // FBAuthGuard,
-    // ModGuard,
-    // NoAuthGuard,
-    
     ApiService,
     AuthService,
     JwtService,
@@ -40,6 +29,6 @@ import {
     NewCollectionService,
     SearchService,
     UserService,
-  ]
+  ],
 })
-export class CoreModule { }
+export class CoreModule {}

@@ -35,7 +35,7 @@ import { NgProgressModule } from 'ngx-progressbar';
 
 import { environment } from './environments/environment';
 import { AppComponent } from './app/app.component';
-import { CoreModule, errInterceptor, tokenInterceptor } from './app/core';
+import { CoreModule, errorInterceptor, tokenInterceptor } from './app/core';
 import { UIService } from './app/shared';
 import { APP_ROUTES } from './app';
 
@@ -57,7 +57,7 @@ export class HammerConfig extends HammerGestureConfig {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideHttpClient(withInterceptors([tokenInterceptor, errInterceptor])),
+    provideHttpClient(withInterceptors([tokenInterceptor, errorInterceptor])),
     provideRouter(APP_ROUTES),
     importProvidersFrom(
       CoreModule,
