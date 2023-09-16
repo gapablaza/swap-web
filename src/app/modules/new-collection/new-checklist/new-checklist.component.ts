@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription, combineLatest, take } from 'rxjs';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import * as XLSX from 'xlsx';
 
 import {
@@ -16,6 +16,11 @@ import {
   User,
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
+import { LinebreaksPipe } from '../../../shared/pipes/linebreaks.pipe';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor } from '@angular/common';
 
 export interface CheckItem {
   NRO: string;
@@ -27,9 +32,21 @@ export interface CheckItem {
 }
 
 @Component({
-  selector: 'app-new-checklist',
-  templateUrl: './new-checklist.component.html',
-  styleUrls: ['./new-checklist.component.scss'],
+    selector: 'app-new-checklist',
+    templateUrl: './new-checklist.component.html',
+    styleUrls: ['./new-checklist.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        MatButtonModule,
+        RouterLink,
+        MatIconModule,
+        NgFor,
+        MatTableModule,
+        MatSortModule,
+        LinebreaksPipe,
+    ],
 })
 export class NewChecklistComponent implements OnInit, OnDestroy {
   authUser: User = {} as User;

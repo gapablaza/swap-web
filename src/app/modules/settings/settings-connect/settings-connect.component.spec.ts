@@ -8,8 +8,8 @@ describe('SettingsConnectComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SettingsConnectComponent ]
-    })
+    imports: [SettingsConnectComponent]
+})
     .compileComponents();
   });
 

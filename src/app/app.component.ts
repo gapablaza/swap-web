@@ -1,12 +1,30 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { AngularFireMessaging } from '@angular/fire/compat/messaging';
-import { MatSidenav, MatDrawerMode } from '@angular/material/sidenav';
-import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import {
+  MatSidenav,
+  MatDrawerMode,
+  MatSidenavModule,
+} from '@angular/material/sidenav';
+import {
+  NavigationEnd,
+  NavigationStart,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 import { filter } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { AuthService, SEOService } from './core';
 import { UIService } from './shared';
+import { FooterComponent } from './modules/navigation/footer/footer.component';
+import { SidenavListComponent } from './modules/navigation/sidenav-list/sidenav-list.component';
+import { NgProgressModule } from 'ngx-progressbar';
+import { HeaderComponent } from './modules/navigation/header/header.component';
+// import { MatToolbarModule } from '@angular/material/toolbar';
+// import { MatButtonModule } from '@angular/material/button';
+// import { MatIconModule } from '@angular/material/icon';
+// import { MatSnackBarModule } from '@angular/material/snack-bar';
+// import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 
 declare const gtag: Function;
 
@@ -14,6 +32,22 @@ declare const gtag: Function;
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    NgProgressModule,
+
+    MatSidenavModule,
+    // MatToolbarModule,
+    // MatButtonModule,
+    // MatIconModule,
+    // MatSnackBarModule,
+    // MatBottomSheetModule,
+    
+    HeaderComponent,
+    SidenavListComponent,
+    FooterComponent,
+  ],
 })
 export class AppComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
@@ -93,9 +127,7 @@ export class AppComponent implements OnInit {
 
     // Subscripción a notificación de nuevos mensajes
     this.afMessaging.getToken
-      .pipe(
-        filter((token) => token != null),
-      )
+      .pipe(filter((token) => token != null))
       .subscribe((token) => {
         this.afMessaging.onMessage((payload) => {
           this.uiSrv.showSnackbar('Tienes un nuevo mensaje!');

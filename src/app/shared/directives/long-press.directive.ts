@@ -10,7 +10,8 @@ import {
   
   @Directive({
     selector: '[longPress]',
-  })
+    standalone: true,
+})
   export class LongPressDirective implements OnDestroy {
     private eventSubscribe: Subscription;
     threshold = 1000;

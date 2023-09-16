@@ -11,12 +11,45 @@ import {
 import { CollectionOnlyService } from '../collection-only.service';
 import { environment } from 'src/environments/environment';
 import { SlugifyPipe } from 'src/app/shared';
+import { SanitizeHtmlPipe } from '../../../shared/pipes/sanitize-html.pipe';
+import { DaysSinceLoginDirective } from '../../../shared/directives/days-since-login.directive';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { CollectionSummaryComponent } from '../collection-summary/collection-summary.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor, NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-collection-users',
-  templateUrl: './collection-users.component.html',
-  styleUrls: ['./collection-users.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-collection-users',
+    templateUrl: './collection-users.component.html',
+    styleUrls: ['./collection-users.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        CollectionSummaryComponent,
+        MatButtonModule,
+        RouterLink,
+        MatIconModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        NgFor,
+        MatOptionModule,
+        NgClass,
+        MatInputModule,
+        FormsModule,
+        LazyLoadImageModule,
+        DaysSinceLoginDirective,
+        SanitizeHtmlPipe,
+    ],
 })
 export class CollectionUsersComponent implements OnInit, OnDestroy {
   collection: Collection = {} as Collection;
@@ -75,7 +108,6 @@ export class CollectionUsersComponent implements OnInit, OnDestroy {
         concatMap((col) => this.colSrv.getUsers(col.id).pipe(take(1)))
       )
       .subscribe((users) => {
-        console.log('CollectionUsersComponent - Sub colOnlySrv');
         this.users = [...users];
         this.showedUsers = [...users];
         this.sortShowedUsers();

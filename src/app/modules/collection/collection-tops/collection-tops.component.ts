@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatAccordion } from '@angular/material/expansion';
+import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
 import { concatMap, filter, Subscription, take, tap } from 'rxjs';
 
 import {
@@ -12,12 +12,30 @@ import {
 import { SlugifyPipe } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
 import { CollectionOnlyService } from '../collection-only.service';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { CollectionSummaryComponent } from '../collection-summary/collection-summary.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor, NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-collection-tops',
-  templateUrl: './collection-tops.component.html',
-  styleUrls: ['./collection-tops.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-collection-tops',
+    templateUrl: './collection-tops.component.html',
+    styleUrls: ['./collection-tops.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        CollectionSummaryComponent,
+        MatButtonModule,
+        RouterLink,
+        MatIconModule,
+        MatExpansionModule,
+        NgFor,
+        NgClass,
+    ],
 })
 export class CollectionTopsComponent implements OnInit, OnDestroy {
   @ViewChild(MatAccordion) accordion!: MatAccordion;

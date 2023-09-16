@@ -4,12 +4,25 @@ import { AuthService, DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
 import { filter, Subscription, tap } from 'rxjs';
 import { UIService } from 'src/app/shared';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-user-summary',
-  templateUrl: './user-summary.component.html',
-  styleUrls: ['./user-summary.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-user-summary',
+    templateUrl: './user-summary.component.html',
+    styleUrls: ['./user-summary.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatButtonModule,
+        RouterLink,
+        MatIconModule,
+        LazyLoadImageModule,
+    ],
 })
 export class UserSummaryComponent implements OnInit, OnDestroy {
   @Input() showBackButton = false;

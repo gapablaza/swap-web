@@ -1,18 +1,30 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  FacebookLoginProvider,
-  SocialAuthService,
-} from '@abacritt/angularx-social-login';
+import { FacebookLoginProvider, SocialAuthService, GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 import { filter, from, Subscription, switchMap, take } from 'rxjs';
 
 import { AuthService, User } from 'src/app/core';
-import { UIService } from 'src/app/shared';
+import { SocialModule, UIService } from 'src/app/shared';
 import { SettingsOnlyService } from '../settings-only.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-settings-connect',
-  templateUrl: './settings-connect.component.html',
-  styleUrls: ['./settings-connect.component.scss'],
+    selector: 'app-settings-connect',
+    templateUrl: './settings-connect.component.html',
+    styleUrls: ['./settings-connect.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        MatListModule,
+        MatIconModule,
+        SocialModule,
+        GoogleSigninButtonModule,
+        MatButtonModule,
+    ],
 })
 export class SettingsConnectComponent implements OnInit, OnDestroy {
   authUser: User = {} as User;

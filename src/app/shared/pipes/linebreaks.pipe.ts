@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'linebreaks'
+    name: 'linebreaks',
+    standalone: true
 })
 export class LinebreaksPipe implements PipeTransform {
 

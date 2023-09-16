@@ -6,16 +6,24 @@ import {
   ViewChild,
 } from '@angular/core';
 import { AngularFireMessaging } from '@angular/fire/compat/messaging';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Subscription, take } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 
 import { AuthService, User } from 'src/app/core';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-message',
-  templateUrl: './message.component.html',
-  styleUrls: ['./message.component.scss'],
+    selector: 'app-message',
+    templateUrl: './message.component.html',
+    styleUrls: ['./message.component.scss'],
+    standalone: true,
+    imports: [
+        RouterOutlet,
+        MatDialogModule,
+        MatButtonModule,
+    ],
 })
 export class MessageComponent implements OnInit, OnDestroy {
   @ViewChild('customRequest') customRequest!: TemplateRef<any>;

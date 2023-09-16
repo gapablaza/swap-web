@@ -3,12 +3,25 @@ import { Subscription } from 'rxjs';
 import { AuthService, DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
 
 import { SettingsOnlyService } from './settings-only.service';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss'],
-  providers: [SettingsOnlyService],
+    selector: 'app-settings',
+    templateUrl: './settings.component.html',
+    styleUrls: ['./settings.component.scss'],
+    providers: [SettingsOnlyService],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        LazyLoadImageModule,
+        RouterLink,
+        RouterLinkActive,
+        RouterOutlet,
+    ],
 })
 export class SettingsComponent implements OnInit, OnDestroy {
   authUser: User = {} as User;

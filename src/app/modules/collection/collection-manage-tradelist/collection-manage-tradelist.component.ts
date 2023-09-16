@@ -4,6 +4,7 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  inject,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { concatMap, filter, Subscription, take, tap } from 'rxjs';
@@ -15,12 +16,36 @@ import {
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { CollectionOnlyService } from '../collection-only.service';
+import { MatBadgeModule } from '@angular/material/badge';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-collection-manage-tradelist',
-  templateUrl: './collection-manage-tradelist.component.html',
-  styleUrls: ['./collection-manage-tradelist.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-collection-manage-tradelist',
+    templateUrl: './collection-manage-tradelist.component.html',
+    styleUrls: ['./collection-manage-tradelist.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatButtonModule,
+        MatIconModule,
+        MatInputModule,
+        FormsModule,
+        NgFor,
+        MatBadgeModule,
+    ],
 })
 export class CollectionManageTradelistComponent implements OnInit, OnDestroy {
   collection: Collection = {} as Collection;
@@ -43,7 +68,9 @@ export class CollectionManageTradelistComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private uiSrv: UIService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    // inject(HAMMER_GESTURE_CONFIG);
+  }
 
   ngOnInit(): void {
     let colSub = this.colOnlySrv.collection$

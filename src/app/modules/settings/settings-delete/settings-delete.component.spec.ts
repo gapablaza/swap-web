@@ -8,8 +8,8 @@ describe('SettingsDeleteComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SettingsDeleteComponent ]
-    })
+    imports: [SettingsDeleteComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(SettingsDeleteComponent);

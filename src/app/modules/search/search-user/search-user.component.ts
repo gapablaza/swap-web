@@ -1,12 +1,39 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { DEFAULT_USER_PROFILE_IMG, Pagination, User } from 'src/app/core';
+import { SanitizeHtmlPipe } from '../../../shared/pipes/sanitize-html.pipe';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { DaysSinceLoginDirective } from '../../../shared/directives/days-since-login.directive';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgIf, NgFor, NgClass, DecimalPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-search-user',
-  templateUrl: './search-user.component.html',
-  styleUrls: ['./search-user.component.scss'],
+    selector: 'app-search-user',
+    templateUrl: './search-user.component.html',
+    styleUrls: ['./search-user.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatFormFieldModule,
+        MatSelectModule,
+        NgFor,
+        MatOptionModule,
+        NgClass,
+        RouterLink,
+        LazyLoadImageModule,
+        DaysSinceLoginDirective,
+        MatButtonModule,
+        MatIconModule,
+        FormsModule,
+        DecimalPipe,
+        SanitizeHtmlPipe,
+    ],
 })
 export class SearchUserComponent implements OnInit {
   @Input() users: User[] = [];

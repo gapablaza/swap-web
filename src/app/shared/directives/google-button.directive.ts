@@ -4,7 +4,8 @@ import { take } from 'rxjs';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
 
 @Directive({
-  selector: 'google-button',
+    selector: 'google-button',
+    standalone: true,
 })
 export class GoogleButtonDirective implements OnInit {
   @Input('selectable') option: boolean = false;

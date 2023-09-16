@@ -5,9 +5,9 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subscription, take, tap } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
@@ -26,12 +26,37 @@ import {
   User,
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
-import { Location } from '@angular/common';
+import { Location, NgIf, NgFor, NgClass, DatePipe } from '@angular/common';
+import { LinebreaksPipe } from '../../../shared/pipes/linebreaks.pipe';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
-  selector: 'app-new-collection-profile',
-  templateUrl: './new-collection-profile.component.html',
-  styleUrls: ['./new-collection-profile.component.scss'],
+    selector: 'app-new-collection-profile',
+    templateUrl: './new-collection-profile.component.html',
+    styleUrls: ['./new-collection-profile.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        MatButtonModule,
+        MatIconModule,
+        NgFor,
+        RouterLink,
+        NgClass,
+        LazyLoadImageModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDialogModule,
+        DatePipe,
+        LinebreaksPipe,
+    ],
 })
 export class NewCollectionProfileComponent implements OnInit, OnDestroy {
   @ViewChild('sendDialog') sendDialog!: TemplateRef<any>;

@@ -4,9 +4,11 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  importProvidersFrom,
+  inject,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { filter, Subscription, take, tap } from 'rxjs';
 
 import {
@@ -17,12 +19,37 @@ import {
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { CollectionOnlyService } from '../collection-only.service';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { CollectionSummaryComponent } from '../collection-summary/collection-summary.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf } from '@angular/common';
+import { AdsModule } from 'src/app/shared/ads.module';
 
 @Component({
-  selector: 'app-collection-manage',
-  templateUrl: './collection-manage.component.html',
-  styleUrls: ['./collection-manage.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-collection-manage',
+    templateUrl: './collection-manage.component.html',
+    styleUrls: ['./collection-manage.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        CollectionSummaryComponent,
+        AdsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatTabsModule,
+        RouterLink,
+        RouterOutlet,
+    ],
 })
 export class CollectionManageComponent implements OnInit, OnDestroy {
   commentForm!: FormGroup;

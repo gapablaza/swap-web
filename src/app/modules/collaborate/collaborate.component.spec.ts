@@ -8,8 +8,8 @@ describe('CollaborateComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CollaborateComponent ]
-    })
+    imports: [CollaborateComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(CollaborateComponent);

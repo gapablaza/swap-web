@@ -1,15 +1,27 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { take } from 'rxjs';
 
 import { AuthService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { SettingsOnlyService } from '../settings-only.service';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-settings-delete',
-  templateUrl: './settings-delete.component.html',
-  styleUrls: ['./settings-delete.component.scss'],
+    selector: 'app-settings-delete',
+    templateUrl: './settings-delete.component.html',
+    styleUrls: ['./settings-delete.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        RouterLink,
+        MatButtonModule,
+        MatDialogModule,
+    ],
 })
 export class SettingsDeleteComponent implements OnInit {
   @ViewChild('confirmDeleteDialog') deleteDialog!: TemplateRef<any>;

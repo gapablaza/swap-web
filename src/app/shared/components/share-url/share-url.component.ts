@@ -2,13 +2,17 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { Component, OnInit } from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { Title } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UIService } from '../../ui.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
-  selector: 'app-share-url',
-  templateUrl: './share-url.component.html',
-  styleUrls: ['./share-url.component.scss']
+    selector: 'app-share-url',
+    templateUrl: './share-url.component.html',
+    styleUrls: ['./share-url.component.scss'],
+    standalone: true,
+    imports: [MatListModule, MatIconModule, RouterLink]
 })
 export class ShareUrlComponent implements OnInit {
   url = '';

@@ -5,8 +5,9 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  inject,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { concatMap, filter, Subscription, take, tap } from 'rxjs';
 import {
   Collection,
@@ -18,6 +19,15 @@ import {
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { CollectionOnlyService } from '../collection-only.service';
+import { MatBadgeModule } from '@angular/material/badge';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor } from '@angular/common';
 
 export interface CustomItem extends Item {
   isSaving?: boolean;
@@ -25,10 +35,24 @@ export interface CustomItem extends Item {
 }
 
 @Component({
-  selector: 'app-collection-manage-items',
-  templateUrl: './collection-manage-items.component.html',
-  styleUrls: ['./collection-manage-items.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-collection-manage-items',
+    templateUrl: './collection-manage-items.component.html',
+    styleUrls: ['./collection-manage-items.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        FormsModule,
+        MatButtonModule,
+        NgFor,
+        RouterLink,
+        LazyLoadImageModule,
+        MatBadgeModule,
+    ],
 })
 export class CollectionManageItemsComponent
   implements OnInit, AfterViewInit, OnDestroy
@@ -49,7 +73,9 @@ export class CollectionManageItemsComponent
     private route: ActivatedRoute,
     private uiSrv: UIService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    // inject(HAMMER_GESTURE_CONFIG);
+  }
 
   ngOnInit(): void {
     let colSub = this.colOnlySrv.collection$

@@ -1,7 +1,8 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 
 @Directive({
-  selector: '[appDaysSinceLogin]',
+    selector: '[appDaysSinceLogin]',
+    standalone: true,
 })
 export class DaysSinceLoginDirective implements OnInit {
   @Input() appDaysSinceLogin: any;

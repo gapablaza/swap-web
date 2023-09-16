@@ -6,8 +6,8 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { filter, Subscription, switchMap, take, tap } from 'rxjs';
 
 import {
@@ -18,12 +18,36 @@ import {
 import { SlugifyPipe } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
 import { CollectionOnlyService } from '../collection-only.service';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { CollectionSummaryComponent } from '../collection-summary/collection-summary.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-collection-items',
-  templateUrl: './collection-items.component.html',
-  styleUrls: ['./collection-items.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-collection-items',
+    templateUrl: './collection-items.component.html',
+    styleUrls: ['./collection-items.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        CollectionSummaryComponent,
+        MatButtonModule,
+        MatIconModule,
+        NgClass,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        MatTableModule,
+        MatSortModule,
+        RouterLink,
+    ],
 })
 export class CollectionItemsComponent implements OnInit, OnDestroy {
   items: Item[] = [];

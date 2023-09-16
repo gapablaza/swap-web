@@ -1,17 +1,26 @@
 import { Component, Inject, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import {
-  ImageCroppedEvent,
-  ImageCropperComponent,
-  ImageTransform,
-} from 'ngx-image-cropper';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { ImageCroppedEvent, ImageCropperComponent, ImageTransform, ImageCropperModule } from 'ngx-image-cropper';
 import { NewCollectionService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-new-collection-image',
-  templateUrl: './new-collection-image.component.html',
-  styleUrls: ['./new-collection-image.component.scss'],
+    selector: 'app-new-collection-image',
+    templateUrl: './new-collection-image.component.html',
+    styleUrls: ['./new-collection-image.component.scss'],
+    standalone: true,
+    imports: [
+        MatDialogModule,
+        NgIf,
+        MatButtonModule,
+        ImageCropperModule,
+        MatIconModule,
+        MatSliderModule,
+    ],
 })
 export class NewCollectionImageComponent {
   @ViewChild(ImageCropperComponent) cropper!: ImageCropperComponent;

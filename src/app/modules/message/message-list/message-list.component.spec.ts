@@ -8,8 +8,8 @@ describe('MessageListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MessageListComponent ]
-    })
+    imports: [MessageListComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(MessageListComponent);

@@ -8,8 +8,8 @@ describe('ModPublishComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ModPublishComponent]
-    });
+    imports: [ModPublishComponent]
+});
     fixture = TestBed.createComponent(ModPublishComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -17,14 +17,44 @@ import {
   UserService,
 } from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UIService } from 'src/app/shared';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { RouterLink } from '@angular/router';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { UserSummaryComponent } from '../user-summary/user-summary.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-user-evaluations',
-  templateUrl: './user-evaluations.component.html',
-  styleUrls: ['./user-evaluations.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-user-evaluations',
+    templateUrl: './user-evaluations.component.html',
+    styleUrls: ['./user-evaluations.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        UserSummaryComponent,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        NgClass,
+        MatInputModule,
+        FormsModule,
+        NgFor,
+        RouterLink,
+        LazyLoadImageModule,
+        ReactiveFormsModule,
+        DatePipe,
+    ],
 })
 export class UserEvaluationsComponent implements OnInit, OnDestroy {
   user: User = {} as User;

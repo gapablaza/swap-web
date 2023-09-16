@@ -1,4 +1,4 @@
-import { registerLocaleData } from '@angular/common';
+import { registerLocaleData, NgIf } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,11 +21,27 @@ import {
   User,
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
+import { SearchUserComponent } from './search-user/search-user.component';
+import { SearchCollectionComponent } from './search-collection/search-collection.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { FormsModule } from '@angular/forms';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AdsModule } from 'src/app/shared/ads.module';
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
+    selector: 'app-search',
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        FormsModule,
+        AdsModule,
+        MatTabsModule,
+        SearchCollectionComponent,
+        SearchUserComponent,
+    ],
 })
 export class SearchComponent implements OnInit, OnDestroy {
   users: User[] = [];

@@ -5,8 +5,28 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { NgIf, NgFor, NgClass, DatePipe } from '@angular/common';
 import { concatMap, filter, map, Subscription, take, tap } from 'rxjs';
 import orderBy from 'lodash/orderBy';
+
+import {
+  MatDialog,
+  MatDialogConfig,
+  MatDialogModule,
+} from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+import { Gallery, GalleryItem, ImageItem } from 'ng-gallery';
+import { Lightbox } from 'ng-gallery/lightbox';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import {
   AuthService,
@@ -17,18 +37,35 @@ import {
   SEOService,
 } from 'src/app/core';
 import { CollectionOnlyService } from '../collection-only.service';
-import { SlugifyPipe, UIService } from 'src/app/shared';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { CollectionMediaUploadComponent } from '../collection-media-upload/collection-media-upload.component';
 import { environment } from 'src/environments/environment';
-import { Gallery, GalleryItem, ImageItem } from 'ng-gallery';
-import { Lightbox } from 'ng-gallery/lightbox';
+import { SlugifyPipe, UIService } from 'src/app/shared';
+import { CollectionSummaryComponent } from '../collection-summary/collection-summary.component';
+import { CollectionMediaUploadComponent } from '../collection-media-upload/collection-media-upload.component';
 
 @Component({
   selector: 'app-collection-media',
   templateUrl: './collection-media.component.html',
   styleUrls: ['./collection-media.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    NgIf,
+    MatProgressSpinnerModule,
+    CollectionSummaryComponent,
+    NgFor,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    NgClass,
+    MatInputModule,
+    FormsModule,
+    LazyLoadImageModule,
+    RouterLink,
+    DatePipe,
+  ],
 })
 export class CollectionMediaComponent implements OnInit, OnDestroy {
   medias: Media[] = [];
@@ -103,15 +140,16 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
         filter((col) => col.id != null),
         tap((col) => {
           this.collection = col;
-          
+
           this.SEOSrv.set({
             title: `Media compartida asociada a ${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
             description: `Revisa los distintos elementos multimedia subidos por los usuarios, asociados al álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}).`,
-            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(col.name + ' ' + col.publisher.data.name)}/${col.id}/media`,
+            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(
+              col.name + ' ' + col.publisher.data.name
+            )}/${col.id}/media`,
             isCanonical: true,
-          })
-        }
-        ),
+          });
+        }),
         concatMap((col) => this.colSrv.getMedia(col.id).pipe(take(1))),
         // filter only approved images
         map((media) =>
@@ -124,7 +162,7 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
         this.medias = [...data];
         this.showedImages = [...data];
         this.sortShowedImages();
-        
+
         this.isLoaded = true;
         this.cdr.markForCheck();
       });
@@ -140,7 +178,10 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
             // filter only images
             map((media) =>
               media.filter((elem: Media) => {
-                return elem.mediaTypeId == 1 && elem.collection?.data.id == this.collection.id
+                return (
+                  elem.mediaTypeId == 1 &&
+                  elem.collection?.data.id == this.collection.id
+                );
               })
             ),
             take(1)
@@ -303,10 +344,15 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
       loadingError: 'No se pudo cargar la imagen',
       loop: false,
     });
-    this.items = [...this.showedImages.map(img => new ImageItem({
-      src: `${this.baseFullImageUrl}${img.id}`,
-      alt: `${img.description} en ${this.collection.name} de ${this.collection.publisher.data.name}`
-    }))];
+    this.items = [
+      ...this.showedImages.map(
+        (img) =>
+          new ImageItem({
+            src: `${this.baseFullImageUrl}${img.id}`,
+            alt: `${img.description} en ${this.collection.name} de ${this.collection.publisher.data.name}`,
+          })
+      ),
+    ];
     this.lightboxRef.load(this.items);
   }
 

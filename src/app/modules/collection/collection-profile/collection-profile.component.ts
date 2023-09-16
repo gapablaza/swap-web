@@ -1,4 +1,4 @@
-import { registerLocaleData } from '@angular/common';
+import { registerLocaleData, NgIf, NgFor } from '@angular/common';
 import es from '@angular/common/locales/es';
 import {
   ChangeDetectionStrategy,
@@ -9,7 +9,7 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { filter, Subscription, switchMap, take, tap } from 'rxjs';
 
 import {
@@ -26,13 +26,34 @@ import {
 import { SlugifyPipe, UIService } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
 import { CollectionOnlyService } from '../collection-only.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { SanitizeHtmlPipe } from '../../../shared/pipes/sanitize-html.pipe';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 @Component({
-  selector: 'app-collection-profile',
-  templateUrl: './collection-profile.component.html',
-  styleUrls: ['./collection-profile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-collection-profile',
+    templateUrl: './collection-profile.component.html',
+    styleUrls: ['./collection-profile.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        LazyLoadImageModule,
+        MatButtonModule,
+        MatIconModule,
+        RouterLink,
+        MatMenuModule,
+        MatExpansionModule,
+        NgFor,
+        MatDialogModule,
+        MatProgressSpinnerModule,
+        SanitizeHtmlPipe,
+    ],
 })
 export class CollectionProfileComponent implements OnInit, OnDestroy {
   @ViewChild('confirmDeleteDialog') deleteDialog!: TemplateRef<any>;

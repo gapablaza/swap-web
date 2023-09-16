@@ -1,14 +1,23 @@
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { take } from 'rxjs';
 import { NewCollection, NewCollectionService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-mod-publish',
-  templateUrl: './mod-publish.component.html',
-  styleUrls: ['./mod-publish.component.scss']
+    selector: 'app-mod-publish',
+    templateUrl: './mod-publish.component.html',
+    styleUrls: ['./mod-publish.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatProgressSpinnerModule, NgFor, RouterLink, MatButtonModule, MatIconModule, MatDialogModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, DatePipe]
 })
 export class ModPublishComponent implements OnInit {
   @ViewChild('publishDialog') publishDialog!: TemplateRef<any>;

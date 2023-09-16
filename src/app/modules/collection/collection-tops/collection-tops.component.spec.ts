@@ -8,8 +8,8 @@ describe('CollectionTopsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CollectionTopsComponent ]
-    })
+    imports: [CollectionTopsComponent]
+})
     .compileComponents();
   });
 

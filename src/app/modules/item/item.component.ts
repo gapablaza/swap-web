@@ -1,12 +1,43 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { NgIf, NgClass, NgFor } from '@angular/common';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { Collection, DEFAULT_USER_PROFILE_IMG, Item, User } from 'src/app/core';
+import { SlugifyPipe } from '../../shared/pipes/slugify.pipe';
+import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { DaysSinceLoginDirective } from '../../shared/directives/days-since-login.directive';
 
 @Component({
   selector: 'app-item',
   templateUrl: './item.component.html',
   styleUrls: ['./item.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    MatProgressSpinnerModule,
+    RouterLink,
+    MatTabsModule,
+    MatButtonModule,
+    MatIconModule,
+    NgClass,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    NgFor,
+    LazyLoadImageModule,
+    DaysSinceLoginDirective,
+    SanitizeHtmlPipe,
+    SlugifyPipe,
+  ],
 })
 export class ItemComponent implements OnInit {
   item: Item = {} as Item;
@@ -21,14 +52,11 @@ export class ItemComponent implements OnInit {
   showFilters = false;
   isLoaded = false;
 
-  constructor(
-    private route: ActivatedRoute
-  ) {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     // TO DO: Manejar el caso cuando no se encuentre el ítem solicitado
     this.route.data.subscribe((data) => {
-      console.log(data['itemData']);
       this.item = data['itemData'].item;
       this.collection = data['itemData'].collection;
 

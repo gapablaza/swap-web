@@ -1,4 +1,4 @@
-import { registerLocaleData } from '@angular/common';
+import { registerLocaleData, AsyncPipe, DecimalPipe } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, OnInit } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
@@ -6,11 +6,20 @@ import { filter, map, Observable } from 'rxjs';
 
 import { AuthService } from 'src/app/core';
 import { environment } from 'src/environments/environment';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-footer',
-  templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss'],
+    selector: 'app-footer',
+    templateUrl: './footer.component.html',
+    styleUrls: ['./footer.component.scss'],
+    standalone: true,
+    imports: [
+        RouterLink,
+        MatIconModule,
+        AsyncPipe,
+        DecimalPipe,
+    ],
 })
 export class FooterComponent implements OnInit {
   version = environment.appVersion;

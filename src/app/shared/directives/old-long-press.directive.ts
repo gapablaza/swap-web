@@ -12,8 +12,9 @@ import {
   import { takeUntil, debounceTime, tap } from 'rxjs/operators';
   
   @Directive({
-    selector: '[appLongPress]'
-  })
+    selector: '[appLongPress]',
+    standalone: true
+})
   export class OldLongPressDirective implements AfterViewInit, OnDestroy {
     @Input() appLongPress = 1000;
     @Output() longPress = new EventEmitter<MouseEvent>();

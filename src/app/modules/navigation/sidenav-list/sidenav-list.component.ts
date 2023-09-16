@@ -14,12 +14,23 @@ import {
   DEFAULT_USER_PROFILE_IMG,
   User,
 } from 'src/app/core';
+import { MatIconModule } from '@angular/material/icon';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { RouterLink } from '@angular/router';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-sidenav-list',
-  templateUrl: './sidenav-list.component.html',
-  styleUrls: ['./sidenav-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-sidenav-list',
+    templateUrl: './sidenav-list.component.html',
+    styleUrls: ['./sidenav-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        RouterLink,
+        LazyLoadImageModule,
+        MatIconModule,
+    ],
 })
 export class SidenavListComponent implements OnInit {
   @Output() closeSidenav = new EventEmitter<void>();

@@ -4,11 +4,27 @@ import { Subscription, take } from 'rxjs';
 import { AuthService, User } from 'src/app/core';
 import { SettingsOnlyService } from '../settings-only.service';
 import { UIService } from 'src/app/shared';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-settings-blacklist',
-  templateUrl: './settings-blacklist.component.html',
-  styleUrls: ['./settings-blacklist.component.scss'],
+    selector: 'app-settings-blacklist',
+    templateUrl: './settings-blacklist.component.html',
+    styleUrls: ['./settings-blacklist.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        MatListModule,
+        NgFor,
+        RouterLink,
+        MatButtonModule,
+        MatIconModule,
+    ],
 })
 export class SettingsBlacklistComponent implements OnInit, OnDestroy {
   authUser = this.authSrv.getCurrentUser();

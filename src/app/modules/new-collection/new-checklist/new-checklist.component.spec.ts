@@ -8,8 +8,8 @@ describe('NewChecklistComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [NewChecklistComponent]
-    });
+    imports: [NewChecklistComponent]
+});
     fixture = TestBed.createComponent(NewChecklistComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

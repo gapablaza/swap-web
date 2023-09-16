@@ -1,16 +1,27 @@
-import { registerLocaleData } from '@angular/common';
+import { registerLocaleData, NgIf, NgFor } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription, catchError, of, switchMap, take, tap } from 'rxjs';
 
 import { AuthService, NewCollection, NewCollectionService, Pagination, User } from 'src/app/core';
 import { UIService } from 'src/app/shared';
+import { LinebreaksPipe } from '../../../shared/pipes/linebreaks.pipe';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
-  selector: 'app-new-collection-list',
-  templateUrl: './new-collection-list.component.html',
-  styleUrls: ['./new-collection-list.component.scss']
+    selector: 'app-new-collection-list',
+    templateUrl: './new-collection-list.component.html',
+    styleUrls: ['./new-collection-list.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatProgressSpinnerModule, MatButtonModule, RouterLink, MatIconModule, MatFormFieldModule, MatSelectModule, NgFor, MatOptionModule, MatInputModule, FormsModule, LinebreaksPipe]
 })
 export class NewCollectionListComponent implements OnInit, OnDestroy {
   authUser: User = {} as User;

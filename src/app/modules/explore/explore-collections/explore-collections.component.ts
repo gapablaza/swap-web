@@ -1,4 +1,4 @@
-import { registerLocaleData } from '@angular/common';
+import { registerLocaleData, NgIf, NgFor, DecimalPipe } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,11 +15,35 @@ import {
   User,
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { CollectionItemComponent } from '../../../shared/components/collection-item/collection-item.component';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { AdsenseModule } from 'ng2-adsense';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
-  selector: 'app-explore-collections',
-  templateUrl: './explore-collections.component.html',
-  styleUrls: ['./explore-collections.component.scss'],
+    selector: 'app-explore-collections',
+    templateUrl: './explore-collections.component.html',
+    styleUrls: ['./explore-collections.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        AdsenseModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        NgFor,
+        MatOptionModule,
+        CollectionItemComponent,
+        MatButtonModule,
+        MatIconModule,
+        FormsModule,
+        DecimalPipe,
+    ],
 })
 export class ExploreCollectionsComponent implements OnInit, OnDestroy {
   collections: Collection[] = [];

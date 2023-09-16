@@ -1,4 +1,4 @@
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, NgIf } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -11,8 +11,8 @@ import {
   NgZone,
   AfterViewInit,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
 
 import { Subscription, take } from 'rxjs';
 
@@ -21,11 +21,34 @@ import { AuthService, DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { SettingsOnlyService } from '../settings-only.service';
 import { SettingsProfileImageComponent } from '../settings-profile-image/settings-profile-image.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 @Component({
-  selector: 'app-settings-profile',
-  templateUrl: './settings-profile.component.html',
-  styleUrls: ['./settings-profile.component.scss'],
+    selector: 'app-settings-profile',
+    templateUrl: './settings-profile.component.html',
+    styleUrls: ['./settings-profile.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        LazyLoadImageModule,
+        MatButtonModule,
+        MatIconModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatSlideToggleModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDialogModule,
+        GoogleMapsModule,
+    ],
 })
 export class SettingsProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('search') public searchElementRef!: ElementRef;

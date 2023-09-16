@@ -1,19 +1,33 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSliderChange } from '@angular/material/slider';
-import {
-  ImageCroppedEvent,
-  ImageCropperComponent,
-  ImageTransform,
-} from 'ngx-image-cropper';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatSliderChange, MatSliderModule } from '@angular/material/slider';
+import { ImageCroppedEvent, ImageCropperComponent, ImageTransform, ImageCropperModule } from 'ngx-image-cropper';
 import { take } from 'rxjs';
 import { MediaService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-collection-media-upload',
-  templateUrl: './collection-media-upload.component.html',
-  styleUrls: ['./collection-media-upload.component.scss'],
+    selector: 'app-collection-media-upload',
+    templateUrl: './collection-media-upload.component.html',
+    styleUrls: ['./collection-media-upload.component.scss'],
+    standalone: true,
+    imports: [
+        MatDialogModule,
+        NgIf,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        MatButtonModule,
+        ImageCropperModule,
+        MatIconModule,
+        MatSliderModule,
+    ],
 })
 export class CollectionMediaUploadComponent implements OnInit {
   @ViewChild(ImageCropperComponent) cropper!: ImageCropperComponent;

@@ -8,8 +8,8 @@ describe('ShareUrlComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ShareUrlComponent ]
-    })
+    imports: [ShareUrlComponent]
+})
     .compileComponents();
   });
 

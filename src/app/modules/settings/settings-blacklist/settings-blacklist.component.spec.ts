@@ -8,8 +8,8 @@ describe('SettingsBlacklistComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SettingsBlacklistComponent]
-    });
+    imports: [SettingsBlacklistComponent]
+});
     fixture = TestBed.createComponent(SettingsBlacklistComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

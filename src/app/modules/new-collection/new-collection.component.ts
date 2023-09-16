@@ -1,13 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { AuthService, User } from 'src/app/core';
 
 @Component({
-  selector: 'app-new-collection',
-  templateUrl: './new-collection.component.html',
-  styleUrls: ['./new-collection.component.scss']
+    selector: 'app-new-collection',
+    templateUrl: './new-collection.component.html',
+    styleUrls: ['./new-collection.component.scss'],
+    standalone: true,
+    imports: [RouterOutlet]
 })
 export class NewCollectionComponent implements OnInit, OnDestroy {
   authUser: User = {} as User;

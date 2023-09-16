@@ -8,8 +8,8 @@ describe('SettingsProfileImageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SettingsProfileImageComponent ]
-    })
+    imports: [SettingsProfileImageComponent]
+})
     .compileComponents();
   });
 

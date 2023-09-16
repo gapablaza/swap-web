@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
 import {
   ApiService,
   AuthService,
@@ -13,8 +13,7 @@ import {
   SEOService,
   UserService
 } from './services';
-import { AuthGuard, FBAuthGuard, ModGuard, NoAuthGuard } from './guards';
-import { ErrorInterceptor, HttpTokenInterceptor } from './interceptors';
+// import { AuthGuard, FBAuthGuard, ModGuard, NoAuthGuard } from './guards';
 
 @NgModule({
   declarations: [],
@@ -22,21 +21,24 @@ import { ErrorInterceptor, HttpTokenInterceptor } from './interceptors';
     CommonModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: HttpTokenInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    AuthGuard,
+    // { provide: HTTP_INTERCEPTORS, useClass: HttpTokenInterceptor, multi: true },
+    // { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    
+    // AuthGuard,
+    // FBAuthGuard,
+    // ModGuard,
+    // NoAuthGuard,
+    
     ApiService,
     AuthService,
-    CollectionService,
-    FBAuthGuard,
-    ItemService,
     JwtService,
+    SEOService,
+
+    CollectionService,
+    ItemService,
     MediaService,
     NewCollectionService,
-    ModGuard,
-    NoAuthGuard,
     SearchService,
-    SEOService,
     UserService,
   ]
 })

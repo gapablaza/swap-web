@@ -7,12 +7,25 @@ import {
 import { take } from 'rxjs';
 
 import { Collection, SearchService, User } from 'src/app/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ListCollectionsComponent } from './list-collections/list-collections.component';
+import { ListUsersComponent } from './list-users/list-users.component';
+import { ListResaltedCollectionsComponent } from './list-resalted-collections/list-resalted-collections.component';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        ListResaltedCollectionsComponent,
+        ListUsersComponent,
+        ListCollectionsComponent,
+        MatProgressSpinnerModule,
+    ],
 })
 export class HomeComponent implements OnInit {
   added: Collection[] = [];

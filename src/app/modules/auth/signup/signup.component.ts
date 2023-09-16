@@ -1,16 +1,43 @@
-import { SocialAuthService } from '@abacritt/angularx-social-login';
+import { NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import {
+  FormControl,
+  FormGroup,
+  NgForm,
+  Validators,
+  FormsModule,
+} from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { filter, Subscription, switchMap, take } from 'rxjs';
+import {
+  SocialAuthService,
+  GoogleSigninButtonModule,
+} from '@abacritt/angularx-social-login';
+
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { AuthService } from 'src/app/core';
-import { UIService } from 'src/app/shared';
+import { SocialModule, UIService } from 'src/app/shared';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss'],
+  standalone: true,
+  imports: [
+    RouterLink,
+    FormsModule,
+    NgIf,
+
+    SocialModule,
+    GoogleSigninButtonModule,
+
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
 })
 export class SignupComponent implements OnInit, OnDestroy {
   signupForm!: FormGroup;

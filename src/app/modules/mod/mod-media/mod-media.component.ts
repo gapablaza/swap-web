@@ -8,12 +8,29 @@ import { map, take } from 'rxjs';
 import { Media, MediaService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
+import { SlugifyPipe } from '../../../shared/pipes/slugify.pipe';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-mod-media',
-  templateUrl: './mod-media.component.html',
-  styleUrls: ['./mod-media.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-mod-media',
+    templateUrl: './mod-media.component.html',
+    styleUrls: ['./mod-media.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        NgFor,
+        RouterLink,
+        MatButtonModule,
+        MatIconModule,
+        DatePipe,
+        SlugifyPipe,
+    ],
 })
 export class ModMediaComponent implements OnInit {
   medias: Media[] = [];

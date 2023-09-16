@@ -1,19 +1,27 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { MatSliderChange } from '@angular/material/slider';
-import {
-  ImageCroppedEvent,
-  ImageCropperComponent,
-  ImageTransform,
-} from 'ngx-image-cropper';
+import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatSliderChange, MatSliderModule } from '@angular/material/slider';
+import { ImageCroppedEvent, ImageCropperComponent, ImageTransform, ImageCropperModule } from 'ngx-image-cropper';
 
 import { AuthService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-settings-profile-image',
-  templateUrl: './settings-profile-image.component.html',
-  styleUrls: ['./settings-profile-image.component.scss'],
+    selector: 'app-settings-profile-image',
+    templateUrl: './settings-profile-image.component.html',
+    styleUrls: ['./settings-profile-image.component.scss'],
+    standalone: true,
+    imports: [
+        MatDialogModule,
+        NgIf,
+        MatButtonModule,
+        ImageCropperModule,
+        MatIconModule,
+        MatSliderModule,
+    ],
 })
 export class SettingsProfileImageComponent implements OnInit {
   @ViewChild(ImageCropperComponent) cropper!: ImageCropperComponent;

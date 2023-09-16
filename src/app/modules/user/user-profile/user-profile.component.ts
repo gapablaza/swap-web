@@ -1,4 +1,11 @@
-import { registerLocaleData } from '@angular/common';
+import {
+  registerLocaleData,
+  NgIf,
+  NgFor,
+  NgClass,
+  DecimalPipe,
+  DatePipe,
+} from '@angular/common';
 import es from '@angular/common/locales/es';
 import {
   ChangeDetectionStrategy,
@@ -9,6 +16,7 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import {
   combineLatest,
   filter,
@@ -17,6 +25,14 @@ import {
   take,
   tap,
 } from 'rxjs';
+
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import {
   AuthService,
@@ -29,13 +45,34 @@ import {
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { UserOnlyService } from '../user-only.service';
-import { MatDialog } from '@angular/material/dialog';
+import { SlugifyPipe } from '../../../shared/pipes/slugify.pipe';
+import { SanitizeHtmlPipe } from '../../../shared/pipes/sanitize-html.pipe';
+import { DaysSinceLoginDirective } from '../../../shared/directives/days-since-login.directive';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    NgIf,
+    LazyLoadImageModule,
+    MatButtonModule,
+    RouterLink,
+    MatIconModule,
+    MatMenuModule,
+    DaysSinceLoginDirective,
+    MatExpansionModule,
+    NgFor,
+    NgClass,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    DecimalPipe,
+    DatePipe,
+    SanitizeHtmlPipe,
+    SlugifyPipe,
+  ],
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
   @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;

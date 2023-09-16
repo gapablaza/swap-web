@@ -16,12 +16,25 @@ import {
 import { CollectionOnlyService } from '../collection-only.service';
 import { filter, Subscription, take, tap } from 'rxjs';
 import { UIService } from 'src/app/shared';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-collection-summary',
-  templateUrl: './collection-summary.component.html',
-  styleUrls: ['./collection-summary.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-collection-summary',
+    templateUrl: './collection-summary.component.html',
+    styleUrls: ['./collection-summary.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatButtonModule,
+        RouterLink,
+        MatIconModule,
+        LazyLoadImageModule,
+    ],
 })
 export class CollectionSummaryComponent implements OnInit, OnDestroy {
   @Input() showBackButton = false;

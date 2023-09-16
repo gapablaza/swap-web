@@ -1,17 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { take } from 'rxjs';
 
 import { AuthService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 export default class Validation {
   static match(controlName: string, checkControlName: string): ValidatorFn {
@@ -34,9 +30,18 @@ export default class Validation {
 }
 
 @Component({
-  selector: 'app-new-password',
-  templateUrl: './new-password.component.html',
-  styleUrls: ['./new-password.component.scss'],
+    selector: 'app-new-password',
+    templateUrl: './new-password.component.html',
+    styleUrls: ['./new-password.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        RouterLink,
+    ],
 })
 export class NewPasswordComponent implements OnInit {
   newPasswordForm: FormGroup = new FormGroup({

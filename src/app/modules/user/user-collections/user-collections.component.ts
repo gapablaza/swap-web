@@ -5,10 +5,30 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { NgIf, NgFor, NgClass } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+
 import { concatMap, filter, map, Subscription, tap } from 'rxjs';
 import orderBy from 'lodash/orderBy';
+
+import {
+  MatSlideToggleChange,
+  MatSlideToggleModule,
+} from '@angular/material/slide-toggle';
+import {
+  MatDialog,
+  MatDialogConfig,
+  MatDialogModule,
+} from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import {
   AuthService,
@@ -20,6 +40,9 @@ import {
   UserService,
 } from 'src/app/core';
 import { UserOnlyService } from '../user-only.service';
+import { SlugifyPipe } from '../../../shared/pipes/slugify.pipe';
+import { SanitizeHtmlPipe } from '../../../shared/pipes/sanitize-html.pipe';
+import { UserSummaryComponent } from '../user-summary/user-summary.component';
 import { UserCollectionDetailsComponent } from '../user-collection-details/user-collection-details.component';
 
 @Component({
@@ -27,6 +50,27 @@ import { UserCollectionDetailsComponent } from '../user-collection-details/user-
   templateUrl: './user-collections.component.html',
   styleUrls: ['./user-collections.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    NgIf,
+    MatProgressSpinnerModule,
+    UserSummaryComponent,
+    MatFormFieldModule,
+    MatSelectModule,
+    NgFor,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
+    NgClass,
+    MatInputModule,
+    FormsModule,
+    MatSlideToggleModule,
+    RouterLink,
+    LazyLoadImageModule,
+    SanitizeHtmlPipe,
+    SlugifyPipe,
+  ],
 })
 export class UserCollectionsComponent implements OnInit, OnDestroy {
   user: User = {} as User;

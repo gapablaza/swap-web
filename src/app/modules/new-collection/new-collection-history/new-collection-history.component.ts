@@ -1,10 +1,14 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Subscription, take } from 'rxjs';
 
 import { History, NewCollection, NewCollectionService } from 'src/app/core';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
 
 export interface CustomHistory extends History {
   changes?: {
@@ -14,9 +18,11 @@ export interface CustomHistory extends History {
 }
 
 @Component({
-  selector: 'app-new-collection-history',
-  templateUrl: './new-collection-history.component.html',
-  styleUrls: ['./new-collection-history.component.scss']
+    selector: 'app-new-collection-history',
+    templateUrl: './new-collection-history.component.html',
+    styleUrls: ['./new-collection-history.component.scss'],
+    standalone: true,
+    imports: [MatDialogModule, NgIf, MatProgressSpinnerModule, MatTableModule, MatSortModule, RouterLink, NgFor, MatButtonModule, DatePipe]
 })
 export class NewCollectionHistoryComponent implements OnInit, OnDestroy {
   history: CustomHistory[] = [];

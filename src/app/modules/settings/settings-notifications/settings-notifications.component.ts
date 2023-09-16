@@ -1,15 +1,32 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subscription, take } from 'rxjs';
 
 import { AuthService, User, UserService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { SettingsOnlyService } from '../settings-only.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-settings-notifications',
-  templateUrl: './settings-notifications.component.html',
-  styleUrls: ['./settings-notifications.component.scss'],
+    selector: 'app-settings-notifications',
+    templateUrl: './settings-notifications.component.html',
+    styleUrls: ['./settings-notifications.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        MatCheckboxModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+    ],
 })
 export class SettingsNotificationsComponent implements OnInit {
   emailForm!: FormGroup;

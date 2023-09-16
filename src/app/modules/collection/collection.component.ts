@@ -1,14 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
 
 import { CollectionOnlyService } from './collection-only.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-collection',
-  templateUrl: './collection.component.html',
-  providers: [CollectionOnlyService],
-  styleUrls: ['./collection.component.scss'],
+    selector: 'app-collection',
+    templateUrl: './collection.component.html',
+    providers: [CollectionOnlyService],
+    styleUrls: ['./collection.component.scss'],
+    standalone: true,
+    imports: [RouterOutlet],
 })
 export class CollectionComponent implements OnInit, OnDestroy {
   subs: Subscription = new Subscription();

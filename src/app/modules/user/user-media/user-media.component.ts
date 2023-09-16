@@ -22,12 +22,44 @@ import { UIService } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
 import { Gallery, GalleryItem, ImageItem } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
+import { SlugifyPipe } from '../../../shared/pipes/slugify.pipe';
+import { RouterLink } from '@angular/router';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { UserSummaryComponent } from '../user-summary/user-summary.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor, NgClass, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-user-media',
-  templateUrl: './user-media.component.html',
-  styleUrls: ['./user-media.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-user-media',
+    templateUrl: './user-media.component.html',
+    styleUrls: ['./user-media.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        UserSummaryComponent,
+        MatFormFieldModule,
+        MatSelectModule,
+        NgFor,
+        MatOptionModule,
+        MatButtonModule,
+        MatIconModule,
+        NgClass,
+        MatInputModule,
+        FormsModule,
+        LazyLoadImageModule,
+        RouterLink,
+        DatePipe,
+        SlugifyPipe,
+    ],
 })
 export class UserMediaComponent implements OnInit, OnDestroy {
   user: User = {} as User;

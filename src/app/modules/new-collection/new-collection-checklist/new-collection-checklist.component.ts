@@ -1,14 +1,29 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 import { ChecklistItem, ItemType, NewChecklist, NewCollection } from 'src/app/core';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-new-collection-checklist',
-  templateUrl: './new-collection-checklist.component.html',
-  styleUrls: ['./new-collection-checklist.component.scss'],
+    selector: 'app-new-collection-checklist',
+    templateUrl: './new-collection-checklist.component.html',
+    styleUrls: ['./new-collection-checklist.component.scss'],
+    standalone: true,
+    imports: [
+        MatDialogModule,
+        NgIf,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatSortModule,
+        RouterLink,
+        MatButtonModule,
+        DatePipe,
+    ],
 })
 export class NewCollectionChecklistComponent implements OnInit {
   validTypes: number[] = [];

@@ -8,8 +8,8 @@ describe('CustomErrorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CustomErrorComponent ]
-    })
+    imports: [CustomErrorComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(CustomErrorComponent);

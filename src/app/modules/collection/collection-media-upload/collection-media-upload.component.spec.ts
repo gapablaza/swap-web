@@ -8,8 +8,8 @@ describe('CollectionMediaUploadComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CollectionMediaUploadComponent ]
-    })
+    imports: [CollectionMediaUploadComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(CollectionMediaUploadComponent);

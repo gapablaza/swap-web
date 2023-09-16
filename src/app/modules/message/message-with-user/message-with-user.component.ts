@@ -10,7 +10,7 @@ import {
   AngularFireList,
 } from '@angular/fire/compat/database';
 import firebase from 'firebase/compat/app';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { filter, map, Subscription, switchMap, tap } from 'rxjs';
 import {
   AuthService,
@@ -19,16 +19,37 @@ import {
   User,
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
+import { FormsModule } from '@angular/forms';
+import { MatMenuModule } from '@angular/material/menu';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor, NgClass, DatePipe } from '@angular/common';
 
 export interface IMessage extends Message {
   newDate: boolean;
 }
 
 @Component({
-  selector: 'app-message-with-user',
-  templateUrl: './message-with-user.component.html',
-  styleUrls: ['./message-with-user.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-message-with-user',
+    templateUrl: './message-with-user.component.html',
+    styleUrls: ['./message-with-user.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        MatButtonModule,
+        RouterLink,
+        MatIconModule,
+        LazyLoadImageModule,
+        MatMenuModule,
+        NgFor,
+        NgClass,
+        FormsModule,
+        DatePipe,
+    ],
 })
 export class MessageWithUserComponent implements OnInit, OnDestroy {
   usersMessagesRef!: AngularFireList<any>;

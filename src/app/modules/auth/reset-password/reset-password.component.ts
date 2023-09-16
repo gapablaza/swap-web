@@ -1,14 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { FormControl, FormGroup, NgForm, Validators, FormsModule } from '@angular/forms';
 import { take } from 'rxjs';
 
 import { AuthService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
+import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-reset-password',
-  templateUrl: './reset-password.component.html',
-  styleUrls: ['./reset-password.component.scss']
+    selector: 'app-reset-password',
+    templateUrl: './reset-password.component.html',
+    styleUrls: ['./reset-password.component.scss'],
+    standalone: true,
+    imports: [FormsModule, MatFormFieldModule, MatInputModule, NgIf, MatButtonModule, RouterLink]
 })
 export class ResetPasswordComponent implements OnInit {
   resetForm!: FormGroup;

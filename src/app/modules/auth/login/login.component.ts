@@ -1,20 +1,46 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NgForm, Validators, FormGroup, FormControl } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  NgForm,
+  Validators,
+  FormGroup,
+  FormControl,
+  FormsModule,
+} from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { filter, from, Subscription, switchMap, take } from 'rxjs';
-
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import {
   // GoogleLoginProvider,
   FacebookLoginProvider,
   SocialAuthService,
+  GoogleSigninButtonModule,
 } from '@abacritt/angularx-social-login';
 
 import { AuthService } from 'src/app/core';
+import { SocialModule } from 'src/app/shared';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  standalone: true,
+  imports: [
+    RouterLink,
+    FormsModule,
+    NgIf,
+
+    SocialModule,
+    GoogleSigninButtonModule,
+
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
 })
 export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
@@ -41,7 +67,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     let socialSub = this.socialSrv.authState
       .pipe(
-        filter((user) => (user != null) && (user.provider == 'GOOGLE')),
+        filter((user) => user != null && user.provider == 'GOOGLE'),
         switchMap((user) => this.authSrv.googleIdLogin(user.id))
       )
       .subscribe((resp) => {
@@ -82,8 +108,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     from(this.socialSrv.signIn(FacebookLoginProvider.PROVIDER_ID))
       .pipe(
         take(1),
-        filter(user => user != null),
-        switchMap(user => this.authSrv.facebookIdLogin(user.id))
+        filter((user) => user != null),
+        switchMap((user) => this.authSrv.facebookIdLogin(user.id))
       )
       .subscribe({
         next: (resp) => {

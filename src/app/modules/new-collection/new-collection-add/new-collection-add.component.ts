@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatDialog, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
 import { Subscription, take } from 'rxjs';
 
 import {
@@ -12,11 +12,35 @@ import {
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { NewCollectionImageComponent } from '../new-collection-image/new-collection-image.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-new-collection-add',
-  templateUrl: './new-collection-add.component.html',
-  styleUrls: ['./new-collection-add.component.scss'],
+    selector: 'app-new-collection-add',
+    templateUrl: './new-collection-add.component.html',
+    styleUrls: ['./new-collection-add.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatDialogModule,
+        NgFor,
+        MatOptionModule,
+        MatButtonModule,
+        MatIconModule,
+        RouterLink,
+    ],
 })
 export class NewCollectionAddComponent implements OnInit, OnDestroy {
   authUser: User = {} as User;
