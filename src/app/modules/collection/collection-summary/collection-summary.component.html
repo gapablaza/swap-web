@@ -10,9 +10,12 @@
 
     <div class="collection-content">
         <div class="collection-imagen-container">
-            <img class="collection-image" [defaultImage]="defaultCollectionImage"
+            <img class="collection-image" [src]="collection.image || defaultCollectionImage"
+                [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous"
+                fetchpriority="high">
+            <!-- <img class="collection-image" [defaultImage]="defaultCollectionImage"
                 [lazyLoad]="collection.image || defaultCollectionImage"
-                [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous">
+                [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous"> -->
         </div>
         <div class="collection-data">
             <h1 class="">{{ collection.name }}</h1>
