@@ -3,6 +3,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
+
+import 'hammerjs';
 import {
   HAMMER_GESTURE_CONFIG,
   HammerGestureConfig,
@@ -44,7 +46,7 @@ if (environment.production) {
 }
 
 @Injectable()
-export class HammerConfig extends HammerGestureConfig {
+export class MyHammerConfig extends HammerGestureConfig {
   override overrides = <any>{
     // I will only use the swap gesture so
     // I will deactivate the others to avoid overlaps
@@ -59,6 +61,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(withInterceptors([tokenInterceptor, errorInterceptor])),
     provideRouter(APP_ROUTES),
+    provideAnimations(),
     importProvidersFrom(
       CoreModule,
       HammerModule,
@@ -91,8 +94,7 @@ bootstrapApplication(AppComponent, {
       }),
       NgProgressHttpModule
     ),
-    UIService,
-    { provide: HAMMER_GESTURE_CONFIG, useClass: HammerConfig },
+    { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig },
     { provide: VAPID_KEY, useValue: environment.vapidKey },
     {
       provide: SERVICE_WORKER,
@@ -110,6 +112,6 @@ bootstrapApplication(AppComponent, {
         subscriptSizing: 'dynamic',
       },
     },
-    provideAnimations(),
+    UIService,
   ],
 }).catch((err) => console.error(err));

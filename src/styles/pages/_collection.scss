@@ -236,7 +236,7 @@ section.collection {
         .images-grid-content:before {
           display: none;
         }
-        
+
         .images-grid-content:hover:before {
           opacity: 0;
         }
@@ -322,17 +322,21 @@ section.collection {
 
       .manage-bytext {
         .manage-bytext-main {}
+
         .manage-bytext-container {
           margin-bottom: 1rem;
 
           h2 {
             margin-bottom: 0.5rem;
           }
+
           p {
             margin-top: 0;
           }
+
           .mat-mdc-form-field {
             width: 100%;
+
             /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
             .mat-form-field-infix {
               padding: 0;
@@ -544,7 +548,7 @@ section.collection {
       .mat-mdc-form-field {
         font-size: 0.88rem;
         width: 100%;
-        
+
         /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
         // .mat-form-field-wrapper {
         //   margin-bottom: 0;

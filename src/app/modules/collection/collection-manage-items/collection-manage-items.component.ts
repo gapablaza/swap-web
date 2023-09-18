@@ -5,7 +5,6 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  inject,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { concatMap, filter, Subscription, take, tap } from 'rxjs';
