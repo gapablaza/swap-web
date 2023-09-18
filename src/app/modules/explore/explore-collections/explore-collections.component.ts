@@ -1,10 +1,19 @@
-import { registerLocaleData, NgIf, NgFor, DecimalPipe } from '@angular/common';
-import es from '@angular/common/locales/es';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { registerLocaleData, NgIf, NgFor, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import { FormsModule } from '@angular/forms';
+import es from '@angular/common/locales/es';
 import { filter, Subscription, switchMap, take, tap } from 'rxjs';
 
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+import { AdsModule } from 'src/app/shared/ads.module';
+import { UIService } from 'src/app/shared';
 import {
   AuthService,
   Collection,
@@ -14,36 +23,27 @@ import {
   SEOService,
   User,
 } from 'src/app/core';
-import { UIService } from 'src/app/shared';
-import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { CollectionItemComponent } from '../../../shared/components/collection-item/collection-item.component';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { AdsenseModule } from 'ng2-adsense';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
-    selector: 'app-explore-collections',
-    templateUrl: './explore-collections.component.html',
-    styleUrls: ['./explore-collections.component.scss'],
-    standalone: true,
-    imports: [
-        NgIf,
-        MatProgressSpinnerModule,
-        AdsenseModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        NgFor,
-        MatOptionModule,
-        CollectionItemComponent,
-        MatButtonModule,
-        MatIconModule,
-        FormsModule,
-        DecimalPipe,
-    ],
+  selector: 'app-explore-collections',
+  templateUrl: './explore-collections.component.html',
+  styleUrls: ['./explore-collections.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    MatProgressSpinnerModule,
+    AdsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    NgFor,
+    MatOptionModule,
+    CollectionItemComponent,
+    MatButtonModule,
+    MatIconModule,
+    FormsModule,
+    DecimalPipe,
+  ],
 })
 export class ExploreCollectionsComponent implements OnInit, OnDestroy {
   collections: Collection[] = [];
@@ -89,7 +89,7 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private authSrv: AuthService,
     private SEOSrv: SEOService,
-    private uiSrv: UIService,
+    private uiSrv: UIService
   ) {}
 
   ngOnInit(): void {
@@ -99,7 +99,7 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
     let authSub = this.authSrv.authUser
       .pipe(
         tap((user) => {
-          if(!user.id || (user.accountTypeId == 1)) {
+          if (!user.id || user.accountTypeId == 1) {
             this.loadAds();
           }
         }),
@@ -116,8 +116,9 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
         tap(() => {
           this.SEOSrv.set({
             title: 'Explorar Colecciones - Intercambia Láminas',
-            description: 'Revisa el listado completo de colecciones que tenemos disponible, marca tus repetidas/faltantes y encuentra con quién intercambiar!',
-            isCanonical: true
+            description:
+              'Revisa el listado completo de colecciones que tenemos disponible, marca tus repetidas/faltantes y encuentra con quién intercambiar!',
+            isCanonical: true,
           });
         }),
         switchMap((paramMap) => {
@@ -155,7 +156,7 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
   loadAds() {
     this.uiSrv.loadAds().then(() => {
       this.isAdsLoaded = true;
-    })
+    });
   }
 
   onSort() {

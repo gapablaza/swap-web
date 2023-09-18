@@ -5,54 +5,51 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
+import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import {
   AngularFireDatabase,
   AngularFireList,
 } from '@angular/fire/compat/database';
 import { combineLatest, map, Subscription } from 'rxjs';
-
-import {
-  AuthService,
-  DEFAULT_USER_PROFILE_IMG,
-  Message,
-} from 'src/app/core';
-import { UIService } from 'src/app/shared';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
-import { RouterLink } from '@angular/router';
+
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { AdsenseModule } from 'ng2-adsense';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
+
+import { AuthService, DEFAULT_USER_PROFILE_IMG, Message } from 'src/app/core';
+import { AdsModule } from 'src/app/shared/ads.module';
+import { UIService } from 'src/app/shared';
 
 @Component({
-    selector: 'app-message-list',
-    templateUrl: './message-list.component.html',
-    styleUrls: ['./message-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        NgIf,
-        MatProgressSpinnerModule,
-        AdsenseModule,
-        NgClass,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        FormsModule,
-        MatButtonModule,
-        MatSelectModule,
-        MatOptionModule,
-        NgFor,
-        RouterLink,
-        LazyLoadImageModule,
-        DatePipe,
-    ],
+  selector: 'app-message-list',
+  templateUrl: './message-list.component.html',
+  styleUrls: ['./message-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    NgIf,
+    MatProgressSpinnerModule,
+    AdsModule,
+    NgClass,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatOptionModule,
+    NgFor,
+    RouterLink,
+    LazyLoadImageModule,
+    DatePipe,
+  ],
 })
 export class MessageListComponent implements OnInit, OnDestroy {
   authUser = this.authSrv.getCurrentUser();

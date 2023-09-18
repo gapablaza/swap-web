@@ -1,9 +1,28 @@
 import { Component, OnInit } from '@angular/core';
+import {
+  registerLocaleData,
+  NgIf,
+  NgFor,
+  NgClass,
+  DecimalPipe,
+} from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { switchMap } from 'rxjs';
-import { registerLocaleData, NgIf, NgFor, NgClass, DecimalPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import es from '@angular/common/locales/es';
+import { switchMap } from 'rxjs';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+import { AdsModule } from 'src/app/shared/ads.module';
+import { UIService } from 'src/app/shared';
+import { SlugifyPipe } from '../../shared/pipes/slugify.pipe';
+import { DaysSinceLoginDirective } from '../../shared/directives/days-since-login.directive';
 import {
   AuthService,
   Collection,
@@ -13,18 +32,6 @@ import {
   Trades,
   UserService,
 } from 'src/app/core';
-import { UIService } from 'src/app/shared';
-import { SlugifyPipe } from '../../shared/pipes/slugify.pipe';
-import { DaysSinceLoginDirective } from '../../shared/directives/days-since-login.directive';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
-import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { AdsenseModule } from 'ng2-adsense';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 export interface IFilters {
   days?: number;
@@ -34,28 +41,28 @@ export interface IFilters {
 }
 
 @Component({
-    selector: 'app-trades',
-    templateUrl: './trades.component.html',
-    styleUrls: ['./trades.component.scss'],
-    standalone: true,
-    imports: [
-        NgIf,
-        MatProgressSpinnerModule,
-        AdsenseModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        NgFor,
-        MatButtonModule,
-        MatIconModule,
-        FormsModule,
-        NgClass,
-        RouterLink,
-        LazyLoadImageModule,
-        DaysSinceLoginDirective,
-        DecimalPipe,
-        SlugifyPipe,
-    ],
+  selector: 'app-trades',
+  templateUrl: './trades.component.html',
+  styleUrls: ['./trades.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    MatProgressSpinnerModule,
+    AdsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    NgFor,
+    MatButtonModule,
+    MatIconModule,
+    FormsModule,
+    NgClass,
+    RouterLink,
+    LazyLoadImageModule,
+    DaysSinceLoginDirective,
+    DecimalPipe,
+    SlugifyPipe,
+  ],
 })
 export class TradesComponent implements OnInit {
   // authUser: User = {} as User;
@@ -80,7 +87,7 @@ export class TradesComponent implements OnInit {
     private userSrv: UserService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private uiSrv: UIService,
+    private uiSrv: UIService
   ) {}
 
   ngOnInit(): void {
@@ -139,15 +146,15 @@ export class TradesComponent implements OnInit {
         this.isLoaded = true;
       });
 
-      if(this.authUser.accountTypeId == 1) {
-        this.loadAds();
-      }
+    if (this.authUser.accountTypeId == 1) {
+      this.loadAds();
+    }
   }
 
   loadAds() {
     this.uiSrv.loadAds().then(() => {
       this.isAdsLoaded = true;
-    })
+    });
   }
 
   onPageChange(e: string) {
