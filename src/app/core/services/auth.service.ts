@@ -1,5 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   Observable,
   BehaviorSubject,
@@ -10,15 +11,18 @@ import {
 } from 'rxjs';
 import { concatMap, distinctUntilChanged, map, take } from 'rxjs/operators';
 
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFireMessaging } from '@angular/fire/compat/messaging';
+// import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Auth, signOut, signInWithCustomToken } from '@angular/fire/auth';
+// import { AngularFireMessaging } from '@angular/fire/compat/messaging';
+import { Messaging, getToken, deleteToken } from '@angular/fire/messaging';
+// import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { Database, ref, set } from '@angular/fire/database';
 // import firebase from 'firebase/compat/app';
 
 import { User } from '../models';
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 // import { StorageService } from './storage.service';
 
 @Injectable()
@@ -39,9 +43,12 @@ export class AuthService {
     private apiSrv: ApiService,
     private jwtSrv: JwtService,
     private router: Router,
-    private afAuth: AngularFireAuth,
-    private afMessaging: AngularFireMessaging,
-    private afDB: AngularFireDatabase
+    private firebaseAuth: Auth,
+    // private afAuth: AngularFireAuth,
+    private firebaseMessaging: Messaging,
+    // private afMessaging: AngularFireMessaging,
+    private firebaseDB: Database,
+    // private afDB: AngularFireDatabase
   ) {}
 
   // Verify JWT in localstorage with server & load user's info.
@@ -191,13 +198,14 @@ export class AuthService {
       .pipe(
         take(1),
         concatMap((data: any) => {
-          return from(this.afAuth.signInWithCustomToken(data.tokenFB));
+          // return from(this.afAuth.signInWithCustomToken(data.tokenFB));
+          return from(signInWithCustomToken(this.firebaseAuth, data.tokenFB))
         })
       )
       .subscribe({
         next: () => {
           this.isFBAuthSubject.next(true);
-          this.saveFirebaseToken();
+          // this.saveFirebaseToken();
         },
         error: () => this.isFBAuthSubject.next(false),
       });
@@ -207,11 +215,18 @@ export class AuthService {
     let tempAuthUser = this.getCurrentUser();
     if (tempAuthUser.id == null) return;
 
-    this.afMessaging.getToken.pipe(take(1)).subscribe((token) => {
+    // this.afMessaging.getToken
+    from(getToken(this.firebaseMessaging, {
+      vapidKey: environment.vapidKey
+    }))
+    .pipe(take(1))
+    .subscribe((token) => {
       if (token) {
-        this.afDB
-          .object(`users/userId_${tempAuthUser.id}/notificationTokens/${token}`)
-          .set(true);
+        // this.afDB
+        // .object(`users/userId_${tempAuthUser.id}/notificationTokens/${token}`)
+        // .set(true);
+        const notificationTokenRef = ref(this.firebaseDB, `users/userId_${tempAuthUser.id}/notificationTokens/${token}`);
+        set(notificationTokenRef, true);
       }
     });
   }
@@ -220,26 +235,32 @@ export class AuthService {
     let tempAuthUser = this.getCurrentUser();
 
     // remove FB device token
-    this.afMessaging.getToken
+    // this.afMessaging.getToken
+    from(getToken(this.firebaseMessaging))
       .pipe(
         take(1),
         concatMap((token) => {
           if (token) {
             if (tempAuthUser.id != null) {
+              // const server$ = from(
+              //   this.afDB
+              //     .object(
+              //       `users/userId_${tempAuthUser.id}/notificationTokens/${token}`
+              //     )
+              //     .remove()
+              // );
               const server$ = from(
-                this.afDB
-                  .object(
-                    `users/userId_${tempAuthUser.id}/notificationTokens/${token}`
-                  )
-                  .remove()
+                set(ref(this.firebaseDB, `users/userId_${tempAuthUser.id}/notificationTokens/${token}`), null)
               );
-              const client$ = this.afMessaging.deleteToken(token).pipe(take(1));
+              // const client$ = this.afMessaging.deleteToken(token).pipe(take(1));
+              const client$ = from(deleteToken(this.firebaseMessaging)).pipe(take(1));
 
               return combineLatest([server$, client$]).pipe(
                 map(([server, client]) => client)
               );
             } else {
-              return this.afMessaging.deleteToken(token).pipe(take(1));
+              // return this.afMessaging.deleteToken(token).pipe(take(1));
+              return from(deleteToken(this.firebaseMessaging)).pipe(take(1));
             }
           } else {
             return of(false);
@@ -247,7 +268,8 @@ export class AuthService {
         }),
         concatMap((resp) => {
           // console.log(resp ? 'Token deleted!' : 'Token cant be deleted');
-          return from(this.afAuth.signOut());
+          // return from(this.afAuth.signOut());
+          return from(signOut(this.firebaseAuth));
         })
       )
       .subscribe((resp) => {

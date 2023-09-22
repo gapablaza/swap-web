@@ -5,7 +5,7 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { AngularFireMessaging } from '@angular/fire/compat/messaging';
+// import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Subscription, take } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
@@ -32,18 +32,18 @@ export class MessageComponent implements OnInit, OnDestroy {
 
   constructor(
     private authSrv: AuthService,
-    private afMessaging: AngularFireMessaging,
+    // private afMessaging: AngularFireMessaging,
     private dialog: MatDialog,
     private cookieSrv: CookieService
   ) {}
 
   ngOnInit(): void {
-    let getTokenSub = this.afMessaging.getToken.subscribe((token) => {
-      if (!token && !this.cookieSrv.check('waitForPermission')) {
-        this.showCustomRequest();
-      }
-    });
-    this.subs.add(getTokenSub);
+    // let getTokenSub = this.afMessaging.getToken.subscribe((token) => {
+    //   if (!token && !this.cookieSrv.check('waitForPermission')) {
+    //     this.showCustomRequest();
+    //   }
+    // });
+    // this.subs.add(getTokenSub);
   }
 
   showCustomRequest() {
@@ -62,14 +62,14 @@ export class MessageComponent implements OnInit, OnDestroy {
   }
 
   requestPermission() {
-    this.afMessaging.requestToken.pipe(take(1)).subscribe({
-      next: (token) => {
-        this.authSrv.saveFirebaseToken();
-      },
-      error: (error) => {
-        console.error(error);
-      },
-    });
+    // this.afMessaging.requestToken.pipe(take(1)).subscribe({
+    //   next: (token) => {
+    //     this.authSrv.saveFirebaseToken();
+    //   },
+    //   error: (error) => {
+    //     console.error(error);
+    //   },
+    // });
   }
 
   ngOnDestroy(): void {

@@ -6,8 +6,23 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { combineLatest, map, Subscription } from 'rxjs';
+import {
+  Database,
+  ref,
+  onValue,
+  object,
+  objectVal,
+  set,
+  push,
+  list,
+  query,
+  orderByChild,
+  equalTo,
+  onDisconnect,
+  listVal,
+} from '@angular/fire/database';
+// import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { combineLatest, map, Subscription, tap } from 'rxjs';
 
 import {
   AuthService,
@@ -16,7 +31,7 @@ import {
 } from 'src/app/core';
 import { MatIconModule } from '@angular/material/icon';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
-import { RouterLink } from '@angular/router';
+import { Data, RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
 
 @Component({
@@ -42,7 +57,8 @@ export class SidenavListComponent implements OnInit {
 
   constructor(
     private authSrv: AuthService,
-    private afDB: AngularFireDatabase,
+    private firebaseDB: Database,
+    // private afDB: AngularFireDatabase,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -61,43 +77,42 @@ export class SidenavListComponent implements OnInit {
     this.authSrv.isFBAuth
       .subscribe((state) => {
 
-        if (state) {
-          const usersBL$ = this.afDB
-            .list(`userBlacklist/userId_${this.authUser.id}`)
-            .snapshotChanges()
-            .pipe(map((users) => users.map((user) => user.key)));
+        // const unreads$ = listVal(ref(this.firebaseDB, `unreadUserMessages/userId_${this.authUser.id}`))
+        //   .pipe(
+        //   tap((resp) => console.log(resp)),
+        //   map((users:any) => users.map((user:any) => user.fromUserId))
+        // )
+        // .subscribe(resp => {
+        //   console.log(resp);
+        // })
+        // ;
 
-          const unreads$ = this.afDB
-            .list(`unreadUserMessages/userId_${this.authUser.id}`)
-            .snapshotChanges();
+        // if (state) {
+        //   const usersBL$ = this.afDB
+        //     .list(`userBlacklist/userId_${this.authUser.id}`)
+        //     .snapshotChanges()
+        //     .pipe(map((users) => users.map((user) => user.key)));
 
-          this.unreadCountSub = combineLatest([usersBL$, unreads$])
-            .pipe(
-              map(([users, unreads]) => {
-                return unreads.filter((mess) => !users.includes(mess.key));
-              }),
-              map((unreads) => unreads.length)
-            )
-            .subscribe((unreadQ) => {
-              this.unreadCount = unreadQ;
-              this.cdr.markForCheck();
-            });
+        //   const unreads$ = this.afDB
+        //     .list(`unreadUserMessages/userId_${this.authUser.id}`)
+        //     .snapshotChanges();
 
-          // this.unreadCountSub = this.afDB
-          //   .list(`unreadUserMessages/userId_${this.authUser.id}`)
-          //   .valueChanges()
-          //   .pipe(
-          //     map((unreads) => unreads.length)
-          //   )
-          //   .subscribe((unreadQ) => {
-          //     this.unreadCount = unreadQ;
-          //     this.cdr.markForCheck();
-          //   });
-        } else {
-          if (this.unreadCountSub) {
-            this.unreadCountSub.unsubscribe();
-          }
-        }
+        //   this.unreadCountSub = combineLatest([usersBL$, unreads$])
+        //     .pipe(
+        //       map(([users, unreads]) => {
+        //         return unreads.filter((mess) => !users.includes(mess.key));
+        //       }),
+        //       map((unreads) => unreads.length)
+        //     )
+        //     .subscribe((unreadQ) => {
+        //       this.unreadCount = unreadQ;
+        //       this.cdr.markForCheck();
+        //     });
+        // } else {
+        //   if (this.unreadCountSub) {
+        //     this.unreadCountSub.unsubscribe();
+        //   }
+        // }
       });
   }
 

@@ -5,7 +5,7 @@ import {
   Router,
   RouterOutlet,
 } from '@angular/router';
-import { AngularFireMessaging } from '@angular/fire/compat/messaging';
+// import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { filter } from 'rxjs';
 import {
   MatSidenav,
@@ -47,7 +47,7 @@ export class AppComponent implements OnInit {
   constructor(
     private authSrv: AuthService,
     private SEOSrv: SEOService,
-    private afMessaging: AngularFireMessaging,
+    // private afMessaging: AngularFireMessaging,
     private uiSrv: UIService,
     private router: Router
   ) {
@@ -116,13 +116,13 @@ export class AppComponent implements OnInit {
     }
 
     // Subscripción a notificación de nuevos mensajes
-    this.afMessaging.getToken
-      .pipe(filter((token) => token != null))
-      .subscribe((token) => {
-        this.afMessaging.onMessage((payload) => {
-          this.uiSrv.showSnackbar('Tienes un nuevo mensaje!');
-        });
-      });
+    // this.afMessaging.getToken
+    //   .pipe(filter((token) => token != null))
+    //   .subscribe((token) => {
+    //     this.afMessaging.onMessage((payload) => {
+    //       this.uiSrv.showSnackbar('Tienes un nuevo mensaje!');
+    //     });
+    //   });
 
     this.authSrv.populate();
   }

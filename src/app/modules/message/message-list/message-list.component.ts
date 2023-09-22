@@ -9,10 +9,13 @@ import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import {
-  AngularFireDatabase,
-  AngularFireList,
-} from '@angular/fire/compat/database';
-import { combineLatest, map, Subscription } from 'rxjs';
+  Database,
+  ref,
+  list,
+  query,
+  orderByChild,
+} from '@angular/fire/database';
+import { combineLatest, map, Subscription, tap } from 'rxjs';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { MatOptionModule } from '@angular/material/core';
@@ -54,7 +57,6 @@ import { UIService } from 'src/app/shared';
 export class MessageListComponent implements OnInit, OnDestroy {
   authUser = this.authSrv.getCurrentUser();
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
-  messagesRef!: AngularFireList<any>;
   messages: any[] = [];
   showedMessages: any[] = [];
   unreadUserIds: number[] = [];
@@ -68,28 +70,23 @@ export class MessageListComponent implements OnInit, OnDestroy {
   subs: Subscription = new Subscription();
 
   constructor(
-    private afDB: AngularFireDatabase,
+    private firebaseDB: Database,
     private authSrv: AuthService,
     private uiSrv: UIService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    const usersBL$ = this.afDB
-      .list(`userBlacklist/userId_${this.authUser.id}`)
-      .snapshotChanges()
-      .pipe(
-        map((users) =>
-          // users.map((user) => Number(user.key?.split('_')[1]))
-          users.map((user) => user.key)
-        )
-      );
+    const usersBL$ = list(
+      ref(this.firebaseDB, `userBlacklist/userId_${this.authUser.id}`)
+    ).pipe(map((snapshot) => snapshot.map((mess) => mess.snapshot.key)));
 
-    const resume$ = this.afDB
-      .list(`userResume/userId_${this.authUser.id}`, (ref) =>
-        ref.orderByChild('timestamp')
+    const resume$ = list(
+      query(
+        ref(this.firebaseDB, `userResume/userId_${this.authUser.id}`),
+        orderByChild('timestamp')
       )
-      .snapshotChanges();
+    ).pipe(map((snapshot) => snapshot.map((mess) => mess.snapshot)));
 
     let blacklistSub = combineLatest([usersBL$, resume$])
       .pipe(
@@ -98,7 +95,7 @@ export class MessageListComponent implements OnInit, OnDestroy {
         }),
         map((messages) => {
           return messages.map((mess) => {
-            let payload = mess.payload.val() as Message;
+            let payload = mess.val() as Message;
             return {
               withUserId:
                 payload.toUserId == this.authUser.id
@@ -129,48 +126,6 @@ export class MessageListComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       });
     this.subs.add(blacklistSub);
-
-    // this.messagesRef = this.afDB.list(
-    //   `userResume/userId_${this.authUser.id}`,
-    //   (ref) => ref.orderByChild('timestamp')
-    // );
-
-    // let messagesSub = this.messagesRef
-    //   .snapshotChanges()
-    //   .pipe(
-    //     map((messages) => {
-    //       return messages.map((mess) => {
-    //         let payload = mess.payload.val() as Message;
-    //         return {
-    //           withUserId:
-    //             payload.toUserId == this.authUser.id
-    //               ? payload.fromUserId
-    //               : payload.toUserId,
-    //           withUserName:
-    //             payload.toUserId == this.authUser.id
-    //               ? payload.fromUserName
-    //               : payload.toUserName,
-    //           withUserImage:
-    //             payload.toUserId == this.authUser.id
-    //               ? payload.fromUserImage
-    //               : payload.toUserImage,
-    //           withUserText: payload.body,
-    //           withUserTime: payload.timestamp,
-    //           fromAuthUser:
-    //             payload.fromUserId == this.authUser.id ? true : false,
-    //           unread: payload.unread === false ? false : true,
-    //           archived: payload.archived === true ? true : false,
-    //         };
-    //       });
-    //     })
-    //   )
-    //   .subscribe((list) => {
-    //     this.messages = list;
-    //     this.filterShowedMessages();
-    //     this.isLoaded = true;
-    //     this.cdr.markForCheck();
-    //   });
-    // this.subs.add(messagesSub);
 
     if (this.authUser.accountTypeId == 1) {
       this.loadAds();
