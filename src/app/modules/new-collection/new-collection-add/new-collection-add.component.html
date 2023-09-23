@@ -3,6 +3,26 @@
 </div>
 <section *ngIf="isLoaded && canAddOrUpdate" class="new-collections">
     <h1>{{ title }}</h1>
+
+    <div *ngIf="newColId === undefined" class="alert alert-warning">
+        <div class="alert-container">
+            <div class="alert-content">
+                <div class="alert-title">Atención</div>
+                <div class="alert-message">
+                    <p>
+                        Revisaste si es que no existe una solicitud ya registrada para la colección que quieres agregar? Las solicitudes duplicadas serán rechazadas!
+                    </p>
+                    <p>
+                        Puedes revisar la lógica y funcionamiento para esta opción de realizar solicitudes de
+                        nuevas colecciones presionando en <a
+                            href="https://trello.com/c/N6Fg34jN/14-26-permitir-a-los-usuarios-agregar-colecciones"
+                            target="_blank" rel="noopener noreferrer">este enlace</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card">
 
         <div class="nc-form-container">
