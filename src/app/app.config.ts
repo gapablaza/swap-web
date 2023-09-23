@@ -8,29 +8,23 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 
-import * as hammerjs from '@egjs/hammerjs';
+import 'hammerjs';
 import {
   HAMMER_GESTURE_CONFIG,
   HammerGestureConfig,
   HammerModule,
-  provideClientHydration,
 } from '@angular/platform-browser';
 
-import { provideDatabase, getDatabase } from '@angular/fire/database';
 import { getApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { provideDatabase, getDatabase } from '@angular/fire/database';
 import {
   provideAuth,
   initializeAuth,
   indexedDBLocalPersistence,
   browserLocalPersistence,
   browserSessionPersistence,
+  getAuth,
 } from '@angular/fire/auth';
-// import { AngularFireModule } from '@angular/fire/compat';
-// import {
-//   VAPID_KEY,
-//   SERVICE_WORKER,
-//   AngularFireMessagingModule,
-// } from '@angular/fire/compat/messaging';
 import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { NgProgressHttpModule } from 'ngx-progressbar/http';
 import { NgProgressModule } from 'ngx-progressbar';
@@ -43,7 +37,6 @@ import { CoreModule, errorInterceptor, tokenInterceptor } from './core';
 import { environment } from 'src/environments/environment';
 import { UIService } from './shared';
 import APP_ROUTES from './app.routes';
-import { getAuth } from 'firebase/auth';
 
 @Injectable()
 export class MyHammerConfig extends HammerGestureConfig {
@@ -60,7 +53,7 @@ export class MyHammerConfig extends HammerGestureConfig {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(withInterceptors([tokenInterceptor, errorInterceptor])),
-    provideClientHydration(),
+    // provideClientHydration(),
     provideRouter(APP_ROUTES),
     provideAnimations(),
     importProvidersFrom(
@@ -78,18 +71,6 @@ export const appConfig: ApplicationConfig = {
       }),
       provideFirebaseApp(() => initializeApp(environment.firebase)),
       provideMessaging(() => getMessaging()),
-      // AngularFireModule.initializeApp(environment.firebase),
-      // AngularFireMessagingModule,
-      // provideAuth(() => getAuth()),
-      // provideAuth(() =>
-      //   initializeAuth(getApp(), {
-      //     persistence: [
-      //       indexedDBLocalPersistence,
-      //       browserLocalPersistence,
-      //       browserSessionPersistence,
-      //     ],
-      //   })
-      // ),
       provideAuth(() =>
         typeof document === 'undefined'
           ? getAuth(getApp())
@@ -109,16 +90,6 @@ export const appConfig: ApplicationConfig = {
       NgProgressHttpModule
     ),
     { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig },
-    // { provide: VAPID_KEY, useValue: environment.vapidKey },
-    // {
-    //   provide: SERVICE_WORKER,
-    //   useFactory: () =>
-    //     (typeof navigator !== 'undefined' &&
-    //       navigator.serviceWorker?.register('firebase-messaging-sw.js', {
-    //         scope: '__',
-    //       })) ||
-    //     undefined,
-    // },
     {
       // https://stackoverflow.com/a/75107066
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,

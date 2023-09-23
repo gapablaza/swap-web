@@ -5,14 +5,14 @@ import {
   Router,
   RouterOutlet,
 } from '@angular/router';
-// import { AngularFireMessaging } from '@angular/fire/compat/messaging';
-import { filter } from 'rxjs';
+import { Messaging, onMessage } from '@angular/fire/messaging';
+import { NgProgressModule } from 'ngx-progressbar';
+
 import {
   MatSidenav,
   MatDrawerMode,
   MatSidenavModule,
 } from '@angular/material/sidenav';
-import { NgProgressModule } from 'ngx-progressbar';
 
 import { environment } from 'src/environments/environment';
 import { AuthService, SEOService } from './core';
@@ -33,7 +33,7 @@ declare const gtag: Function;
     NgProgressModule,
 
     MatSidenavModule,
-    
+
     HeaderComponent,
     SidenavListComponent,
     FooterComponent,
@@ -47,7 +47,7 @@ export class AppComponent implements OnInit {
   constructor(
     private authSrv: AuthService,
     private SEOSrv: SEOService,
-    // private afMessaging: AngularFireMessaging,
+    private fbMessaging: Messaging,
     private uiSrv: UIService,
     private router: Router
   ) {
@@ -115,14 +115,20 @@ export class AppComponent implements OnInit {
       this.navOpened = true;
     }
 
-    // Subscripción a notificación de nuevos mensajes
-    // this.afMessaging.getToken
-    //   .pipe(filter((token) => token != null))
-    //   .subscribe((token) => {
-    //     this.afMessaging.onMessage((payload) => {
-    //       this.uiSrv.showSnackbar('Tienes un nuevo mensaje!');
-    //     });
-    //   });
+    // Registra el SW y se suscribe a nuevos mensajes
+    if (typeof navigator !== 'undefined') {
+      navigator.serviceWorker
+        .register('firebase-messaging-sw.js', {
+          // type: 'module',
+          scope: '__',
+        })
+        .then((ServiceWorkerRegistration) => {
+          onMessage(this.fbMessaging, (payload) => {
+            console.log(payload);
+            this.uiSrv.showSnackbar('Tienes un nuevo mensaje!');
+          });
+        });
+    }
 
     this.authSrv.populate();
   }

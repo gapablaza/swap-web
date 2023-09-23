@@ -6,18 +6,12 @@ import {
   BehaviorSubject,
   ReplaySubject,
   from,
-  of,
   combineLatest,
 } from 'rxjs';
 import { concatMap, distinctUntilChanged, map, take } from 'rxjs/operators';
-
-// import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Auth, signOut, signInWithCustomToken } from '@angular/fire/auth';
-// import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { Messaging, getToken, deleteToken } from '@angular/fire/messaging';
-// import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { Database, ref, set } from '@angular/fire/database';
-// import firebase from 'firebase/compat/app';
+import { Database, ref, serverTimestamp, set } from '@angular/fire/database';
 
 import { User } from '../models';
 import { ApiService } from './api.service';
@@ -44,11 +38,8 @@ export class AuthService {
     private jwtSrv: JwtService,
     private router: Router,
     private firebaseAuth: Auth,
-    // private afAuth: AngularFireAuth,
     private firebaseMessaging: Messaging,
-    // private afMessaging: AngularFireMessaging,
-    private firebaseDB: Database,
-    // private afDB: AngularFireDatabase
+    private firebaseDB: Database
   ) {}
 
   // Verify JWT in localstorage with server & load user's info.
@@ -198,8 +189,7 @@ export class AuthService {
       .pipe(
         take(1),
         concatMap((data: any) => {
-          // return from(this.afAuth.signInWithCustomToken(data.tokenFB));
-          return from(signInWithCustomToken(this.firebaseAuth, data.tokenFB))
+          return from(signInWithCustomToken(this.firebaseAuth, data.tokenFB));
         })
       )
       .subscribe({
@@ -212,69 +202,80 @@ export class AuthService {
   }
 
   saveFirebaseToken() {
+    console.log('saveFirebaseToken - init');
     let tempAuthUser = this.getCurrentUser();
     if (tempAuthUser.id == null) return;
 
-    // this.afMessaging.getToken
-    from(getToken(this.firebaseMessaging, {
-      vapidKey: environment.vapidKey
-    }))
-    .pipe(take(1))
-    .subscribe((token) => {
-      if (token) {
-        // this.afDB
-        // .object(`users/userId_${tempAuthUser.id}/notificationTokens/${token}`)
-        // .set(true);
-        const notificationTokenRef = ref(this.firebaseDB, `users/userId_${tempAuthUser.id}/notificationTokens/${token}`);
-        set(notificationTokenRef, true);
-      }
-    });
+    from(
+      getToken(this.firebaseMessaging, {
+        vapidKey: environment.vapidKey,
+      })
+    )
+      .pipe(take(1))
+      .subscribe((token) => {
+        console.log('saveFirebaseToken - sub', token);
+        if (token) {
+          const notificationTokenRef = ref(
+            this.firebaseDB,
+            `users/userId_${tempAuthUser.id}/notificationTokens/${token}`
+          );
+          set(notificationTokenRef, serverTimestamp());
+        }
+      });
   }
 
   logoutOnFirebase() {
     let tempAuthUser = this.getCurrentUser();
 
-    // remove FB device token
-    // this.afMessaging.getToken
-    from(getToken(this.firebaseMessaging))
-      .pipe(
-        take(1),
-        concatMap((token) => {
-          if (token) {
-            if (tempAuthUser.id != null) {
-              // const server$ = from(
-              //   this.afDB
-              //     .object(
-              //       `users/userId_${tempAuthUser.id}/notificationTokens/${token}`
-              //     )
-              //     .remove()
-              // );
-              const server$ = from(
-                set(ref(this.firebaseDB, `users/userId_${tempAuthUser.id}/notificationTokens/${token}`), null)
-              );
-              // const client$ = this.afMessaging.deleteToken(token).pipe(take(1));
-              const client$ = from(deleteToken(this.firebaseMessaging)).pipe(take(1));
+    if (tempAuthUser.id == null) {
+      from(signOut(this.firebaseAuth))
+        .pipe(take(1))
+        .subscribe((resp) => this.isFBAuthSubject.next(false));
+      return;
+    }
 
-              return combineLatest([server$, client$]).pipe(
-                map(([server, client]) => client)
-              );
-            } else {
-              // return this.afMessaging.deleteToken(token).pipe(take(1));
-              return from(deleteToken(this.firebaseMessaging)).pipe(take(1));
-            }
-          } else {
-            return of(false);
-          }
-        }),
-        concatMap((resp) => {
-          // console.log(resp ? 'Token deleted!' : 'Token cant be deleted');
-          // return from(this.afAuth.signOut());
-          return from(signOut(this.firebaseAuth));
+    // Si existe token en el navegador
+    if (Notification.permission === 'granted') {
+      // obtenemos el token y lo borramos del servidor y cliente
+      from(
+        getToken(this.firebaseMessaging, {
+          vapidKey: environment.vapidKey,
         })
       )
-      .subscribe((resp) => {
-        this.isFBAuthSubject.next(false);
-      });
+        .pipe(
+          take(1),
+          concatMap((token) => {
+            const server$ = from(
+              set(
+                ref(
+                  this.firebaseDB,
+                  `users/userId_${tempAuthUser.id}/notificationTokens/${token}`
+                ),
+                null
+              )
+            ).pipe(take(1));
+
+            const client$ = from(deleteToken(this.firebaseMessaging)).pipe(
+              take(1)
+            );
+
+            return combineLatest([server$, client$]).pipe(
+              map(([server, client]) => client)
+            );
+          }),
+          concatMap((resp) => from(signOut(this.firebaseAuth)).pipe(take(1)))
+        )
+        .subscribe((resp) => {
+          this.isFBAuthSubject.next(false);
+        });
+
+      // si no existe token en el navegador
+    } else {
+      // cerramos sesión de Firebase y notificamos
+      from(signOut(this.firebaseAuth))
+        .pipe(take(1))
+        .subscribe((resp) => this.isFBAuthSubject.next(false));
+    }
   }
 
   linkGoogle(data: {
@@ -450,19 +451,19 @@ export class AuthService {
   getBlacklist(): Observable<User[]> {
     return this.apiSrv
       .get(`/v2/me/blacklist`)
-      .pipe(map((resp: { data: User[] }) => resp.data));    
+      .pipe(map((resp: { data: User[] }) => resp.data));
   }
 
   addToBlacklist(userId: number): Observable<string> {
     return this.apiSrv
       .post(`/v2/me/blacklist/${userId}`)
-      .pipe(map((data: { message: string }) => data.message));    
+      .pipe(map((data: { message: string }) => data.message));
   }
 
   removeFromBlacklist(userId: number): Observable<string> {
     return this.apiSrv
       .delete(`/v2/me/blacklist/${userId}`)
-      .pipe(map((data: { message: string }) => data.message));    
+      .pipe(map((data: { message: string }) => data.message));
   }
 
   resetPassword(email: string): Observable<string> {

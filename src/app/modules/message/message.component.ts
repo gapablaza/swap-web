@@ -1,75 +1,65 @@
 import {
+  AfterViewInit,
   Component,
   OnDestroy,
-  OnInit,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-// import { AngularFireMessaging } from '@angular/fire/compat/messaging';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Subscription, take } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 
-import { AuthService, User } from 'src/app/core';
+import {
+  MatDialog,
+  MatDialogConfig,
+  MatDialogModule,
+} from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { RouterOutlet } from '@angular/router';
+
+import { AuthService, User } from 'src/app/core';
 
 @Component({
-    selector: 'app-message',
-    templateUrl: './message.component.html',
-    styleUrls: ['./message.component.scss'],
-    standalone: true,
-    imports: [
-        RouterOutlet,
-        MatDialogModule,
-        MatButtonModule,
-    ],
+  selector: 'app-message',
+  templateUrl: './message.component.html',
+  styleUrls: ['./message.component.scss'],
+  standalone: true,
+  imports: [RouterOutlet, MatDialogModule, MatButtonModule],
 })
-export class MessageComponent implements OnInit, OnDestroy {
+export class MessageComponent implements AfterViewInit, OnDestroy {
   @ViewChild('customRequest') customRequest!: TemplateRef<any>;
   authUser: User = this.authSrv.getCurrentUser();
   subs: Subscription = new Subscription();
 
   constructor(
     private authSrv: AuthService,
-    // private afMessaging: AngularFireMessaging,
     private dialog: MatDialog,
     private cookieSrv: CookieService
   ) {}
 
-  ngOnInit(): void {
-    // let getTokenSub = this.afMessaging.getToken.subscribe((token) => {
-    //   if (!token && !this.cookieSrv.check('waitForPermission')) {
-    //     this.showCustomRequest();
-    //   }
-    // });
-    // this.subs.add(getTokenSub);
+  ngAfterViewInit(): void {
+    if (
+      Notification.permission !== 'granted' &&
+      !this.cookieSrv.check('waitForPermission')
+    ) {
+      this.showCustomRequest();
+    }
   }
 
   showCustomRequest() {
-    let dialogRef = this.dialog.open(this.customRequest, {
-      width: '360px',
-      autoFocus: true,
-      disableClose: true,
-    });
-    dialogRef.afterClosed().subscribe((result) => {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '360px';
+    dialogConfig.autoFocus = true;
+    dialogConfig.disableClose = true;
+
+    let dialogRef = this.dialog.open(this.customRequest, dialogConfig);
+    let dialogSub = dialogRef.afterClosed().subscribe((result) => {
       if (result === true) {
-        this.requestPermission();
+        this.authSrv.saveFirebaseToken();
       } else {
         this.cookieSrv.set('waitForPermission', 'true', { expires: 7 });
       }
     });
-  }
-
-  requestPermission() {
-    // this.afMessaging.requestToken.pipe(take(1)).subscribe({
-    //   next: (token) => {
-    //     this.authSrv.saveFirebaseToken();
-    //   },
-    //   error: (error) => {
-    //     console.error(error);
-    //   },
-    // });
+    this.subs.add(dialogSub);
   }
 
   ngOnDestroy(): void {

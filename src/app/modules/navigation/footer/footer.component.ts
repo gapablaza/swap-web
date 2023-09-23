@@ -5,8 +5,6 @@ import {
   Database,
   ref,
   onValue,
-  object,
-  objectVal,
   set,
   push,
   list,
@@ -14,10 +12,9 @@ import {
   orderByChild,
   equalTo,
   onDisconnect,
-  listVal,
+  serverTimestamp,
 } from '@angular/fire/database';
-// import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { filter, from, map, Observable, tap } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { AuthService } from 'src/app/core';
 import { environment } from 'src/environments/environment';
@@ -35,11 +32,7 @@ export class FooterComponent implements OnInit {
   version = environment.appVersion;
   counter$!: Observable<number>;
 
-  constructor(
-    // private afDB: AngularFireDatabase,
-    private firebaseDB: Database,
-    private authSrv: AuthService
-  ) {}
+  constructor(private firebaseDB: Database, private authSrv: AuthService) {}
 
   ngOnInit(): void {
     registerLocaleData(es);
@@ -55,22 +48,11 @@ export class FooterComponent implements OnInit {
       map((list) => list.length || 1)
     );
 
-    // onValue(
-    //   query(
-    //     ref(this.firebaseDB, `onlineUsers`),
-    //     orderByChild('status'),
-    //     equalTo('online')
-    //   ), (snapshot) => {
-    //     console.log(snapshot.size);
-    //     // this.counter$ = snapshot.size
-    //   }
-    // )
-
     const onlineUsersRef = ref(this.firebaseDB, `onlineUsers`);
     const connectedRef = ref(this.firebaseDB, `.info/connected`);
     onValue(connectedRef, (snap) => {
       if (snap.val() === true) {
-        // We're connected (or reconnected)! 
+        // We're connected (or reconnected)!
         // Do anything here that should happen only if online (or on reconnect)
         const myUserRef = push(onlineUsersRef);
 
@@ -82,6 +64,7 @@ export class FooterComponent implements OnInit {
         set(myUserRef, {
           status: 'online',
           userId: this.authSrv.getCurrentUser().id || 0,
+          lastUpdated: serverTimestamp(),
         });
       }
     });
