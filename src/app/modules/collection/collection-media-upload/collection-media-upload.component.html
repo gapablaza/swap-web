@@ -34,7 +34,7 @@
                         [maintainAspectRatio]="false" 
                         [resizeToWidth]="1400"
                         [onlyScaleDown]="true"
-                        [transform]="transform"
+                        [(transform)]="transform"
                         (imageCropped)="imageCropped($event)" 
                         (imageLoaded)="imageLoaded()"
                         (cropperReady)="cropperReady()" 
