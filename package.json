@@ -29,7 +29,7 @@
     "@angular/material": "^16.2.4",
     "@angular/platform-browser": "^16.2.4",
     "@angular/platform-browser-dynamic": "^16.2.4",
-    "@angular/platform-server": "^16.2.4",
+    "@angular/platform-server": "^16.2.6",
     "@angular/router": "^16.2.4",
     "@angular/service-worker": "^16.2.4",
     "@nguniversal/express-engine": "^16.2.0",
