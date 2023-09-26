@@ -131,8 +131,6 @@ export class UserEvaluationsComponent implements OnInit, OnDestroy {
       this.isAuth = authState;
     });
     this.subs.add(authSub);
-
-    console.log('from UserEvaluationsComponent');
   }
 
   get form() {

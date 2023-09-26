@@ -2,7 +2,9 @@
   <div class="collection-info card">
 
     <div class="collection-header">
-      <div class="collection-image-background" [lazyLoad]="collection.image || defaultCollectionImage"></div>
+      <!-- <div class="collection-image-background" [lazyLoad]="collection.image || defaultCollectionImage"></div> -->
+      <div class="collection-image-background"
+        [style]="'background-image: url(' + (collection.image || defaultCollectionImage) + ');'"></div>
       <div class="collection-subheader">
         <div class="collection-image-container">
           <img class="collection-image" [src]="collection.image || defaultCollectionImage"
@@ -280,48 +282,42 @@
       <ul class="user-card-list">
         <li class="user-card card">
           <a>
-            <img src="/assets/img/profile_user.png"
-              class="user-card-image">
+            <img src="/assets/img/profile_user.png" class="user-card-image">
             <h3 class="user-card-title">Cargando nombre</h3>
           </a>
           <p class="user-card-subtitle">Cargando ubicación</p>
         </li>
         <li class="user-card card">
           <a>
-            <img src="/assets/img/profile_user.png"
-              class="user-card-image">
+            <img src="/assets/img/profile_user.png" class="user-card-image">
             <h3 class="user-card-title">Cargando nombre</h3>
           </a>
           <p class="user-card-subtitle">Cargando ubicación</p>
         </li>
         <li class="user-card card">
           <a>
-            <img src="/assets/img/profile_user.png"
-              class="user-card-image">
+            <img src="/assets/img/profile_user.png" class="user-card-image">
             <h3 class="user-card-title">Cargando nombre</h3>
           </a>
           <p class="user-card-subtitle">Cargando ubicación</p>
         </li>
         <li class="user-card card">
           <a>
-            <img src="/assets/img/profile_user.png"
-              class="user-card-image">
+            <img src="/assets/img/profile_user.png" class="user-card-image">
             <h3 class="user-card-title">Cargando nombre</h3>
           </a>
           <p class="user-card-subtitle">Cargando ubicación</p>
         </li>
         <li class="user-card card">
           <a>
-            <img src="/assets/img/profile_user.png"
-              class="user-card-image">
+            <img src="/assets/img/profile_user.png" class="user-card-image">
             <h3 class="user-card-title">Cargando nombre</h3>
           </a>
           <p class="user-card-subtitle">Cargando ubicación</p>
         </li>
         <li class="user-card card">
           <a>
-            <img src="/assets/img/profile_user.png"
-              class="user-card-image">
+            <img src="/assets/img/profile_user.png" class="user-card-image">
             <h3 class="user-card-title">Cargando nombre</h3>
           </a>
           <p class="user-card-subtitle">Cargando ubicación</p>
@@ -333,7 +329,7 @@
           </a>
         </li>
       </ul>
-      
+
       <ul class="nav-vert-std">
         <li>
           <a class="nav-vert-std-a">

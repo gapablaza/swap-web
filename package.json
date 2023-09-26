@@ -1,6 +1,6 @@
 {
   "name": "swap-web",
-  "version": "2.6.5",
+  "version": "2.7.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -9,7 +9,11 @@
     "config": "ts-node src/environments/set-env.ts",
     "config:prod": "ts-node src/environments/set-env.prod.ts",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "dev:ssr": "ng run swap-web:serve-ssr",
+    "serve:ssr": "node dist/swap-web/server/main.js",
+    "build:ssr": "ng build && ng run swap-web:server",
+    "prerender": "ng run swap-web:prerender"
   },
   "private": true,
   "dependencies": {
@@ -25,9 +29,12 @@
     "@angular/material": "^16.2.4",
     "@angular/platform-browser": "^16.2.5",
     "@angular/platform-browser-dynamic": "^16.2.5",
+    "@angular/platform-server": "^16.2.5",
     "@angular/router": "^16.2.5",
     "@angular/service-worker": "^16.2.5",
+    "@nguniversal/express-engine": "^16.2.0",
     "dotenv": "^16.3.1",
+    "express": "^4.15.2",
     "firebase": "^9.22.2",
     "firebase-tools": "^12.4.0",
     "hammerjs": "^2.0.8",
@@ -48,6 +55,8 @@
     "@angular-devkit/build-angular": "^16.2.2",
     "@angular/cli": "^16.2.2",
     "@angular/compiler-cli": "^16.2.5",
+    "@nguniversal/builders": "^16.2.0",
+    "@types/express": "^4.17.0",
     "@types/googlemaps": "^3.43.3",
     "@types/jasmine": "~3.10.10",
     "@types/lodash-es": "^4.17.7",

@@ -1,6 +1,15 @@
 import { Component, Inject, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { ImageCroppedEvent, ImageCropperComponent, ImageTransform, ImageCropperModule } from 'ngx-image-cropper';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogModule,
+} from '@angular/material/dialog';
+import {
+  ImageCroppedEvent,
+  ImageCropperComponent,
+  ImageTransform,
+  ImageCropperModule,
+} from 'ngx-image-cropper';
 import { NewCollectionService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { MatSliderModule } from '@angular/material/slider';
@@ -9,18 +18,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 
 @Component({
-    selector: 'app-new-collection-image',
-    templateUrl: './new-collection-image.component.html',
-    styleUrls: ['./new-collection-image.component.scss'],
-    standalone: true,
-    imports: [
-        MatDialogModule,
-        NgIf,
-        MatButtonModule,
-        ImageCropperModule,
-        MatIconModule,
-        MatSliderModule,
-    ],
+  selector: 'app-new-collection-image',
+  templateUrl: './new-collection-image.component.html',
+  styleUrls: ['./new-collection-image.component.scss'],
+  standalone: true,
+  imports: [
+    MatDialogModule,
+    NgIf,
+    MatButtonModule,
+    ImageCropperModule,
+    MatIconModule,
+    MatSliderModule,
+  ],
 })
 export class NewCollectionImageComponent {
   @ViewChild(ImageCropperComponent) cropper!: ImageCropperComponent;
@@ -113,6 +122,21 @@ export class NewCollectionImageComponent {
   onSaveImage() {
     this.isSaving = true;
     const newImage = this.cropper.crop();
+
+    let sizeInMb =
+      (4 *
+        Math.ceil((newImage?.base64 || '').length / 3) *
+        0.5624896334383812) /
+      1000 /
+      1000;
+    if (sizeInMb > 6) {
+      this.uiSrv.showError(
+        'La imagen elegida es muy grande. Prueba con una de menor tamaño/resolución.'
+      );
+      this.isSaving = false;
+      return;
+    }
+
     this.croppedImage = newImage?.base64;
 
     if (this.data.type == 'proposed') {

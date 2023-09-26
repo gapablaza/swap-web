@@ -1,4 +1,11 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import {
   NavigationEnd,
   NavigationStart,
@@ -49,18 +56,19 @@ export class AppComponent implements OnInit {
     private SEOSrv: SEOService,
     private fbMessaging: Messaging,
     private uiSrv: UIService,
-    private router: Router
+    private router: Router,
+    @Inject(DOCUMENT) private document: Document
   ) {
     // agrega scripts de GA al index.html
     if (environment.analytics) {
       // register google tag manager
-      const gTagManagerScript = document.createElement('script');
+      const gTagManagerScript = this.document.createElement('script');
       gTagManagerScript.async = true;
       gTagManagerScript.src = `https://www.googletagmanager.com/gtag/js?id=${environment.analytics}`;
-      document.head.appendChild(gTagManagerScript);
+      this.document.head.appendChild(gTagManagerScript);
 
       // register google analytics
-      const gaScript = document.createElement('script');
+      const gaScript = this.document.createElement('script');
       gaScript.innerHTML = `
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
@@ -68,12 +76,13 @@ export class AppComponent implements OnInit {
 
         gtag('config', '${environment.analytics}');
       `;
-      document.head.appendChild(gaScript);
+      this.document.head.appendChild(gaScript);
     }
 
-    // evita modificación de estilos por los ads
-    const fixStylesAdsScript = document.createElement('script');
-    fixStylesAdsScript.innerHTML = `
+    if (typeof window !== 'undefined') {
+      // evita modificación de estilos por los ads
+      const fixStylesAdsScript = this.document.createElement('script');
+      fixStylesAdsScript.innerHTML = `
       var flex = document.getElementsByTagName('app-root')[0];
       const observer = new MutationObserver(function (mutations, observer) {
           flex.style.height = "";
@@ -83,7 +92,8 @@ export class AppComponent implements OnInit {
           attributeFilter: ['style']
       });
     `;
-    document.head.appendChild(fixStylesAdsScript);
+      this.document.head.appendChild(fixStylesAdsScript);
+    }
   }
 
   ngOnInit(): void {
@@ -97,7 +107,7 @@ export class AppComponent implements OnInit {
           });
         }
 
-        if (window.innerWidth < 768) {
+        if (typeof window !== 'undefined' && window.innerWidth < 768) {
           this.sidenav.close();
         }
       }
@@ -110,7 +120,8 @@ export class AppComponent implements OnInit {
     });
 
     // Despliega el sidebar si es que la pantalla es ancha
-    if (window.innerWidth >= 768) {
+    // if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+    if ((this.document.defaultView?.innerWidth || 0) >= 768) {
       this.navMode = 'side' as MatDrawerMode;
       this.navOpened = true;
     }

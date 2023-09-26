@@ -78,6 +78,9 @@ export class UIService {
 
   loadAds() {
     return new Promise((resolve, reject) => {
+      if (typeof window === 'undefined') {
+        reject(false);
+      }
 
       if (this._isAdsSenseLoaded) {
         resolve(true);

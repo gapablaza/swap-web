@@ -2,12 +2,13 @@
   <div class="user-info card">
 
     <div class="user-header">
-      <div class="user-image-background" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage">
+      <!-- <div class="user-image-background" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"> -->
+      <div class="user-image-background" [style]="'background-image: url(' + (user.image || defaultUserImage) + ');'">
       </div>
       <div class="user-subheader">
         <div class="user-image-container">
-          <img class="user-image" [src]="user.image || defaultUserImage"
-            [alt]="user.displayName" crossorigin="anonymous" fetchpriority="high">
+          <img class="user-image" [src]="user.image || defaultUserImage" [alt]="user.displayName"
+            crossorigin="anonymous" fetchpriority="high">
           <!-- <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
             [alt]="user.displayName" crossorigin="anonymous"> -->
           <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>

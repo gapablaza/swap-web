@@ -23,7 +23,7 @@
             "allowedCommonJsDependencies": [
               "ngx-google-places-autocomplete"
             ],
-            "outputPath": "dist/swap-web",
+            "outputPath": "dist/swap-web/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -115,6 +115,67 @@
             ],
             "scripts": []
           }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/swap-web/server",
+            "main": "server.ts",
+            "tsConfig": "tsconfig.server.json",
+            "inlineStyleLanguage": "scss"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "sourceMap": true,
+              "extractLicenses": false,
+              "vendorChunk": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "configurations": {
+            "development": {
+              "browserTarget": "swap-web:build:development",
+              "serverTarget": "swap-web:server:development"
+            },
+            "production": {
+              "browserTarget": "swap-web:build:production",
+              "serverTarget": "swap-web:server:production"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "swap-web:build:production",
+              "serverTarget": "swap-web:server:production"
+            },
+            "development": {
+              "browserTarget": "swap-web:build:development",
+              "serverTarget": "swap-web:server:development"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }
