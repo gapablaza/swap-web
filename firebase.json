@@ -3,7 +3,7 @@
     "rules": "database.rules.json"
   },
   "hosting": {
-    "source": "dist/swap-web/browser",
+    "public": "dist/swap-web/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
