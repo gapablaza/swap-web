@@ -1,11 +1,12 @@
 # Allow all URLs (see https://www.robotstxt.org/robotstxt.html)
 User-agent: *
-Disallow: /trades/
-Disallow: /message/
-Disallow: /settings/
-Disallow: /mod/
 Disallow: /collaborate/
 Disallow: /forgot-password/
-Disallow: /new-password/
 Disallow: /item/
+Disallow: /message/
+Disallow: /mod/
+Disallow: /new-collection/
+Disallow: /new-password/
+Disallow: /settings/
+Disallow: /trades/
 Sitemap: https://intercambialaminas.com/sitemap.xml

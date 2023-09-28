@@ -161,7 +161,9 @@
         "prerender": {
           "builder": "@nguniversal/builders:prerender",
           "options": {
-            "routes": []
+            "routes": [
+              "/"
+            ]
           },
           "configurations": {
             "production": {
@@ -174,6 +176,13 @@
             }
           },
           "defaultConfiguration": "production"
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "browserTarget": "app:build:production",
+            "serverTarget": "app:server:production"
+          }
         }
       }
     }
