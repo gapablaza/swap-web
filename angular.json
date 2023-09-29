@@ -199,9 +199,9 @@
         "deploy": {
           "builder": "@angular/fire:deploy",
           "options": {
-            "browserTarget": "app:build:production",
-            "serverTarget": "app:server:production",
-            "prerenderTarget": "app:prerender:production"
+            "browserTarget": "swap-web:build:production",
+            "serverTarget": "swap-web:server:production",
+            "prerenderTarget": "swap-web:prerender:production"
           }
         }
       }
