@@ -162,7 +162,26 @@
           "builder": "@nguniversal/builders:prerender",
           "options": {
             "routes": [
-              "/"
+              "/",
+              "/search",
+              "/login",
+              "/search",
+              "/explore/collections",
+              "/c/campeonato-nacional-2023-betsson-panini/2200",
+              "/c/conmebol-libertadores-la-gloria-eterna-2023-panini/2225",
+              "/c/the-amazing-spider-man-panini/2107",
+              "/c/dragon-ball-z-2-saga-de-frieza-big-bang/2262",
+              "/c/fifa-womens-world-cup-2023-australia-new-zealand-panini/2208",
+              "/c/dragon-ball-z-saga-saiyajin-big-bang/2162",
+              "/c/fifa-world-cup-qatar-2022-version-estandar-de-670-items-base-panini/2068",
+              "/c/one-piece-descubre-el-nuevo-mundo-panini/2197",
+              "/c/attack-on-titan-big-bang/2224",
+              "/c/harry-potter-un-ano-en-hogwarts-panini/2232",
+              "/c/disney-princess-cada-dia-es-magico-la-magia-esta-adentro-panini/2247",
+              "/c/barbie-juntas-brillamos-panini/2237",
+              "/c/elementos-disney-pixar-panini/2226",
+              "/user/10426",
+              "/user/3861"
             ]
           },
           "configurations": {
@@ -181,7 +200,8 @@
           "builder": "@angular/fire:deploy",
           "options": {
             "browserTarget": "app:build:production",
-            "serverTarget": "app:server:production"
+            "serverTarget": "app:server:production",
+            "prerenderTarget": "app:prerender:production"
           }
         }
       }

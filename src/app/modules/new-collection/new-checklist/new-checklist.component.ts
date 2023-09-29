@@ -159,7 +159,7 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
 
       // Obtiene la data
       jsonData = XLSX.utils.sheet_to_json(workBook.Sheets['ITEMIZADO'], {
-        range: 'A1:D2001',
+        range: 'A1:D3001',
       });
 
       let rowNumber = 1;
