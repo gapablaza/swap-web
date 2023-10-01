@@ -164,9 +164,8 @@
             "routes": [
               "/",
               "/search",
-              "/login",
-              "/search",
               "/explore/collections",
+              "c/nfl-2023-panini/2266",
               "/c/campeonato-nacional-2023-betsson-panini/2200",
               "/c/conmebol-libertadores-la-gloria-eterna-2023-panini/2225",
               "/c/the-amazing-spider-man-panini/2107",
