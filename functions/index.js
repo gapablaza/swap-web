@@ -10,6 +10,7 @@ admin.initializeApp();
 
 // Cut off time. Child nodes older than this will be deleted.
 const CUT_OFF_TIME = 2 * 60 * 60 * 1000; // 2 Hours in milliseconds.
+const ONLINE_USERS_CUT_OFF_TIME = 2 * 24 * 60 * 60 * 1000; // 2 Days in milliseconds.
 
 // Max older conversations. Child nodes older than this will be deleted.
 const MAX_OLDER_CONVERSATIONS_TIME = 365 * 24 * 60 * 60 * 1000; // 365 days in milliseconds.
@@ -288,4 +289,35 @@ exports.cleanFeed = functions
     // return feedRef.update(updates);
     functions.logger.info('updates count:', snapshot.numChildren());
     response.send(feedRef.update(updates));
+  });
+
+// Función para eliminar registros antiguos del /onlineUsers
+exports.cleanOnlineUsers = functions
+  .runWith({
+    timeoutSeconds: 300,
+  })
+  .https.onRequest(async (request, response) => {
+    const onlineUsersRef = admin.database().ref('/onlineUsers');
+
+    const now = Date.now();
+    const cutoff = now - ONLINE_USERS_CUT_OFF_TIME;
+    const onlineUsersQuery = onlineUsersRef
+      .orderByChild('lastUpdated')
+      .endAt(cutoff)
+      .limitToFirst(500);
+
+    const snapshot = await onlineUsersQuery.once('value');
+    // create a map with all children that need to be removed
+    const updates = {};
+    snapshot.forEach((child) => {
+      let tempNode = child.val();
+      if (tempNode.status === 'online') {
+        updates[child.key] = null;
+      }
+    });
+
+    // execute all updates in one go and return the result to end the function
+    // return onlineUsersRef.update(updates);
+    functions.logger.info('updates count:', snapshot.numChildren());
+    response.send(onlineUsersRef.update(updates));
   });

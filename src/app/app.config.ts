@@ -12,8 +12,8 @@ import {
   HAMMER_GESTURE_CONFIG,
   HammerGestureConfig,
   HammerModule,
-  provideClientHydration,
-  withNoHttpTransferCache,
+  // provideClientHydration,
+  // withNoHttpTransferCache,
 } from '@angular/platform-browser';
 
 import { getApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
@@ -54,7 +54,7 @@ export class MyHammerConfig extends HammerGestureConfig {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(withInterceptors([tokenInterceptor, errorInterceptor])),
-    provideClientHydration(withNoHttpTransferCache()),
+    // provideClientHydration(withNoHttpTransferCache()),
     provideRouter(APP_ROUTES),
     provideAnimations(),
     importProvidersFrom(
