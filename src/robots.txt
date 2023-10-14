@@ -9,4 +9,4 @@ Disallow: /new-collection/
 Disallow: /new-password/
 Disallow: /settings/
 Disallow: /trades/
-Sitemap: https://intercambialaminas.com/sitemap.xml
+Sitemap: https://api.intercambialaminas.com/intercambia-sitemap.xml
