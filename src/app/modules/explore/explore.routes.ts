@@ -19,10 +19,7 @@ export const EXPLORE_ROUTES: Routes = [
       //     path: 'users',
       //     component: CollectionItemsComponent,
       //   },
-      //   {
-      //     path: 'publishers',
-      //     component: CollectionMediaComponent,
-      //   },
+      // {
     ],
   },
 ];

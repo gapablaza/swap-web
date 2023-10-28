@@ -53,6 +53,14 @@ export const APP_ROUTES: Routes = [
       ),
   },
   {
+    path: 'collections',
+    title: 'Explorar Colecciones - Intercambia Láminas',
+    loadComponent: () =>
+      import(
+        './modules/explore/explore-collections/explore-collections.component'
+      ).then((c) => c.ExploreCollectionsComponent),
+  },
+  {
     path: 'c',
     loadChildren: () =>
       import('./modules/collection/').then((m) => m.COLLECTION_ROUTES),
@@ -69,6 +77,11 @@ export const APP_ROUTES: Routes = [
   {
     path: 'user',
     loadChildren: () => import('./modules/user/').then((m) => m.USER_ROUTES),
+  },
+  {
+    path: 'publishers',
+    loadChildren: () =>
+      import('./modules/publisher/').then((m) => m.PUBLISHER_ROUTES),
   },
   {
     path: 'search',

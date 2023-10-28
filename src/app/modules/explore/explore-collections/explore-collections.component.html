@@ -30,24 +30,27 @@
                         </mat-form-field>
                     </div>
                     <div class="controls-std-settings">
-                        <!-- <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
-                          <mat-icon>filter_list</mat-icon> Filtros
-                        </a> -->
+                        <button mat-icon-button [color]="isFiltered ? 'accent' : 'primary'" 
+                            aria-label="Button for show filter options"
+                            (click)="showFilters = !showFilters">
+                            <mat-icon>filter_list</mat-icon>
+                        </button>
                         <p>
                             Registros {{ paginator.from | number:'':'es' }} a {{ paginator.to | number:'':'es' }}
                         </p>
                     </div>
                 </div>
-                <!-- <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
-                    <mat-form-field class="controls-search" appearance="outline">
-                        <mat-label>Filtrar por nombre, ID, ciudad o descripción</mat-label>
-                        <mat-icon matPrefix>search</mat-icon>
-                        <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
-                        <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
-                            <mat-icon>close</mat-icon>
-                        </button>
-                    </mat-form-field> 
-                </div> -->
+                <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Editorial</mat-label>
+                        <mat-select (selectionChange)="onPublisherChanged()" [(value)]="publisherSelected">
+                            <mat-option value="">Todas</mat-option>
+                            <mat-option *ngFor="let pub of publishers" [value]="pub.id">
+                                {{ pub.name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
             </div>
 
             <div class="list-of-collections">

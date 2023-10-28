@@ -1,0 +1,50 @@
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="publisher">
+    <div class="publisher-links">
+        <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+            <mat-icon>arrow_back</mat-icon> Volver
+        </a>
+        <a class="btn" (click)="onShare()" mat-stroked-button>
+            <mat-icon>share</mat-icon> Compartir
+        </a>
+        <p></p>
+    </div>
+
+    <div class="publisher-profile card">
+        <div class="publisher-header">
+            <h1>{{ publisher.name }}</h1>
+            <p *ngIf="(publisher.collections || 0) == 1" class="subtitle">1 colección disponible</p>
+            <p *ngIf="(publisher.collections || 0) > 1" class="subtitle">{{ publisher.collections }} colecciones
+                disponibles</p>
+            <img *ngIf="publisher.image" [src]="publisher.image" [alt]="'Logo de ' + publisher.name"
+                crossorigin="anonymous" fetchpriority="high">
+        </div>
+
+        <!-- <ng-container *ngIf="isAdsLoaded">
+            <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="7864817385" [adFormat]="'auto'"
+                [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
+        </ng-container> -->
+
+        <ng-container *ngIf="publisher.description || publisher.bio">
+            <div class="publisher-info" [innerHTML]="(publisher.bio || publisher.description) | markdown">
+            </div>
+        </ng-container>
+
+        <div *ngIf="(publisher.collections || 0) > 0" class="publisher-collections">
+            <h2>Últimas colecciones publicadas ({{ collections.length }})</h2>
+            <div class="list-of-collections">
+                <div class="horizontal-card-grid">
+                    <app-collection-item *ngFor="let col of collections" [collection]="col">
+                    </app-collection-item>
+                </div>
+            </div>
+            <a *ngIf="(publisher.collections || 0) > collections.length" mat-raised-button color="accent"
+                routerLink="/collections" [queryParams]="{ publisher: publisher.id }">
+                <mat-icon>clear_all</mat-icon> Explorar las colecciones
+            </a>
+        </div>
+    </div>
+
+</section>

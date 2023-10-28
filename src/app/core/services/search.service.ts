@@ -177,6 +177,7 @@ export class SearchService {
     page?: number;
     perPage?: number;
     sortBy?: string;
+    publisher?: number;
   }): Observable<{
     paginator: Pagination;
     collections: Collection[];
@@ -189,6 +190,7 @@ export class SearchService {
             page: options.page || 1,
             perPage: options.perPage || 100,
             sortBy: options.sortBy || 'published-DESC',
+            ...(options.publisher && { publisher: options.publisher })
           },
         })
       )

@@ -1,5 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { registerLocaleData, NgIf, NgFor, DecimalPipe } from '@angular/common';
+import {
+  registerLocaleData,
+  NgIf,
+  NgFor,
+  DecimalPipe,
+  NgClass,
+} from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import es from '@angular/common/locales/es';
@@ -19,6 +25,8 @@ import {
   Collection,
   DEFAULT_COLLECTION_IMG,
   Pagination,
+  Publisher,
+  PublisherService,
   SearchService,
   SEOService,
   User,
@@ -37,6 +45,7 @@ import { CollectionItemComponent } from '../../../shared/components/collection-i
     MatFormFieldModule,
     MatSelectModule,
     NgFor,
+    NgClass,
     MatOptionModule,
     CollectionItemComponent,
     MatButtonModule,
@@ -47,6 +56,7 @@ import { CollectionItemComponent } from '../../../shared/components/collection-i
 })
 export class ExploreCollectionsComponent implements OnInit, OnDestroy {
   collections: Collection[] = [];
+  publishers: Publisher[] = [];
   authUser: User = {} as User;
   paginator: Pagination = {} as Pagination;
   defaultCollectionImage = DEFAULT_COLLECTION_IMG;
@@ -79,12 +89,17 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
     },
   ];
   pageSelected = 1;
+  publisherSelected: number | undefined = undefined;
+  showFilters = false;
+  isFiltered = false;
+
   isAdsLoaded = false;
   isLoaded = false;
   subs: Subscription = new Subscription();
 
   constructor(
     private searchSrv: SearchService,
+    private pubSrv: PublisherService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private authSrv: AuthService,
@@ -125,6 +140,7 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
           this.isLoaded = false;
           const page = paramMap.get('page');
           const sortBy = paramMap.get('sortBy');
+          const publisher = paramMap.get('publisher');
 
           // https://stackoverflow.com/a/24457420
           if (page && /^\d+$/.test(page)) {
@@ -138,10 +154,21 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
             this.sortOptionSelected = sortBy;
           }
 
+          if (publisher && /^\d+$/.test(publisher)) {
+            this.publisherSelected = parseInt(publisher);
+            this.isFiltered = true;
+          } else {
+            this.publisherSelected = undefined;
+            this.isFiltered = false;
+          }
+
           return this.searchSrv
             .exploreCollections({
               page: this.pageSelected,
               sortBy: this.sortOptionSelected,
+              ...(this.publisherSelected && {
+                publisher: this.publisherSelected,
+              }),
             })
             .pipe(take(1));
         })
@@ -151,6 +178,20 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
         this.paginator = data.paginator;
         this.isLoaded = true;
       });
+
+    // obtiene las editoriales
+    let pubsSub = this.pubSrv
+      .list()
+      .pipe(take(1))
+      .subscribe((pubs) => {
+        this.publishers = pubs.sort((a, b) => {
+          return (a.name || '').toLocaleLowerCase() >
+            (b.name || '').toLocaleLowerCase()
+            ? 1
+            : -1;
+        });
+      });
+    this.subs.add(pubsSub);
   }
 
   loadAds() {
@@ -160,20 +201,28 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
   }
 
   onSort() {
-    this.router.navigate(['/explore/collections'], {
+    this.pageSelected = 1;
+    this.router.navigate(['/collections'], {
       queryParams: {
-        page: this.pageSelected,
+        // page: this.pageSelected,
         sortBy: this.sortOptionSelected,
+        ...(this.publisherSelected && { publisher: this.publisherSelected }),
       },
     });
   }
 
+  onPublisherChanged() {
+    console.log(this.publisherSelected);
+    this.onSort();
+  }
+
   onPageChange(e: string) {
     this.pageSelected = parseInt(e);
-    this.router.navigate(['/explore/collections'], {
+    this.router.navigate(['/collections'], {
       queryParams: {
         page: this.pageSelected,
         sortBy: this.sortOptionSelected,
+        ...(this.publisherSelected && { publisher: this.publisherSelected }),
       },
     });
   }

@@ -1,0 +1,67 @@
+<div *ngIf="!isLoaded" class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+<section *ngIf="isLoaded" class="publisher flex-full">
+    <h1>
+        <span class="color-accent" *ngIf="showedPublishers.length != publishers.length">
+            {{ showedPublishers.length }} de
+        </span>
+        {{ publishers.length }} Editoriales
+    </h1>
+
+    <!-- <ng-container *ngIf="isAdsLoaded">
+        <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="6281081787" [adFormat]="'auto'"
+            [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
+    </ng-container> -->
+
+    <div class="card publisher-list flex-full">
+
+        <div class="controls-std">
+            <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
+                <mat-form-field class="controls-search" appearance="outline">
+                    <mat-label>Filtrar por editorial</mat-label>
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
+                    <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Ordenar por</mat-label>
+                    <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
+                        <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
+                            {{ option.selectName }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <ul *ngIf="showedPublishers.length" class="list-std">
+            <li class="list-std-item" *ngFor="let elem of showedPublishers; trackBy: trackByPublishers">
+                <div class="list-item-main">
+                    <div class="list-item-image">
+                        <a *ngIf="elem.image" [routerLink]="['./', elem.id, elem.name | slugify]">
+                            <img [lazyLoad]="elem.image" alt="Logo de la editorial" crossorigin="anonymous">
+                        </a>
+                    </div>
+                    <div class="list-item-content flex-full">
+                        <div class="list-item-title">
+                            <a [routerLink]="['./', elem.id, elem.name | slugify]">
+                                {{ elem.name }}
+                            </a>
+                        </div>
+                        <div class="list-item-meta custom-separator2">
+                            <span>Nº de colecciones: {{ elem.collections }}</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <div class="empty-content" *ngIf="!showedPublishers.length">
+            <h2>(u‿u)</h2>
+            <p>No se encuentran editoriales para los filtros seleccionados</p>
+        </div>
+    </div>
+</section>
