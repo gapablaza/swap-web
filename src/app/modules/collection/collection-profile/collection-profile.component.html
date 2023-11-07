@@ -224,11 +224,18 @@
 
     <hr />
 
-    <p *ngIf="collection.description" class="collection-description" [innerHTML]="collection.description| sanitizeHtml">
-    </p>
+    <!-- <p *ngIf="collection.description" class="collection-description" [innerHTML]="collection.description| sanitizeHtml">
+    </p> -->
+    <ng-container *ngIf="collection.description">
+      <div class="collection-description" [innerHTML]="collection.description | markdown">
+      </div>
+    </ng-container>
 
     <div class="collection-publisher">
-      <p>{{ collection.publisher.data.name }}</p>
+      <!-- <p>{{ collection.publisher.data.name }}</p> -->
+      <a [routerLink]="['/publishers', collection.publisher.data.id, collection.publisher.data.name | slugify]">
+        {{ collection.publisher.data.name }}
+      </a>
     </div>
   </div>
 </section>
@@ -344,7 +351,7 @@
       <hr />
 
       <div class="collection-publisher">
-        <p>Cargando editorial</p>
+        <a>Cargando editorial</a>
       </div>
     </div>
   </section>

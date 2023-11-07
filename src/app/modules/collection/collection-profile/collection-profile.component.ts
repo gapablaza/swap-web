@@ -23,7 +23,7 @@ import {
   SEOService,
   User,
 } from 'src/app/core';
-import { SlugifyPipe, UIService } from 'src/app/shared';
+import { MarkdownPipe, SlugifyPipe, UIService } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
 import { CollectionOnlyService } from '../collection-only.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -53,6 +53,8 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
         MatDialogModule,
         MatProgressSpinnerModule,
         SanitizeHtmlPipe,
+        SlugifyPipe,
+        MarkdownPipe,
     ],
 })
 export class CollectionProfileComponent implements OnInit, OnDestroy {
