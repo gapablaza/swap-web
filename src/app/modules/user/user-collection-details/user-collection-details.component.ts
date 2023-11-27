@@ -1,5 +1,15 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnInit,
+} from '@angular/core';
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+} from '@angular/material/dialog';
 import { take } from 'rxjs';
 
 import { Collection, Item, User, UserService } from 'src/app/core';
@@ -11,22 +21,22 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgIf, NgFor, DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'app-user-collection-details',
-    templateUrl: './user-collection-details.component.html',
-    styleUrls: ['./user-collection-details.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        MatDialogModule,
-        NgIf,
-        MatProgressSpinnerModule,
-        NgFor,
-        MatButtonModule,
-        RouterLink,
-        DatePipe,
-        SanitizeHtmlPipe,
-        SlugifyPipe,
-    ],
+  selector: 'app-user-collection-details',
+  templateUrl: './user-collection-details.component.html',
+  styleUrls: ['./user-collection-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    MatDialogModule,
+    NgIf,
+    MatProgressSpinnerModule,
+    NgFor,
+    MatButtonModule,
+    RouterLink,
+    DatePipe,
+    SanitizeHtmlPipe,
+    SlugifyPipe,
+  ],
 })
 export class UserCollectionDetailsComponent implements OnInit {
   user: User = {} as User;
@@ -39,19 +49,26 @@ export class UserCollectionDetailsComponent implements OnInit {
     private userSrv: UserService,
     private cdr: ChangeDetectorRef,
     private dialogRef: MatDialogRef<UserCollectionDetailsComponent>,
-    @Inject(MAT_DIALOG_DATA) data:any
+    @Inject(MAT_DIALOG_DATA) data: any
   ) {
     this.user = data.user;
     this.collection = data.collection;
   }
 
   ngOnInit(): void {
-    this.userSrv.getCollectionInfo(this.user.id, this.collection.id)
+    this.userSrv
+      .getCollectionInfo(this.user.id, this.collection.id)
       .pipe(take(1))
-      .subscribe(col => {
+      .subscribe((col) => {
         this.collection = col;
-        this.userWishing = col.userData?.wishlist || [];
-        this.userTrading = col.userData?.tradelist || [];
+        this.userWishing =
+          col.userData?.wishlist?.sort(
+            (a, b) => (a.position || 0) - (b.position || 0)
+          ) || [];
+        this.userTrading =
+          col.userData?.tradelist?.sort(
+            (a, b) => (a.position || 0) - (b.position || 0)
+          ) || [];
 
         this.isLoaded = true;
         this.cdr.markForCheck();

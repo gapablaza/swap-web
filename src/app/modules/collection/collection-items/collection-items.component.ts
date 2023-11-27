@@ -10,11 +10,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { filter, Subscription, switchMap, take, tap } from 'rxjs';
 
-import {
-  CollectionService,
-  Item,
-  SEOService,
-} from 'src/app/core';
+import { CollectionService, Item, SEOService } from 'src/app/core';
 import { SlugifyPipe } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
 import { CollectionOnlyService } from '../collection-only.service';
@@ -29,33 +25,39 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgIf, NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-collection-items',
-    templateUrl: './collection-items.component.html',
-    styleUrls: ['./collection-items.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        NgIf,
-        MatProgressSpinnerModule,
-        CollectionSummaryComponent,
-        MatButtonModule,
-        MatIconModule,
-        NgClass,
-        MatFormFieldModule,
-        MatInputModule,
-        FormsModule,
-        MatTableModule,
-        MatSortModule,
-        RouterLink,
-    ],
+  selector: 'app-collection-items',
+  templateUrl: './collection-items.component.html',
+  styleUrls: ['./collection-items.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    NgIf,
+    MatProgressSpinnerModule,
+    CollectionSummaryComponent,
+    MatButtonModule,
+    MatIconModule,
+    NgClass,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatTableModule,
+    MatSortModule,
+    RouterLink,
+  ],
 })
 export class CollectionItemsComponent implements OnInit, OnDestroy {
   items: Item[] = [];
   // displayedColumns: string[] = ['name', 'description', 'difficulty'];
-  
-  displayedColumns: string[] = ['name', 'description', 'itemType', 'section', 'actions'];
+
+  displayedColumns: string[] = [
+    'name',
+    'description',
+    'itemType',
+    'section',
+    'actions',
+  ];
   dataSource = new MatTableDataSource<Item>([]);
-  @ViewChild(MatSort, {static: false}) set content(sort: MatSort) {
+  @ViewChild(MatSort, { static: false }) set content(sort: MatSort) {
     this.dataSource.sort = sort;
   }
 
@@ -78,14 +80,18 @@ export class CollectionItemsComponent implements OnInit, OnDestroy {
           this.SEOSrv.set({
             title: `Itemizado ${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
             description: `Revisa el itemizado del álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}). Son ${col.items} ítems a coleccionar (láminas / stickers / figuritas / pegatinas / cromos / estampas / barajitas).`,
-            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(col.name + ' ' + col.publisher.data.name)}/${col.id}/items`,
+            url: `${environment.appUrl}/c/${new SlugifyPipe().transform(
+              col.name + ' ' + col.publisher.data.name
+            )}/${col.id}/items`,
             isCanonical: true,
-          })
+          });
         }),
         switchMap((col) => this.colSrv.getItems(col.id).pipe(take(1)))
       )
       .subscribe((items) => {
-        this.items = [...items];
+        this.items = [
+          ...items.sort((a, b) => (a.position || 0) - (b.position || 0)),
+        ];
         this.dataSource.data = this.items;
         this.isLoaded = true;
         this.cdr.markForCheck();

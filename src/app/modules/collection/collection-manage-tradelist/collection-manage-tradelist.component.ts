@@ -96,7 +96,7 @@ export class CollectionManageTradelistComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((data) => {
-        this.items = data;
+        this.items = data.sort((a, b) => (a.position || 0) - (b.position || 0));
 
         data.forEach((item) => {
           // generamos la lista de referencia

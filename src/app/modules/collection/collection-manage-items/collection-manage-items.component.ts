@@ -34,24 +34,24 @@ export interface CustomItem extends Item {
 }
 
 @Component({
-    selector: 'app-collection-manage-items',
-    templateUrl: './collection-manage-items.component.html',
-    styleUrls: ['./collection-manage-items.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        NgIf,
-        MatProgressSpinnerModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        FormsModule,
-        MatButtonModule,
-        NgFor,
-        RouterLink,
-        LazyLoadImageModule,
-        MatBadgeModule,
-    ],
+  selector: 'app-collection-manage-items',
+  templateUrl: './collection-manage-items.component.html',
+  styleUrls: ['./collection-manage-items.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    NgIf,
+    MatProgressSpinnerModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+    NgFor,
+    RouterLink,
+    LazyLoadImageModule,
+    MatBadgeModule,
+  ],
 })
 export class CollectionManageItemsComponent
   implements OnInit, AfterViewInit, OnDestroy
@@ -97,13 +97,15 @@ export class CollectionManageItemsComponent
         concatMap((col) => this.colSrv.getItems(col.id).pipe(take(1)))
       )
       .subscribe((data) => {
-        this.items = data.map((item: CustomItem) => {
-          return {
-            ...item,
-            isSaving: false,
-            isHidden: false,
-          };
-        });
+        this.items = data
+          .sort((a, b) => (a.position || 0) - (b.position || 0))
+          .map((item: CustomItem) => {
+            return {
+              ...item,
+              isSaving: false,
+              isHidden: false,
+            };
+          });
         this.isLoaded = true;
         this.cdr.detectChanges();
       });

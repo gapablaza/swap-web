@@ -28,24 +28,24 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-collection-manage-wishlist',
-    templateUrl: './collection-manage-wishlist.component.html',
-    styleUrls: ['./collection-manage-wishlist.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        NgIf,
-        MatProgressSpinnerModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatButtonModule,
-        MatIconModule,
-        MatInputModule,
-        FormsModule,
-        NgFor,
-        MatBadgeModule,
-    ],
+  selector: 'app-collection-manage-wishlist',
+  templateUrl: './collection-manage-wishlist.component.html',
+  styleUrls: ['./collection-manage-wishlist.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    NgIf,
+    MatProgressSpinnerModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    FormsModule,
+    NgFor,
+    MatBadgeModule,
+  ],
 })
 export class CollectionManageWishlistComponent implements OnInit, OnDestroy {
   collection: Collection = {} as Collection;
@@ -94,7 +94,7 @@ export class CollectionManageWishlistComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((data) => {
-        this.items = data;
+        this.items = data.sort((a, b) => (a.position || 0) - (b.position || 0));
 
         data.forEach((item) => {
           // generamos la lista de referencia

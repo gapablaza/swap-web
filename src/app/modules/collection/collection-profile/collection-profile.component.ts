@@ -36,26 +36,26 @@ import { MatButtonModule } from '@angular/material/button';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 @Component({
-    selector: 'app-collection-profile',
-    templateUrl: './collection-profile.component.html',
-    styleUrls: ['./collection-profile.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        NgIf,
-        LazyLoadImageModule,
-        MatButtonModule,
-        MatIconModule,
-        RouterLink,
-        MatMenuModule,
-        MatExpansionModule,
-        NgFor,
-        MatDialogModule,
-        MatProgressSpinnerModule,
-        SanitizeHtmlPipe,
-        SlugifyPipe,
-        MarkdownPipe,
-    ],
+  selector: 'app-collection-profile',
+  templateUrl: './collection-profile.component.html',
+  styleUrls: ['./collection-profile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    NgIf,
+    LazyLoadImageModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterLink,
+    MatMenuModule,
+    MatExpansionModule,
+    NgFor,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    SanitizeHtmlPipe,
+    SlugifyPipe,
+    MarkdownPipe,
+  ],
 })
 export class CollectionProfileComponent implements OnInit, OnDestroy {
   @ViewChild('confirmDeleteDialog') deleteDialog!: TemplateRef<any>;
@@ -134,7 +134,9 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((items) => {
-        this.items = items;
+        this.items = items.sort(
+          (a, b) => (a.position || 0) - (b.position || 0)
+        );
         items.forEach((item) => {
           if (item.wishlist) {
             this.userWishing.push(item);
