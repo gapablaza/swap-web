@@ -1,79 +1,252 @@
 // -----------------------------------------------------------------------------
 // This file contains all styles related to the header of the site/application.
 // -----------------------------------------------------------------------------
+header {
+  position: relative;
+  z-index: 2;
+}
 
 mat-toolbar {
+  a {
+    text-decoration: none;
+    color: white;
+
+    &:hover,
+    &:active {
+      color: lightgray;
+    }
+  }
+
+  .logo {
+    display: flex;
+    margin-right: 10px;
+
     a {
-      text-decoration: none;
-      color: white;
-    
-      &:hover,
-      &:active {
-        color: lightgray;
-      }
-    }
-  
-    .logo {
-      display: flex;
-      margin-right: 10px;
-  
-      a {
-        font-family: 'Lato', serif;
-        display: flex;
-        align-items: center;
-        column-gap: 8px;
-      }
-    }
-  }
-  
-  .example-spacer {
-    flex: 1 1 auto;
-  }
-  
-  .navigation-items {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    column-gap: 0.5rem;
-  }
-  
-  .main-search-form {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    width: 100%;
-    min-width: 150px;
-    height: 100%;
-    margin-right: 16px;
-    position: relative;
-  
-    input {
-      border: none;
-      border-radius: 100px;
-      padding: 5px 12px 5px 16px;
-      margin-left: 8px;
-      width: 240px;
-      max-width: 300px;
-      font-size: 0.9rem;
-      line-height: normal;
-      height: 50%;
-      -webkit-appearance: none;
-  
-      color: #444;
-      background-color: #fff;
-    }
-    
-    mat-icon {
-      position: absolute;
-      color: black;
-      right: 0.7rem;
-      font-size: 1.25rem;
-      cursor: pointer;
+      font-family: 'Lato', serif;
       display: flex;
       align-items: center;
-      justify-content: center;
+      column-gap: 8px;
     }
   }
-  
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.navigation-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.suggestion-search-container {
+  -webkit-box-flex: 1;
+  flex-grow: 1;
+  max-width: 600px;
+  margin: 0px 1.5rem;
+  padding: 0px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  position: relative;
+  // transform: translateY(0px);
+
+  form {
+    display: flex;
+    -webkit-box-flex: 1;
+    flex-grow: 1;
+    margin: 0px;
+    padding: 0px;
+    -webkit-box-align: center;
+    align-items: center;
+
+    background: var(--ipt-base-bg, rgb(255, 255, 255));
+    border-radius: var(--ipt-cornerRadius, .25rem);
+  }
+
+  .suggestion-input-container {
+    width: 100%;
+    padding-right: 3.5rem;
+
+    input {
+      background: transparent;
+      -webkit-box-flex: 1;
+      flex-grow: 1;
+      outline: none;
+      padding: 0.375em 0px 0.375rem 0.75rem;
+      width: 100%;
+
+      appearance: none;
+      border: none;
+    }
+
+    .suggestion-result-container {
+      position: absolute;
+      width: 100%;
+      left: 0px;
+      right: 0px;
+      border-radius: 0.25rem;
+      background-color: rgb(31, 31, 31);
+
+      p.searching {
+        text-align: center;
+        padding: 1rem 0;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        margin-bottom: 0;
+        display: inline;
+
+        &:first-child a {
+          border-top: none;
+        }
+
+        a {
+          border-color: rgba(255, 255, 255, 0.25);
+          display: flex;
+          cursor: pointer;
+          text-decoration: none;
+          width: 100%;
+          padding: 0.5rem;
+          transition: all 0.125s ease 0s;
+
+          color: inherit;
+
+          border-top-width: 1px;
+          border-top-style: solid;
+
+          font-size: 1rem;
+          font-weight: 400;
+          line-height: 1.5rem;
+
+          &:hover{
+            background: rgba(255,255,255, 0.08);
+          }
+
+          &.suggest-see-all {
+            border-top-width: 1px;
+            border-top-style: solid;
+
+            font-size: .875rem;
+            font-weight: 400;
+            letter-spacing: .01786em;
+            line-height: 1.25rem;
+          }
+        }
+      }
+
+      .suggest-image-container {
+        min-width: 3rem;
+        width: 3rem;
+        font-size: 2rem;
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+
+        .suggest-image-extra {
+          display: inline-flex;
+          overflow: hidden;
+          position: relative;
+
+          background: #121212;
+          background: rgb(18,18,18);
+          color: hsla(0,0%,100%,.1);
+          color: rgba(255,255,255,.1);
+          
+          width: 100%;
+
+          &::before {
+            content: "";
+            display: block;
+            position: relative;
+            width: 100%;
+
+            background: hsla(0,0%,100%,.15);
+            background: rgba(255,255,255,.1);
+
+            padding-bottom: 125%;
+          }
+
+          img {
+            font-size: 1rem;
+
+            bottom: 0;
+            left: 0;
+            margin: auto;
+            position: absolute;
+            right: 0;
+            top: 0;
+
+            width: 100%;
+          }
+
+          &.user {
+            background: none;
+
+            &::before {
+              background: none;
+            }
+
+            img {
+              border-radius: 9999px;
+            }
+          }
+        }
+      }
+
+      .suggest-info {
+        display: flex;
+        -webkit-box-flex: 1;
+        flex-grow: 1;
+        flex-direction: column;
+        overflow: hidden;
+        margin: 0px 0px 0px 1rem;
+        padding: 0px;
+
+        .suggest-title {
+          font-size: .875rem;
+          display: block;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+
+          color: rgba(255,255,255,1);
+        }
+
+        .suggest-subtitle {
+          font-size: .75rem;
+          font-weight: 400;
+          letter-spacing: .01786em;
+          line-height: 1.25rem;
+          text-transform: none;
+          color: rgba(255,255,255,0.7);
+        }
+      }
+
+    }
+  }
+
+  .suggestion-search-button {
+    color: var(--ipt-on-base-textSecondary-color, rgba(0, 0, 0, 0.54));
+    border-radius: var(--ipt-cornerRadius, .25rem);
+    position: absolute;
+    right: 0.35rem;
+    min-width: 2rem;
+    cursor: pointer;
+    top: 0.35rem;
+    transition: all 0.2s ease 0s;
+    background: var(--ipt-base-bg, rgb(255, 255, 255));
+    appearance: none;
+    border: none;
+  }
+}

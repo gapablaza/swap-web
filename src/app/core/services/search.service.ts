@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, map, shareReplay } from 'rxjs';
 
-import { Collection, Pagination, User, UserSummary } from '../models';
+import { Collection, Pagination, Suggest, User, UserSummary } from '../models';
 import { ApiService } from './api.service';
 // import { StorageService } from './storage.service';
 
@@ -143,6 +143,11 @@ export class SearchService {
   //     this.storageSrv.storeString('searches', JSON.stringify([]));
   //     this._searches.next([]);
   // }
+
+  getSuggests(query: string): Observable<Suggest[]> {
+    return this.apiSrv
+      .get('/v2/suggest?q=' + query);
+  }
 
   getHomeData(): Observable<{
     added: Collection[];
