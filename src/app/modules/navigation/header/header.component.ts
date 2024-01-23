@@ -17,7 +17,7 @@ import {
   SearchService,
   Suggest,
 } from 'src/app/core';
-import { SlugifyPipe, UIService } from 'src/app/shared';
+import { UIService } from 'src/app/shared';
 import { NgFor, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -102,7 +102,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         tap((term) => {
           if ((term || '').trim().length < 2) {
-            console.log((term || '').trim().length);
             this.showSuggests = false;
             this.cdr.markForCheck();
           }

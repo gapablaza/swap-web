@@ -65,4 +65,53 @@ section.home {
             grid-template-columns: repeat(5, 1fr);
         }
     }
+
+    .home-feeds {
+        margin: 0;
+        padding: 1.5rem;
+        list-style: none;
+        max-height: 300px;
+        overflow-y: auto;
+        margin-bottom: var(--gap);
+        background-color: white;
+        border-radius: 0.25rem;
+        display: flex;
+        flex-direction: column-reverse;
+
+        li {
+            display: flex;
+            column-gap: 0.5rem;
+            margin-bottom: 0.1rem;
+            color: var(--text-secondary);
+
+            &:hover .feed-item-icon {
+                color: var(--color-accent);
+            }
+        }
+
+        .feed-item-icon {}
+        .feed-item-time {
+            width: 50px;
+        }
+        .feed-item-content {
+
+            a {
+                font-weight: bold;
+                text-decoration: none;
+                color: black;
+
+                &:hover {
+                    color: var(--color-accent);
+                }
+            }
+
+            span.positive {
+                color: var(--color-accent);
+            }
+
+            span.negative {
+                color: rgba(221, 76, 57, 0.8);
+            }
+        }
+    }
 }

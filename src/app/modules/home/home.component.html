@@ -4,7 +4,8 @@
       <img src="/assets/img/logo-icon-40x40.svg" width="60" height="60" alt="Logo Intercambialaminas.com">
       <h1>Intercambia stickers y completa tus álbumes</h1>
     </div>
-    <p>Encuentra fácilmente con quién cambiar láminas / stickers / figuritas / pegatinas / cromos / estampas / cartas!</p>
+    <p>Encuentra fácilmente con quién cambiar láminas / stickers / figuritas / pegatinas / cromos / estampas / cartas!
+    </p>
   </div>
 
   <h2>Populares</h2>
@@ -13,17 +14,96 @@
   </p>
   <app-list-resalted-collections [collections]="popular"></app-list-resalted-collections>
 
-  <h2>Con más elementos multimedia</h2>
-  <p class="home-subtitle">
-    Usuarios con más elementos multimedia publicados en los últimos 30 días
-  </p>
-  <app-list-users [users]="moreMedia" [type]="'media'"></app-list-users>
+  <ng-container *ngIf="moreMedia.length > 0">
+    <h2>Con más elementos multimedia</h2>
+    <p class="home-subtitle">
+      Usuarios con más elementos multimedia publicados en los últimos 30 días
+    </p>
+    <app-list-users [users]="moreMedia" [type]="'media'"></app-list-users>
+  </ng-container>
 
   <h2>Recientemente publicados</h2>
   <p class="home-subtitle">
     Últimos álbumes / colecciones publicados por las editoriales
   </p>
   <app-list-collections [collections]="published"></app-list-collections>
+
+  <ng-container *ngIf="feeds.length > 0">
+    <h2>Actividad reciente</h2>
+    <p class="home-subtitle">
+      Últimas acciones realizadas por los usuarios
+    </p>
+    <ul class="home-feeds">
+      <ng-container *ngFor="let f of feeds" [ngSwitch]="f.type">
+        <li *ngSwitchCase="'ADD_COLLECTION'">
+          <div class="feed-item-icon">
+            <mat-icon class="only-icon-button">add_circle</mat-icon>
+          </div>
+          <div class="feed-item-time">
+            <span class="list-item-message-date">{{ f.timestamp | date:'HH:mm' }}</span>
+          </div>
+          <div class="feed-item-content">
+            <a [routerLink]="['/user', f.userId]">{{ f.userDisplayName }}</a> agregó
+            <a [routerLink]="['/c', f.collectionName + ' ' + f.publisherName | slugify, f.collectionId]">{{
+              f.collectionName }}</a> de {{
+            f.publisherName }} a su colección
+          </div>
+        </li>
+        <li *ngSwitchCase="'UPDATE_COLLECTION'">
+          <div class="feed-item-icon">
+            <mat-icon class="only-icon-button">update</mat-icon>
+          </div>
+          <div class="feed-item-time">
+            <span class="list-item-message-date">{{ f.timestamp | date:'HH:mm' }}</span>
+          </div>
+          <div class="feed-item-content">
+            <a [routerLink]="['/user', f.userId]">{{ f.userDisplayName }}</a> actualizó sus listados en <a
+              [routerLink]="['/c', f.collectionName + ' ' + f.publisherName | slugify, f.collectionId]">{{
+              f.collectionName }}</a> de {{ f.publisherName }}
+          </div>
+        </li>
+        <li *ngSwitchCase="'COMPLETE_COLLECTION'">
+          <div class="feed-item-icon">
+            <mat-icon class="only-icon-button">task_alt</mat-icon>
+          </div>
+          <div class="feed-item-time">
+            <span class="list-item-message-date">{{ f.timestamp | date:'HH:mm' }}</span>
+          </div>
+          <div class="feed-item-content">
+            <a [routerLink]="['/user', f.userId]">{{ f.userDisplayName }}</a> completó <a
+              [routerLink]="['/c', f.collectionName + ' ' + f.publisherName | slugify, f.collectionId]">{{
+              f.collectionName }}</a> de {{ f.publisherName }}
+          </div>
+        </li>
+        <li *ngSwitchCase="'ADD_MEDIA'">
+          <div class="feed-item-icon">
+            <mat-icon class="only-icon-button">add_a_photo</mat-icon>
+          </div>
+          <div class="feed-item-time">
+            <span class="list-item-message-date">{{ f.timestamp | date:'HH:mm' }}</span>
+          </div>
+          <div class="feed-item-content">
+            <a [routerLink]="['/user', f.userId]">{{ f.userDisplayName }}</a> agregó una imagen en <a
+              [routerLink]="['/c', f.collectionName + ' ' + f.publisherName | slugify, f.collectionId]">{{
+              f.collectionName }}</a> de {{ f.publisherName }}
+          </div>
+        </li>
+        <li *ngSwitchCase="'ADD_EVALUATION'">
+          <div class="feed-item-icon">
+            <mat-icon class="only-icon-button">interpreter_mode</mat-icon>
+          </div>
+          <div class="feed-item-time">
+            <span class="list-item-message-date">{{ f.timestamp | date:'HH:mm' }}</span>
+          </div>
+          <div class="feed-item-content">
+            <a [routerLink]="['/user', f.userId]">{{ f.userDisplayName }}</a> recibió una nueva evaluación <span
+              [ngClass]="{ 'positive': f.evaluationTypeId == 1, 'negative': f.evaluationTypeId == 2 }">{{
+              f.evaluationTypeName }}</span>
+          </div>
+        </li>
+      </ng-container>
+    </ul>
+  </ng-container>
 
   <h2>Mejor evaluados</h2>
   <p class="home-subtitle">
@@ -42,7 +122,7 @@
     Usuarios con mas ítems (láminas / stickers / figuritas / pegatinas / cromos / estampas) marcados
   </p>
   <app-list-users [users]="moreItems" [type]="'item'"></app-list-users>
-  
+
   <h2>Últimos en registrarse</h2>
   <p class="home-subtitle">
     Últimos usuarios que se han registrado
@@ -57,7 +137,8 @@
         <img src="/assets/img/logo-icon-40x40.svg" alt="Logo Intercambialaminas.com">
         <h1>Intercambia stickers y completa tus álbumes</h1>
       </div>
-      <p>Encuentra fácilmente con quién cambiar láminas / stickers / figuritas / pegatinas / cromos / estampas / cartas!</p>
+      <p>Encuentra fácilmente con quién cambiar láminas / stickers / figuritas / pegatinas / cromos / estampas / cartas!
+      </p>
     </div>
 
     <h2>Populares</h2>
