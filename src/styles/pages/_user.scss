@@ -280,7 +280,15 @@ section.user {
   .list-item-desc {
     margin-left: 0;
     margin-top: 0.25rem;
-    margin: 0.25rem 0 0.75rem;
+    // margin: 0.25rem 0 0.75rem;
+    position: relative;
+
+    a {
+      position: absolute;
+      top: -12px;
+      right: -42px;
+      opacity: 0.4;
+    }
   }
 }
 

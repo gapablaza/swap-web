@@ -1,0 +1,51 @@
+<mat-dialog-content>
+    <div *ngIf="!isLoaded" class="loading-indicator">
+        <mat-spinner aria-label="cargando"></mat-spinner>
+    </div>
+
+    <div *ngIf="isLoaded" class="report-container flex-full">
+        <form [formGroup]="reportForm" (ngSubmit)="onSubmit()">
+            <h3>{{ title }}</h3>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Categoría</mat-label>
+                <mat-select formControlName="type" name="type">
+                    <mat-option value="" selected>Seleccione</mat-option>
+                    <mat-option *ngFor="let type of types" [value]="type.id">{{ type.name }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="form['type'].errors">Campo obligatorio.
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Observación</mat-label>
+                <textarea #comment matInput formControlName="comment" maxlength="255" rows="4"></textarea>
+                <mat-hint align="end">{{comment.value.length || 0}}/255</mat-hint>
+                <mat-error *ngIf="form['comment'].errors">Campo obligatorio. Debes ingresar como máximo 255 caracteres.
+                </mat-error>
+            </mat-form-field>
+
+            <div class="alert alert-warning">
+                <div class="alert-container">
+                    <div class="alert-content">
+                        <div class="alert-title">Atención</div>
+                        <div class="alert-message">Los reportes no pueden ser modificados una vez registrados y su uso
+                            excesivo o contra nuestras condiciones de uso pueden incurrir en el bloqueo de tu cuenta.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <button mat-raised-button color="accent" [disabled]="isSaving || reportForm.invalid">
+                Registrar reporte
+            </button> -->
+        </form>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="report-actions">
+    <button mat-raised-button (click)="onClose()">Cerrar</button>
+    <button mat-raised-button color="warn" [disabled]="isSaving || reportForm.invalid" (click)="onSubmit()">
+        Reportar
+    </button>
+</mat-dialog-actions>

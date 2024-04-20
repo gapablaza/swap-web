@@ -28,7 +28,7 @@ import {
 
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,6 +48,7 @@ import { UserOnlyService } from '../user-only.service';
 import { SlugifyPipe } from '../../../shared/pipes/slugify.pipe';
 import { SanitizeHtmlPipe } from '../../../shared/pipes/sanitize-html.pipe';
 import { DaysSinceLoginDirective } from '../../../shared/directives/days-since-login.directive';
+import { ReportComponent } from 'src/app/shared/components/report/report.component';
 
 @Component({
   selector: 'app-user-profile',
@@ -174,6 +175,23 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   onShowConfirm(): void {
     this.dialog.open(this.confirmDialog, { disableClose: true });
+  }
+
+  onShowReportDialog(): void {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.panelClass = ['report-dialog'];
+    dialogConfig.width = '80%';
+    dialogConfig.maxWidth = '1280px';
+
+    dialogConfig.data = {
+      objectTypeId: 7,
+      objectId: this.user.id,
+    };
+
+    this.dialog.open(ReportComponent, dialogConfig);
   }
 
   toggleBlacklist(toggle: boolean): void {

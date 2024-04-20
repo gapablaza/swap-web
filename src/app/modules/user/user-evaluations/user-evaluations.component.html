@@ -82,6 +82,10 @@
                 'evaluation-negative': evaluation.evaluationTypeId == 2
               }">
                 <p>{{ evaluation.description }}</p>
+                <a class="btn" *ngIf="isAuth && (authUser.id != evaluation.user.data.id)" mat-icon-button
+                  (click)="onShowReportDialog(evaluation.id)">
+                  <mat-icon class="only-icon-button">priority_high</mat-icon>
+                </a>
               </div>
               <!-- END last evaluation -->
               <!-- BEGIN previous evaluations -->
@@ -94,6 +98,10 @@
                   'evaluation-negative': prevEval.evaluationTypeId == 2
                 }">
                   <p>{{ prevEval.description }}</p>
+                  <a class="btn" *ngIf="isAuth && (authUser.id != evaluation.user.data.id)" mat-icon-button
+                    (click)="onShowReportDialog(evaluation.id)">
+                    <mat-icon class="only-icon-button">priority_high</mat-icon>
+                  </a>
                 </div>
               </div>
               <!-- END previous evaluations -->

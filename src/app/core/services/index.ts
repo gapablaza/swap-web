@@ -6,6 +6,7 @@ export * from './media.service';
 export * from './newCollection.service';
 export * from './jwt.service';
 export * from './publisher.service';
+export * from './report.service';
 export * from './search.service';
 export * from './seo.service';
 export * from './user.service';

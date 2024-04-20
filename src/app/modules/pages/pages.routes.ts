@@ -36,6 +36,12 @@ export const PAGES_ROUTES: Routes = [
     loadComponent: () =>
       import('./guide/guide.component').then((c) => c.GuideComponent),
   },
+  {
+    path: 'community-guidelines',
+    title: 'Principios de la comunidad - Intercambia Láminas',
+    loadComponent: () =>
+      import('./guidelines/guidelines.component').then((c) => c.GuidelinesComponent),
+  },
 ];
 
 export default PAGES_ROUTES;

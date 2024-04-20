@@ -12,24 +12,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ListCollectionsComponent } from './list-collections/list-collections.component';
 import { ListUsersComponent } from './list-users/list-users.component';
 import { ListResaltedCollectionsComponent } from './list-resalted-collections/list-resalted-collections.component';
-import {
-  DatePipe,
-  NgClass,
-  NgFor,
-  NgIf,
-  NgSwitch,
-  NgSwitchCase,
-} from '@angular/common';
-import {
-  Database,
-  orderByChild,
-  query,
-  ref,
-  stateChanges,
-} from '@angular/fire/database';
-import { MatIconModule } from '@angular/material/icon';
+import { NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { SlugifyPipe } from 'src/app/shared';
+import { HomeFeedsComponent } from './home-feeds/home-feeds.component';
 
 @Component({
   selector: 'app-home',
@@ -39,19 +24,12 @@ import { SlugifyPipe } from 'src/app/shared';
   standalone: true,
   imports: [
     NgIf,
-    NgFor,
-    NgClass,
-    NgSwitch,
-    NgSwitchCase,
     ListResaltedCollectionsComponent,
     ListUsersComponent,
     ListCollectionsComponent,
+    HomeFeedsComponent,
     MatProgressSpinnerModule,
-    MatIconModule,
     RouterLink,
-
-    DatePipe,
-    SlugifyPipe,
   ],
 })
 export class HomeComponent implements OnInit, OnDestroy {
@@ -62,15 +40,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   popular: Collection[] = [];
   published: Collection[] = [];
   users: User[] = [];
-  feeds: any[] = [];
-  MAX_FEEDS_RECORDS = 50;
 
   isLoaded = false;
   subs: Subscription = new Subscription();
 
   constructor(
     private searchSrv: SearchService,
-    private firebaseDB: Database,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -114,39 +89,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       });
     this.subs.add(homeSub);
-
-    let feedsSub = stateChanges(
-      query(ref(this.firebaseDB, `feedsHome`), orderByChild('timestamp'))
-    ).subscribe((obj) => {
-      if (obj.event != 'child_added') return;
-
-      // console.log(obj.snapshot.val());
-      let tempFeed = obj.snapshot.val();
-
-      // Se crea una clave personalizada para agrupar registros
-      // y que no parezcan repetidos en el feed
-      if (
-        tempFeed.type == 'UPDATE_COLLECTION' ||
-        tempFeed.type == 'COMPLETE_COLLECTION' ||
-        tempFeed.type == 'ADD_COLLECTION'
-      ) {
-        tempFeed.customKey =
-          tempFeed.type + '|' + tempFeed.userId + '|' + tempFeed.collectionId;
-      } else {
-        tempFeed.customKey = obj.prevKey || 'temp';
-      }
-
-      // Se agregan solo los que no están "repetidos"
-      if (!this.feeds.some((el) => el.customKey == tempFeed.customKey)) {
-        this.feeds.unshift(tempFeed);
-        if (this.feeds.length > this.MAX_FEEDS_RECORDS) {
-          this.feeds.pop();
-        }
-
-        this.cdr.markForCheck();
-      }
-    });
-    this.subs.add(feedsSub);
   }
 
   ngOnDestroy(): void {

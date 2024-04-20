@@ -31,6 +31,8 @@
               (click)="onShowConfirm()" [disabled]="isSaving">Bloquear</button>
             <button *ngIf="authUser.id && (authUser.id != user.id) && user.inBlacklist" mat-menu-item
               (click)="toggleBlacklist(false)" [disabled]="isSaving">Desbloquear</button>
+            <button *ngIf="authUser.id && (authUser.id != user.id)" mat-menu-item
+              (click)="onShowReportDialog()" [disabled]="isSaving">Reportar</button>
           </mat-menu>
         </div>
       </div>

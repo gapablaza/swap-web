@@ -1,0 +1,14 @@
+.report-container {
+    mat-form-field {
+        display: block;
+        margin-top: 1rem;
+    }
+
+    .alert {
+        margin-bottom: 0.5rem;
+    }
+}
+
+mat-dialog-actions.report-actions {
+    justify-content: space-between;
+}

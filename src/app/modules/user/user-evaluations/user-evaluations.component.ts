@@ -30,6 +30,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { UserSummaryComponent } from '../user-summary/user-summary.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
+import { MatDialog, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
+import { ReportComponent } from 'src/app/shared/components/report/report.component';
 
 @Component({
     selector: 'app-user-evaluations',
@@ -46,6 +48,7 @@ import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
         MatFormFieldModule,
         MatSelectModule,
         MatOptionModule,
+        MatDialogModule,
         NgClass,
         MatInputModule,
         FormsModule,
@@ -59,6 +62,7 @@ import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
 export class UserEvaluationsComponent implements OnInit, OnDestroy {
   user: User = {} as User;
   isAuth = false;
+  authUser = this.authSrv.getCurrentUser();
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   evaluations: Evaluation[] = [];
   showedEvaluations: Evaluation[] = [];
@@ -81,6 +85,7 @@ export class UserEvaluationsComponent implements OnInit, OnDestroy {
     private authSrv: AuthService,
     private formBuilder: FormBuilder,
     private SEOSrv: SEOService,
+    private dialog: MatDialog,
     private uiSrv: UIService,
     private cdr: ChangeDetectorRef
   ) {}
@@ -231,6 +236,23 @@ export class UserEvaluationsComponent implements OnInit, OnDestroy {
     if (x) {
       x.scrollIntoView({ behavior: 'smooth' });
     }
+  }
+
+  onShowReportDialog(id: number) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.panelClass = ['report-dialog'];
+    dialogConfig.width = '80%';
+    dialogConfig.maxWidth = '1280px';
+
+    dialogConfig.data = {
+      objectTypeId: 8,
+      objectId: id,
+    };
+
+    this.dialog.open(ReportComponent, dialogConfig);
   }
 
   ngOnDestroy(): void {
