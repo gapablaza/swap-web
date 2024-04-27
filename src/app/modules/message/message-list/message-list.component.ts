@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  NgZone,
   OnDestroy,
   OnInit,
 } from '@angular/core';
@@ -73,7 +74,8 @@ export class MessageListComponent implements OnInit, OnDestroy {
     private firebaseDB: Database,
     private authSrv: AuthService,
     private uiSrv: UIService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -120,10 +122,12 @@ export class MessageListComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((list) => {
-        this.messages = list;
-        this.filterShowedMessages();
-        this.isLoaded = true;
-        this.cdr.markForCheck();
+        this.zone.run(() => {
+          this.messages = list;
+          this.filterShowedMessages();
+          this.isLoaded = true;
+          this.cdr.markForCheck();
+        });
       });
     this.subs.add(blacklistSub);
 
@@ -175,7 +179,7 @@ export class MessageListComponent implements OnInit, OnDestroy {
       ];
     }
 
-    // 2.- check filter by evaluation type
+    // 2.- check filter by evaluation type 
     if (type) {
       tempMessages = [
         ...tempMessages.filter((elem) => {

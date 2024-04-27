@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  NgZone,
   OnInit,
   Output,
 } from '@angular/core';
@@ -34,7 +35,8 @@ export class SidenavListComponent implements OnInit {
   constructor(
     private authSrv: AuthService,
     private firebaseDB: Database,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -67,8 +69,10 @@ export class SidenavListComponent implements OnInit {
             map((unreads) => unreads.length)
           )
           .subscribe((unreadQ) => {
-            this.unreadCount = unreadQ;
-            this.cdr.markForCheck();
+            this.zone.run(() => {
+              this.unreadCount = unreadQ;
+              this.cdr.markForCheck();
+            });
           });
       } else {
         if (this.unreadCountSub) {

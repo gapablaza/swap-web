@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  NgZone,
   OnDestroy,
   OnInit,
 } from '@angular/core';
@@ -75,7 +76,8 @@ export class MessageWithUserComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private uiSrv: UIService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -121,9 +123,11 @@ export class MessageWithUserComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((list) => {
-        this.usersMessages = list;
-        this.isLoaded = true;
-        this.cdr.markForCheck();
+        this.zone.run(() => {
+          this.usersMessages = list;
+          this.isLoaded = true;
+          this.cdr.markForCheck();
+        });
       });
     this.subs.add(routeSub);
   }
@@ -155,7 +159,9 @@ export class MessageWithUserComponent implements OnInit, OnDestroy {
     let unreadSub = objectVal(unreadRef)
       .pipe(filter((resp) => resp !== null))
       .subscribe((resp) => {
-        remove(unreadRef);
+        this.zone.run(() => {
+          remove(unreadRef);
+        });
       });
     this.subs.add(unreadSub);
 
@@ -165,8 +171,10 @@ export class MessageWithUserComponent implements OnInit, OnDestroy {
         `userResume/userId_${this.authUser.id}/userId_${this.otherUser.id}`
       )
     ).subscribe((resp: any) => {
-      this.isArchived = resp && resp.archived === true;
-      this.cdr.markForCheck();
+      this.zone.run(() => {
+        this.isArchived = resp && resp.archived === true;
+        this.cdr.markForCheck();
+      });
     });
     this.subs.add(isArchivedSub);
   }

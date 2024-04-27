@@ -93,7 +93,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.showSuggests = true;
         this.cdr.markForCheck();
       });
-    this.subs.add(focusoutSub);
+    this.subs.add(focusSub);
 
     const keyupSub = fromEvent(this.suggestInput.nativeElement, 'keyup')
       .pipe(
