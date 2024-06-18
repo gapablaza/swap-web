@@ -107,6 +107,7 @@ export const APP_ROUTES: Routes = [
     resolve: {
       incompleteCollections: TradesResolver,
     },
+    providers: [TradesResolver],
   },
   {
     path: 'message',

@@ -1,66 +1,88 @@
-<section *ngIf="isLoaded else loading" class="user">
+@if (isLoaded$ | async) {
+<section class="user">
   <div class="user-info card">
 
     <div class="user-header">
       <!-- <div class="user-image-background" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"> -->
-      <div class="user-image-background" [style]="'background-image: url(' + (user.image || defaultUserImage) + ');'">
+      <div class="user-image-background"
+        [style]="'background-image: url(' + ((user$ | async)?.image || defaultUserImage) + ');'">
       </div>
       <div class="user-subheader">
         <div class="user-image-container">
-          <img class="user-image" [src]="user.image || defaultUserImage" [alt]="user.displayName"
-            crossorigin="anonymous" fetchpriority="high">
+          <img class="user-image" [src]="(user$ | async)?.image || defaultUserImage"
+            [alt]="(user$ | async)?.displayName" crossorigin="anonymous" fetchpriority="high">
           <!-- <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
-            [alt]="user.displayName" crossorigin="anonymous"> -->
-          <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
+              [alt]="user.displayName" crossorigin="anonymous"> -->
+          @if ((user$ | async)?.accountTypeId == 2) {
+          <span class="pro-label">PRO</span>
+          }
         </div>
         <div class="user-actions">
-          <a *ngIf="authUser.id && (authUser.id != user.id)" class="btn" mat-raised-button color="accent"
-            [routerLink]="['/message', user.id]">
+          @if ((isAuth$ | async) && !isSameUser) {
+          <a class="btn" mat-raised-button color="accent" [routerLink]="['/message', (user$ | async)?.id]">
             <mat-icon class="only-icon-button">add</mat-icon> Conversar
           </a>
-          <a *ngIf="authUser.id && (authUser.id == user.id)" class="btn" mat-raised-button color="accent"
-            [routerLink]="['/settings']">
+          }
+          @if ((isAuth$ | async) && isSameUser) {
+          <a class="btn" mat-raised-button color="accent" [routerLink]="['/settings']">
             <mat-icon>edit</mat-icon> Editar
           </a>
+          }
           <a class="btn" mat-stroked-button [matMenuTriggerFor]="menu">
             <mat-icon class="only-icon-button">more_vert</mat-icon>
           </a>
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onShare()">Compartir</button>
-            <button *ngIf="authUser.id && (authUser.id != user.id) && !user.inBlacklist" mat-menu-item
-              (click)="onShowConfirm()" [disabled]="isSaving">Bloquear</button>
-            <button *ngIf="authUser.id && (authUser.id != user.id) && user.inBlacklist" mat-menu-item
-              (click)="toggleBlacklist(false)" [disabled]="isSaving">Desbloquear</button>
-            <button *ngIf="authUser.id && (authUser.id != user.id)" mat-menu-item
-              (click)="onShowReportDialog()" [disabled]="isSaving">Reportar</button>
+            @if ((isAuth$ | async) && !isSameUser && !(user$ | async)?.inBlacklist) {
+            <button mat-menu-item (click)="onShowConfirm()" [disabled]="isProcessing$ | async">Bloquear</button>
+            }
+            @if ((isAuth$ | async) && !isSameUser && (user$ | async)?.inBlacklist) {
+            <button mat-menu-item (click)="toggleBlacklist(false)"
+              [disabled]="isProcessing$ | async">Desbloquear</button>
+            }
+            @if ((isAuth$ | async) && !isSameUser) {
+            <input #reportUser style="display: none" type="text" [value]="(user$ | async)">
+            <button mat-menu-item #report (click)="onShowReportDialog(+reportUser.value)"
+              [disabled]="isProcessing$ | async">Reportar</button>
+            }
           </mat-menu>
         </div>
       </div>
     </div>
 
     <div class="user-main">
-      <h1>{{ user.displayName }}</h1>
-      <p class="subtitle">ID de usuario: <strong>{{ user.id }}</strong></p>
+      <h1>{{ (user$ | async)?.displayName }}</h1>
+      <p class="subtitle">ID de usuario: <strong>{{ (user$ | async)?.id }}</strong></p>
 
-      <p *ngIf="user.bio" class="user-description" [innerHTML]="user.bio | sanitizeHtml"></p>
+      @if ((user$ | async)?.bio) {
+      <p class="user-description" [innerHTML]="(user$ | async)?.bio | sanitizeHtml"></p>
+      }
 
       <div class="user-details">
         <span>
           <mat-icon>my_location</mat-icon>
-          <span *ngIf="user.location">{{ user.location_city }}, {{ user.location_country }}</span>
-          <span *ngIf="!user.location"><i>Sin información</i></span>
+          @if ((user$ | async)?.location) {
+          <span>{{ (user$ | async)?.location_city }}, {{ (user$ |
+            async)?.location_country }}</span>
+          }
+          @if (!(user$ | async)?.location) {
+          <span><i>Sin información</i></span>
+          }
         </span>
         <span>
           <mat-icon>av_timer</mat-icon>Visto el
-          <strong>{{ user.lastLogin | date:'dd/MM/YYYY' }}</strong>
-          (<span appDaysSinceLogin="{{ user.daysSinceLogin }}" [preText]="''"></span>)
+          <strong>{{ (user$ | async)?.lastLogin | date:'dd/MM/YYYY' }}</strong>
+          (<span appDaysSinceLogin="{{ (user$ | async)?.daysSinceLogin }}" [preText]="''"></span>)
         </span>
-        <span *ngIf="user.inBlacklist" class="danger">
+        @if ((user$ | async)?.inBlacklist) {
+        <span class="danger">
           <mat-icon>person_off</mat-icon>Bloqueado
         </span>
+        }
       </div>
 
-      <div *ngIf="!user.active && !user.disabled" class="alert alert-warning">
+      @if (!(user$ | async)?.active && !(user$ | async)?.disabled) {
+      <div class="alert alert-warning">
         <div class="alert-container">
           <div class="alert-content">
             <div class="alert-title">Atención</div>
@@ -68,8 +90,10 @@
           </div>
         </div>
       </div>
+      }
 
-      <div *ngIf="user.disabled" class="alert alert-warn">
+      @if ((user$ | async)?.disabled) {
+      <div class="alert alert-warn">
         <div class="alert-container">
           <div class="alert-content">
             <div class="alert-title">Atención</div>
@@ -78,26 +102,31 @@
           </div>
         </div>
       </div>
+      }
     </div>
 
-    <div *ngIf="authUser.id && (authUser.id != user.id) && !showTrades" class="become-pro">
+    @if ((isAuth$ | async) && !isSameUser && !(showTrades$ | async)) {
+    <div class="become-pro">
       <p>Usuarios <span class="pro-label">PRO</span> pueden ver los posibles cambios</p>
       <a [routerLink]="['/collaborate']">+&nbsp;INFO</a>
     </div>
+    }
 
     <!-- <ng-container *ngIf="isAdsLoaded">
-      <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="1449289134" [adFormat]="'auto'"
-        [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
-    </ng-container> -->
+        <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="1449289134" [adFormat]="'auto'"
+          [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
+      </ng-container> -->
 
-    <mat-expansion-panel *ngIf="authUser.id && showTrades" class="trades-details">
+    @if ((isAuth$ | async) && (showTrades$ | async)) {
+    <mat-expansion-panel class="trades-details">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          Tienen {{ possibleTrades }} posibles cambios!
+          Tienen {{ possibleTrades$ | async }} posibles cambios!
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <div *ngFor="let col of trades" class="trades-collection">
+      @for (col of trades$ | async; track col.id) {
+      <div class="trades-collection">
         <div class="trades-collection-info">
           <a [routerLink]="['/c', col.name + ' ' + col.publisherName | slugify, col.id]">
             <img [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image || defaultCollectionImage"
@@ -106,22 +135,32 @@
           </a>
         </div>
         <div class="trades-list">
-          <div *ngIf="col.totalSearching">
+          @if (col.totalSearching) {
+          <div>
             Tiene <strong>{{ col.totalSearching }}</strong> ítems que tú buscas:
-            <span *ngFor="let item of col.searching; last as isLast">
+            @for (item of col.searching; track item.id; let isLast = $last) {
+            <span>
               <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span>
-              <span *ngIf="!isLast">, </span>
+              @if (!isLast) { <span>, </span> }
             </span>
+            }
           </div>
-          <div *ngIf="col.totalTrading">
+          }
+          @if (col.totalTrading) {
+          <div>
             Busca <strong>{{ col.totalTrading }}</strong> ítems que tú cambias:
-            <span *ngFor="let item of col.trading; last as isLast">
+            @for (item of col.trading; track item.id; let isLast = $last) {
+            <span>
               <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span>
-              <span *ngIf="!isLast">, </span>
+              @if (!isLast) { <span>, </span> }
             </span>
+            }
           </div>
+          }
         </div>
       </div>
+      }
+
 
       <div class="difficulty-explanation">
         <p>
@@ -142,6 +181,7 @@
         </p>
       </div>
     </mat-expansion-panel>
+    }
 
     <h2>Secciones</h2>
     <ul class="nav-vert-std">
@@ -149,10 +189,16 @@
         <a class="nav-vert-std-a" [routerLink]="['./evaluation']">
           <div>
             Evaluaciones recibidas&nbsp;
-            <span *ngIf="(user.userSummary?.positives || 0) > 0" class="positives-label">+{{ user.userSummary?.positives
+            @if (((user$ | async)?.userSummary?.positives || 0) > 0) {
+            <span class="positives-label">+{{ (user$ |
+              async)?.userSummary?.positives
               }}</span>
-            <span *ngIf="(user.userSummary?.negatives || 0) > 0" class="negatives-label">-{{ user.userSummary?.negatives
+            }
+            @if (((user$ | async)?.userSummary?.negatives || 0) > 0) {
+            <span class="negatives-label">-{{ (user$ |
+              async)?.userSummary?.negatives
               }}</span>
+            }
           </div>
           <mat-icon>navigate_next</mat-icon>
         </a>
@@ -160,8 +206,9 @@
       <li>
         <a class="nav-vert-std-a" [routerLink]="['./collection']">
           <div>
-            Tiene <strong>{{ user.userSummary?.collections | number:'':'es' }}</strong> colecciones, <strong>{{
-              user.userSummary?.completed| number:'':'es' }}</strong> completadas
+            Tiene <strong>{{ (user$ | async)?.userSummary?.collections | number:'':'es' }}</strong> colecciones,
+            <strong>{{
+              (user$ | async)?.userSummary?.completed| number:'':'es' }}</strong> completadas
           </div>
           <mat-icon>navigate_next</mat-icon>
         </a>
@@ -169,124 +216,97 @@
       <li>
         <a class="nav-vert-std-a" [routerLink]="['./media']">
           <div>
-            Ha agregado <strong>{{ user.contributions || 0 }}</strong> elemento(s) multimedia
+            Ha agregado <strong>{{ (user$ | async)?.userSummary?.contributions }}</strong> elemento(s) multimedia
           </div>
           <mat-icon>navigate_next</mat-icon>
         </a>
       </li>
     </ul>
 
-    <!-- <mat-nav-list>
-      <a mat-list-item [routerLink]="['./evaluation']">
-        <div mat-line>
-          Evaluaciones recibidas&nbsp;
-          <span *ngIf="(user.userSummary?.positives || 0) > 0" class="positives-label">+{{ user.userSummary?.positives
-            }}</span>
-          <span *ngIf="(user.userSummary?.negatives || 0) > 0" class="negatives-label">-{{ user.userSummary?.negatives
-            }}</span>
+    <hr />
+
+    <div class="user-publisher">
+      <p>Busca <strong>{{ (user$ | async)?.userSummary?.wishing | number:'':'es' }}</strong> ítems, cambia <strong>{{
+          (user$ | async)?.userSummary?.trading |
+          number:'':'es' }}</strong> ítems</p>
+      <p>Cuenta creada el {{ (user$ | async)?.registration | date:'dd/MM/YYYY' }}</p>
+    </div>
+  </div>
+</section>
+} @else {
+<section class="user">
+  <div class="user-info card">
+
+    <div class="user-header">
+      <div class="user-image-background" style="background-image: url('/assets/img/profile_user.png');">
+      </div>
+      <div class="user-subheader">
+        <div class="user-image-container">
+          <img class="user-image" src="/assets/img/profile_user.png">
         </div>
-        <mat-icon>navigate_next</mat-icon>
-      </a>
-      <a mat-list-item [routerLink]="['./collection']">
-        <div mat-line>
-          Tiene <strong>{{ user.userSummary?.collections | number:'':'es' }}</strong> colecciones, <strong>{{
-            user.userSummary?.completed| number:'':'es' }}</strong> completadas
+        <div class="user-actions">
+          <a class="btn" mat-stroked-button aria-label="Opciones">
+            <mat-icon class="only-icon-button">more_vert</mat-icon>
+          </a>
         </div>
-        <mat-icon>navigate_next</mat-icon>
-      </a>
-      <a mat-list-item [routerLink]="['./media']">
-        <div mat-line>
-          Ha agregado <strong>{{ user.contributions || 0 }}</strong> elemento(s) multimedia
-        </div>
-        <mat-icon>navigate_next</mat-icon>
-      </a>
-    </mat-nav-list> -->
+      </div>
+    </div>
+
+    <div class="user-main">
+      <h1>Cargando nombre del usuario</h1>
+      <p class="subtitle">ID de usuario: <strong>???</strong></p>
+
+      <p class="user-description">Cargando descripción del usuario</p>
+
+      <div class="user-details">
+        <span>
+          <mat-icon>my_location</mat-icon>
+          <span>Cargando ubicación</span>
+        </span>
+        <span>
+          <mat-icon>av_timer</mat-icon>Visto el
+          <strong>??/??/????</strong>
+        </span>
+      </div>
+    </div>
+
+    <h2>Secciones</h2>
+    <ul class="nav-vert-std">
+      <li>
+        <a class="nav-vert-std-a" [routerLink]="['./evaluation']">
+          <div>
+            Evaluaciones recibidas&nbsp;
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+      </li>
+      <li>
+        <a class="nav-vert-std-a" [routerLink]="['./collection']">
+          <div>
+            Tiene <strong>???</strong> colecciones, <strong>???</strong> completadas
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+      </li>
+      <li>
+        <a class="nav-vert-std-a" [routerLink]="['./media']">
+          <div>
+            Ha agregado <strong>???</strong> elemento(s) multimedia
+          </div>
+          <mat-icon>navigate_next</mat-icon>
+        </a>
+      </li>
+    </ul>
 
     <hr />
 
     <div class="user-publisher">
-      <p>Busca <strong>{{ user.userSummary?.wishing | number:'':'es' }}</strong> ítems, cambia <strong>{{
-          user.userSummary?.trading |
-          number:'':'es' }}</strong> ítems</p>
-      <p>Cuenta creada el {{ user.registration | date:'dd/MM/YYYY' }}</p>
+      <p>Busca <strong>???</strong> ítems, cambia <strong>???</strong> ítems</p>
+      <p>Cuenta creada el ??/??/????</p>
     </div>
   </div>
 </section>
-
-<ng-template #loading>
-  <section class="user">
-    <div class="user-info card">
-
-      <div class="user-header">
-        <div class="user-image-background" style="background-image: url('/assets/img/profile_user.png');">
-        </div>
-        <div class="user-subheader">
-          <div class="user-image-container">
-            <img class="user-image" src="/assets/img/profile_user.png">
-          </div>
-          <div class="user-actions">
-            <a class="btn" mat-stroked-button aria-label="Opciones">
-              <mat-icon class="only-icon-button">more_vert</mat-icon>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div class="user-main">
-        <h1>Cargando nombre del usuario</h1>
-        <p class="subtitle">ID de usuario: <strong>???</strong></p>
-
-        <p class="user-description">Cargando descripción del usuario</p>
-
-        <div class="user-details">
-          <span>
-            <mat-icon>my_location</mat-icon>
-            <span>Cargando ubicación</span>
-          </span>
-          <span>
-            <mat-icon>av_timer</mat-icon>Visto el
-            <strong>??/??/????</strong>
-          </span>
-        </div>
-      </div>
-
-      <h2>Secciones</h2>
-      <ul class="nav-vert-std">
-        <li>
-          <a class="nav-vert-std-a" [routerLink]="['./evaluation']">
-            <div>
-              Evaluaciones recibidas&nbsp;
-            </div>
-            <mat-icon>navigate_next</mat-icon>
-          </a>
-        </li>
-        <li>
-          <a class="nav-vert-std-a" [routerLink]="['./collection']">
-            <div>
-              Tiene <strong>???</strong> colecciones, <strong>???</strong> completadas
-            </div>
-            <mat-icon>navigate_next</mat-icon>
-          </a>
-        </li>
-        <li>
-          <a class="nav-vert-std-a" [routerLink]="['./media']">
-            <div>
-              Ha agregado <strong>???</strong> elemento(s) multimedia
-            </div>
-            <mat-icon>navigate_next</mat-icon>
-          </a>
-        </li>
-      </ul>
-
-      <hr />
-
-      <div class="user-publisher">
-        <p>Busca <strong>???</strong> ítems, cambia <strong>???</strong> ítems</p>
-        <p>Cuenta creada el ??/??/????</p>
-      </div>
-    </div>
-  </section>
-</ng-template>
+}
 
 <ng-template #confirmDialog>
   <h2 mat-dialog-title>Bloquear usuario</h2>
@@ -299,13 +319,13 @@
     </ul>
   </div>
   <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close [disabled]="isSaving">Cancelar</button>
-    <button mat-raised-button (click)="toggleBlacklist(true)" [disabled]="isSaving" color="warn">
+    <button mat-button mat-dialog-close [disabled]="isProcessing$ | async">Cancelar</button>
+    <button mat-raised-button (click)="toggleBlacklist(true)" [disabled]="isProcessing$ | async" color="warn">
       Bloquear
     </button>
   </mat-dialog-actions>
 </ng-template>
 
-<div *ngIf="!isLoaded" class="loading-indicator">
+<!-- <div *ngIf="!isLoaded" class="loading-indicator">
   <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
+</div> -->

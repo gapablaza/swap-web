@@ -1,35 +1,35 @@
 <div class="messages-page">
-    <div *ngIf="!isLoaded" class="loading-indicator">
+    @if (loading$ | async) {
+    <div class="loading-indicator">
         <mat-spinner aria-label="cargando"></mat-spinner>
     </div>
-    <section *ngIf="isLoaded" class="messages flex-full">
+    }
+
+    @if (!(loading$ | async)) {
+    <section class="messages flex-full">
         <h1>
             {{ showedMessages.length }} Conversaciones
-            <span *ngIf="typeSelected == '1'" class="color-accent">Activas</span>
-            <span *ngIf="typeSelected == '2'" class="text-secondary">Archivadas</span>
+            @if (typeSelected == '1') { <span class="color-accent">Activas</span>}
+            @if (typeSelected == '2') { <span class="text-secondary">Archivadas</span>}
         </h1>
 
-        <ng-container *ngIf="isAdsLoaded">
-            <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="6281081787" [adFormat]="'auto'"
-                [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
-        </ng-container>
-        
-        <div class="card flex-full">
-            <!-- <div class="empty-content" *ngIf="!messages.length">
-                <h2>(¬‿¬)</h2>
-                <p>Todavía no tienes conversaciones con otros usuarios...</p>
-            </div> -->
+        @if (isAdsLoaded) {
+        <ng-adsense [adSlot]="6281081787" [adFormat]="'auto'" [display]="'block'" [fullWidthResponsive]="true"
+            [className]="'bga-hor'"></ng-adsense>
+        }
 
+        <div class="card flex-full">
             <div class="controls-std">
                 <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
                     <mat-form-field class="controls-search" appearance="outline">
                         <mat-label>Filtrar por usuario (nombre / ID) o por el texto del último mensaje</mat-label>
                         <mat-icon matPrefix>search</mat-icon>
                         <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
-                        <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear"
-                            (click)="onClearFilter()">
+                        @if (searchText) {
+                        <button matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
                             <mat-icon>close</mat-icon>
                         </button>
+                        }
                     </mat-form-field>
                     <mat-form-field appearance="outline">
                         <mat-label>Conversaciones</mat-label>
@@ -41,8 +41,10 @@
                 </div>
             </div>
 
-            <ul *ngIf="showedMessages.length" class="list-std">
-                <li class="list-std-item" *ngFor="let elem of showedMessages; trackBy: trackByUsers">
+            @if (showedMessages.length) {
+            <ul class="list-std">
+                @for (elem of showedMessages; track elem.withUserId) {
+                <li class="list-std-item">
                     <div class="list-item-main">
                         <div class="list-item-image">
                             <a [routerLink]="['/message', elem.withUserId]">
@@ -58,23 +60,29 @@
                                 </a>
                             </div>
                             <div class="list-item-meta custom-separator2">
-                                <mat-icon *ngIf="elem.fromAuthUser" aria-hidden="false" aria-label="read status"
-                                    fontIcon="done_all" inline="true" [ngClass]="{ 'readed': !elem.unread }"></mat-icon>
+                                @if (elem.fromAuthUser) {
+                                <mat-icon aria-hidden="false" aria-label="read status" fontIcon="done_all" inline="true"
+                                    [ngClass]="{ 'readed': !elem.unread }"></mat-icon>
+                                }
                                 <span>{{ elem.withUserText }}</span>
                             </div>
                         </div>
                         <div class="list-item-message">
                             <span class="list-item-message-date">{{ elem.withUserTime | date:'dd/MM/YYYY' }}</span>
-                            <span *ngIf="elem.unread && !elem.fromAuthUser" class="list-item-message-new">N</span>
+                            @if (elem.unread && !elem.fromAuthUser) {
+                            <span class="list-item-message-new">N</span>
+                            }
                         </div>
                     </div>
                 </li>
+                }
             </ul>
-
-            <div class="empty-content" *ngIf="!showedMessages.length">
+            } @else {
+            <div class="empty-content">
                 <h2>(u‿u)</h2>
                 <p>No se encuentran conversaciones para los filtros seleccionados</p>
             </div>
+            }
 
             <div class="alert alert-warning">
                 <div class="alert-container">
@@ -89,4 +97,5 @@
             </div>
         </div>
     </section>
+    }
 </div>

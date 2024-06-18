@@ -1,22 +1,25 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../services';
-import { map, take } from 'rxjs';
+import { filter, map, switchMap, take } from 'rxjs';
+import { Store } from '@ngrx/store';
+
+import { authFeature } from '../../modules/auth/store/auth.state';
 
 export const unauthorizedGuard = () => {
   const router = inject(Router);
-  const authSrv = inject(AuthService);
+  const store = inject(Store);
 
-  return authSrv.isAuth.pipe(
-    take(1),
+  return store.select(authFeature.selectIsInit).pipe(
+    filter((isInit) => !!isInit),
+    switchMap(() => store.select(authFeature.selectIsAuth)),
     map((isAuth) => {
       if (isAuth) {
-        // logged in so redirect to home page
         router.navigate(['/']);
         return false;
-      } else {
-        return true;
       }
-    })
+
+      return true;
+    }),
+    take(1)
   );
 };

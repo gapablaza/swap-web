@@ -2,22 +2,15 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  NgZone,
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
+import { NgClass, DatePipe, AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import {
-  Database,
-  ref,
-  list,
-  query,
-  orderByChild,
-} from '@angular/fire/database';
 import { combineLatest, map, Subscription, tap } from 'rxjs';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { Store } from '@ngrx/store';
 
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -27,9 +20,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { AuthService, DEFAULT_USER_PROFILE_IMG, Message } from 'src/app/core';
+import { DEFAULT_USER_PROFILE_IMG } from 'src/app/core';
 import { AdsModule } from 'src/app/shared/ads.module';
 import { UIService } from 'src/app/shared';
+import { authFeature } from '../../auth/store/auth.state';
+import { messagesFeature } from '../store/message.state';
+import { messagesActions } from '../store/message.actions';
 
 @Component({
   selector: 'app-message-list',
@@ -38,7 +34,6 @@ import { UIService } from 'src/app/shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    NgIf,
     MatProgressSpinnerModule,
     AdsModule,
     NgClass,
@@ -49,72 +44,62 @@ import { UIService } from 'src/app/shared';
     MatButtonModule,
     MatSelectModule,
     MatOptionModule,
-    NgFor,
     RouterLink,
     LazyLoadImageModule,
     DatePipe,
+    AsyncPipe,
   ],
 })
 export class MessageListComponent implements OnInit, OnDestroy {
-  authUser = this.authSrv.getCurrentUser();
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   messages: any[] = [];
   showedMessages: any[] = [];
-  unreadUserIds: number[] = [];
+
+  authUser$ = this.store.select(authFeature.selectUser);
+  messages$ = this.store.select(messagesFeature.selectMessages);
 
   searchText = '';
   typeSelected = '1';
 
   showFilters = true;
   isAdsLoaded = false;
-  isLoaded = false;
+  loading$ = this.store.select(messagesFeature.selectLoading);
   subs: Subscription = new Subscription();
 
   constructor(
-    private firebaseDB: Database,
-    private authSrv: AuthService,
+    private store: Store,
     private uiSrv: UIService,
-    private cdr: ChangeDetectorRef,
-    private zone: NgZone
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    const usersBL$ = list(
-      ref(this.firebaseDB, `userBlacklist/userId_${this.authUser.id}`)
-    ).pipe(map((snapshot) => snapshot.map((mess) => mess.snapshot.key)));
+    this.store.dispatch(messagesActions.loadConversations());
 
-    const resume$ = list(
-      query(
-        ref(this.firebaseDB, `userResume/userId_${this.authUser.id}`),
-        orderByChild('timestamp')
-      )
-    ).pipe(map((snapshot) => snapshot.map((mess) => mess.snapshot)));
-
-    let blacklistSub = combineLatest([usersBL$, resume$])
+    let messagesSub = combineLatest([this.authUser$, this.messages$])
       .pipe(
-        map(([users, resume]) => {
-          return resume.filter((mess) => !users.includes(mess.key));
+        tap(([authUser, messages]) => {
+          if (authUser.accountTypeId == 1) {
+            this.loadAds();
+          }
         }),
-        map((messages) => {
-          return messages.map((mess) => {
-            let payload = mess.val() as Message;
+        map(([authUser, messages]) => {
+          return messages.map((payload) => {
             return {
               withUserId:
-                payload.toUserId == this.authUser.id
+                payload.toUserId == authUser.id
                   ? payload.fromUserId
                   : payload.toUserId,
               withUserName:
-                payload.toUserId == this.authUser.id
+                payload.toUserId == authUser.id
                   ? payload.fromUserName
                   : payload.toUserName,
               withUserImage:
-                payload.toUserId == this.authUser.id
+                payload.toUserId == authUser.id
                   ? payload.fromUserImage
                   : payload.toUserImage,
               withUserText: payload.body,
               withUserTime: payload.timestamp,
-              fromAuthUser:
-                payload.fromUserId == this.authUser.id ? true : false,
+              fromAuthUser: payload.fromUserId == authUser.id ? true : false,
               unread: payload.unread === false ? false : true,
               archived: payload.archived === true ? true : false,
             };
@@ -122,28 +107,17 @@ export class MessageListComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((list) => {
-        this.zone.run(() => {
-          this.messages = list;
-          this.filterShowedMessages();
-          this.isLoaded = true;
-          this.cdr.markForCheck();
-        });
+        this.messages = list;
+        this.filterShowedMessages();
+        this.cdr.markForCheck();
       });
-    this.subs.add(blacklistSub);
-
-    if (this.authUser.accountTypeId == 1) {
-      this.loadAds();
-    }
+    this.subs.add(messagesSub);
   }
 
   loadAds() {
     this.uiSrv.loadAds().then(() => {
       this.isAdsLoaded = true;
     });
-  }
-
-  trackByUsers(index: number, item: any): number {
-    return item.withUserId;
   }
 
   onFilter() {
@@ -179,7 +153,7 @@ export class MessageListComponent implements OnInit, OnDestroy {
       ];
     }
 
-    // 2.- check filter by evaluation type 
+    // 2.- check filter by evaluation type
     if (type) {
       tempMessages = [
         ...tempMessages.filter((elem) => {
@@ -193,5 +167,6 @@ export class MessageListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+    this.store.dispatch(messagesActions.loadConversationsDestroy());
   }
 }

@@ -10,4 +10,6 @@ export interface Message {
   toUserImage?: string,
   toUserName: string,
   unread?: boolean,
+
+  newDate?: boolean, // only for conversation with an user
 }

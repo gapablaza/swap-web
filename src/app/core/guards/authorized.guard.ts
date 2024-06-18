@@ -1,30 +1,28 @@
 import { inject } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  Router,
-  RouterStateSnapshot,
-} from '@angular/router';
-import { AuthService } from '../services';
-import { map, take } from 'rxjs';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Observable, filter, map, switchMap, take } from 'rxjs';
+import { Store } from '@ngrx/store';
+
+import { authFeature } from '../../modules/auth/store/auth.state';
+import { authActions } from '../../modules/auth/store/auth.actions';
 
 export const authorizedGuard = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
-) => {
-  const router = inject(Router);
-  const authSrv = inject(AuthService);
+): Observable<boolean> => {
+  const store = inject(Store);
 
-  return authSrv.isAuth.pipe(
-    take(1),
+  return store.select(authFeature.selectIsInit).pipe(
+    filter((isInit) => !!isInit),
+    switchMap(() => store.select(authFeature.selectIsAuth)),
     map((isAuth) => {
-      if (isAuth) {
-        return true;
-      } else {
-        router.navigate(['/login'], {
-          queryParams: { returnUrl: state.url },
-        });
+      if (!isAuth) {
+        store.dispatch(authActions.loginRedirect({ url: state.url }));
         return false;
       }
-    })
+
+      return true;
+    }),
+    take(1)
   );
 };

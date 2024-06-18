@@ -2,7 +2,7 @@
   <div class="vertical-navigation-wrapper">
     <div class="vertical-navigation-content">
 
-      <div *ngIf="isAuth" class="vertical-navigation-group-item">
+      <div *ngIf="isAuth$ | async" class="vertical-navigation-group-item">
         <div class="vertical-navigation-item-wrapper">
           <div class="vertical-navigation-item">
             <div class="vertical-navigation-item-title-wrapper">
@@ -58,9 +58,9 @@
                   <span>Conversaciones</span>
                 </div>
               </div>
-              <div *ngIf="unreadCount > 0" class="vertical-navigation-item-badge">
+              <div *ngIf="unreadCount$ | async" class="vertical-navigation-item-badge">
                 <div class="vertical-navigation-item-badge-content">
-                  {{ unreadCount }}
+                  {{ unreadCount$ | async }}
                 </div>
               </div>
             </a>
@@ -229,7 +229,7 @@
           </div>
         </div>
 
-        <div *ngIf="!isAuth" class="vertical-navigation-basic-item">
+        <div *ngIf="!(isAuth$ | async)" class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
             <a routerLink="/signup" class="vertical-navigation-signup">
               Regístrate gratis!

@@ -5,7 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { AsyncPipe, DOCUMENT } from '@angular/common';
 import {
   NavigationEnd,
   NavigationStart,
@@ -14,7 +14,7 @@ import {
 } from '@angular/router';
 import { Messaging, onMessage } from '@angular/fire/messaging';
 import { NgProgressModule } from 'ngx-progressbar';
-
+import { Store } from '@ngrx/store';
 import {
   MatSidenav,
   MatDrawerMode,
@@ -27,6 +27,8 @@ import { UIService } from './shared';
 import { FooterComponent } from './modules/navigation/footer/footer.component';
 import { SidenavListComponent } from './modules/navigation/sidenav-list/sidenav-list.component';
 import { HeaderComponent } from './modules/navigation/header/header.component';
+import { authActions } from './modules/auth/store/auth.actions';
+import { authFeature } from './modules/auth/store/auth.state';
 
 declare const gtag: Function;
 
@@ -38,6 +40,7 @@ declare const gtag: Function;
   imports: [
     RouterOutlet,
     NgProgressModule,
+    AsyncPipe,
 
     MatSidenavModule,
 
@@ -50,13 +53,15 @@ export class AppComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   navMode = 'push' as MatDrawerMode;
   navOpened = false;
+  isInit$ = this.store.select(authFeature.selectIsInit);
 
   constructor(
-    private authSrv: AuthService,
+    // private authSrv: AuthService,
     private SEOSrv: SEOService,
-    private fbMessaging: Messaging,
+    // private fbMessaging: Messaging,
     private uiSrv: UIService,
     private router: Router,
+    private store: Store,
     @Inject(DOCUMENT) private document: Document
   ) {
     // agrega scripts de GA al index.html
@@ -97,6 +102,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.store.dispatch(authActions.autoLogin());
+
     // Suscripción para GA (opcional) y ancho responsivo
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
@@ -134,14 +141,14 @@ export class AppComponent implements OnInit {
           scope: '__',
         })
         .then((ServiceWorkerRegistration) => {
-          onMessage(this.fbMessaging, (payload) => {
-            console.log(payload);
-            this.uiSrv.showSnackbar('Tienes un nuevo mensaje!');
-          });
+          // onMessage(this.fbMessaging, (payload) => {
+          //   console.log(payload);
+          //   this.uiSrv.showSnackbar('Tienes un nuevo mensaje!');
+          // });
         });
     }
 
-    this.authSrv.populate();
+    // this.authSrv.populate();
   }
 
   // Ajusta el modo de la sidenav dependiendo del ancho de la pantalla

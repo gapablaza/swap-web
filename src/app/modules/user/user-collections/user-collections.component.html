@@ -1,30 +1,35 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-  <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="user user-section">
+<section class="user user-section">
   <app-user-summary [showBackButton]="true"></app-user-summary>
+  @if (isLoaded$ | async) {
   <div class="user-collections flex-full">
     <h1>
-      <span class="color-accent" *ngIf="showedCollections.length != collections.length">
+      @if (showedCollections.length != collections.length) {
+      <span class="color-accent">
         {{ showedCollections.length }} de
       </span>
+      }
       {{ collections.length }} colecciones agregadas
     </h1>
     <div class="card">
-      <div class="empty-content" *ngIf="!collections.length">
+      @if (!collections.length) {
+      <div class="empty-content">
         <h2>(&#64;.&#64;)</h2>
         <p>Todavía no ha agregado ninguna colección...</p>
       </div>
+      }
 
-      <div *ngIf="collections.length" class="controls-std">
+      @if (collections.length) {
+      <div class="controls-std">
         <div class="controls-std-main">
           <div class="controls-std-order">
             <mat-form-field appearance="outline">
               <mat-label>Ordenar por</mat-label>
               <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
-                <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
+                @for (option of sortOptions; track option.selectValue) {
+                <mat-option [value]="option.selectValue">
                   {{ option.selectName }}
                 </mat-option>
+                }
               </mat-select>
             </mat-form-field>
           </div>
@@ -39,9 +44,11 @@
             <mat-label>Filtrar por nombre, ID o editorial</mat-label>
             <mat-icon matPrefix>search</mat-icon>
             <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
-            <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
+            @if (searchText) {
+            <button matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
               <mat-icon>close</mat-icon>
             </button>
+            }
           </mat-form-field>
           <mat-slide-toggle class="ml-auto" (change)="onToggleCompleted($event)" (checked)="hideCompleted">
             Ocultar completos
@@ -49,10 +56,11 @@
         </div>
 
       </div>
+      }
 
       <ul class="list-std">
-        <li *ngFor="let col of showedCollections ; trackBy: trackByCollection" class="list-std-item"
-          [ngClass]="{'completed': col.userSummary?.completed}">
+        @for (col of showedCollections; track col.id) {
+        <li class="list-std-item" [ngClass]="{'completed': col.userSummary?.completed}">
           <div class="list-item-main">
             <div class="list-item-content flex-full">
               <div class="list-item-title">
@@ -69,11 +77,14 @@
                 <span>Busca {{ col.userSummary?.wishing }} ítems</span>
                 <span>Cambia {{ col.userSummary?.trading }} ítems</span>
               </div>
-              <div *ngIf="col.userSummary?.publicComment" class="list-item-desc">
+              @if (col.userSummary?.publicComment) {
+              <div class="list-item-desc">
                 <p [innerHTML]="col.userSummary?.publicComment | sanitizeHtml"></p>
               </div>
+              }
 
-              <div *ngIf="col.userSummary?.completed" class="ribbon up">
+              @if (col.userSummary?.completed) {
+              <div class="ribbon up">
                 <div class="content">
                   <svg width="24px" height="24px" aria-hidden="true" focusable="false" data-prefix="fas"
                     data-icon="check" class="svg-inline--fa fa-check fa-w-16" role="img"
@@ -84,19 +95,28 @@
                   </svg>
                 </div>
               </div>
+              }
             </div>
             <div class="list-item-bg" [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image">
               <div></div>
             </div>
-            <a *ngIf="showEditButton" class="btn" mat-raised-button color="accent"
+            @if (showEditButton) {
+            <a class="btn" mat-raised-button color="accent"
               [routerLink]="['/c', col.name + ' ' + col.publisher.data.name | slugify, col.id, 'manage']">
               <mat-icon>edit</mat-icon> Editar
             </a>
+            }
             <div class="list-item-progress" [style]="'width: ' + col.userSummary?.progress + '%;'"></div>
           </div>
         </li>
+        }
       </ul>
 
     </div>
   </div>
+  } @else {
+  <div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+  </div>
+  }
 </section>

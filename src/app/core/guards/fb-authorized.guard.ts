@@ -1,21 +1,25 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../services';
-import { map, take } from 'rxjs';
+import { filter, map, switchMap, take } from 'rxjs';
+import { Store } from '@ngrx/store';
+
+import { authFeature } from '../../modules/auth/store/auth.state';
 
 export const fbAuthorizedGuard = () => {
   const router = inject(Router);
-  const authSrv = inject(AuthService);
+  const store = inject(Store);
 
-  return authSrv.isFBAuth.pipe(
-    take(1),
+  return store.select(authFeature.selectIsInit).pipe(
+    filter((isInit) => !!isInit),
+    switchMap(() => store.select(authFeature.selectIsFirebaseAuth)),
     map((isAuth) => {
-      if (isAuth) {
-        return true;
-      } else {
+      if (!isAuth) {
         router.navigate(['']);
         return false;
       }
-    })
+
+      return true;
+    }),
+    take(1)
   );
 };

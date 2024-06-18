@@ -5,20 +5,16 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { concatMap, filter, Subscription, take, tap } from 'rxjs';
+import { combineLatest, map, Subscription, tap } from 'rxjs';
 import orderBy from 'lodash/orderBy';
 
 import {
-  AuthService,
-  DEFAULT_USER_PROFILE_IMG,
-  Evaluation,
-  SEOService,
-  User,
-  UserService,
-} from 'src/app/core';
-import { UserOnlyService } from '../user-only.service';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { UIService } from 'src/app/shared';
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { RouterLink } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
@@ -27,115 +23,122 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { UserSummaryComponent } from '../user-summary/user-summary.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
-import { MatDialog, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
+import { NgClass, DatePipe, AsyncPipe } from '@angular/common';
+import {
+  MatDialog,
+  MatDialogConfig,
+  MatDialogModule,
+} from '@angular/material/dialog';
+import { Store } from '@ngrx/store';
+
+import { DEFAULT_USER_PROFILE_IMG, Evaluation, SEOService } from 'src/app/core';
+import { UserSummaryComponent } from '../user-summary/user-summary.component';
 import { ReportComponent } from 'src/app/shared/components/report/report.component';
+import { authFeature } from '../../auth/store/auth.state';
+import { userFeature } from '../store/user.state';
+import { userActions } from '../store/user.actions';
 
 @Component({
-    selector: 'app-user-evaluations',
-    templateUrl: './user-evaluations.component.html',
-    styleUrls: ['./user-evaluations.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        NgIf,
-        MatProgressSpinnerModule,
-        UserSummaryComponent,
-        MatButtonModule,
-        MatIconModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatDialogModule,
-        NgClass,
-        MatInputModule,
-        FormsModule,
-        NgFor,
-        RouterLink,
-        LazyLoadImageModule,
-        ReactiveFormsModule,
-        DatePipe,
-    ],
+  selector: 'app-user-evaluations',
+  templateUrl: './user-evaluations.component.html',
+  styleUrls: ['./user-evaluations.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    MatProgressSpinnerModule,
+    UserSummaryComponent,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatDialogModule,
+    MatInputModule,
+    NgClass,
+    FormsModule,
+    RouterLink,
+    LazyLoadImageModule,
+    ReactiveFormsModule,
+    DatePipe,
+    AsyncPipe,
+  ],
 })
 export class UserEvaluationsComponent implements OnInit, OnDestroy {
-  user: User = {} as User;
-  isAuth = false;
-  authUser = this.authSrv.getCurrentUser();
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
+
+  isAuth$ = this.store.select(authFeature.selectIsAuth);
+  authUser$ = this.store.select(authFeature.selectUser);
+  user$ = this.store.select(userFeature.selectUser);
+
   evaluations: Evaluation[] = [];
   showedEvaluations: Evaluation[] = [];
-
   disabled = true;
   disabledData: any;
-  evaluationForm!: FormGroup;
 
+  evaluationForm!: FormGroup;
   searchText = '';
   typeSelected = '0';
-
   showFilters = false;
-  isSaving = false;
-  isLoaded = false;
+
+  isProcessing$ = this.store.select(userFeature.selectIsProcessing);
+  isLoaded$ = this.store.select(userFeature.selectIsEvaluationsLoaded);
   subs: Subscription = new Subscription();
 
   constructor(
-    private userSrv: UserService,
-    private userOnlySrv: UserOnlyService,
-    private authSrv: AuthService,
+    private store: Store,
     private formBuilder: FormBuilder,
     private SEOSrv: SEOService,
     private dialog: MatDialog,
-    private uiSrv: UIService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    let userSub = this.userOnlySrv.user$
+    this.store.dispatch(userActions.loadUserEvaluations());
+
+    let evalSub = combineLatest([
+      this.user$,
+      this.store.select(userFeature.selectEvaluationsData),
+    ])
       .pipe(
-        filter((user) => user.id != null),
-        tap((user) => {
+        tap(([user]) => {
           this.SEOSrv.set({
             title: `Evaluaciones recibidas de ${user.displayName} (ID ${user.id}) - Intercambia Láminas`,
             description: `Revisa el detalle de las evaluaciones recibidas de ${user.displayName} (ID ${user.id}).`,
             isCanonical: true,
           });
-
-          this.isSaving = false;
-          this.isLoaded = false;
-          this.user = user;
         }),
-        concatMap((user) => this.userSrv.getEvaluations(user.id))
+        map(([, evaluationsData]) => evaluationsData)
       )
-      .subscribe((resp) => {
-        this.evaluations = resp.evaluations.map((e) => {
-          if (e.previousEvaluationsCounter) {
-            let prevEvalArray = e.previousEvaluationsData?.sort((pa, pb) => {
-              return pa.epochCreationTime < pb.epochCreationTime ? 1 : -1;
-            });
-            return { ...e, previousEvaluationsData: prevEvalArray };
-          } else {
-            return e;
-          }
-        });
+      .subscribe((evaluationsData) => {
+        if (evaluationsData?.evaluations.length) {
+          this.evaluations = evaluationsData?.evaluations.map((e) => {
+            if (e.previousEvaluationsCounter) {
+              let prevEvalArray = [...(e.previousEvaluationsData || [])].sort(
+                (pa, pb) => {
+                  return pa.epochCreationTime < pb.epochCreationTime ? 1 : -1;
+                }
+              );
+              return { ...e, previousEvaluationsData: prevEvalArray };
+            } else {
+              return e;
+            }
+          });
+        }
         this.showedEvaluations = [...this.evaluations];
         this.sortShowedEvaluations();
-        this.disabled = resp.disabled;
-        this.disabledData = resp.disabledData;
-        this.isLoaded = true;
+        if (evaluationsData) {
+          this.disabled = evaluationsData?.disabled;
+        }
+        this.disabledData = evaluationsData?.disabledData;
         this.cdr.markForCheck();
       });
-    this.subs.add(userSub);
+    this.subs.add(evalSub);
 
     this.evaluationForm = this.formBuilder.group({
       type: ['', Validators.required],
       comment: ['', [Validators.required, Validators.maxLength(255)]],
     });
-
-    let authSub = this.authSrv.isAuth.subscribe((authState) => {
-      this.isAuth = authState;
-    });
-    this.subs.add(authSub);
   }
 
   get form() {
@@ -147,30 +150,12 @@ export class UserEvaluationsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isSaving = true;
-
-    let userId = this.user.id;
     let typeId = +this.evaluationForm.value.type || 0;
     let commentText = this.evaluationForm.value.comment || '';
 
-    this.userSrv
-      .addEvaluation(userId, typeId, commentText)
-      .pipe(take(1))
-      .subscribe({
-        next: (res) => {
-          this.uiSrv.showSuccess('Evaluación registrada exitosamente');
-          this.userOnlySrv.requestUserUpdate();
-        },
-        error: (error) => {
-          console.log('addEvaluation error: ', error);
-          this.uiSrv.showError(error.error.message);
-          this.isSaving = false;
-        },
-      });
-  }
-
-  trackByEvaluation(index: number, item: Evaluation): number {
-    return item.id;
+    this.store.dispatch(
+      userActions.addEvaluation({ typeId, comment: commentText })
+    );
   }
 
   onFilter() {

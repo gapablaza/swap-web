@@ -1,12 +1,17 @@
 import { Routes } from '@angular/router';
+import { provideState } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
 
 import { authorizedGuard, fbAuthorizedGuard } from 'src/app/core';
 import { MessageComponent } from './message.component';
 import { MessageResolver } from './message-resolver.service';
+import { messagesFeature } from './store/message.state';
+import { MessageEffects } from './store/message.effects';
 
 export const MESSAGE_ROUTES: Routes = [
   {
     path: '',
+    providers: [provideState(messagesFeature), provideEffects(MessageEffects)],
     component: MessageComponent,
     canActivate: [authorizedGuard, fbAuthorizedGuard],
     children: [

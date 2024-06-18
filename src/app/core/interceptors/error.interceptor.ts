@@ -1,21 +1,20 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
+import { Store } from '@ngrx/store';
 
-import { AuthService } from '../services';
 import { UIService } from 'src/app/shared';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
-  const authSrv = inject(AuthService);
   const uiSrv = inject(UIService);
 
   return next(req).pipe(
     catchError((err) => {
-      const authUser = authSrv.getCurrentUser();
-      if ([401, 403].includes(err.status) && authUser.id) {
-        // auto logout if 401 or 403 response returned from api
-        authSrv.logout();
-      }
+      // const authUser = authSrv.getCurrentUser();
+      // if ([401, 403].includes(err.status) && authUser.id) {
+      //   // auto logout if 401 or 403 response returned from api
+      //   authSrv.logout();
+      // }
 
       let error = err.statusText;
       if (err && err.error && err.error.message) {

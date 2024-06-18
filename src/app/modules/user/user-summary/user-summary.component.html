@@ -1,8 +1,10 @@
 <div class="user-visual">
     <div class="user-links">
-        <a *ngIf="showBackButton" class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+        @if (showBackButton) {
+        <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
             <mat-icon>arrow_back</mat-icon> Volver
         </a>
+        }
         <a class="btn" mat-stroked-button (click)="onShare()">
             <mat-icon>share</mat-icon> Compartir
         </a>
@@ -10,13 +12,16 @@
 
     <div class="user-content">
         <div class="user-imagen-container">
-            <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
-                [alt]="user.displayName" crossorigin="anonymous">
+            <img class="user-image" [defaultImage]="defaultUserImage"
+                [lazyLoad]="(user$ | async)?.image || defaultUserImage" [alt]="(user$ | async)?.displayName"
+                crossorigin="anonymous">
         </div>
         <div class="user-data">
-            <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
-            <h1 class="">{{ user.displayName }}</h1>
-            <p class="subtitle">ID de usuario: <strong>{{ user.id }}</strong></p>
+            @if ((user$ | async)?.accountTypeId == 2) {
+            <span class="pro-label">PRO</span>
+            }
+            <h1 class="">{{ (user$ | async)?.displayName }}</h1>
+            <p class="subtitle">ID de usuario: <strong>{{ (user$ | async)?.id }}</strong></p>
         </div>
     </div>
 </div>

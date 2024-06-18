@@ -1,26 +1,33 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-  <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="user user-section">
+<section class="user user-section">
   <app-user-summary [showBackButton]="true"></app-user-summary>
+  @if (isLoaded$ | async) {
   <div class="user-evaluations flex-full">
     <h1>
-      <span class="color-accent" *ngIf="showedEvaluations.length != evaluations.length">
+      @if (showedEvaluations.length != evaluations.length) {}
+      <span class="color-accent">
         {{ showedEvaluations.length }} de
       </span>
       {{ evaluations.length }} evaluaciones recibidas
     </h1>
+
     <div class="card">
-      <div class="empty-content" *ngIf="!evaluations.length">
+      @if (!evaluations.length) {
+      <div class="empty-content">
         <h2>(>_<) </h2>
             <p>Todavía no hay evaluaciones, quién será el primero?</p>
       </div>
-      <div *ngIf="!disabled" class="main-action">
+      }
+
+      @if (!disabled) {
+      <div class="main-action">
         <a class="btn" mat-raised-button color="accent" (click)="navigateToForm()">
           <mat-icon>library_books</mat-icon> Registrar evaluación
         </a>
       </div>
-      <div *ngIf="evaluations.length" class="controls-std">
+      }
+
+      @if (evaluations.length) {
+      <div class="controls-std">
         <div class="controls-std-main">
           <div class="controls-std-order">
             <mat-form-field appearance="outline">
@@ -43,16 +50,19 @@
             <mat-label>Filtrar por evaluador (nombre/ID) o detalle</mat-label>
             <mat-icon matPrefix>search</mat-icon>
             <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
-            <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
+            @if (searchText) {
+            <button matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
               <mat-icon>close</mat-icon>
             </button>
+            }
           </mat-form-field>
         </div>
       </div>
+      }
 
       <ul class="list-std">
-        <li class="list-std-item" *ngFor="let evaluation of showedEvaluations; trackBy: trackByEvaluation"
-          [ngClass]="{'pro-account': evaluation.user.data.accountTypeId == 2}">
+        @for (evaluation of showedEvaluations; track evaluation.id) {
+        <li class="list-std-item" [ngClass]="{'pro-account': evaluation.user.data.accountTypeId == 2}">
           <div class="list-item-main">
 
             <div class="list-item-image">
@@ -66,11 +76,15 @@
               <div class="list-item-title">
                 <a [routerLink]="['/user', evaluation.user.data.id]">
                   {{ evaluation.user.data.displayName }}
-                  <span *ngIf="evaluation.user.data.accountTypeId == 2" class="pro-label">PRO</span>
-                  <span *ngIf="evaluation.user.data.userSummary?.positives" class="positives-label">+{{
-                    evaluation.user.data.userSummary?.positives }}</span>
-                  <span *ngIf="evaluation.user.data.userSummary?.negatives" class="negatives-label">-{{
-                    evaluation.user.data.userSummary?.negatives }}</span>
+                  @if (evaluation.user.data.accountTypeId == 2) {
+                  <span class="pro-label">PRO</span>
+                  }
+                  @if (evaluation.user.data.userSummary?.positives) {
+                  <span class="positives-label">+{{evaluation.user.data.userSummary?.positives }}</span>
+                  }
+                  @if (evaluation.user.data.userSummary?.negatives) {
+                  <span class="negatives-label">-{{evaluation.user.data.userSummary?.negatives }}</span>
+                  }
                 </a>
               </div>
               <!-- BEGIN last evaluation -->
@@ -78,34 +92,39 @@
                 {{ evaluation.creationTime | date:'dd/MM/YYYY \'a las \'HH:mm \'hrs.\'' }}
               </div>
               <div class="list-item-desc" [ngClass]="{
-                'evaluation-positive': evaluation.evaluationTypeId == 1,
-                'evaluation-negative': evaluation.evaluationTypeId == 2
-              }">
+                  'evaluation-positive': evaluation.evaluationTypeId == 1,
+                  'evaluation-negative': evaluation.evaluationTypeId == 2
+                }">
                 <p>{{ evaluation.description }}</p>
-                <a class="btn" *ngIf="isAuth && (authUser.id != evaluation.user.data.id)" mat-icon-button
-                  (click)="onShowReportDialog(evaluation.id)">
+                @if ((isAuth$ | async) && ((authUser$ | async)?.id != evaluation.user.data.id)) {
+                <a class="btn" mat-icon-button (click)="onShowReportDialog(evaluation.id)">
                   <mat-icon class="only-icon-button">priority_high</mat-icon>
                 </a>
+                }
               </div>
               <!-- END last evaluation -->
               <!-- BEGIN previous evaluations -->
-              <div *ngFor="let prevEval of evaluation.previousEvaluationsData">
+              @for (prevEval of evaluation.previousEvaluationsData; track prevEval.id) {
+              <div>
                 <div class="list-item-meta">
                   {{ prevEval.creationTime | date:'dd/MM/YYYY \'a las \'HH:mm \'hrs.\'' }}
                 </div>
                 <div class="list-item-desc" [ngClass]="{
-                  'evaluation-positive': prevEval.evaluationTypeId == 1,
-                  'evaluation-negative': prevEval.evaluationTypeId == 2
-                }">
+                      'evaluation-positive': prevEval.evaluationTypeId == 1,
+                      'evaluation-negative': prevEval.evaluationTypeId == 2
+                    }">
                   <p>{{ prevEval.description }}</p>
-                  <a class="btn" *ngIf="isAuth && (authUser.id != evaluation.user.data.id)" mat-icon-button
-                    (click)="onShowReportDialog(evaluation.id)">
+                  @if ((isAuth$ | async) && ((authUser$ | async)?.id != evaluation.user.data.id)) {
+                  <a class="btn" mat-icon-button (click)="onShowReportDialog(evaluation.id)">
                     <mat-icon class="only-icon-button">priority_high</mat-icon>
                   </a>
+                  }
                 </div>
               </div>
+              }
               <!-- END previous evaluations -->
-              <div *ngIf="evaluation.evaluationTypeId == 1" class="ribbon evaluation-positive">
+              @if (evaluation.evaluationTypeId == 1) {
+              <div class="ribbon evaluation-positive">
                 <div class="content">
                   <svg width="24px" height="24px" aria-hidden="true" focusable="false" data-prefix="fa-solid"
                     data-icon="thumbs-up" class="svg-inline--fa-solid fa-thumbs-up fa-w-16" role="img"
@@ -115,7 +134,9 @@
                   </svg>
                 </div>
               </div>
-              <div *ngIf="evaluation.evaluationTypeId == 2" class="ribbon evaluation-negative">
+              }
+              @if (evaluation.evaluationTypeId == 2) {
+              <div class="ribbon evaluation-negative">
                 <div class="content">
                   <svg width="24px" height="24px" aria-hidden="true" focusable="false" data-prefix="fa-solid"
                     data-icon="thumbs-down" class="svg-inline--fa-solid fa-thumbs-down fa-w-16" role="img"
@@ -125,16 +146,20 @@
                   </svg>
                 </div>
               </div>
+              }
             </div>
 
           </div>
         </li>
+        }
+
       </ul>
 
     </div>
 
     <div id="evaluation" class="card2 add-evaluation">
-      <div *ngIf="!isAuth" class="alert alert-info">
+      @if (!(isAuth$ | async)) {
+      <div class="alert alert-info">
         <div class="alert-container">
           <div class="alert-content">
             <div class="alert-title">Atención</div>
@@ -143,8 +168,10 @@
           </div>
         </div>
       </div>
+      }
 
-      <div *ngIf="isAuth && disabledData.disabledForAntiquity" class="alert alert-info">
+      @if ((isAuth$ | async) && disabledData.disabledForAntiquity) {
+      <div class="alert alert-info">
         <div class="alert-container">
           <div class="alert-content">
             <div class="alert-title">Atención</div>
@@ -153,8 +180,10 @@
           </div>
         </div>
       </div>
+      }
 
-      <div *ngIf="isAuth && disabledData.disabledForTime" class="alert alert-info">
+      @if ((isAuth$ | async) && disabledData.disabledForTime) {
+      <div class="alert alert-info">
         <div class="alert-container">
           <div class="alert-content">
             <div class="alert-title">Atención</div>
@@ -164,8 +193,10 @@
           </div>
         </div>
       </div>
+      }
 
-      <div *ngIf="isAuth && !disabled" class="card">
+      @if ((isAuth$ | async) && !disabled) {
+      <div class="card">
         <form [formGroup]="evaluationForm" (ngSubmit)="onSubmit()">
           <h3>Agregar evaluación</h3>
 
@@ -176,16 +207,18 @@
               <mat-option value="1" selected>Positiva (+1)</mat-option>
               <mat-option value="2" selected>Negativa (-1)</mat-option>
             </mat-select>
-            <mat-error *ngIf="form['type'].errors">Campo obligatorio.
-            </mat-error>
+            @if (form['type'].errors) {
+            <mat-error>Campo obligatorio.</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Comentario</mat-label>
             <textarea #comment matInput formControlName="comment" maxlength="255" rows="4"></textarea>
             <mat-hint align="end">{{comment.value.length || 0}}/255</mat-hint>
-            <mat-error *ngIf="form['comment'].errors">Campo obligatorio. Debes ingresar como máximo 255 caracteres.
-            </mat-error>
+            @if (form['comment'].errors) {
+            <mat-error>Campo obligatorio. Debes ingresar como máximo 255 caracteres.</mat-error>
+            }
           </mat-form-field>
 
           <div class="alert alert-warning">
@@ -198,11 +231,18 @@
             </div>
           </div>
 
-          <button mat-raised-button color="accent" [disabled]="isSaving || evaluationForm.invalid">
+          <button mat-raised-button color="accent" [disabled]="(isProcessing$ | async) || evaluationForm.invalid">
             Registrar evaluación
           </button>
         </form>
       </div>
+      }
+
     </div>
   </div>
+  } @else {
+  <div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+  </div>
+  }
 </section>

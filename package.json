@@ -1,6 +1,6 @@
 {
   "name": "swap-web",
-  "version": "2.11.2",
+  "version": "2.12.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -33,6 +33,9 @@
     "@angular/router": "^17.2.3",
     "@angular/service-worker": "^17.2.3",
     "@angular/ssr": "^17.2.2",
+    "@ngrx/effects": "^17.2.0",
+    "@ngrx/store": "^17.2.0",
+    "@ngrx/store-devtools": "^17.2.0",
     "dotenv": "^16.3.1",
     "express": "^4.15.2",
     "firebase": "^10.11.1",

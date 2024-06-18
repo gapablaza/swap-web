@@ -37,8 +37,8 @@ export class AuthService {
     private apiSrv: ApiService,
     private jwtSrv: JwtService,
     private router: Router,
-    private firebaseAuth: Auth,
     private firebaseMessaging: Messaging,
+    private firebaseAuth: Auth,
     private firebaseDB: Database
   ) {}
 
@@ -119,6 +119,24 @@ export class AuthService {
           map((data: { data: User; token: string }) => {
             this.setAuth(data);
             return true;
+          })
+        );
+      })
+    );
+  }
+
+  loginWithEmail(email: string, password: string): Observable<{ user: User; token: string }> {
+    console.log('aca');
+    return this.apiSrv.post('/v2/auth/login', { email, password }).pipe(
+      take(1),
+      concatMap((appToken) => {
+        this.jwtSrv.saveToken(appToken.token);
+        return this.apiSrv.get('/v2/me').pipe(
+          map((data: { data: User; token: string }) => {
+            return {
+              user: data.data,
+              token: data.token
+            };
           })
         );
       })

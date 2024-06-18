@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, distinctUntilChanged, Observable, take } from 'rxjs';
-import { UserService } from 'src/app/core';
 
+import { UserService } from 'src/app/core';
 import { User } from '../../core/models';
 
 @Injectable()

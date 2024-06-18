@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import {
   registerLocaleData,
-  NgIf,
-  NgFor,
   NgClass,
   DecimalPipe,
+  AsyncPipe,
 } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import es from '@angular/common/locales/es';
-import { switchMap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { MatIconModule } from '@angular/material/icon';
@@ -32,6 +31,9 @@ import {
   Trades,
   UserService,
 } from 'src/app/core';
+import { TradesResolver } from './trades-resolver.service';
+import { authFeature } from '../auth/store/auth.state';
+import { Store } from '@ngrx/store';
 
 export interface IFilters {
   days?: number;
@@ -46,13 +48,11 @@ export interface IFilters {
   styleUrls: ['./trades.component.scss'],
   standalone: true,
   imports: [
-    NgIf,
     MatProgressSpinnerModule,
     AdsModule,
     MatFormFieldModule,
     MatSelectModule,
     MatOptionModule,
-    NgFor,
     MatButtonModule,
     MatIconModule,
     FormsModule,
@@ -62,12 +62,25 @@ export interface IFilters {
     DaysSinceLoginDirective,
     DecimalPipe,
     SlugifyPipe,
+    AsyncPipe
   ],
+  providers: [TradesResolver],
 })
 export class TradesComponent implements OnInit {
   // authUser: User = {} as User;
-  authUser = this.authSrv.getCurrentUser();
-  incompleteCollections: Collection[] = [];
+  // authUser = this.authSrv.getCurrentUser();
+  authUser$ = this.store.select(authFeature.selectUser).pipe(
+    tap(user => {
+      if (user.accountTypeId == 1) {
+        this.loadAds();
+      }
+    })
+  );
+
+  // incompleteCollections: Collection[] = [];
+  incompleteCollections: Collection[] =
+    this.activatedRoute.snapshot.data['incompleteCollections'];
+
   trades!: Trades;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   defaultCollectionImage = DEFAULT_COLLECTION_IMG;
@@ -84,6 +97,7 @@ export class TradesComponent implements OnInit {
 
   constructor(
     private authSrv: AuthService,
+    private store: Store,
     private userSrv: UserService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -95,9 +109,9 @@ export class TradesComponent implements OnInit {
 
     // this.authUser = this.authSrv.getCurrentUser();
 
-    this.activatedRoute.data.subscribe((data) => {
-      this.incompleteCollections = data['incompleteCollections'];
-    });
+    // this.activatedRoute.data.subscribe((data) => {
+    //   this.incompleteCollections = data['incompleteCollections'];
+    // });
 
     // process pagination params
     this.activatedRoute.queryParamMap
@@ -146,12 +160,16 @@ export class TradesComponent implements OnInit {
         this.isLoaded = true;
       });
 
-    if (this.authUser.accountTypeId == 1) {
-      this.loadAds();
-    }
+    // if (this.authUser.accountTypeId == 1) {
+    //   this.loadAds();
+    // }
+
+
   }
 
   loadAds() {
+    if (this.isAdsLoaded) return;
+
     this.uiSrv.loadAds().then(() => {
       this.isAdsLoaded = true;
     });

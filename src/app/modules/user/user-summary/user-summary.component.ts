@@ -1,83 +1,39 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-
-import { AuthService, DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
-import { UserOnlyService } from '../user-only.service';
-import { filter, Subscription, tap } from 'rxjs';
-import { UIService } from 'src/app/shared';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { Store } from '@ngrx/store';
+
+import { DEFAULT_USER_PROFILE_IMG } from 'src/app/core';
+import { UIService } from 'src/app/shared';
+import { userFeature } from '../store/user.state';
 
 @Component({
-    selector: 'app-user-summary',
-    templateUrl: './user-summary.component.html',
-    styleUrls: ['./user-summary.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        NgIf,
-        MatButtonModule,
-        RouterLink,
-        MatIconModule,
-        LazyLoadImageModule,
-    ],
+  selector: 'app-user-summary',
+  templateUrl: './user-summary.component.html',
+  styleUrls: ['./user-summary.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    RouterLink,
+    MatButtonModule,
+    MatIconModule,
+    LazyLoadImageModule,
+    AsyncPipe,
+  ],
 })
-export class UserSummaryComponent implements OnInit, OnDestroy {
+export class UserSummaryComponent {
   @Input() showBackButton = false;
-  user: User = {} as User;
-  authUser: User = {} as User;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
-  // isAdsLoaded = false;
-  isLoaded = false;
-  subs: Subscription = new Subscription();
 
-  constructor(
-    private userOnlySrv: UserOnlyService,
-    private authSrv: AuthService,
-    private uiSrv: UIService,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  user$ = this.store.select(userFeature.selectUser);
+  isLoaded$ = this.store.select(userFeature.selectIsLoaded);
 
-  ngOnInit(): void {
-    // get possible auth User
-    let authSub = this.authSrv.authUser
-      .pipe(
-        // tap((user) => {
-        //   if(!user.id || (user.accountTypeId == 1)) {
-        //     this.loadAds();
-        //   }
-        // }),
-        filter((user) => user.id != null)
-      )
-      .subscribe((user) => {
-        this.authUser = user;
-      });
-    this.subs.add(authSub);
-
-    // obtiene los datos del usuario consultado
-    let userSub = this.userOnlySrv.user$
-      .pipe(filter((user) => user.id != null))
-      .subscribe((user) => {
-        this.user = user;
-        this.isLoaded = true;
-      });
-    this.subs.add(userSub);
-  }
-
-  // loadAds() {
-  //   this.uiSrv.loadAds().then(() => {
-  //     this.isAdsLoaded = true;
-  //     this.cdr.markForCheck();
-  //   })
-  // }
+  constructor(private store: Store, private uiSrv: UIService) {}
 
   onShare(): void {
     this.uiSrv.shareUrl();
-  }
-
-  ngOnDestroy(): void {
-    this.subs.unsubscribe();
   }
 }

@@ -1,18 +1,22 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
+@if (!isLoaded) {
+<div class="loading-indicator">
     <mat-spinner aria-label="cargando"></mat-spinner>
 </div>
-<section *ngIf="isLoaded" class="trades trades-section">
+} @else {
+<section class="trades trades-section">
     <div class="trades-full flex-full">
         <h1>
-            <span class="color-accent" *ngIf="trades.totalTrades > 0">
+            <span class="color-accent">
                 {{ trades.totalTrades | number:'':'es' }}
             </span>
             Posibles cambios
         </h1>
-        <ng-container *ngIf="isAdsLoaded">
-            <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="4915176250" [adFormat]="'auto'"
-                [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
-        </ng-container>
+
+        @if (isAdsLoaded) {
+        <ng-adsense [adSlot]="4915176250" [adFormat]="'auto'" [display]="'block'" [fullWidthResponsive]="true"
+            [className]="'bga-hor'"></ng-adsense>
+        }
+
         <div class="card">
             <div class="controls-std">
                 <div class="controls-std-main">
@@ -29,8 +33,9 @@
                         <mat-form-field appearance="outline">
                             <mat-select [(value)]="usersFromSelected">
                                 <mat-option value="1">De todo el mundo!</mat-option>
-                                <mat-option value="2">De {{ authUser.location_country }}</mat-option>
-                                <mat-option value="3">De {{ authUser.location_city }}, {{ authUser.location_country }}
+                                <mat-option value="2">De {{ (authUser$ | async)?.location_country }}</mat-option>
+                                <mat-option value="3">De {{ (authUser$ | async)?.location_city }}, {{ (authUser$ |
+                                    async)?.location_country }}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -38,9 +43,11 @@
                             <mat-label>Colección</mat-label>
                             <mat-select [(value)]="userCollectionsSelected">
                                 <mat-option value="">Todas</mat-option>
-                                <mat-option *ngFor="let col of incompleteCollections" [value]="''+col.id">
+                                @for (col of incompleteCollections; track col.id) {
+                                <mat-option [value]="''+col.id">
                                     {{ col.name }} [{{ col.publisher.data.name }}]
                                 </mat-option>
+                                }
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -49,22 +56,25 @@
                             <mat-icon>manage_search</mat-icon> Buscar
                         </a>
                         <!-- <p>
-                            Registros {{ paginator.from | number:'':'es' }} a {{ paginator.to | number:'':'es' }}
-                        </p> -->
+                                Registros {{ paginator.from | number:'':'es' }} a {{ paginator.to | number:'':'es' }}
+                            </p> -->
                     </div>
                 </div>
             </div>
         </div>
 
-        <div *ngIf="(trades.totalUsers == 0) || (pageSelected > paginator.last_page)" class="card">
+        @if ((trades.totalUsers == 0) || (pageSelected > paginator.last_page)) {
+        <div class="card">
             <div class="empty-content">
                 <h2>(;—;)</h2>
                 <p>No encontramos posibles cambios para los filtros utilizados</p>
             </div>
         </div>
+        }
 
-        <div *ngIf="(trades.totalUsers > 0) && (pageSelected <= paginator.last_page)">
-            <div *ngIf="trades.uniqueTrades > 0" class="alert alert-info">
+        @if ((trades.totalUsers > 0) && (pageSelected <= paginator.last_page)) { <div>
+            @if (trades.uniqueTrades > 0) {
+            <div class="alert alert-info">
                 <div class="alert-container">
                     <div class="alert-content">
                         <!-- <div class="alert-title">Atención</div> -->
@@ -73,6 +83,7 @@
                     </div>
                 </div>
             </div>
+            }
 
             <div class="pagination-wrapper">
                 <ul class="pagination">
@@ -100,7 +111,8 @@
                 </ul>
             </div>
 
-            <div *ngFor="let user of trades.user" class="trades-details card">
+            @for (user of trades.user; track user.userData.id) {
+            <div class="trades-details card">
                 <div class="trades-user">
                     <div class="trades-user-info" [ngClass]="{'pro-account': user.userData.accountTypeId == 2}">
                         <div class="trades-user-main">
@@ -116,13 +128,19 @@
                                 <div class="trades-user-title">
                                     <a [routerLink]="['/user', user.userData.id]">
                                         {{ user.userData.displayName }}
-                                        <span *ngIf="user.userData.accountTypeId == 2" class="pro-label">PRO</span>
-                                        <span *ngIf="user.userData.positives > 0" class="positives-label">+{{
+                                        @if (user.userData.accountTypeId == 2) {
+                                        <span class="pro-label">PRO</span>
+                                        }
+                                        @if (user.userData.positives > 0) {
+                                        <span class="positives-label">+{{
                                             user.userData.positives
                                             }}</span>
-                                        <span *ngIf="user.userData.negatives > 0" class="negatives-label">-{{
+                                        }
+                                        @if (user.userData.negatives > 0) {
+                                        <span class="negatives-label">-{{
                                             user.userData.negatives
                                             }}</span>
+                                        }
                                     </a>
                                 </div>
                                 <div class="trades-user-meta custom-separator">
@@ -142,7 +160,8 @@
                     </div>
                 </div>
 
-                <div *ngFor="let col of user.collections" class="trades-collection">
+                @for (col of user.collections; track col.collectionData.id) {
+                <div class="trades-collection">
                     <div class="trades-collection-info">
                         <a
                             [routerLink]="['/c', col.collectionData.name + ' ' + col.collectionData.publisherName | slugify, col.collectionData.id]">
@@ -153,29 +172,42 @@
                         </a>
                     </div>
                     <div class="trades-list">
-                        <div *ngIf="col.totalSearching">
+                        @if (col.totalSearching) {
+                        <div>
                             Tiene <strong>{{ col.totalSearching }}</strong> ítems que tú buscas:
-                            <span *ngFor="let item of col.searching; last as isLast">
+                            @for (item of col.searching; track item.id; let isLast = $last) {
+                            <span>
                                 <span
-                                    [ngClass]="[authUser.accountTypeId == 2 ? 
-                                    'item-difficulty-' + item.difficultyCategoryId : '', item.unique ? 'item-unique' : '']">{{
+                                    [ngClass]="[(authUser$ | async)?.accountTypeId == 2 ? 
+                                                            'item-difficulty-' + item.difficultyCategoryId : '', item.unique ? 'item-unique' : '']">{{
                                     item.name
                                     }}</span>
-                                <span *ngIf="!isLast">, </span>
+                                @if (!isLast) { <span>, </span> }
                             </span>
+                            }
                         </div>
-                        <div *ngIf="col.totalTrading">
+                        }
+
+                        @if (col.totalTrading) {
+                        <div>
                             Busca <strong>{{ col.totalTrading }}</strong> ítems que tú cambias:
-                            <span *ngFor="let item of col.trading; last as isLast">
-                                <span [ngClass]="authUser.accountTypeId == 2 ? 
-                                    'item-difficulty-' + item.difficultyCategoryId : ''">{{ item.name
+                            @for (item of col.trading; track item.id; let isLast = $last) {
+                            <span>
+                                <span [ngClass]="(authUser$ | async)?.accountTypeId == 2 ? 
+                                                            'item-difficulty-' + item.difficultyCategoryId : ''">{{
+                                    item.name
                                     }}</span>
-                                <span *ngIf="!isLast">, </span>
+                                @if (!isLast) { <span>, </span> }
                             </span>
+                            }
                         </div>
+                        }
                     </div>
                 </div>
+                }
+
             </div>
+            }
 
             <div class="pagination-wrapper">
                 <ul class="pagination">
@@ -202,7 +234,9 @@
                     </li>
                 </ul>
             </div>
-        </div>
+    </div>
+    }
 
     </div>
 </section>
+}

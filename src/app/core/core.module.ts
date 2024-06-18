@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 
 import {
   ApiService,
+  AuthenticationService,
   AuthService,
   CollectionService,
   ItemService,
   JwtService,
   MediaService,
+  MessageService,
   NewCollectionService,
   PublisherService,
   ReportService,
@@ -22,12 +24,14 @@ import {
   providers: [
     ApiService,
     AuthService,
+    AuthenticationService,
     JwtService,
     SEOService,
 
     CollectionService,
     ItemService,
     MediaService,
+    MessageService,
     NewCollectionService,
     PublisherService,
     ReportService,

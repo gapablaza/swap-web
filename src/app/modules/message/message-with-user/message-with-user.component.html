@@ -1,15 +1,17 @@
 <div class="messages-page">
-    <div *ngIf="!isLoaded" class="loading-indicator">
+    @if (loading$ | async) {
+    <div class="loading-indicator">
         <mat-spinner aria-label="cargando"></mat-spinner>
     </div>
-    <section *ngIf="isLoaded" class="messages-conversation flex-full">
+    } @else {
+    <section class="messages-conversation flex-full">
         <div class="chat-container">
             <div class="chat-header">
                 <button mat-icon-button color="primary" [routerLink]="['../']">
                     <mat-icon>keyboard_backspace</mat-icon>
                 </button>
                 <div class="chat-header-user">
-                    <img [defaultImage]="defaultUserImage" [lazyLoad]="otherUser.image || defaultUserImage" 
+                    <img [defaultImage]="defaultUserImage" [lazyLoad]="otherUser.image || defaultUserImage"
                         alt="Imagen de Perfil" crossorigin="anonymous">
                     <h3>{{ otherUser.displayName }}</h3>
                 </div>
@@ -18,25 +20,32 @@
                 </button>
                 <mat-menu #menu="matMenu">
                     <button mat-menu-item [routerLink]="['/user', otherUser.id]">Ver perfil</button>
-                    <button mat-menu-item *ngIf="!isArchived && usersMessages.length" (click)="onArchive()">Archivar conversación</button>
+                    @if (!(isArchived$ | async) && (usersMessages$ | async)?.length) {
+                    <button mat-menu-item (click)="onArchive()">Archivar conversación</button>
+                    }
                 </mat-menu>
             </div>
             <div class="chat-content">
                 <div class="chat-messages">
-                    <ng-container *ngFor="let message of usersMessages">
-                        <div *ngIf="message.newDate" class="chat-date-separator">
+                    @for (message of usersMessages$ | async; track message.timestamp) {
+                        @if (message.newDate) {
+                        <div class="chat-date-separator">
                             <div class="chat-date-separator-line"></div>
                             <span>{{ message.timestamp | date:'dd/MM/YYYY' }}</span>
                             <div class="chat-date-separator-line"></div>
                         </div>
-                        <div class="chat-message" [ngClass]="message.fromUserId == authUser.id ? 'me' : 'other'">
+                        }
+                        <div class="chat-message"
+                            [ngClass]="message.fromUserId == (authUser$ | async)?.id ? 'me' : 'other'">
                             <div class="chat-message-text">
                                 <span>{{ message.body }}</span>
                             </div>
                             <div class="chat-message-date">{{ message.timestamp | date:'HH:mm' }}</div>
                         </div>
-                    </ng-container>
-                    <div *ngIf="!usersMessages.length" class="alert alert-warning">
+                    }
+
+                    @if (!(usersMessages$ | async)?.length) {
+                    <div class="alert alert-warning">
                         <div class="alert-container">
                             <div class="alert-content">
                                 <div class="alert-message">
@@ -46,7 +55,10 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="isArchived && !otherUser.disabled" class="alert alert-info">
+                    }
+
+                    @if ((isArchived$ | async) && !otherUser.disabled) {
+                    <div class="alert alert-info">
                         <div class="alert-container">
                             <div class="alert-content">
                                 <div class="alert-message">
@@ -56,7 +68,10 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="otherUser.disabled" class="alert alert-warning">
+                    }
+
+                    @if (otherUser.disabled) {
+                    <div class="alert alert-warning">
                         <div class="alert-container">
                             <div class="alert-content">
                                 <div class="alert-message">
@@ -66,14 +81,15 @@
                             </div>
                         </div>
                     </div>
+                    }
                 </div>
             </div>
             <div class="chat-inputs">
                 <div class="chat-inputs-icons"></div>
                 <div class="chat-inputs-text">
                     <input placeholder="Escribe un mensaje aquí" type="text" maxlength="500" autocomplete="off"
-                        [disabled]="otherUser.disabled || authUser.disabled" [(ngModel)]="newMessageText"
-                        (keyup.enter)="onSend()">
+                        [disabled]="otherUser.disabled || !!((authUser$ | async)?.disabled)"
+                        [(ngModel)]="newMessageText" (keyup.enter)="onSend()">
                 </div>
                 <div class="chat-inputs-send">
                     <button mat-icon-button aria-label="Enviar" (click)="onSend()">
@@ -83,4 +99,5 @@
             </div>
         </div>
     </section>
+    }
 </div>

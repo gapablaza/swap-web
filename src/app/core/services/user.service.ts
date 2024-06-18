@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {
   Collection,
   CollectionUserData,
   Evaluation,
+  EvaluationsApiResponse,
   Media,
   Trades,
   TradesUser,
@@ -39,6 +40,41 @@ export class UserService {
 
         tempUser = {
           ...(data.data as User),
+          userSummary: tempUserSummary,
+        };
+
+        return tempUser;
+      })
+    );
+  }
+
+  profile(userId: number): Observable<User> {
+    return combineLatest([
+      this.apiSrv
+        .get('/v2/users/' + userId + '/medias?include=collection.publisher')
+        .pipe(map((data) => data.data as Media[])),
+      this.apiSrv
+        .get('/v2/users/' + userId)
+        .pipe(map((data: { data: any }) => data.data)),
+    ]).pipe(
+      map(([medias, userData]) => {
+        let tempUser: User = {} as User;
+        let tempUserSummary: UserSummary = {} as UserSummary;
+
+        tempUserSummary = {
+          collections: userData.collections,
+          completed: userData.completedCollections,
+          negatives: userData.negatives,
+          positives: userData.positives,
+          trading: userData.trading,
+          wishing: userData.wishing,
+          contributions: medias.filter((m) => {
+            return m.mediaTypeId == 1 && m.mediaStatusId == 2;
+          }).length,
+        };
+
+        tempUser = {
+          ...(userData as User),
           userSummary: tempUserSummary,
         };
 
@@ -103,16 +139,7 @@ export class UserService {
       );
   }
 
-  getEvaluations(userId: number): Observable<{
-    evaluations: Evaluation[];
-    disabled: boolean;
-    disabledData?: {
-      disabledForAntiquity: boolean | number;
-      disabledForTime: boolean | number;
-      disabledForUser: boolean;
-      disabledUser: boolean;
-    };
-  }> {
+  getEvaluations(userId: number): Observable<EvaluationsApiResponse> {
     return this.apiSrv
       .get('/v2/users/' + userId + '/evaluations?include=user')
       .pipe(
@@ -196,6 +223,24 @@ export class UserService {
     return this.apiSrv
       .get('/v2/users/' + userId + '/medias?include=collection.publisher')
       .pipe(map((data) => data.data));
+  }
+
+  getBlacklist(): Observable<User[]> {
+    return this.apiSrv
+      .get(`/v2/me/blacklist`)
+      .pipe(map((resp: { data: User[] }) => resp.data));
+  }
+
+  addToBlacklist(userId: number): Observable<string> {
+    return this.apiSrv
+      .post(`/v2/me/blacklist/${userId}`)
+      .pipe(map((data: { message: string }) => data.message));
+  }
+
+  removeFromBlacklist(userId: number): Observable<string> {
+    return this.apiSrv
+      .delete(`/v2/me/blacklist/${userId}`)
+      .pipe(map((data: { message: string }) => data.message));
   }
 
   getTradesWithAuthUser(userId: number): Observable<TradesWithUser> {

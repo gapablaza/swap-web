@@ -64,7 +64,7 @@
         <mat-icon>search</mat-icon>
       </a>
     </li>
-    <li *ngIf="!isAuth"><a routerLink="/login">Ingresar</a></li>
+    <li *ngIf="!(isAuth$ | async)"><a routerLink="/login">Ingresar</a></li>
     <!-- <li *ngIf="isAuth">
       <a style="cursor:pointer" (click)="onLogout()">Salir</a>
     </li> -->

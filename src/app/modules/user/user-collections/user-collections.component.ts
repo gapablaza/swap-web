@@ -5,13 +5,12 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-
-import { concatMap, filter, map, Subscription, tap } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { combineLatest, map, Subscription, tap } from 'rxjs';
 import orderBy from 'lodash/orderBy';
-
 import {
   MatSlideToggleChange,
   MatSlideToggleModule,
@@ -31,19 +30,18 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import {
-  AuthService,
   Collection,
   DEFAULT_COLLECTION_IMG,
   DEFAULT_USER_PROFILE_IMG,
   SEOService,
-  User,
-  UserService,
 } from 'src/app/core';
-import { UserOnlyService } from '../user-only.service';
 import { SlugifyPipe } from '../../../shared/pipes/slugify.pipe';
 import { SanitizeHtmlPipe } from '../../../shared/pipes/sanitize-html.pipe';
 import { UserSummaryComponent } from '../user-summary/user-summary.component';
 import { UserCollectionDetailsComponent } from '../user-collection-details/user-collection-details.component';
+import { userFeature } from '../store/user.state';
+import { authFeature } from '../../auth/store/auth.state';
+import { userActions } from '../store/user.actions';
 
 @Component({
   selector: 'app-user-collections',
@@ -52,12 +50,10 @@ import { UserCollectionDetailsComponent } from '../user-collection-details/user-
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    NgIf,
     MatProgressSpinnerModule,
     UserSummaryComponent,
     MatFormFieldModule,
     MatSelectModule,
-    NgFor,
     MatOptionModule,
     MatButtonModule,
     MatIconModule,
@@ -70,13 +66,16 @@ import { UserCollectionDetailsComponent } from '../user-collection-details/user-
     LazyLoadImageModule,
     SanitizeHtmlPipe,
     SlugifyPipe,
+    AsyncPipe,
   ],
 })
 export class UserCollectionsComponent implements OnInit, OnDestroy {
-  user: User = {} as User;
-  showEditButton = false;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   defaultCollectionImage = DEFAULT_COLLECTION_IMG;
+
+  authUser$ = this.store.select(authFeature.selectUser);
+  user$ = this.store.select(userFeature.selectUser);
+  collections$ = this.store.select(userFeature.selectCollections);
   collections: Collection[] = [];
   showedCollections: Collection[] = [];
 
@@ -114,77 +113,62 @@ export class UserCollectionsComponent implements OnInit, OnDestroy {
       arrayOrders: ['asc', 'asc'],
     },
   ];
-  hideCompleted = false;
+
   showFilters = false;
+  hideCompleted = false;
+  showEditButton = false;
+  isLoaded$ = this.store.select(userFeature.selectIsCollectionsLoaded);
   subs: Subscription = new Subscription();
-  isLoaded = false;
 
   constructor(
-    private userSrv: UserService,
-    private userOnlySrv: UserOnlyService,
-    private authSrv: AuthService,
+    private store: Store,
     private SEOSrv: SEOService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    let userSub = this.userOnlySrv.user$
+    this.store.dispatch(userActions.loadUserCollections());
+
+    let colSubs = combineLatest([this.user$, this.collections$, this.authUser$])
       .pipe(
-        filter((user) => user.id != null),
-        tap((user) => {
+        tap(([user, collections, authUser]) => {
           this.SEOSrv.set({
             title: `Colecciones agregadas por ${user.displayName} (ID ${user.id}) - Intercambia Láminas`,
             description: `Revisa el detalle de las colecciones agregadas por ${user.displayName} (ID ${user.id}).`,
             isCanonical: true,
           });
-          this.user = user;
+
+          if (authUser && authUser.id == user.id) {
+            this.showEditButton = true;
+          } else {
+            this.showEditButton = false;
+          }
         }),
-        concatMap((user) =>
-          this.userSrv.getCollections(user.id).pipe(
-            map((data: { collections: Collection[]; trades: any }) => {
-              return data.collections;
-            })
-          )
-        )
+        map(([user, collections, authUser]) => collections)
       )
       .subscribe((collections) => {
         this.collections = [...collections];
         this.showedCollections = [...collections];
         this.sortShowedCollections();
 
-        this.isLoaded = true;
         this.cdr.markForCheck();
       });
-    this.subs.add(userSub);
-
-    let authSub = this.authSrv.authUser
-      .pipe(filter((authUser) => authUser.id != null))
-      .subscribe((authUser) => {
-        this.showEditButton = authUser.id == this.user.id;
-      });
-    this.subs.add(authSub);
+    this.subs.add(colSubs);
   }
 
   onOpenDetails(col: Collection) {
     const dialogConfig = new MatDialogConfig();
-
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
     dialogConfig.panelClass = ['user-collection'];
     dialogConfig.width = '80%';
     dialogConfig.maxWidth = '1280px';
-
     dialogConfig.data = {
-      user: this.user,
+      // user: this.user,
       collection: col,
     };
-
     this.dialog.open(UserCollectionDetailsComponent, dialogConfig);
-  }
-
-  trackByCollection(index: number, item: Collection): number {
-    return item.id;
   }
 
   onFilter() {

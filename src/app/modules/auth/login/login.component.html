@@ -32,7 +32,7 @@
         </p>
 
         <button type="submit" mat-raised-button color="accent" class="button-large"
-          [disabled]="f.invalid || isLoading">Ingresar</button>
+          [disabled]="f.invalid || (isLoading$ | async)">Ingresar</button>
       </form>
 
       <div class="text-with-bg-line">
@@ -43,7 +43,6 @@
 
       <ul class="social-links">
         <li>
-          <!-- <google-button [selectable]="true"></google-button> -->
           <asl-google-signin-button type='standard' size='large' width='200px' theme='filled_blue'>
           </asl-google-signin-button>
         </li>
@@ -55,7 +54,7 @@
           </button>
         </li> -->
         <li>
-          <button mat-raised-button aria-label="Ingresar con Facebook" (click)="signInWithFB()" [disabled]="isLoading">
+          <button mat-raised-button aria-label="Ingresar con Facebook" (click)="signInWithFB()" [disabled]="isLoading$ | async">
             <mat-icon>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                 <path

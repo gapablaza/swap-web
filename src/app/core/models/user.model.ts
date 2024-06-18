@@ -16,6 +16,7 @@ export interface UserSummary {
   relevance?: number;
   trading?: number;
   wishing?: number;
+  contributions?: number;
 }
 
 export interface User {

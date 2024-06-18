@@ -10,7 +10,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { filter, from, Subscription, switchMap, take } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {
@@ -19,9 +19,12 @@ import {
   SocialAuthService,
   GoogleSigninButtonModule,
 } from '@abacritt/angularx-social-login';
+import { Store } from '@ngrx/store';
 
 import { AuthService } from 'src/app/core';
 import { SocialModule } from 'src/app/shared';
+import { authActions } from '../store/auth.actions';
+import { authFeature } from '../store/auth.state';
 
 @Component({
   selector: 'app-login',
@@ -32,6 +35,7 @@ import { SocialModule } from 'src/app/shared';
     RouterLink,
     FormsModule,
     NgIf,
+    AsyncPipe,
 
     SocialModule,
     GoogleSigninButtonModule,
@@ -46,13 +50,15 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   returnUrl = '/';
   isLoading = false;
+  isLoading$ = this.store.select(authFeature.selectLoading);
   subs: Subscription = new Subscription();
 
   constructor(
     private authSrv: AuthService,
     private socialSrv: SocialAuthService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private store: Store
   ) {}
 
   ngOnInit(): void {
@@ -65,41 +71,27 @@ export class LoginComponent implements OnInit, OnDestroy {
       }),
     });
 
-    let socialSub = this.socialSrv.authState
-      .pipe(
-        filter((user) => user != null && user.provider == 'GOOGLE'),
-        switchMap((user) => this.authSrv.googleIdLogin(user.id))
-      )
-      .subscribe((resp) => {
-        if (resp) {
-          this.redirectOnLogin();
-        }
-      });
-    this.subs.add(socialSub);
+    // let socialSub = this.socialSrv.authState
+    //   .pipe(
+    //     filter((user) => user != null && user.provider == 'GOOGLE'),
+    //     switchMap((user) => this.authSrv.googleIdLogin(user.id))
+    //   )
+    //   .subscribe((resp) => {
+    //     if (resp) {
+    //       this.redirectOnLogin();
+    //     }
+    //   });
+    // this.subs.add(socialSub);
 
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   onSubmit(f: NgForm) {
-    this.isLoading = true;
-
-    this.authSrv
-      .emailLogin(f.value.email, f.value.password)
-      .pipe(take(1))
-      .subscribe({
-        next: (resp) => {
-          if (resp) {
-            this.redirectOnLogin();
-          }
-
-          this.isLoading = false;
-        },
-        error: (err) => {
-          console.log(err);
-          this.isLoading = false;
-        },
-      });
+    this.store.dispatch(authActions.loginWithEmail({
+      email: f.value.email,
+      password: f.value.password,
+    }));
   }
 
   signInWithFB(): void {

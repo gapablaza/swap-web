@@ -18,7 +18,7 @@ import {
   Suggest,
 } from 'src/app/core';
 import { UIService } from 'src/app/shared';
-import { NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -35,6 +35,9 @@ import {
   tap,
 } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { Store } from '@ngrx/store';
+
+import { authFeature } from '../../auth/store/auth.state';
 
 @Component({
   selector: 'app-header',
@@ -51,6 +54,7 @@ import { FormsModule } from '@angular/forms';
     RouterLink,
     NgIf,
     NgFor,
+    AsyncPipe,
   ],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
@@ -62,11 +66,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isSearching = false;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
 
-  isAuth = false;
+  // isAuth = false;
+  isAuth$ = this.store.select(authFeature.selectIsAuth);
   subs: Subscription = new Subscription();
 
   constructor(
-    private authSrv: AuthService,
+    // private authSrv: AuthService,
+    private store: Store,
     private searchSrv: SearchService,
     private router: Router,
     private uiSrv: UIService,
@@ -74,10 +80,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.authSrv.isAuth.subscribe((authState) => {
-      this.isAuth = authState;
-      this.cdr.markForCheck();
-    });
+    // this.authSrv.isAuth.subscribe((authState) => {
+    //   this.isAuth = authState;
+    //   this.cdr.markForCheck();
+    // });
 
     const focusoutSub = fromEvent(this.suggestInput.nativeElement, 'focusout')
       .pipe(delay(200))
