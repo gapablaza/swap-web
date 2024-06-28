@@ -1,8 +1,10 @@
 <div class="collection-visual">
     <div class="collection-links">
-        <a *ngIf="showBackButton" class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
-            <mat-icon>arrow_back</mat-icon> Volver
-        </a>
+        @if (showBackButton) {
+            <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+                <mat-icon>arrow_back</mat-icon> Volver
+            </a>
+        }
         <a class="btn" mat-stroked-button (click)="onShare()">
             <mat-icon>share</mat-icon> Compartir
         </a>
@@ -11,7 +13,7 @@
     <div class="collection-content">
         <div class="collection-imagen-container">
             <img class="collection-image" [src]="collection.image || defaultCollectionImage"
-                [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous"
+                [alt]="collection.name + ' de ' + publisher.name" crossorigin="anonymous"
                 fetchpriority="high">
             <!-- <img class="collection-image" [defaultImage]="defaultCollectionImage"
                 [lazyLoad]="collection.image || defaultCollectionImage"
@@ -19,7 +21,7 @@
         </div>
         <div class="collection-data">
             <h1 class="">{{ collection.name }}</h1>
-            <p class="subtitle">{{ collection.publisher.data.name }}, {{ collection.year }}</p>
+            <p class="subtitle">{{ publisher.name }}, {{ collection.year }}</p>
         </div>
     </div>
 </div>

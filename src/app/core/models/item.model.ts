@@ -9,6 +9,7 @@ export interface Item {
   itemTypeId: number | null,
   name: string,
   position?: number,
+  section?: string,
   quantity?: number,
   tradelist?: boolean,
   tradelistQuantity?: number,

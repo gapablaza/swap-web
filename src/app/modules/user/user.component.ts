@@ -1,23 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
-import { AsyncPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
 
-import { UserOnlyService } from './user-only.service';
 import { userActions } from './store/user.actions';
 import { Subscription, map } from 'rxjs';
-import { userFeature } from './store/user.state';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss'],
-  providers: [UserOnlyService],
   standalone: true,
-  imports: [RouterOutlet, AsyncPipe],
+  imports: [RouterOutlet],
 })
 export class UserComponent implements OnInit, OnDestroy {
-  isLoaded$ = this.store.select(userFeature.selectIsLoaded);
   subs: Subscription = new Subscription();
 
   constructor(

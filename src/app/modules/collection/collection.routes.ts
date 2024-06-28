@@ -1,12 +1,21 @@
 import { Routes } from '@angular/router';
+import { provideState } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
 
 import { authorizedGuard } from 'src/app/core';
 import { CollectionComponent } from './collection.component';
 import { CollectionResolver } from './collection-resolver.service';
+import { collectionFeature } from './store/collection.state';
+import { CollectionEffects } from './store/collection.effects';
 
 export const COLLECTION_ROUTES: Routes = [
   {
     path: ':name/:id',
+    providers: [
+      CollectionResolver,
+      provideState(collectionFeature),
+      provideEffects(CollectionEffects),
+    ],
     component: CollectionComponent,
     resolve: {
       collectionData: CollectionResolver,

@@ -1,48 +1,42 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Subscription, map } from 'rxjs';
 
-import { CollectionOnlyService } from './collection-only.service';
-import { Subscription } from 'rxjs';
+import { collectionActions } from './store/collection.actions';
 
 @Component({
-    selector: 'app-collection',
-    templateUrl: './collection.component.html',
-    providers: [CollectionOnlyService],
-    styleUrls: ['./collection.component.scss'],
-    standalone: true,
-    imports: [RouterOutlet],
+  selector: 'app-collection',
+  templateUrl: './collection.component.html',
+  standalone: true,
+  imports: [RouterOutlet],
 })
 export class CollectionComponent implements OnInit, OnDestroy {
   subs: Subscription = new Subscription();
 
   constructor(
     private route: ActivatedRoute,
-    private colOnlySrv: CollectionOnlyService,
+    private store: Store
   ) {}
 
   ngOnInit(): void {
-    this.colOnlySrv.cleanCurrentCollection();
-    // this.route.paramMap
-    //   .pipe(
-    //     switchMap(paramMap => {
-    //       this.collectionId = Number(paramMap.get('id'));
-    //       return this.colSrv.get(this.collectionId);
-    //     })
-    //   )
-    //   .subscribe(col => {
-    //     console.log('from CollectionComponent', col);
-    //     this.colOnlySrv.setCurrentCollection(col);
-    //     this.collection = col;
-    //   });
+    let routeSub = this.route.paramMap
+      .pipe(
+        map((paramMap) => {
+          let collectionId = paramMap.get('id');
+          return +(collectionId || 0);
+        })
+      )
+      .subscribe((collectionId) => {
+        this.store.dispatch(collectionActions.loadData({ collectionId }));
+      });
 
-    // TO DO: Manejar el caso cuando no se encuentre la colección solicitada
-    let routeSub = this.route.data.subscribe((data) => {
-      this.colOnlySrv.setCurrentCollection(data['collectionData']['collection']);
-    });
     this.subs.add(routeSub);
+    // TO DO: Manejar el caso cuando no se encuentre la colección solicitada
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+    this.store.dispatch(collectionActions.cleanData());
   }
 }

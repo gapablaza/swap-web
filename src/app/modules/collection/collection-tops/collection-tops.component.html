@@ -1,72 +1,11 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-    <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="collection collection-section">
-    <app-collection-summary [showBackButton]="true"></app-collection-summary>
-    <div class="collection-tops flex-full">
-        <h1>
-            TOPS - Ítems por dificultad
-        </h1>
-        <div class="card">
-            <div class="empty-content" *ngIf="authUser.accountTypeId == 1">
-                <h2>(¬‿¬)</h2>
-                <p>Sólo los usuarios PRO tienen acceso a esta clasificación!</p>
-                <a class="btn" mat-raised-button color="accent" [routerLink]="['/collaborate']">
-                    <mat-icon>add</mat-icon>
-                    INFO
-                </a>
-            </div>
-
-            <div *ngIf="authUser.accountTypeId == 2">
-                <div class="empty-content" *ngIf="!topsAvailable">
-                    <h2>(≥o≤)</h2>
-                    <p>Se requieren mas coleccionistas activos para poder calcular los índices de dificultad.</p>
-                </div>
-
-                <div *ngIf="topsAvailable">
-                    <div class="tops-buttons">
-                        <button mat-button (click)="accordion.openAll()">
-                            Expandir Todo
-                        </button>
-                        <button mat-button (click)="accordion.closeAll()">
-                            Colapsar Todo
-                        </button>
-                    </div>
-
-                    <mat-accordion multi>
-                        <mat-expansion-panel *ngFor="let cat of categories">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                    {{ cat.name }} ({{ cat.quantity }})
-                                </mat-panel-title>
-                            </mat-expansion-panel-header>
-
-                            <div>
-                                <span *ngFor="let item of cat.items; last as isLast">
-                                    <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name
-                                        }}</span>
-                                    <span *ngIf="!isLast">, </span>
-                                </span>
-                            </div>
-                        </mat-expansion-panel>
-                    </mat-accordion>
-                </div>
-
-                <div class="alert alert-info">
-                    <div class="alert-container">
-                        <div class="alert-content">
-                            <!-- <div class="alert-title">Atención</div> -->
-                            <div class="alert-message">
-                                Revisa <a
-                                    href="https://trello.com/c/QRvIcc3x/8-ayudar-a-hacer-mejores-cambios-indicando-la-dificultad-de-las-l%C3%A1minas-en-los-posibles-cambios"
-                                    target="_blank" rel="noopener noreferrer">aquí</a> para ver mas detalles de la
-                                lógica usada para
-                                categorizar los ítems de la colección por dificultad.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+<section class="collection collection-section">
+    <app-collection-summary [collection]="(collection$ | async)!" [showBackButton]="true"></app-collection-summary>
+    @if (isLoaded$ | async) {
+    <app-collection-tops-categories [authUser]="(authUser$ |async)!"
+        [tops]="(tops$ | async)!"></app-collection-tops-categories>
+    } @else {
+    <div class="loading-indicator">
+        <mat-spinner aria-label="cargando"></mat-spinner>
     </div>
+    }
 </section>

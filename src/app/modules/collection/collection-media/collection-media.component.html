@@ -1,9 +1,19 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-  <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="collection collection-section">
-  <app-collection-summary [showBackButton]="true"></app-collection-summary>
-  <div class="collection-media flex-full">
+<section class="collection collection-section">
+  <app-collection-summary [collection]="(collection$ | async)!" [showBackButton]="true"></app-collection-summary>
+  @if (isLoaded$ | async) {
+    <div class="collection-media flex-full">
+      <app-collection-media-grid
+        [collection]="(collection$ | async)!"
+        [media]="(medias$ | async)!"
+        [isProcessing]="(isProcessing$ | async)!"
+      ></app-collection-media-grid>
+    </div>
+  } @else {
+    <div class="loading-indicator">
+      <mat-spinner aria-label="cargando"></mat-spinner>
+    </div>
+  }
+  <!-- <div class="collection-media flex-full">
     <h1>Elementos multimedia</h1>
 
     <ng-container *ngIf="imagesForModeration.length">
@@ -116,15 +126,5 @@
       </div>
     </div>
 
-  </div>
+  </div> -->
 </section>
-<!-- <ng-template #itemTemplate
-             let-index="index"
-             let-type="type"
-             let-data="data"
-             let-currIndex="currIndex">
-  <span *ngIf="type === 'image' && index === currIndex" 
-        class="item-text">
-    {{data?.text}}
-  </span>
-</ng-template> -->

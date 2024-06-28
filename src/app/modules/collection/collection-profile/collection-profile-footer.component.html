@@ -1,0 +1,11 @@
+@if (collection.description) {
+<ng-container>
+    <div class="collection-description" [innerHTML]="collection.description | markdown">
+    </div>
+</ng-container>
+}
+<div class="collection-publisher">
+    <a [routerLink]="['/publishers', collection.publisher.data.id, collection.publisher.data.name | slugify]">
+        {{ collection.publisher.data.name }}
+    </a>
+</div>

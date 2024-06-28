@@ -1,185 +1,114 @@
-<section *ngIf="isLoaded else loading" class="collection">
+@if (isLoaded$ | async) {
+<section class="collection">
+  <div class="collection-info card">
+
+    <app-collection-profile-header [collection]="(collection$ | async)!" [isAuth]="(isAuth$ | async)!"
+      [isProcessing]="(isProcessing$ | async)!" (onAdd)="onAdd()" (onConfirmDelete)="onConfirmDelete()"
+      (onComplete)="onComplete($event)" (onShare)="onShare()"></app-collection-profile-header>
+
+    @if ((collection$ | async )!.userData?.collecting) {
+    <app-collection-profile-trades [collection]="(collection$ | async)!"
+      [items]="(items$ | async)!"></app-collection-profile-trades>
+    }
+
+    <app-collection-profile-sections [collection]="(collection$ | async)!" [lastCollectors]="(lastCollectors$ | async)!"
+      [lastMedia]="(lastMedia$ | async)!" [isAuth]="(isAuth$ | async)!"></app-collection-profile-sections>
+
+    <app-collection-profile-footer [collection]="(collection$ | async)!"></app-collection-profile-footer>
+
+  </div>
+</section>
+} @else {
+<section class="collection">
   <div class="collection-info card">
 
     <div class="collection-header">
-      <!-- <div class="collection-image-background" [lazyLoad]="collection.image || defaultCollectionImage"></div> -->
-      <div class="collection-image-background"
-        [style]="'background-image: url(' + (collection.image || defaultCollectionImage) + ');'"></div>
+      <div class="collection-image-background" style="background-image: url('/assets/img/profile_collection.jpeg')">
+      </div>
       <div class="collection-subheader">
         <div class="collection-image-container">
-          <img class="collection-image" [src]="collection.image || defaultCollectionImage"
-            [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous"
-            fetchpriority="high">
-          <!-- <img class="collection-image" [defaultImage]="defaultCollectionImage"
-            [lazyLoad]="collection.image || defaultCollectionImage"
-            [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous" fetchpriority="high"> -->
-
-          <div *ngIf="collection.userData?.completed" class="ribbon up">
-            <div class="content">
-              <svg width="18px" height="18px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check"
-                class="svg-inline--fa fa-check fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512">
-                <path fill="currentColor"
-                  d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z">
-                </path>
-              </svg>
-            </div>
-          </div>
-
+          <img class="collection-image" src="/assets/img/profile_collection.jpeg">
         </div>
         <div class="collection-actions">
-          <button *ngIf="authUser.id && !collection.userData?.collecting" (click)="onAdd()" [disabled]="isSaving"
-            mat-raised-button color="accent">
-            <mat-icon>add</mat-icon> Agregar
-          </button>
-          <a *ngIf="authUser.id && collection.userData?.collecting" class="btn" mat-raised-button color="accent"
-            [routerLink]="['manage']">
-            <mat-icon>edit</mat-icon> Editar
-          </a>
-          <button mat-stroked-button [matMenuTriggerFor]="menu" aria-label="Opciones">
+          <button mat-stroked-button aria-label="Opciones">
             <mat-icon class="only-icon-button">more_vert</mat-icon>
           </button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="onShare()">Compartir</button>
-            <button *ngIf="authUser.id && collection.userData?.collecting && !collection.userData?.completed"
-              (click)="onComplete(true)" [disabled]="isSaving" mat-menu-item>
-              Marcar como Completa</button>
-            <button *ngIf="authUser.id && collection.userData?.collecting && collection.userData?.completed"
-              (click)="onComplete(false)" [disabled]="isSaving" mat-menu-item>
-              Desmarcar como Completa</button>
-            <button *ngIf="authUser.id && collection.userData?.collecting" (click)="onDelete()" [disabled]="isSaving"
-              mat-menu-item>Quitar
-              Colección</button>
-          </mat-menu>
         </div>
       </div>
     </div>
 
     <div class="collection-main">
-      <h1>{{ collection.name }}</h1>
-      <p class="subtitle">{{ collection.publisher.data.name }}, {{ collection.year }}</p>
+      <h1>Cargando nombre de la colección</h1>
+      <p class="subtitle">Cargando editorial, cargando año</p>
     </div>
-
-    <!-- <ng-container *ngIf="isAdsLoaded">
-      <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="9177899059" [adFormat]="'auto'"
-        [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
-    </ng-container> -->
-
-    <!-- <hr /> -->
-    <mat-accordion *ngIf="collection.userData?.collecting">
-      <mat-expansion-panel expanded="true" class="trades">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Tus listados
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-
-        <div class="trades-collection">
-          <div class="trades-list">
-            <div>
-              Estás buscando <strong>{{ collection.userData?.wishing || 0 }}</strong> ítems:
-              <span *ngFor="let item of userWishing; last as isLast">
-                <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
-                <span>
-                  {{ item.name }}<span *ngIf="item.wishlistQuantity && (item.wishlistQuantity > 1)">({{
-                    item.wishlistQuantity }})</span>
-                </span>
-                <span *ngIf="!isLast">, </span>
-              </span>
-            </div>
-            <div>
-              Tienes <strong>{{ collection.userData?.trading || 0 }}</strong> ítems para cambiar:
-              <span *ngFor="let item of userTrading; last as isLast">
-                <span>
-                  <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
-                  {{ item.name }}<span *ngIf="item.tradelistQuantity && (item.tradelistQuantity > 1)">({{
-                    item.tradelistQuantity }})</span>
-                </span>
-                <span *ngIf="!isLast">, </span>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- <div class="difficulty-explanation">
-        <p>
-          Los colores sirven para indicar la dificultad de conseguir el ítem de acuerdo a lo siguiente:
-          <br />
-          <span class="item-difficulty-5">Muy Difícil</span>, 
-          <span class="item-difficulty-4">Difícil</span>, 
-          <span class="item-difficulty-3">Rara</span>, 
-          <span class="item-difficulty-2">Infrecuente</span>, 
-          <span class="item-difficulty-1">Común</span> 
-          y <span class="item-difficulty-0">Por categorizar</span>.
-        </p>
-        <p>
-          Revisa <a href="https://trello.com/c/QRvIcc3x/8-ayudar-a-hacer-mejores-cambios-indicando-la-dificultad-de-las-l%C3%A1minas-en-los-posibles-cambios" target="_blank" rel="noopener noreferrer">aquí</a> para ver mas detalles de la lógica usada para categorizar los ítems de la colección por dificultad.
-        </p>
-      </div> -->
-
-      </mat-expansion-panel>
-      <mat-expansion-panel class="">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Tu comentario público
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <p *ngIf="collection.userData?.publicComment">
-          {{ collection.userData?.publicComment }}
-        </p>
-        <p *ngIf="!collection.userData?.publicComment">
-          <i>No has ingresado un comentario público en esta colección</i>
-        </p>
-      </mat-expansion-panel>
-    </mat-accordion>
 
     <h2>Secciones</h2>
     <ul class="nav-vert-std">
       <li>
-        <a class="nav-vert-std-a" [routerLink]="['./items']">
+        <a class="nav-vert-std-a">
           <div>
             Tiene
-            <strong *ngIf="collection.items">{{ collection.items }}</strong>
-            <strong *ngIf="!collection.items">???</strong>
-            ítems (láminas | stickers | figuritas | estampas | cromos | cartas)
-          </div>
-          <mat-icon>navigate_next</mat-icon>
-        </a>
-      </li>
-      <li *ngIf="authUser.id">
-        <a class="nav-vert-std-a" [routerLink]="['./tops']">
-          <div>
-            <strong>TOP</strong> ítems <span class="pro-label">PRO</span> (clasificados por dificultad)
+            <strong>???</strong>
+            ítems (láminas | stickers | figuritas | estampas | cromos)
           </div>
           <mat-icon>navigate_next</mat-icon>
         </a>
       </li>
       <li>
-        <a class="nav-vert-std-a" [routerLink]="['./users']">
+        <a class="nav-vert-std-a">
           <div>
-            <strong>{{ collection.totalCollecting }}</strong> usuarios lo coleccionan
+            <strong>???</strong> usuarios lo coleccionan
           </div>
           <mat-icon>navigate_next</mat-icon>
         </a>
       </li>
     </ul>
 
-    <ul *ngIf="lastCollectors.length >= 6" class="user-card-list">
-      <li *ngFor="let user of lastCollectors" class="user-card card">
-        <a [routerLink]="['/user', user.id]">
-          <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || '/assets/img/profile_user.png'"
-            [alt]="'Perfil público de ' + user.displayName" [title]="'Perfil público de ' + user.displayName"
-            class="user-card-image" crossorigin="anonymous">
-          <h3 class="user-card-title">{{ user.displayName }}</h3>
+    <ul class="user-card-list">
+      <li class="user-card card">
+        <a>
+          <img src="/assets/img/profile_user.png" class="user-card-image">
+          <h3 class="user-card-title">Cargando nombre</h3>
         </a>
-        <p class="user-card-subtitle">{{ user.location }}</p>
-        <!-- <hr />
-        <div class="user-card-info">
-          <span appDaysSinceLogin="{{ user.daysSinceLogin }}" [preText]="'Actualizado '"></span>
-        </div> -->
+        <p class="user-card-subtitle">Cargando ubicación</p>
+      </li>
+      <li class="user-card card">
+        <a>
+          <img src="/assets/img/profile_user.png" class="user-card-image">
+          <h3 class="user-card-title">Cargando nombre</h3>
+        </a>
+        <p class="user-card-subtitle">Cargando ubicación</p>
+      </li>
+      <li class="user-card card">
+        <a>
+          <img src="/assets/img/profile_user.png" class="user-card-image">
+          <h3 class="user-card-title">Cargando nombre</h3>
+        </a>
+        <p class="user-card-subtitle">Cargando ubicación</p>
+      </li>
+      <li class="user-card card">
+        <a>
+          <img src="/assets/img/profile_user.png" class="user-card-image">
+          <h3 class="user-card-title">Cargando nombre</h3>
+        </a>
+        <p class="user-card-subtitle">Cargando ubicación</p>
+      </li>
+      <li class="user-card card">
+        <a>
+          <img src="/assets/img/profile_user.png" class="user-card-image">
+          <h3 class="user-card-title">Cargando nombre</h3>
+        </a>
+        <p class="user-card-subtitle">Cargando ubicación</p>
+      </li>
+      <li class="user-card card">
+        <a>
+          <img src="/assets/img/profile_user.png" class="user-card-image">
+          <h3 class="user-card-title">Cargando nombre</h3>
+        </a>
+        <p class="user-card-subtitle">Cargando ubicación</p>
       </li>
       <li class="user-card placeholder-link card">
-        <a [routerLink]="['./users']">
+        <a>
           Ver todos
           <mat-icon>navigate_next</mat-icon>
         </a>
@@ -188,185 +117,20 @@
 
     <ul class="nav-vert-std">
       <li>
-        <a class="nav-vert-std-a" [routerLink]="['./media']">
+        <a class="nav-vert-std-a">
           <div>
-            Se han agregado <strong>{{ collection.totalMedia}}</strong> elementos multimedia
+            Se han agregado <strong>???</strong> elementos multimedia
           </div>
           <mat-icon>navigate_next</mat-icon>
         </a>
       </li>
     </ul>
 
-    <div *ngIf="lastMedia.length >= 4" class="images-grid">
-      <div *ngFor="let image of lastMedia; let i = index;" class="images-grid-card">
-        <div class="images-grid-content">
-          <img [lazyLoad]="baseImageUrl + image.id"
-            [alt]="image.description + ' en ' + collection.name + ' de ' + collection.publisher.data.name"
-            class="images-grid-image" crossorigin="anonymous">
-          <!-- <p class="images-grid-author">
-            por <a [routerLink]="['/user', image.user?.data?.id]">{{ image.user?.data?.displayName }}</a> el {{
-            image.created * 1000 | date:'dd/MM/yy' }}
-          </p> -->
-        </div>
-        <p class="images-grid-title">
-          #{{ i + 1 }} - {{ image.description }}
-        </p>
-      </div>
-      <div class="images-grid-card">
-        <div class="images-grid-content placeholder-link">
-          <a [routerLink]="['./media']">
-            Ver todos
-            <mat-icon>navigate_next</mat-icon>
-          </a>
-        </div>
-      </div>
-    </div>
-
     <hr />
 
-    <!-- <p *ngIf="collection.description" class="collection-description" [innerHTML]="collection.description| sanitizeHtml">
-    </p> -->
-    <ng-container *ngIf="collection.description">
-      <div class="collection-description" [innerHTML]="collection.description | markdown">
-      </div>
-    </ng-container>
-
     <div class="collection-publisher">
-      <!-- <p>{{ collection.publisher.data.name }}</p> -->
-      <a [routerLink]="['/publishers', collection.publisher.data.id, collection.publisher.data.name | slugify]">
-        {{ collection.publisher.data.name }}
-      </a>
+      <a>Cargando editorial</a>
     </div>
   </div>
 </section>
-
-<ng-template #loading>
-  <section class="collection">
-    <div class="collection-info card">
-
-      <div class="collection-header">
-        <div class="collection-image-background" style="background-image: url('/assets/img/profile_collection.jpeg')">
-        </div>
-        <div class="collection-subheader">
-          <div class="collection-image-container">
-            <img class="collection-image" src="/assets/img/profile_collection.jpeg">
-          </div>
-          <div class="collection-actions">
-            <button mat-stroked-button aria-label="Opciones">
-              <mat-icon class="only-icon-button">more_vert</mat-icon>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="collection-main">
-        <h1>Cargando nombre de la colección</h1>
-        <p class="subtitle">Cargando editorial, cargando año</p>
-      </div>
-
-      <h2>Secciones</h2>
-      <ul class="nav-vert-std">
-        <li>
-          <a class="nav-vert-std-a">
-            <div>
-              Tiene
-              <strong>???</strong>
-              ítems (láminas | stickers | figuritas | estampas | cromos)
-            </div>
-            <mat-icon>navigate_next</mat-icon>
-          </a>
-        </li>
-        <li>
-          <a class="nav-vert-std-a">
-            <div>
-              <strong>???</strong> usuarios lo coleccionan
-            </div>
-            <mat-icon>navigate_next</mat-icon>
-          </a>
-        </li>
-      </ul>
-
-      <ul class="user-card-list">
-        <li class="user-card card">
-          <a>
-            <img src="/assets/img/profile_user.png" class="user-card-image">
-            <h3 class="user-card-title">Cargando nombre</h3>
-          </a>
-          <p class="user-card-subtitle">Cargando ubicación</p>
-        </li>
-        <li class="user-card card">
-          <a>
-            <img src="/assets/img/profile_user.png" class="user-card-image">
-            <h3 class="user-card-title">Cargando nombre</h3>
-          </a>
-          <p class="user-card-subtitle">Cargando ubicación</p>
-        </li>
-        <li class="user-card card">
-          <a>
-            <img src="/assets/img/profile_user.png" class="user-card-image">
-            <h3 class="user-card-title">Cargando nombre</h3>
-          </a>
-          <p class="user-card-subtitle">Cargando ubicación</p>
-        </li>
-        <li class="user-card card">
-          <a>
-            <img src="/assets/img/profile_user.png" class="user-card-image">
-            <h3 class="user-card-title">Cargando nombre</h3>
-          </a>
-          <p class="user-card-subtitle">Cargando ubicación</p>
-        </li>
-        <li class="user-card card">
-          <a>
-            <img src="/assets/img/profile_user.png" class="user-card-image">
-            <h3 class="user-card-title">Cargando nombre</h3>
-          </a>
-          <p class="user-card-subtitle">Cargando ubicación</p>
-        </li>
-        <li class="user-card card">
-          <a>
-            <img src="/assets/img/profile_user.png" class="user-card-image">
-            <h3 class="user-card-title">Cargando nombre</h3>
-          </a>
-          <p class="user-card-subtitle">Cargando ubicación</p>
-        </li>
-        <li class="user-card placeholder-link card">
-          <a>
-            Ver todos
-            <mat-icon>navigate_next</mat-icon>
-          </a>
-        </li>
-      </ul>
-
-      <ul class="nav-vert-std">
-        <li>
-          <a class="nav-vert-std-a">
-            <div>
-              Se han agregado <strong>???</strong> elementos multimedia
-            </div>
-            <mat-icon>navigate_next</mat-icon>
-          </a>
-        </li>
-      </ul>
-
-      <hr />
-
-      <div class="collection-publisher">
-        <a>Cargando editorial</a>
-      </div>
-    </div>
-  </section>
-</ng-template>
-
-<ng-template #confirmDeleteDialog>
-  <p matDialogContent>Estás seguro de quitar esta colección? Esta acción no se puede deshacer.</p>
-  <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close [disabled]="isSaving">Cancelar</button>
-    <button mat-raised-button (click)="onConfirmDelete()" [disabled]="isSaving" color="warn">
-      Eliminar
-    </button>
-  </mat-dialog-actions>
-</ng-template>
-
-<div *ngIf="!isLoaded" class="loading-indicator">
-  <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
+}

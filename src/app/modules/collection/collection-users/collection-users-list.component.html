@@ -1,0 +1,122 @@
+<h1>
+    @if (showedUsers.length != users.length) {
+    <span class="color-accent">
+        {{ showedUsers.length }} de
+    </span>
+    }
+    {{ collection.totalCollecting }} usuarios con esta colección
+</h1>
+<div class="card">
+    @if (!users.length) {
+    <div class="empty-content">
+        <h2>(¬‿¬)</h2>
+        <p>Todavía no hay nadie con esta colección... serás el primero?</p>
+        <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
+            <mat-icon>add</mat-icon> Agregar colección
+        </a>
+    </div>
+    }
+    @if (users.length) {
+    <div class="controls-std">
+        <div class="controls-std-main">
+            <div class="controls-std-order">
+                <mat-form-field appearance="outline">
+                    <mat-label>Ordenar por</mat-label>
+                    <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
+                        @for (option of sortOptions; track option.selectValue) {
+                        <mat-option [value]="option.selectValue">
+                            {{ option.selectName }}
+                        </mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="controls-std-settings">
+                <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
+                    <mat-icon>filter_list</mat-icon> Filtros
+                </a>
+            </div>
+        </div>
+        <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
+            <mat-form-field class="controls-search" appearance="outline">
+                <mat-label>Filtrar por nombre, ID, ciudad o descripción</mat-label>
+                <mat-icon matPrefix>search</mat-icon>
+                <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
+                @if (searchText) {
+                <button matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
+                    <mat-icon>close</mat-icon>
+                </button>
+                }
+            </mat-form-field>
+        </div>
+    </div>
+    }
+
+    <ul class="list-std">
+        @for (user of showedUsers; track user.id) {
+        <li class="list-std-item" [ngClass]="{'pro-account': user.accountTypeId == 2}">
+            <div class="list-item-main">
+                <div class="list-item-image">
+                    <a [routerLink]="['/user', user.id]">
+                        <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
+                            alt="Imagen de perfil" crossorigin="anonymous">
+                    </a>
+                </div>
+                <div class="list-item-content flex-full">
+                    <div class="list-item-title">
+                        <a [routerLink]="['/user', user.id]">
+                            {{ user.displayName }}
+                            @if (user.accountTypeId == 2) {
+                            <span class="pro-label">PRO</span>
+                            }
+                            @if (user.userSummary?.positives) {
+                            <span class="positives-label">+{{ user.userSummary?.positives }}</span>
+                            }
+                            @if (user.userSummary?.negatives) {
+                            <span class="negatives-label">-{{ user.userSummary?.negatives }}</span>
+                            }
+                        </a>
+                    </div>
+                    <div class="list-item-meta custom-separator">
+                        <span>ID {{ user.id }}</span>
+                        <span>{{ user.location || 'Sin especificar' }}</span>
+                        <span appDaysSinceLogin="{{ user.collectionData?.daysSinceUpdate }}"
+                            [preText]="'Actualizado '"></span>
+                    </div>
+                </div>
+                <div class="list-item-statics">
+                    <div>
+                        <span class="list-item-title">{{ user.collectionData?.collectionWishing }}</span>
+                        <span class="list-item-meta">Busca</span>
+                    </div>
+                    <div>
+                        <span class="list-item-title">{{ user.collectionData?.collectionTrading }}</span>
+                        <span class="list-item-meta">Cambia</span>
+                    </div>
+                </div>
+                @if (user.collectionData?.completed) {
+                <div class="ribbon custom">
+                    <div class="content">
+                        <svg width="18px" height="18px" aria-hidden="true" focusable="false" data-prefix="fas"
+                            data-icon="check" class="svg-inline--fa fa-check fa-w-16" role="img"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                            <path fill="currentColor"
+                                d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                }
+            </div>
+            <!-- <div *ngIf="user?.bio" class="list-item-desc">
+                <p [innerHTML]="user?.bio | sanitizeHtml"></p>
+              </div> -->
+            @if (user.collectionData?.publicComment) {
+            <div class="list-item-desc">
+                <p [innerHTML]="user.collectionData?.publicComment | sanitizeHtml"></p>
+            </div>
+            }
+        </li>
+        }
+    </ul>
+</div>

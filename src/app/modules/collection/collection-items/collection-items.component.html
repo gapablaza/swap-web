@@ -1,77 +1,14 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-  <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="collection collection-section">
-  <app-collection-summary [showBackButton]="true"></app-collection-summary>
+<section class="collection collection-section">
+  <app-collection-summary [collection]="(collection$ | async)!" [showBackButton]="true"></app-collection-summary>
+  @if (isLoaded$ | async) {
   <div class="collection-items flex-full">
     <h1>Itemizado</h1>
 
-    <div class="empty-content card" *ngIf="!items.length">
-      <h2>\_(ʘ_ʘ)_/</h2>
-      <p>Lamentablemente no hemos podido conseguir el itemizado de esta colección... nos ayudas?</p>
-      <a href="mailto:contacto@intercambialaminas.com" target="_blank" rel="noopener noreferrer" class="btn"
-        mat-raised-button color="accent">
-        <mat-icon>note_add</mat-icon> Enviar info
-      </a>
-    </div>
-
-    <ng-container *ngIf="items.length">
-      <div class="controls-std">
-        <!-- <div class="controls-std-main">
-          <div class="controls-std-settings">
-            <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
-              <mat-icon>filter_list</mat-icon> Filtros
-            </a>
-          </div>
-        </div> -->
-        <div class="constrols-std-filters" [ngClass]="{ 'show': true }">
-          <mat-form-field class="controls-search" appearance="outline">
-            <mat-label>Filtrar por número, título o sección</mat-label>
-            <mat-icon matPrefix>search</mat-icon>
-            <input matInput type="text" (keyup)="applyFilter($event)" [(ngModel)]="filterText" #input>
-            <button *ngIf="input" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
-              <mat-icon>close</mat-icon>
-            </button>
-          </mat-form-field>
-        </div>
-      </div>
-
-      <table mat-table matSort [dataSource]="dataSource" class="collection-items-table mat-elevation-z8">
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Nro. </th>
-          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="description">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Título </th>
-          <td mat-cell *matCellDef="let element"> {{element.description}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="itemType">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </th>
-          <td mat-cell *matCellDef="let element"> {{element.itemType}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="section">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Sección </th>
-          <td mat-cell *matCellDef="let element"> {{element.section}} </td>
-        </ng-container>
-
-        <!-- <ng-container matColumnDef="difficulty">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Dificultad </th>
-        <td mat-cell *matCellDef="let element"> {{element.difficulty}} </td>
-      </ng-container> -->
-
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let element">
-            <a mat-stroked-button [routerLink]="['/item', element.id]">Detalles</a>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-    </ng-container>
+    <app-collection-items-table [items]="(items$ | async)!"></app-collection-items-table>
   </div>
+  } @else {
+  <div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+  </div>
+  }
 </section>

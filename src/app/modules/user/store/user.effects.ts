@@ -10,13 +10,13 @@ import {
   tap,
   withLatestFrom,
 } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 
 import { MediaService, UserService } from 'src/app/core';
 import { userActions } from './user.actions';
 import { authFeature } from '../../auth/store/auth.state';
 import { userFeature } from './user.state';
 import { UIService } from 'src/app/shared';
-import { MatDialog } from '@angular/material/dialog';
 
 @Injectable()
 export class UserEffects {

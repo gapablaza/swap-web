@@ -1,0 +1,103 @@
+<h2>Secciones</h2>
+<ul class="nav-vert-std">
+    <li>
+        <a class="nav-vert-std-a" [routerLink]="['./items']">
+            <div>
+                Tiene
+                @if (collection.items) {
+                <strong>{{ collection.items }}</strong>
+                } @else {
+                <strong>???</strong>
+                }
+                ítems (láminas | stickers | figuritas | estampas | cromos | cartas)
+            </div>
+            <mat-icon>navigate_next</mat-icon>
+        </a>
+    </li>
+    @if (isAuth) {
+    <li>
+        <a class="nav-vert-std-a" [routerLink]="['./tops']">
+            <div>
+                <strong>TOP</strong> ítems <span class="pro-label">PRO</span> (clasificados por dificultad)
+            </div>
+            <mat-icon>navigate_next</mat-icon>
+        </a>
+    </li>
+    }
+    <li>
+        <a class="nav-vert-std-a" [routerLink]="['./users']">
+            <div>
+                <strong>{{ collection.totalCollecting }}</strong> usuarios lo coleccionan
+            </div>
+            <mat-icon>navigate_next</mat-icon>
+        </a>
+    </li>
+</ul>
+
+@if (lastCollectors.length >= 6) {
+<ul class="user-card-list">
+    @for (user of lastCollectors; track user.id) {
+    <li class="user-card card">
+        <a [routerLink]="['/user', user.id]">
+            <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || '/assets/img/profile_user.png'"
+                [alt]="'Perfil público de ' + user.displayName" [title]="'Perfil público de ' + user.displayName"
+                class="user-card-image" crossorigin="anonymous">
+            <h3 class="user-card-title">{{ user.displayName }}</h3>
+        </a>
+        <p class="user-card-subtitle">{{ user.location }}</p>
+        <!-- <hr />
+        <div class="user-card-info">
+        <span appDaysSinceLogin="{{ user.daysSinceLogin }}" [preText]="'Actualizado '"></span>
+        </div> -->
+    </li>
+    }
+    <li class="user-card placeholder-link card">
+        <a [routerLink]="['./users']">
+            Ver todos
+            <mat-icon>navigate_next</mat-icon>
+        </a>
+    </li>
+</ul>
+}
+
+<ul class="nav-vert-std">
+    <li>
+        <a class="nav-vert-std-a" [routerLink]="['./media']">
+            <div>
+                Se han agregado <strong>{{ collection.totalMedia}}</strong> elementos multimedia
+            </div>
+            <mat-icon>navigate_next</mat-icon>
+        </a>
+    </li>
+</ul>
+
+@if (lastMedia.length >= 4) {
+<div class="images-grid">
+    @for (image of lastMedia; track image.id; let i = $index) {
+    <div class="images-grid-card">
+        <div class="images-grid-content">
+            <img [lazyLoad]="baseImageUrl + image.id"
+                [alt]="image.description + ' en ' + collection.name + ' de ' + collection.publisher.data.name"
+                class="images-grid-image" crossorigin="anonymous">
+            <!-- <p class="images-grid-author">
+                por <a [routerLink]="['/user', image.user?.data?.id]">{{ image.user?.data?.displayName }}</a> el {{
+                image.created * 1000 | date:'dd/MM/yy' }}
+            </p> -->
+        </div>
+        <p class="images-grid-title">
+            #{{ i + 1 }} - {{ image.description }}
+        </p>
+    </div>
+    }
+    <div class="images-grid-card">
+        <div class="images-grid-content placeholder-link">
+            <a [routerLink]="['./media']">
+                Ver todos
+                <mat-icon>navigate_next</mat-icon>
+            </a>
+        </div>
+    </div>
+</div>
+}
+
+<hr />

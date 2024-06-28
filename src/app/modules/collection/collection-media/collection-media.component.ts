@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgFor, NgClass, DatePipe } from '@angular/common';
+import { NgIf, NgFor, NgClass, DatePipe, AsyncPipe } from '@angular/common';
 import { concatMap, filter, map, Subscription, take, tap } from 'rxjs';
 import orderBy from 'lodash/orderBy';
 
@@ -41,11 +41,14 @@ import { environment } from 'src/environments/environment';
 import { SlugifyPipe, UIService } from 'src/app/shared';
 import { CollectionSummaryComponent } from '../collection-summary/collection-summary.component';
 import { CollectionMediaUploadComponent } from '../collection-media-upload/collection-media-upload.component';
+import { Store } from '@ngrx/store';
+import { collectionFeature } from '../store/collection.state';
+import { CollectionMediaGridComponent } from './collection-media-grid.component';
+import { collectionActions } from '../store/collection.actions';
 
 @Component({
   selector: 'app-collection-media',
   templateUrl: './collection-media.component.html',
-  styleUrls: ['./collection-media.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
@@ -65,14 +68,20 @@ import { CollectionMediaUploadComponent } from '../collection-media-upload/colle
     LazyLoadImageModule,
     RouterLink,
     DatePipe,
+    AsyncPipe,
+    CollectionMediaGridComponent,
   ],
 })
 export class CollectionMediaComponent implements OnInit, OnDestroy {
+  medias$ = this.store.select(collectionFeature.selectMedia);
+  collection$ = this.store.select(collectionFeature.selectCollection);
+  isLoaded$ = this.store.select(collectionFeature.selectIsMediaLoaded);
+  isProcessing$ = this.store.select(collectionFeature.selectIsProcessing);
+
   medias: Media[] = [];
   showedImages: Media[] = [];
   imagesForModeration: Media[] = [];
 
-  // @ViewChild('itemTemplate') itemTemplate!: TemplateRef<any>;
   items: GalleryItem[] = [];
   lightboxRef = this.gallery.ref('lightbox');
 
@@ -126,6 +135,7 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
     private colOnlySrv: CollectionOnlyService,
     private mediaSrv: MediaService,
     private authSrv: AuthService,
+    private store: Store,
     private SEOSrv: SEOService,
     public gallery: Gallery,
     public lightbox: Lightbox,
@@ -135,66 +145,68 @@ export class CollectionMediaComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    let colSub = this.colOnlySrv.collection$
+    this.store.dispatch(collectionActions.loadMedia());
+    
+    let colSub = this.collection$
       .pipe(
-        filter((col) => col.id != null),
+        filter((col) => col != null),
         tap((col) => {
-          this.collection = col;
+          // this.collection = col;
 
           this.SEOSrv.set({
-            title: `Media compartida asociada a ${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
-            description: `Revisa los distintos elementos multimedia subidos por los usuarios, asociados al álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}).`,
+            title: `Media compartida asociada a ${col?.name} - ${col?.publisher.data.name} (${col?.year}) - Intercambia Láminas`,
+            description: `Revisa los distintos elementos multimedia subidos por los usuarios, asociados al álbum/colección ${col?.name} de ${col?.publisher.data.name} (${col?.year}).`,
             url: `${environment.appUrl}/c/${new SlugifyPipe().transform(
-              col.name + ' ' + col.publisher.data.name
-            )}/${col.id}/media`,
+              col?.name + ' ' + col?.publisher.data.name
+            )}/${col?.id}/media`,
             isCanonical: true,
           });
         }),
-        concatMap((col) => this.colSrv.getMedia(col.id).pipe(take(1))),
-        // filter only approved images
-        map((media) =>
-          media.filter((elem: Media) => {
-            return elem.mediaTypeId == 1 && elem.mediaStatusId == 2;
-          })
-        )
+        // concatMap((col) => this.colSrv.getMedia(col.id).pipe(take(1))),
+        // // filter only approved images
+        // map((media) =>
+        //   media.filter((elem: Media) => {
+        //     return elem.mediaTypeId == 1 && elem.mediaStatusId == 2;
+        //   })
+        // )
       )
       .subscribe((data) => {
-        this.medias = [...data];
-        this.showedImages = [...data];
-        this.sortShowedImages();
+        // this.medias = [...data];
+        // this.showedImages = [...data];
+        // this.sortShowedImages();
 
-        this.isLoaded = true;
+        // this.isLoaded = true;
         this.cdr.markForCheck();
       });
     this.subs.add(colSub);
 
-    let authSub = this.authSrv.isAuth.subscribe((auth) => {
-      this.isAuth = auth;
-      if (auth) {
-        this.mediaSrv
-          .listForModerationByUser()
-          .pipe(
-            filter(() => this.isAuth),
-            // filter only images
-            map((media) =>
-              media.filter((elem: Media) => {
-                return (
-                  elem.mediaTypeId == 1 &&
-                  elem.collection?.data.id == this.collection.id
-                );
-              })
-            ),
-            take(1)
-          )
-          .subscribe((media) => {
-            this.imagesForModeration = media;
-            this.cdr.markForCheck();
-          });
-      } else {
-        this.imagesForModeration = [];
-      }
-    });
-    this.subs.add(authSub);
+    // let authSub = this.authSrv.isAuth.subscribe((auth) => {
+    //   this.isAuth = auth;
+    //   if (auth) {
+    //     this.mediaSrv
+    //       .listForModerationByUser()
+    //       .pipe(
+    //         filter(() => this.isAuth),
+    //         // filter only images
+    //         map((media) =>
+    //           media.filter((elem: Media) => {
+    //             return (
+    //               elem.mediaTypeId == 1 &&
+    //               elem.collection?.data.id == this.collection.id
+    //             );
+    //           })
+    //         ),
+    //         take(1)
+    //       )
+    //       .subscribe((media) => {
+    //         this.imagesForModeration = media;
+    //         this.cdr.markForCheck();
+    //       });
+    //   } else {
+    //     this.imagesForModeration = [];
+    //   }
+    // });
+    // this.subs.add(authSub);
   }
 
   onNewImage() {

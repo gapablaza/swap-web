@@ -4,25 +4,19 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  ViewChild,
 } from '@angular/core';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { filter, Subscription, switchMap, take, tap } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
+import { filter, Subscription, tap } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Store } from '@ngrx/store';
 
-import { CollectionService, Item, SEOService } from 'src/app/core';
+import { SEOService } from 'src/app/core';
 import { SlugifyPipe } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
-import { CollectionOnlyService } from '../collection-only.service';
-import { RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { CollectionSummaryComponent } from '../collection-summary/collection-summary.component';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgIf, NgClass } from '@angular/common';
+import { CollectionItemsTableComponent } from './collection-items-table.component';
+import { collectionFeature } from '../store/collection.state';
+import { collectionActions } from '../store/collection.actions';
 
 @Component({
   selector: 'app-collection-items',
@@ -31,82 +25,46 @@ import { NgIf, NgClass } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    NgIf,
     MatProgressSpinnerModule,
+    AsyncPipe,
     CollectionSummaryComponent,
-    MatButtonModule,
-    MatIconModule,
-    NgClass,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatTableModule,
-    MatSortModule,
-    RouterLink,
+    CollectionItemsTableComponent,
   ],
 })
 export class CollectionItemsComponent implements OnInit, OnDestroy {
-  items: Item[] = [];
-  // displayedColumns: string[] = ['name', 'description', 'difficulty'];
+  items$ = this.store.select(collectionFeature.selectItems);
+  collection$ = this.store.select(collectionFeature.selectCollection);
+  isLoaded$ = this.store.select(collectionFeature.selectIsItemsLoaded);
 
-  displayedColumns: string[] = [
-    'name',
-    'description',
-    'itemType',
-    'section',
-    'actions',
-  ];
-  dataSource = new MatTableDataSource<Item>([]);
-  @ViewChild(MatSort, { static: false }) set content(sort: MatSort) {
-    this.dataSource.sort = sort;
-  }
-
-  filterText = '';
-  isLoaded = false;
   subs: Subscription = new Subscription();
 
   constructor(
-    private colSrv: CollectionService,
-    private colOnlySrv: CollectionOnlyService,
+    private store: Store,
     private SEOSrv: SEOService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    let colSub = this.colOnlySrv.collection$
+    this.store.dispatch(collectionActions.loadItems());
+
+    let colSub = this.collection$
       .pipe(
-        filter((col) => col.id != null),
+        filter((col) => col != null),
         tap((col) => {
           this.SEOSrv.set({
-            title: `Itemizado ${col.name} - ${col.publisher.data.name} (${col.year}) - Intercambia Láminas`,
-            description: `Revisa el itemizado del álbum/colección ${col.name} de ${col.publisher.data.name} (${col.year}). Son ${col.items} ítems a coleccionar (láminas / stickers / figuritas / pegatinas / cromos / estampas / barajitas).`,
+            title: `Itemizado ${col?.name} - ${col?.publisher.data.name} (${col?.year}) - Intercambia Láminas`,
+            description: `Revisa el itemizado del álbum/colección ${col?.name} de ${col?.publisher.data.name} (${col?.year}). Son ${col?.items} ítems a coleccionar (láminas / stickers / figuritas / pegatinas / cromos / estampas / barajitas).`,
             url: `${environment.appUrl}/c/${new SlugifyPipe().transform(
-              col.name + ' ' + col.publisher.data.name
-            )}/${col.id}/items`,
+              col?.name + ' ' + col?.publisher.data.name
+            )}/${col?.id}/items`,
             isCanonical: true,
           });
-        }),
-        switchMap((col) => this.colSrv.getItems(col.id).pipe(take(1)))
+        })
       )
-      .subscribe((items) => {
-        this.items = [
-          ...items.sort((a, b) => (a.position || 0) - (b.position || 0)),
-        ];
-        this.dataSource.data = this.items;
-        this.isLoaded = true;
+      .subscribe(() => {
         this.cdr.markForCheck();
       });
     this.subs.add(colSub);
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  onClearFilter() {
-    this.filterText = '';
-    this.dataSource.filter = '';
   }
 
   ngOnDestroy(): void {

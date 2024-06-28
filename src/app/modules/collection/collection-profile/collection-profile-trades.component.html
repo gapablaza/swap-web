@@ -1,0 +1,78 @@
+<!-- <mat-accordion *ngIf="collection.userData?.collecting"> -->
+<mat-accordion>
+    <mat-expansion-panel expanded="true" class="trades">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Tus listados
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="trades-collection">
+            <div class="trades-list">
+                <div>
+                    Estás buscando <strong>{{ collection.userData?.wishing || 0 }}</strong> ítems:
+                    @for (item of userWishing; track item.id; let isLast = $last) {
+                    <span>
+                        <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
+                        <span>
+                            {{ item.name }}
+                            @if (item.wishlistQuantity && (item.wishlistQuantity > 1)) {
+                            <span>({{item.wishlistQuantity }})</span>
+                            }
+                        </span>
+                        @if (!isLast) {<span>, </span>}
+                    </span>
+                    }
+                </div>
+                <div>
+                    Tienes <strong>{{ collection.userData?.trading || 0 }}</strong> ítems para cambiar:
+                    @for (item of userTrading; track item.id; let isLast = $last) {
+                    <span>
+                        <span>
+                            <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
+                            {{ item.name }}
+                            @if (item.tradelistQuantity && (item.tradelistQuantity > 1)) {
+                            <span>({{item.tradelistQuantity }})</span>
+                            }
+                        </span>
+                        @if (!isLast) {<span>, </span>}
+                    </span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="difficulty-explanation">
+        <p>
+          Los colores sirven para indicar la dificultad de conseguir el ítem de acuerdo a lo siguiente:
+          <br />
+          <span class="item-difficulty-5">Muy Difícil</span>, 
+          <span class="item-difficulty-4">Difícil</span>, 
+          <span class="item-difficulty-3">Rara</span>, 
+          <span class="item-difficulty-2">Infrecuente</span>, 
+          <span class="item-difficulty-1">Común</span> 
+          y <span class="item-difficulty-0">Por categorizar</span>.
+        </p>
+        <p>
+          Revisa <a href="https://trello.com/c/QRvIcc3x/8-ayudar-a-hacer-mejores-cambios-indicando-la-dificultad-de-las-l%C3%A1minas-en-los-posibles-cambios" target="_blank" rel="noopener noreferrer">aquí</a> para ver mas detalles de la lógica usada para categorizar los ítems de la colección por dificultad.
+        </p>
+      </div> -->
+
+    </mat-expansion-panel>
+    <mat-expansion-panel class="">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Tu comentario público
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        @if (collection.userData?.publicComment) {
+        <p>
+            {{ collection.userData?.publicComment }}
+        </p>
+        } @else {
+        <p>
+            <i>No has ingresado un comentario público en esta colección</i>
+        </p>
+        }
+    </mat-expansion-panel>
+</mat-accordion>

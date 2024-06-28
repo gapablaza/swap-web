@@ -1,0 +1,75 @@
+<div class="collection-header">
+    <!-- <div class="collection-image-background" [lazyLoad]="collection.image || defaultCollectionImage"></div> -->
+    <div class="collection-image-background"
+        [style]="'background-image: url(' + (collection.image || defaultCollectionImage) + ');'"></div>
+    <div class="collection-subheader">
+        <div class="collection-image-container">
+            <img class="collection-image" [src]="collection.image || defaultCollectionImage"
+                [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous"
+                fetchpriority="high">
+            <!-- <img class="collection-image" [defaultImage]="defaultCollectionImage"
+          [lazyLoad]="collection.image || defaultCollectionImage"
+          [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous" fetchpriority="high"> -->
+
+            @if (isCompleted) {
+            <div class="ribbon up">
+                <div class="content">
+                    <svg width="18px" height="18px" aria-hidden="true" focusable="false" data-prefix="fas"
+                        data-icon="check" class="svg-inline--fa fa-check fa-w-16" role="img"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <path fill="currentColor"
+                            d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z">
+                        </path>
+                    </svg>
+                </div>
+            </div>
+            }
+        </div>
+
+        <div class="collection-actions">
+            @if (isAuth && !isCollecting) {
+            <button (click)="onAdd.emit()" [disabled]="isProcessing" mat-raised-button color="accent">
+                <mat-icon>add</mat-icon> Agregar
+            </button>
+            }
+            @if (isAuth && isCollecting) {
+            <a class="btn" mat-raised-button color="accent" [routerLink]="['manage']">
+                <mat-icon>edit</mat-icon> Editar
+            </a>
+            }
+            <button mat-stroked-button [matMenuTriggerFor]="menu" aria-label="Opciones">
+                <mat-icon class="only-icon-button">more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="onShare.emit()">Compartir</button>
+                @if (isAuth && isCollecting && !isCompleted) {
+                <button (click)="onComplete.emit(true)" [disabled]="isProcessing" mat-menu-item>
+                    Marcar como Completa</button>
+                }
+                @if (isAuth && isCollecting && isCompleted) {
+                <button (click)="onComplete.emit(false)" [disabled]="isProcessing" mat-menu-item>
+                    Desmarcar como Completa</button>
+                }
+                @if (isAuth && isCollecting) {
+                <button (click)="onDelete()" [disabled]="isProcessing" mat-menu-item>Quitar
+                    Colección</button>
+                }
+            </mat-menu>
+        </div>
+    </div>
+</div>
+
+<div class="collection-main">
+    <h1>{{ collection.name }}</h1>
+    <p class="subtitle">{{ collection.publisher.data.name }}, {{ collection.year }}</p>
+</div>
+
+<ng-template #confirmDeleteDialog>
+    <p matDialogContent>Estás seguro de quitar esta colección? Esta acción no se puede deshacer.</p>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close [disabled]="isProcessing">Cancelar</button>
+        <button mat-raised-button (click)="onConfirmDelete.emit()" [disabled]="isProcessing" color="warn">
+            Eliminar
+        </button>
+    </mat-dialog-actions>
+</ng-template>
