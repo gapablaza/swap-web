@@ -4,180 +4,114 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  importProvidersFrom,
-  inject,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { filter, Subscription, take, tap } from 'rxjs';
-
 import {
-  AuthService,
-  Collection,
-  CollectionService,
-  CollectionUserData,
-} from 'src/app/core';
-import { UIService } from 'src/app/shared';
-import { CollectionOnlyService } from '../collection-only.service';
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterOutlet,
+} from '@angular/router';
+import { filter, Subscription, tap } from 'rxjs';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { CollectionSummaryComponent } from '../collection-summary/collection-summary.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { Store } from '@ngrx/store';
+
+import { UIService } from 'src/app/shared';
 import { AdsModule } from 'src/app/shared/ads.module';
+import { collectionFeature } from '../store/collection.state';
+import { collectionActions } from '../store/collection.actions';
+import { CollectionSummaryComponent } from '../collection-summary/collection-summary.component';
+import { CollectionManageFormComponent } from './collection-manage-form.component';
 
 @Component({
-    selector: 'app-collection-manage',
-    templateUrl: './collection-manage.component.html',
-    styleUrls: ['./collection-manage.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        NgIf,
-        MatProgressSpinnerModule,
-        CollectionSummaryComponent,
-        AdsModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatIconModule,
-        MatTabsModule,
-        RouterLink,
-        RouterOutlet,
-    ],
+  selector: 'app-collection-manage',
+  templateUrl: './collection-manage.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    RouterLink,
+    RouterOutlet,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTabsModule,
+    AsyncPipe,
+    AdsModule,
+    CollectionSummaryComponent,
+    CollectionManageFormComponent,
+  ],
 })
 export class CollectionManageComponent implements OnInit, OnDestroy {
-  commentForm!: FormGroup;
-  collection: Collection = {} as Collection;
-  authUser = this.authSrv.getCurrentUser();
+  collection$ = this.store.select(collectionFeature.selectCollection);
+  isLoaded$ = this.store.select(collectionFeature.selectIsLoaded);
+  isProcessing$ = this.store.select(collectionFeature.selectIsProcessing);
+
   totalWishing: number = 0;
   totalTrading: number = 0;
   actualPage = '';
   isAdsLoaded = false;
-  isSaving = false;
-  isLoaded = false;
   subs: Subscription = new Subscription();
 
   constructor(
-    private colOnlySrv: CollectionOnlyService,
-    private colSrv: CollectionService,
-    private authSrv: AuthService,
+    private store: Store,
     private router: Router,
     private route: ActivatedRoute,
     private uiSrv: UIService,
-    private formBuilder: FormBuilder,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    let colSub = this.colOnlySrv.collection$
+    let colSub = this.collection$
       .pipe(
-        filter((col) => col.id != null),
+        filter((col) => col != null),
         tap((col) => {
-          if (!col.userData?.collecting) {
+          if (!col?.userData?.collecting) {
             this.uiSrv.showError('Aún no tienes agregada esta colección');
             this.router.navigate(['../'], {
               relativeTo: this.route,
             });
           }
-        }),
-        filter((col) => (col.userData?.collecting ? true : false)),
-        tap((col) => {
-          this.commentForm = this.formBuilder.group({
-            comment: [
-              col.userData?.publicComment || '',
-              [
-                Validators.required,
-                Validators.minLength(3),
-                Validators.maxLength(250),
-              ],
-            ],
-          });
         })
       )
       .subscribe((col) => {
-        this.collection = col;
-        this.totalWishing = col.userData?.wishing || 0;
-        this.totalTrading = col.userData?.trading || 0;
-        this.isLoaded = true;
+        this.totalWishing = col?.userData?.wishing || 0;
+        this.totalTrading = col?.userData?.trading || 0;
         this.cdr.markForCheck();
       });
     this.subs.add(colSub);
 
     this.actualPage = this.router.url.split('/').pop() || '';
-    this.router.events
+    let routeSub = this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((data: any) => {
         this.actualPage = data.url.split('/').pop() || '';
       });
+    this.subs.add(routeSub);
 
-    if (this.authUser.accountTypeId == 1) {
-      this.loadAds();
-    }
+    // if (this.authUser.accountTypeId == 1) {
+    //   this.loadAds();
+    // }
   }
 
+  // TO DO: Cargar Ads a los que no sean PRO
   loadAds() {
     this.uiSrv.loadAds().then(() => {
       this.isAdsLoaded = true;
     });
   }
 
-  get form() {
-    return this.commentForm.controls;
+  addComment(comment: string) {
+    this.store.dispatch(
+      collectionActions.addComment({ publicComment: comment })
+    );
   }
 
-  onSubmit() {
-    if (this.commentForm.invalid) {
-      return;
-    }
-
-    this.isSaving = true;
-
-    this.colSrv
-      .addComment(this.collection.id, this.commentForm.value.comment)
-      .pipe(take(1))
-      .subscribe((resp: string) => {
-        this.uiSrv.showSuccess('Comentario actualizado exitosamente');
-        this.isSaving = false;
-
-        let tempUserData = {
-          ...this.collection.userData,
-          publicComment: this.commentForm.value.comment,
-        } as CollectionUserData;
-
-        this.colOnlySrv.setCurrentCollection({
-          ...this.collection,
-          userData: tempUserData,
-        });
-      });
-  }
-
-  onDeleteComment() {
-    this.isSaving = true;
-
-    this.colSrv
-      .removeComment(this.collection.id)
-      .pipe(take(1))
-      .subscribe((resp: string) => {
-        this.uiSrv.showSuccess('Comentario eliminado exitosamente');
-
-        let tempUserData = {
-          ...this.collection.userData,
-          publicComment: undefined,
-        } as CollectionUserData;
-
-        this.colOnlySrv.setCurrentCollection({
-          ...this.collection,
-          userData: tempUserData,
-        });
-
-        this.isSaving = false;
-      });
+  deleteComment() {
+    this.store.dispatch(collectionActions.removeComment());
   }
 
   ngOnDestroy(): void {

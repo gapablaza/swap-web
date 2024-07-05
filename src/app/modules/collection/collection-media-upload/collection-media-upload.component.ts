@@ -15,7 +15,6 @@ import { NgIf } from '@angular/common';
 @Component({
     selector: 'app-collection-media-upload',
     templateUrl: './collection-media-upload.component.html',
-    styleUrls: ['./collection-media-upload.component.scss'],
     standalone: true,
     imports: [
         MatDialogModule,

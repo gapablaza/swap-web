@@ -14,12 +14,8 @@
                     @for (item of userWishing; track item.id; let isLast = $last) {
                     <span>
                         <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
-                        <span>
-                            {{ item.name }}
-                            @if (item.wishlistQuantity && (item.wishlistQuantity > 1)) {
-                            <span>({{item.wishlistQuantity }})</span>
-                            }
-                        </span>
+                        <span>{{ item.name }}@if (item.wishlistQuantity && (item.wishlistQuantity > 1))
+                            {<span>({{item.wishlistQuantity }})</span>}</span>
                         @if (!isLast) {<span>, </span>}
                     </span>
                     }
@@ -28,13 +24,9 @@
                     Tienes <strong>{{ collection.userData?.trading || 0 }}</strong> ítems para cambiar:
                     @for (item of userTrading; track item.id; let isLast = $last) {
                     <span>
-                        <span>
-                            <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
-                            {{ item.name }}
-                            @if (item.tradelistQuantity && (item.tradelistQuantity > 1)) {
-                            <span>({{item.tradelistQuantity }})</span>
-                            }
-                        </span>
+                        <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId"> -->
+                        <span>{{ item.name }}@if (item.tradelistQuantity && (item.tradelistQuantity > 1))
+                            {<span>({{item.tradelistQuantity }})</span>}</span>
                         @if (!isLast) {<span>, </span>}
                     </span>
                     }

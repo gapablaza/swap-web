@@ -1,6 +1,14 @@
-import { createFeature, createReducer, on } from '@ngrx/store';
+import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 
-import { Collection, Item, Media, Tops, User } from 'src/app/core';
+import {
+  Collection,
+  CollectionUserData,
+  Item,
+  Media,
+  Tops,
+  User,
+} from 'src/app/core';
+import { authFeature } from '../../auth/store/auth.state';
 import { collectionActions } from './collection.actions';
 
 interface State {
@@ -41,16 +49,29 @@ const initialState: State = {
   error: null,
 };
 
+const updateItemState = (
+  items: Item[],
+  itemId: number,
+  changes: Partial<Item>
+) => items.map((i) => (i.id === itemId ? { ...i, ...changes } : i));
+
+const updateUserData = (
+  userData: CollectionUserData,
+  listType: 'wishlist' | 'tradelist',
+  change: number
+) => {
+  if (listType === 'wishlist') {
+    return { ...userData, wishing: (userData.wishing || 0) + change };
+  } else {
+    return { ...userData, trading: (userData.trading || 0) + change };
+  }
+};
+
 export const collectionFeature = createFeature({
   name: 'collection',
   reducer: createReducer(
     initialState,
     on(collectionActions.cleanData, (state) => initialState),
-    // on(collectionActions.setCollectionData, (state, { collection }) => ({
-    //   ...state,
-    //   collection,
-    //   isLoaded: true,
-    // })),
 
     // load collection data
     on(collectionActions.loadData, (state) => ({
@@ -242,5 +263,245 @@ export const collectionFeature = createFeature({
       isMediaLoaded: true,
       error,
     })),
+
+    // toggle media likes
+    on(collectionActions.toggleMediaLike, (state) => ({
+      ...state,
+      isProcessing: true,
+      error: null,
+    })),
+    on(
+      collectionActions.toggleMediaLikeSuccess,
+      (state, { mediaId, likes }) => {
+        let updatedMedia = state.media.map((m) => {
+          if (m.id == mediaId) {
+            let newTotal = m.totalLikes || 0;
+            return {
+              ...m,
+              likes,
+              totalLikes: likes ? newTotal + 1 : newTotal - 1,
+            };
+          } else {
+            return m;
+          }
+        });
+
+        return {
+          ...state,
+          media: [...updatedMedia],
+          isProcessing: false,
+        };
+      }
+    ),
+    on(collectionActions.toggleMediaLikeFailure, (state, { error }) => ({
+      ...state,
+      isProcessing: false,
+      error,
+    })),
+
+    // add image
+    on(collectionActions.addImage, (state) => ({
+      ...state,
+      isProcessing: true,
+      error: null,
+    })),
+    on(collectionActions.addImageSuccess, (state, { newMedia }) => ({
+      ...state,
+      media: [...state.media, newMedia],
+      isProcessing: false,
+    })),
+    on(collectionActions.addImageFailure, (state, { error }) => ({
+      ...state,
+      isProcessing: false,
+      error,
+    })),
+
+    // remove image
+    on(collectionActions.removeImage, (state) => ({
+      ...state,
+      isProcessing: true,
+      error: null,
+    })),
+    on(collectionActions.removeImageSuccess, (state, { mediaId }) => ({
+      ...state,
+      media: state.media.filter((m) => m.id != mediaId),
+      isProcessing: false,
+    })),
+    on(collectionActions.removeImageFailure, (state, { error }) => ({
+      ...state,
+      isProcessing: false,
+      error,
+    })),
+
+    // add comment
+    on(collectionActions.addComment, (state) => ({
+      ...state,
+      isProcessing: true,
+      error: null,
+    })),
+    on(collectionActions.addCommentSuccess, (state, { publicComment }) => ({
+      ...state,
+      collection: {
+        ...state.collection!,
+        userData: {
+          ...state.collection?.userData!,
+          publicComment,
+        },
+        userSummary: {
+          ...state.collection?.userSummary!,
+          publicComment,
+        },
+      },
+      isProcessing: false,
+    })),
+    on(collectionActions.addCommentFailure, (state, { error }) => ({
+      ...state,
+      isProcessing: false,
+      error,
+    })),
+
+    // remove comment
+    on(collectionActions.removeComment, (state) => ({
+      ...state,
+      isProcessing: true,
+      error: null,
+    })),
+    on(collectionActions.removeCommentSuccess, (state) => ({
+      ...state,
+      collection: {
+        ...state.collection!,
+        userData: {
+          ...state.collection?.userData!,
+          publicComment: undefined,
+        },
+        userSummary: {
+          ...state.collection?.userSummary!,
+          publicComment: '',
+        },
+      },
+      isProcessing: false,
+    })),
+    on(collectionActions.removeCommentFailure, (state, { error }) => ({
+      ...state,
+      isProcessing: false,
+      error,
+    })),
+
+    // Item add
+    on(collectionActions.itemAdd, (state, { item }) => ({
+      ...state,
+      items: updateItemState(state.items, item.id, { isSaving: true }),
+      error: null,
+    })),
+    on(collectionActions.itemAddSuccess, (state, { item, listType }) => ({
+      ...state,
+      collection: {
+        ...state.collection!,
+        userData: updateUserData(state.collection?.userData!, listType, 1),
+      },
+      items: updateItemState(state.items, item.id, {
+        [`${listType}`]: true,
+        [`${listType}Quantity`]: 1,
+        isSaving: false,
+      }),
+    })),
+    on(collectionActions.itemAddFailure, (state, { error, item }) => ({
+      ...state,
+      items: updateItemState(state.items, item.id, { isSaving: false }),
+      error,
+    })),
+
+    // Item increment
+    on(collectionActions.itemIncrement, (state, { item }) => ({
+      ...state,
+      items: updateItemState(state.items, item.id, { isSaving: true }),
+      error: null,
+    })),
+    on(
+      collectionActions.itemIncrementSuccess,
+      (state, { item, newQuantity, listType }) => ({
+        ...state,
+        items: updateItemState(state.items, item.id, {
+          [`${listType}Quantity`]: newQuantity,
+          isSaving: false,
+        }),
+      })
+    ),
+    on(collectionActions.itemIncrementFailure, (state, { error, item }) => ({
+      ...state,
+      items: updateItemState(state.items, item.id, { isSaving: false }),
+      error,
+    })),
+
+    // Item decrement
+    on(collectionActions.itemDecrement, (state, { item }) => ({
+      ...state,
+      items: updateItemState(state.items, item.id, { isSaving: true }),
+      error: null,
+    })),
+    on(
+      collectionActions.itemDecrementSuccess,
+      (state, { item, newQuantity, listType }) => ({
+        ...state,
+        items: updateItemState(state.items, item.id, {
+          [`${listType}Quantity`]: newQuantity,
+          isSaving: false,
+        }),
+      })
+    ),
+    on(
+      collectionActions.itemDecrementFailure,
+      (state, { error, item }) => ({
+        ...state,
+        items: updateItemState(state.items, item.id, { isSaving: false }),
+        error,
+      })
+    ),
+    
+    // Item remove
+    on(collectionActions.itemRemove, (state, { item }) => ({
+      ...state,
+      items: updateItemState(state.items, item.id, { isSaving: true }),
+      error: null,
+    })),
+    on(collectionActions.itemRemoveSuccess, (state, { item, listType }) => ({
+      ...state,
+      collection: {
+        ...state.collection!,
+        userData: updateUserData(state.collection?.userData!, listType, -1),
+      },
+      items: updateItemState(state.items, item.id, {
+        [`${listType}`]: false,
+        [`${listType}Quantity`]: 0,
+        isSaving: false,
+      }),
+    })),
+    on(collectionActions.itemRemoveFailure, (state, { error, item }) => ({
+      ...state,
+      items: updateItemState(state.items, item.id, { isSaving: false }),
+      error,
+    })),
   ),
+  extraSelectors: ({ selectMedia }) => ({
+    selectMediaPublished: createSelector(selectMedia, (media) =>
+      media.filter((e) => e.mediaTypeId == 1 && e.mediaStatusId == 2)
+    ),
+    selectMediaForModFromAuthUser: createSelector(
+      selectMedia,
+      authFeature.selectIsAuth,
+      authFeature.selectUser,
+      (media, isAuth, authUser) => {
+        if (isAuth) {
+          return media.filter(
+            (m) =>
+              m.mediaStatusId == 1 &&
+              m.mediaTypeId == 1 &&
+              m.user?.data.id == authUser.id
+          );
+        }
+
+        return [];
+      }
+    ),
+  }),
 });

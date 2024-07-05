@@ -1,10 +1,20 @@
 import { DatePipe, NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import { orderBy } from 'lodash-es';
@@ -28,16 +38,20 @@ import { environment } from 'src/environments/environment';
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
+    MatInputModule,
     MatOptionModule,
     MatSelectModule,
     LazyLoadImageModule,
     LightboxModule,
   ],
 })
-export class CollectionMediaGridComponent {
+export class CollectionMediaGridComponent implements OnInit, OnChanges {
   @Input() collection!: Collection;
   @Input() media: Media[] = [];
   @Input() isProcessing = false;
+  @Output() onToggleLike = new EventEmitter<Media>();
+  @Output() onNewImage = new EventEmitter<void>();
+
   showedImages: Media[] = [];
 
   items: GalleryItem[] = [];
@@ -45,7 +59,6 @@ export class CollectionMediaGridComponent {
 
   baseImageUrl = `https://res.cloudinary.com/${environment.cloudinary.cloudName}/image/upload/t_il_media_wm/${environment.cloudinary.site}/collectionMedia/`;
   baseFullImageUrl = `https://res.cloudinary.com/${environment.cloudinary.cloudName}/image/upload/t_il_full_media_wm/${environment.cloudinary.site}/collectionMedia/`;
-  baseForModImageUrl = `https://res.cloudinary.com/${environment.cloudinary.cloudName}/image/upload/v1/${environment.cloudinary.site}/collectionMedia/`;
 
   searchText = '';
   sortOptionSelected = 'likes';
@@ -83,10 +96,22 @@ export class CollectionMediaGridComponent {
   ];
   showFilters = false;
 
-  constructor(
-    public gallery: Gallery,
-    public lightbox: Lightbox,
-  ) {}
+  constructor(public gallery: Gallery, public lightbox: Lightbox) {}
+
+  ngOnInit(): void {
+    this.updateShowedImages();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['media']) {
+      this.updateShowedImages();
+    }
+  }
+
+  updateShowedImages(): void {
+    this.showedImages = [...this.media];
+    this.sortShowedImages();
+  }
 
   onSort() {
     this.sortShowedImages();
@@ -153,8 +178,4 @@ export class CollectionMediaGridComponent {
     this.showedImages = [...tempImages];
     this.sortShowedImages();
   }
-
-  onNewImage() {}
-  onDeleteImage(id: number) {}
-  toggleLike(item: Media) {}
 }

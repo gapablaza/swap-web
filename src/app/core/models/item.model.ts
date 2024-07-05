@@ -17,6 +17,9 @@ export interface Item {
   updated?: string,
   wishlist?: boolean,
   wishlistQuantity?: number,
+
+  isHidden?: boolean, // MANAGE ITEM LIST
+  isSaving?: boolean, // MANAGE ITEM LIST
 }
 
 export interface ItemType {

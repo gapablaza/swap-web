@@ -1,0 +1,62 @@
+<div class="manage-list">
+    <div class="manage-list-controls">
+        <div class="controls-std-filters">
+            <mat-form-field class="controls-search" appearance="outline">
+                <mat-label>Filtrar por nombre o descripción</mat-label>
+                <mat-icon matPrefix>search</mat-icon>
+                <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
+                @if (searchText) {
+                <button matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
+                    <mat-icon>close</mat-icon>
+                </button>
+                }
+            </mat-form-field>
+        </div>
+
+        <div class="manage-list-info">
+            <p>(+1): Click izquierdo / Tap</p>
+            <p>(-1): Click derecho / Tap largo</p>
+        </div>
+    </div>
+
+    <ul class="list-std">
+        @for (item of items; track item.id) {
+        @if (!item.isHidden) {
+        <li class="list-std-item">
+            <div class="list-item-main">
+                <div class="list-item-image">
+                    <a [routerLink]="['/item', item.id]">
+                        <img [defaultImage]="defaultItemImage" [lazyLoad]="item.image || defaultItemImage" alt=""
+                            crossorigin="anonymous">
+                    </a>
+                </div>
+                <div class="list-item-content flex-full">
+                    <div class="list-item-title">
+                        <a [routerLink]="['/item', item.id]">
+                            Nro. {{ item.name }}
+                        </a>
+                    </div>
+                    <div class="list-item-meta custom-separator">
+                        <span>{{ item.description }}</span>
+                    </div>
+                </div>
+                <div class="list-item-actions">
+                    <button [disabled]="item.isSaving" mat-raised-button [color]="item.wishlist ? 'accent' : 'basic'"
+                        (click)="onAddWish.emit(item)" (contextmenu)="onRightClick($event, 'wish', item)"
+                        (press)="onRemoveWish.emit(item)" [matBadge]="item.wishlistQuantity"
+                        [matBadgeHidden]="!item.wishlist">
+                        <mat-icon>search</mat-icon> Busco
+                    </button>
+                    <button [disabled]="item.isSaving" mat-raised-button [color]="item.tradelist ? 'accent' : 'basic'"
+                        (click)="onAddTrade.emit(item)" (contextmenu)="onRightClick($event, 'trade', item)"
+                        (press)="onRemoveTrade.emit(item)" [matBadge]="item.tradelistQuantity"
+                        [matBadgeHidden]="!item.tradelist">
+                        <mat-icon>swap_horiz</mat-icon> Cambio
+                    </button>
+                </div>
+            </div>
+        </li>
+        }
+        }
+    </ul>
+</div>

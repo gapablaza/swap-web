@@ -1,0 +1,36 @@
+@if (images.length) {
+<h2>Esperando moderación</h2>
+<div class="table-responsive">
+    <table class="table-std">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Descripción</th>
+                <th>F. subida</th>
+                <th>URL</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (image of images; track image.id; let i = $index) {
+            <tr>
+                <td>{{ i+1 }}</td>
+                <td>{{ image.description }}</td>
+                <td>{{ image.created * 1000 | date:'dd/MM/YYYY HH:mm \'hrs.\'' }}</td>
+                <td>
+                    <a class="btn" mat-flat-button [href]="baseForModImageUrl + image.id" target="_blank">
+                        <mat-icon>link</mat-icon> Ver
+                    </a>
+                </td>
+                <td>
+                    <button (click)="onDeleteImage.emit(image.id)" [disabled]="isProcessing" mat-flat-button
+                        color="warn" aria-label="Eliminar imagen">
+                        <mat-icon>delete</mat-icon> Eliminar
+                    </button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+}

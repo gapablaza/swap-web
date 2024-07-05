@@ -1,40 +1,3 @@
-<h1>Elementos multimedia</h1>
-
-<!-- <ng-container *ngIf="imagesForModeration.length">
-    <h2>Esperando moderación</h2>
-    <div class="table-responsive">
-        <table class="table-std">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Descripción</th>
-                    <th>F. subida</th>
-                    <th>URL</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let image of imagesForModeration; let i = index;">
-                    <td>{{ i+1 }}</td>
-                    <td>{{ image.description }}</td>
-                    <td>{{ image.created * 1000 | date:'dd/MM/YYYY HH:mm \'hrs.\'' }}</td>
-                    <td>
-                        <a class="btn" mat-flat-button [href]="baseForModImageUrl + image.id" target="_blank">
-                            <mat-icon>link</mat-icon> Ver
-                        </a>
-                    </td>
-                    <td>
-                        <button (click)="onDeleteImage(image.id)" [disabled]="isSaving" mat-flat-button color="warn"
-                            aria-label="Eliminar imagen">
-                            <mat-icon>delete</mat-icon> Eliminar
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</ng-container> -->
-
 @if (showedImages.length) {
 <h2>
     Imágenes (
@@ -65,7 +28,7 @@
                 </mat-form-field>
             </div>
             <div class="controls-std-settings">
-                <a class="btn" style="margin-right: 8px;" mat-raised-button color="accent" (click)="onNewImage()">
+                <a class="btn" style="margin-right: 8px;" mat-raised-button color="accent" (click)="onNewImage.emit()">
                     <mat-icon>add_a_photo</mat-icon> Subir
                 </a>
                 <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
@@ -90,7 +53,7 @@
     <div class="empty-content">
         <h2>(｡◕‿‿◕｡)</h2>
         <p>Nadie ha publicado un elemento multimedia... Quiéres ser el primero?</p>
-        <a class="btn" mat-raised-button color="accent" (click)="onNewImage()">
+        <a class="btn" mat-raised-button color="accent" (click)="onNewImage.emit()">
             <mat-icon>add_a_photo</mat-icon> Subir imagen
         </a>
     </div>
@@ -114,7 +77,7 @@
                         <mat-icon>zoom_in</mat-icon> Zoom
                     </a>
                 </div>
-                <div (click)="toggleLike(image)" class="images-grid-likes" [ngClass]="{'likes': image.likes }">
+                <div (click)="onToggleLike.emit(image)" class="images-grid-likes" [ngClass]="{'likes': image.likes }">
                     <mat-icon aria-hidden="false" aria-label="Number of likes">favorite</mat-icon>
                     <span>{{ image.totalLikes }}</span>
                 </div>

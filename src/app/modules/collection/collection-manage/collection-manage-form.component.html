@@ -1,0 +1,23 @@
+<div class="form-std card">
+    <form [formGroup]="commentForm" (ngSubmit)="onAddComment.emit(comment.value)">
+
+        <mat-form-field appearance="outline">
+            <mat-label>Comentario público</mat-label>
+            <textarea #comment matInput formControlName="comment" maxlength="200" rows="3"></textarea>
+            <mat-hint align="start">
+                Ingresa un comentario relacionado a esta colección que será visible para todos los visitantes de la
+                aplicación (opcional).
+            </mat-hint>
+            <mat-hint align="end">{{comment.value.length || 0}}/200</mat-hint>
+            @if (form['comment'].errors) {
+            <mat-error>Debes ingresar como máximo 200 caracteres.</mat-error>
+            }
+        </mat-form-field>
+
+        <button mat-raised-button [disabled]="isProcessing || commentForm.invalid" color="accent">Actualizar</button>
+        @if (publicComment) {
+        <a (click)="onDeleteComment.emit()" mat-stroked-button [disabled]="isProcessing" color="warn">Eliminar</a>
+        }
+
+    </form>
+</div>

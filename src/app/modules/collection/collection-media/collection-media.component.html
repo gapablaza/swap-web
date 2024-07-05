@@ -1,130 +1,19 @@
 <section class="collection collection-section">
   <app-collection-summary [collection]="(collection$ | async)!" [showBackButton]="true"></app-collection-summary>
   @if (isLoaded$ | async) {
-    <div class="collection-media flex-full">
-      <app-collection-media-grid
-        [collection]="(collection$ | async)!"
-        [media]="(medias$ | async)!"
-        [isProcessing]="(isProcessing$ | async)!"
-      ></app-collection-media-grid>
-    </div>
-  } @else {
-    <div class="loading-indicator">
-      <mat-spinner aria-label="cargando"></mat-spinner>
-    </div>
-  }
-  <!-- <div class="collection-media flex-full">
+  <div class="collection-media flex-full">
     <h1>Elementos multimedia</h1>
 
-    <ng-container *ngIf="imagesForModeration.length">
-      <h2>Esperando moderación</h2>
-      <div class="table-responsive">
-        <table class="table-std">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Descripción</th>
-              <th>F. subida</th>
-              <th>URL</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let image of imagesForModeration; let i = index;">
-              <td>{{ i+1 }}</td>
-              <td>{{ image.description }}</td>
-              <td>{{ image.created * 1000 | date:'dd/MM/YYYY HH:mm \'hrs.\'' }}</td>
-              <td>
-                <a class="btn" mat-flat-button [href]="baseForModImageUrl + image.id" target="_blank">
-                  <mat-icon>link</mat-icon> Ver
-                </a>
-              </td>
-              <td>
-                <button (click)="onDeleteImage(image.id)" [disabled]="isSaving" mat-flat-button color="warn"
-                  aria-label="Eliminar imagen">
-                  <mat-icon>delete</mat-icon> Eliminar
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </ng-container>
+    <app-collection-media-mod [imagesForModeration]="(imagesForMod$ | async)!" [isProcessing]="(isProcessing$ | async)!"
+      (onDeleteImage)="deleteImage($event)"></app-collection-media-mod>
 
-    <h2 *ngIf="showedImages.length">
-      Imágenes (<span class="color-accent" *ngIf="showedImages.length != medias.length">
-        {{ showedImages.length }} de
-      </span>{{ medias.length }})
-    </h2>
-    <div class="card">
-      <div class="empty-content" *ngIf="!medias.length">
-        <h2>(｡◕‿‿◕｡)</h2>
-        <p>Nadie ha publicado un elemento multimedia... Quiéres ser el primero?</p>
-        <a class="btn" mat-raised-button color="accent" (click)="onNewImage()">
-          <mat-icon>add_a_photo</mat-icon> Subir imagen
-        </a>
-      </div>
-
-      <div class="controls-std" *ngIf="medias.length">
-        <div class="controls-std-main">
-          <div class="controls-std-order">
-            <mat-form-field appearance="outline">
-              <mat-label>Ordenar por</mat-label>
-              <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
-                <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
-                  {{ option.selectName }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div class="controls-std-settings">
-            <a class="btn" style="margin-right: 8px;" mat-raised-button color="accent" (click)="onNewImage()">
-              <mat-icon>add_a_photo</mat-icon> Subir
-            </a>
-            <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
-              <mat-icon>filter_list</mat-icon> Filtros
-            </a>
-          </div>
-        </div>
-        <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
-          <mat-form-field class="controls-search" appearance="outline">
-            <mat-label>Filtrar por descripción o usuario (nombre / ID)</mat-label>
-            <mat-icon matPrefix>search</mat-icon>
-            <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
-            <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
-              <mat-icon>close</mat-icon>
-            </button>
-          </mat-form-field>
-        </div>
-      </div>
-
-      <div class="images-grid">
-        <div *ngFor="let image of showedImages; let i = index; trackBy: trackByImage" class="images-grid-card">
-          <div class="images-grid-content">
-            <img [lazyLoad]="baseImageUrl + image.id"
-              [alt]="image.description + ' en ' + collection.name + ' de ' + collection.publisher.data.name"
-              class="images-grid-image" crossorigin="anonymous">
-            <p class="images-grid-author">
-              por <a [routerLink]="['/user', image.user?.data?.id]">{{ image.user?.data?.displayName }}</a> el {{
-              image.created * 1000 | date:'dd/MM/yy' }}
-            </p>
-            <div class="images-grid-details">
-              <a class="btn" mat-raised-button color="accent"
-                (click)="lightbox.open(i, 'lightbox', {panelClass: 'fullscreen'})">
-                <mat-icon>zoom_in</mat-icon> Zoom
-              </a>
-            </div>
-            <div (click)="toggleLike(image)" class="images-grid-likes" [ngClass]="{'likes': image.likes }">
-              <mat-icon aria-hidden="false" aria-label="Number of likes">favorite</mat-icon>
-              <span>{{ image.totalLikes }}</span>
-            </div>
-          </div>
-          <p class="images-grid-title">
-            #{{ i + 1 }} - {{ image.description }}
-          </p>
-        </div>
-      </div>
-    </div>
-
-  </div> -->
+    <app-collection-media-grid [collection]="(collection$ | async)!" [media]="(medias$ | async)!"
+      [isProcessing]="(isProcessing$ | async)!" (onToggleLike)="toggleLike($event)"
+      (onNewImage)="newImage()"></app-collection-media-grid>
+  </div>
+  } @else {
+  <div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+  </div>
+  }
 </section>

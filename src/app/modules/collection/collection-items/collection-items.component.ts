@@ -21,7 +21,6 @@ import { collectionActions } from '../store/collection.actions';
 @Component({
   selector: 'app-collection-items',
   templateUrl: './collection-items.component.html',
-  styleUrls: ['./collection-items.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

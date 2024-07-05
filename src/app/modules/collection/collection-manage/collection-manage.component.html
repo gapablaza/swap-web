@@ -1,41 +1,22 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-  <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="collection collection-section">
-  <app-collection-summary [showBackButton]="true"></app-collection-summary>
+<section class="collection collection-section">
+  <app-collection-summary [collection]="(collection$ | async)!" [showBackButton]="true"></app-collection-summary>
+
+  @if (isLoaded$ | async) {
   <div class="collection-manage flex-full">
     <h1>Gestionar colección</h1>
 
-    <ng-container *ngIf="isAdsLoaded">
-      <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="7207150645" [adFormat]="'auto'"
-        [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
-    </ng-container>
+    <!-- <ng-container *ngIf="isAdsLoaded">
+        <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="7207150645" [adFormat]="'auto'"
+          [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
+      </ng-container> -->
 
-    <div class="">
-      <div class="form-std card">
-        <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
-
-          <mat-form-field appearance="outline">
-            <mat-label>Comentario público</mat-label>
-            <textarea #comment matInput formControlName="comment" maxlength="200" rows="3"></textarea>
-            <mat-hint align="start">
-              Ingresa un comentario relacionado a esta colección que será visible para todos los visitantes de la
-              aplicación (opcional).
-            </mat-hint>
-            <mat-hint align="end">{{comment.value.length || 0}}/200</mat-hint>
-            <mat-error *ngIf="form['comment'].errors">Debes ingresar como máximo 200 caracteres.</mat-error>
-          </mat-form-field>
-
-          <button mat-raised-button [disabled]="isSaving || commentForm.invalid" color="accent">Actualizar</button>
-          <a *ngIf="collection.userData?.publicComment" (click)="onDeleteComment()" mat-stroked-button
-            [disabled]="isSaving" color="warn">Eliminar</a>
-
-        </form>
-      </div>
-    </div>
+    <app-collection-manage-form [publicComment]="(collection$ | async)?.userData?.publicComment!"
+      [isProcessing]="(isProcessing$ | async)!" (onAddComment)="addComment($event)"
+      (onDeleteComment)="deleteComment()"></app-collection-manage-form>
 
     <div class="card">
-      <div class="empty-content" *ngIf="!collection.items">
+      @if (!(collection$ | async)?.items) {
+      <div class="empty-content">
         <h2>(｡◕‿‿◕｡)</h2>
         <p>Esto es embarazoso... no nos hemos podido conseguir el itemizado de esta colección ¿Nos ayudas?</p>
         <a class="btn" mat-raised-button color="accent"
@@ -44,10 +25,11 @@
           <mat-icon>add_a_photo</mat-icon> Agregar colección
         </a>
       </div>
-
-      <ng-container *ngIf="collection.items">
+      } @else {
+      <ng-container>
         <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-          <a mat-tab-link [routerLink]="['.']" [active]="actualPage == 'manage'">Listado ({{ collection.items }})</a>
+          <a mat-tab-link [routerLink]="['.']" [active]="actualPage == 'manage'">Listado ({{ (collection$ |
+            async)?.items }})</a>
           <a mat-tab-link [routerLink]="['wishlist']" [active]="actualPage == 'wishlist'">Buscando ({{ totalWishing
             }})</a>
           <a mat-tab-link [routerLink]="['tradelist']" [active]="actualPage == 'tradelist'">Cambiando ({{ totalTrading
@@ -58,6 +40,12 @@
           <router-outlet></router-outlet>
         </mat-tab-nav-panel>
       </ng-container>
+      }
     </div>
   </div>
+  } @else {
+  <div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+  </div>
+  }
 </section>
