@@ -47,15 +47,7 @@ export const userFeature = createFeature({
   name: 'user',
   reducer: createReducer(
     initialState,
-    on(userActions.cleanUserData, (state) => ({
-      ...state,
-      initialState,
-    })),
-    on(userActions.setUserData, (state, { user }) => ({
-      ...state,
-      user,
-      isLoaded: true,
-    })),
+    on(userActions.cleanUserData, (state) => initialState),
 
     // load profile data
     on(userActions.loadUserData, (state) => ({

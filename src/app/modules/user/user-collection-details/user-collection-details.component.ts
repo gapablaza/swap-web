@@ -26,7 +26,6 @@ import { userActions } from '../store/user.actions';
 @Component({
   selector: 'app-user-collection-details',
   templateUrl: './user-collection-details.component.html',
-  styleUrls: ['./user-collection-details.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

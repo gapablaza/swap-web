@@ -23,20 +23,19 @@ import { messagesActions } from '../store/message.actions';
 @Component({
   selector: 'app-message-with-user',
   templateUrl: './message-with-user.component.html',
-  styleUrls: ['./message-with-user.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    MatProgressSpinnerModule,
-    MatButtonModule,
-    RouterLink,
-    MatIconModule,
-    LazyLoadImageModule,
-    MatMenuModule,
     NgClass,
+    RouterLink,
     FormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatProgressSpinnerModule,
     DatePipe,
     AsyncPipe,
+    LazyLoadImageModule,
   ],
 })
 export class MessageWithUserComponent implements OnInit, OnDestroy {

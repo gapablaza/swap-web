@@ -13,7 +13,6 @@ import { userFeature } from '../store/user.state';
 @Component({
   selector: 'app-user-summary',
   templateUrl: './user-summary.component.html',
-  styleUrls: ['./user-summary.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

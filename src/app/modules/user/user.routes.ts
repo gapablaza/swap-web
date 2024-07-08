@@ -6,7 +6,6 @@ import { userFeature } from './store/user.state';
 import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { UserEffects } from './store/user.effects';
-import { userGuard } from './user.guard';
 
 export const USER_ROUTES: Routes = [
   {
@@ -44,11 +43,6 @@ export const USER_ROUTES: Routes = [
           import('./user-evaluations/user-evaluations.component').then(
             (c) => c.UserEvaluationsComponent
           ),
-        // canActivate: [userGuard],
-        // providers: [UserResolver],
-        // resolve: {
-        //   userData: UserResolver,
-        // },
       },
       {
         path: 'media',

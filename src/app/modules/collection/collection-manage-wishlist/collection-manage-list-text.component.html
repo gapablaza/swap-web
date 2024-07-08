@@ -1,0 +1,38 @@
+<div class="manage-bytext">
+    <app-collection-manage-list-controls [typeSelected]="'texto'" [isSaving]="isSaving()"
+        (onSave)="onSave.emit(itemsText)"
+        (onChangeMode)="onChangeMode.emit($event)"></app-collection-manage-list-controls>
+
+    <div class="manage-bytext-container">
+        @if (listType() == 'wishlist') {
+        <h2>Buscadas ({{ itemsQuantity }})</h2>
+        <p>Ingresa a continuación el listado de los ítems que estás buscando y luego presiona en el botón Guardar.
+            Revisa el formato a utilizar en el "Listado de Referencia" que está a continuación. Si quieres marcar mas de
+            1 vez un ítem ingresa la cantidad de veces entre paréntesis a continuación del nombre del ítem, por ejemplo:
+            3(2),5(8).</p>
+        } @else {
+        <h2>Para Cambiar ({{ itemsQuantity }})</h2>
+        <p>Ingresa a continuación el listado de los ítems que tienes repetidos y luego presiona en el botón Guardar.
+            Revisa el
+            formato a utilizar en el "Listado de Referencia" que está a continuación. Si quieres marcar mas de 1 vez un
+            ítem ingresa la cantidad de veces entre paréntesis a continuación del nombre del ítem, por ejemplo:
+            3(2),5(8).</p>
+        }
+        <mat-form-field appearance="outline">
+            <textarea matInput maxlength="5000" rows="10" [(ngModel)]="itemsText"></textarea>
+        </mat-form-field>
+    </div>
+
+    <div class="manage-bytext-container">
+        <h2>Listado de Referencia</h2>
+        <p>Puedes utilizar este listado de referencia para copiarlo, y dejar en el área de texto anterior sólo los que
+            necesitas.</p>
+        <mat-form-field appearance="outline">
+            <textarea matInput rows="10" readonly="true" [value]="itemsRef"></textarea>
+        </mat-form-field>
+    </div>
+
+    <app-collection-manage-list-controls [typeSelected]="'texto'" [isSaving]="isSaving()"
+        (onSave)="onSave.emit(itemsText)"
+        (onChangeMode)="onChangeMode.emit($event)"></app-collection-manage-list-controls>
+</div>

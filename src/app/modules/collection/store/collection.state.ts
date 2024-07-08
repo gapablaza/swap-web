@@ -481,6 +481,32 @@ export const collectionFeature = createFeature({
       items: updateItemState(state.items, item.id, { isSaving: false }),
       error,
     })),
+
+    // Update list
+    on(collectionActions.updateList, (state) => ({
+      ...state,
+      isProcessing: true,
+      error: null,
+    })),
+    on(collectionActions.updateListSuccess, (state, { items }) => ({
+      ...state,
+      collection: {
+        ...state.collection!,
+        userData: {
+          ...state.collection?.userData!,
+          wishing: items.reduce((total, item) => total + (item.wishlist ? 1 : 0), 0),
+          trading: items.reduce((total, item) => total + (item.tradelist ? 1 : 0), 0),
+        },
+      },
+      items,
+      isProcessing: false,
+    })),
+    on(collectionActions.updateListFailure, (state, { error }) => ({
+      ...state,
+      isProcessing: false,
+      error,
+    })),
+
   ),
   extraSelectors: ({ selectMedia }) => ({
     selectMediaPublished: createSelector(selectMedia, (media) =>

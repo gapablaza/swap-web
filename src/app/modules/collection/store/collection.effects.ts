@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, exhaustMap, map, of, tap, withLatestFrom } from 'rxjs';
+import {
+  catchError,
+  concatMap,
+  exhaustMap,
+  map,
+  of,
+  tap,
+  withLatestFrom,
+} from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 import { CollectionService, ItemService, MediaService } from 'src/app/core';
@@ -418,6 +426,62 @@ export class CollectionEffects {
     )
   );
 
+  public updateList$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(collectionActions.updateList),
+      withLatestFrom(this.store.select(collectionFeature.selectCollection)),
+      exhaustMap(([action, collection]) => {
+        const method =
+          action.listType == 'wishlist'
+            ? this.colSrv.setWishlist(collection!.id, action.listText)
+            : this.colSrv.setTradelist(collection!.id, action.listText);
+
+        return method.pipe(
+          concatMap(({ message, bothListsTotal, bothListDetails }) => {
+            let tempMessage = message;
+            if (bothListsTotal > 1) {
+              tempMessage +=
+                ', pero atención! porque tienes ' +
+                bothListsTotal +
+                ' ítems marcados como faltantes y repetidos';
+            } else if (bothListsTotal == 1) {
+              tempMessage +=
+                ', pero atención! porque tienes ' +
+                bothListsTotal +
+                ' ítem marcado como faltante y repetido';
+            }
+
+            return this.colSrv.getItems(collection!.id).pipe(
+              map((items) =>
+                collectionActions.updateListSuccess({
+                  message: tempMessage,
+                  items,
+                  listType: action.listType,
+                })
+              ),
+              catchError((error) =>
+                of(
+                  collectionActions.updateListFailure({
+                    error,
+                    listType: action.listType,
+                  })
+                )
+              )
+            );
+          }),
+          catchError((error) =>
+            of(
+              collectionActions.updateListFailure({
+                error,
+                listType: action.listType,
+              })
+            )
+          )
+        );
+      })
+    )
+  );
+
   public showSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -433,7 +497,8 @@ export class CollectionEffects {
           collectionActions.itemAddSuccess,
           collectionActions.itemIncrementSuccess,
           collectionActions.itemDecrementSuccess,
-          collectionActions.itemRemoveSuccess
+          collectionActions.itemRemoveSuccess,
+          collectionActions.updateListSuccess
         ),
         map((action) => action.message),
         tap((message) => {

@@ -1,7 +1,5 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   OnInit,
 } from '@angular/core';
@@ -25,20 +23,14 @@ import { collectionActions } from '../store/collection.actions';
     CollectionManageItemsListComponent,
   ],
 })
-export class CollectionManageItemsComponent implements OnInit, AfterViewInit {
+export class CollectionManageItemsComponent implements OnInit {
   items$ = this.store.select(collectionFeature.selectItems);
   isLoaded$ = this.store.select(collectionFeature.selectIsItemsLoaded);
 
-  constructor(private store: Store, private cdr: ChangeDetectorRef) {}
+  constructor(private store: Store) {}
 
   ngOnInit(): void {
     this.store.dispatch(collectionActions.loadItems());
-  }
-
-  ngAfterViewInit() {
-    // Since we know the list is not going to change
-    // let's request that this component not undergo change detection at all
-    // this.cdr.detach();
   }
 
   onAddWish(item: Item) {

@@ -18,7 +18,6 @@ export interface Item {
   wishlist?: boolean,
   wishlistQuantity?: number,
 
-  isHidden?: boolean, // MANAGE ITEM LIST
   isSaving?: boolean, // MANAGE ITEM LIST
 }
 

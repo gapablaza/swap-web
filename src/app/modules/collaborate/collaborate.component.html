@@ -1,7 +1,9 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
+@if (isLoading$ | async) {
+<div class="loading-indicator">
     <mat-spinner aria-label="cargando"></mat-spinner>
 </div>
-<section *ngIf="isLoaded" class="pages collaborate">
+} @else {
+<section class="pages collaborate">
     <h1>Colabora</h1>
     <p>El uso de <strong>IntercambiaLaminas.com</strong> es <strong>totalmente gratuito</strong> y haremos todo lo
         posible porque siempre
@@ -37,7 +39,7 @@
         <div>
             <h3>Donar al menos US$20 dólares estadounidenses:</h3>
             <a
-                [href]="'https://www.paypal.com/donate/?hosted_button_id=GY5VMKSVW9QKC&item_name=Donativo Anual (ID Usuario:' + authUser.id + ')'">
+                [href]="'https://www.paypal.com/donate/?hosted_button_id=GY5VMKSVW9QKC&item_name=Donativo Anual (ID Usuario:' + (authUser$ | async)?.id + ')'">
                 <img style="border-radius: 4px;" src="assets/img/paypal.jpg">
             </a>
         </div>
@@ -84,10 +86,10 @@
                 <td>No hay</td>
             </tr>
             <!-- <tr>
-                <td class="account-types-desc">Posibles cambios al consultar otro usuario</td>
-                <td>No</td>
-                <td>Sí</td>
-            </tr> -->
+                    <td class="account-types-desc">Posibles cambios al consultar otro usuario</td>
+                    <td>No</td>
+                    <td>Sí</td>
+                </tr> -->
             <tr>
                 <td class="account-types-desc">TOP ítems de una colección (por dificultad)</td>
                 <td>No</td>
@@ -116,3 +118,4 @@
         <li>Otros.</li>
     </ul>
 </section>
+}

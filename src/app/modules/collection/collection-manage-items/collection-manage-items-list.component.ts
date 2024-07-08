@@ -2,8 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  Input,
   Output,
+  computed,
+  input,
+  signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -33,14 +35,17 @@ import { DEFAULT_ITEM_IMG, Item } from 'src/app/core';
   ],
 })
 export class CollectionManageItemsListComponent {
-  @Input() items: Item[] = [];
+  items = input<Item[]>([]);
+  managedItems = computed(() =>
+    this.items().filter((i) => this.applyFilter(i, this.searchText()))
+  );
   @Output() onAddWish = new EventEmitter<Item>();
   @Output() onRemoveWish = new EventEmitter<Item>();
   @Output() onAddTrade = new EventEmitter<Item>();
   @Output() onRemoveTrade = new EventEmitter<Item>();
 
   defaultItemImage = DEFAULT_ITEM_IMG;
-  searchText = '';
+  searchText = signal('');
 
   onRightClick(event: MouseEvent, actionType: string, item: Item) {
     event.preventDefault();
@@ -51,33 +56,23 @@ export class CollectionManageItemsListComponent {
     }
   }
 
-  // TO DO: Filtrar el listado de items
-  onFilter() {
-    // check at least 2 chars for search
-    if (this.searchText.length > 1) {
-      this.items.forEach((item) => {
-        if (
-          item.name
-            .toLocaleLowerCase()
-            .indexOf(this.searchText.toLocaleLowerCase()) !== -1 ||
-          (item.description || '')
-            .toLocaleLowerCase()
-            .indexOf(this.searchText.toLocaleLowerCase()) !== -1
-        ) {
-          item.isHidden = false;
-        } else {
-          item.isHidden = true;
-        }
-      });
-      //   this.cdr.detectChanges();
+  applyFilter(item: Item, searchText: string): boolean {
+    if (searchText.length <= 1) {
+      return true;
     }
+
+    const lowerSearchText = searchText.toLocaleLowerCase();
+    const itemNameMatches = item.name
+      .toLocaleLowerCase()
+      .includes(lowerSearchText);
+    const itemDescriptionMatches = (item.description || '')
+      .toLocaleLowerCase()
+      .includes(lowerSearchText);
+
+    return itemNameMatches || itemDescriptionMatches;
   }
 
   onClearFilter() {
-    this.items.forEach((item) => {
-      item.isHidden = false;
-    });
-    this.searchText = '';
-    // this.cdr.detectChanges();
+    this.searchText.set('');
   }
 }

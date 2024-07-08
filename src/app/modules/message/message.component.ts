@@ -21,7 +21,6 @@ import { AuthService, User } from 'src/app/core';
 @Component({
   selector: 'app-message',
   templateUrl: './message.component.html',
-  styleUrls: ['./message.component.scss'],
   standalone: true,
   imports: [RouterOutlet, MatDialogModule, MatButtonModule],
 })

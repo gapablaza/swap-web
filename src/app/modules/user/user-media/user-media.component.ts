@@ -33,7 +33,6 @@ import { userActions } from '../store/user.actions';
 @Component({
   selector: 'app-user-media',
   templateUrl: './user-media.component.html',
-  styleUrls: ['./user-media.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

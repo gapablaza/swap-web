@@ -10,7 +10,6 @@ import { MatListModule } from '@angular/material/list';
 @Component({
     selector: 'app-share-url',
     templateUrl: './share-url.component.html',
-    styleUrls: ['./share-url.component.scss'],
     standalone: true,
     imports: [MatListModule, MatIconModule, RouterLink]
 })

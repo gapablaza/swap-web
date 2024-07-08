@@ -25,7 +25,6 @@ import { UIService } from '../../ui.service';
 @Component({
   selector: 'app-report',
   templateUrl: './report.component.html',
-  styleUrl: './report.component.scss',
   standalone: true,
   imports: [
     MatDialogModule,

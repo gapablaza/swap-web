@@ -4,8 +4,8 @@
             <mat-form-field class="controls-search" appearance="outline">
                 <mat-label>Filtrar por nombre o descripción</mat-label>
                 <mat-icon matPrefix>search</mat-icon>
-                <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
-                @if (searchText) {
+                <input matInput type="text" [(ngModel)]="searchText">
+                @if (searchText()) {
                 <button matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
                     <mat-icon>close</mat-icon>
                 </button>
@@ -20,8 +20,7 @@
     </div>
 
     <ul class="list-std">
-        @for (item of items; track item.id) {
-        @if (!item.isHidden) {
+        @for (item of managedItems(); track item.id) {
         <li class="list-std-item">
             <div class="list-item-main">
                 <div class="list-item-image">
@@ -56,7 +55,6 @@
                 </div>
             </div>
         </li>
-        }
         }
     </ul>
 </div>

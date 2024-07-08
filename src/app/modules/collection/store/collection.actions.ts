@@ -103,5 +103,10 @@ export const collectionActions = createActionGroup({
     'Item Remove': props<{ item: Item, listType: 'wishlist' | 'tradelist' }>(),
     'Item Remove Success': props<{ message: string, item: Item, listType: 'wishlist' | 'tradelist' }>(),
     'Item Remove Failure': props<{ error: string, item: Item, listType: 'wishlist' | 'tradelist' }>(),
+
+    // Update list items
+    'Update List': props<{ listText: string, listType: 'wishlist' | 'tradelist' }>(),
+    'Update List Success': props<{ message: string, items: Item[], listType: 'wishlist' | 'tradelist' }>(),
+    'Update List Failure': props<{ error: string, listType: 'wishlist' | 'tradelist' }>(),
   },
 });

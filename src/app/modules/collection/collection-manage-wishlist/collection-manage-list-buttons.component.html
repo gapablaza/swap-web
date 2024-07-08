@@ -1,0 +1,47 @@
+<div class="manage-list">
+    <app-collection-manage-list-controls [typeSelected]="'botones'" [isSaving]="isSaving()"
+        (onSave)="onSave.emit(itemsToText(managedItems))"
+        (onChangeMode)="onChangeMode.emit($event)"></app-collection-manage-list-controls>
+
+    <div class="manage-list-controls">
+        <div class="manage-list-info">
+            <p>(+1): Click izquierdo / Tap</p>
+            <p>(-1): Click derecho / Tap largo</p>
+        </div>
+        <div class="manage-list-options">
+            <button mat-button (click)="onCheckList()">
+                Marcar todos
+            </button>
+            <button mat-button (click)="onUncheckList()">
+                Desmarcar todos
+            </button>
+        </div>
+    </div>
+    
+    <div class="manage-list-buttons">
+        @for (mItem of managedItems; track mItem.id; let i = $index) {
+        <!-- <button mat-raised-button
+            [color]="mItem.wishlist && mItem.tradelist ? 'warn' : mItem[listType()] ? 'accent' : 'basic'"
+            [matBadge]="getItemQuantity(mItem, listType())" 
+            [matBadgeHidden]="!mItem[listType()]" 
+            (click)="onAdd(mItem)"
+            (contextmenu)="onHandleRemove($event, mItem)" 
+            (press)="onRemove(mItem)">
+            {{ mItem.name }}
+        </button> -->
+        <button mat-raised-button
+          [color]="mItem.wishlist && mItem.tradelist ? 'warn' : mItem[listType()] ? 'accent' : 'basic'"
+          [matBadge]="getItemQuantity(mItem, listType())" 
+          [matBadgeHidden]="!mItem[listType()]" 
+          (mousedown)="onMouseDown($event, mItem)"
+          (mouseup)="onMouseUp($event, mItem)"
+          (contextmenu)="onHandleRemove($event, mItem)">
+          {{ mItem.name }}
+        </button>
+        }
+    </div>
+
+    <app-collection-manage-list-controls [typeSelected]="'botones'" [isSaving]="isSaving()"
+        (onSave)="onSave.emit(itemsToText(managedItems))"
+        (onChangeMode)="onChangeMode.emit($event)"></app-collection-manage-list-controls>
+</div>

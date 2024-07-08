@@ -11,7 +11,6 @@ export const userActions = createActionGroup({
   source: 'User',
   events: {
     'Clean User Data': emptyProps(),
-    'Set User Data': props<{ user: User }>(),
 
     // load profile data
     'Load User Data': props<{ userId: number }>(),

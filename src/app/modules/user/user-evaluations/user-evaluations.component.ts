@@ -42,7 +42,6 @@ import { userActions } from '../store/user.actions';
 @Component({
   selector: 'app-user-evaluations',
   templateUrl: './user-evaluations.component.html',
-  styleUrls: ['./user-evaluations.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
