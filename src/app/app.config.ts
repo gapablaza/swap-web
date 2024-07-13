@@ -34,20 +34,16 @@ import { NgProgressModule } from 'ngx-progressbar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { provideState, provideStore } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
+import { provideStoreDevtools } from '@ngrx/store-devtools';
 
 import { CoreModule, errorInterceptor, tokenInterceptor } from './core';
 import { environment } from 'src/environments/environment';
 import { UIService } from './shared';
 import APP_ROUTES from './app.routes';
-import { provideState, provideStore } from '@ngrx/store';
-import { USER_PROVIDED_EFFECTS, provideEffects } from '@ngrx/effects';
 import { AuthEffects } from './modules/auth/store/auth.effects';
-// import * as authEffects from './modules/auth/store/auth.effects';
 import * as fromAuth from './modules/auth/store/auth.state';
-import * as fromMessages from './modules/message/store/message.state';
-// import * as fromApp from '../app/core/store/app.reducer';
-import { provideStoreDevtools } from '@ngrx/store-devtools';
-import { MessageEffects } from './modules/message/store/message.effects';
 
 @Injectable()
 export class MyHammerConfig extends HammerGestureConfig {
@@ -68,7 +64,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(APP_ROUTES),
     provideAnimations(),
 
-    // provideStore(fromApp.appStore),
     provideStore(),
     provideState(fromAuth.authFeature),
     provideEffects(AuthEffects),
@@ -80,6 +75,20 @@ export const appConfig: ApplicationConfig = {
       // traceLimit: 75, // maximum stack trace frames to be stored (in case trace option was provided as true)
       // connectInZone: true // If set to true, the connection is established within the Angular zone
     }),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideMessaging(() => getMessaging()),
+    provideAuth(() =>
+      typeof document === 'undefined'
+        ? getAuth(getApp())
+        : initializeAuth(getApp(), {
+            persistence: [
+              indexedDBLocalPersistence,
+              browserLocalPersistence,
+              browserSessionPersistence,
+            ],
+          })
+    ),
+    provideDatabase(() => getDatabase()),
     importProvidersFrom(
       CoreModule,
       HammerModule,
@@ -93,40 +102,12 @@ export const appConfig: ApplicationConfig = {
         // or after 30 seconds (whichever comes first).
         registrationStrategy: 'registerWhenStable:30000',
       }),
-      provideFirebaseApp(() => initializeApp(environment.firebase)),
-      // provideMessaging(() => getMessaging()),
-      // provideAuth(() =>
-      //   typeof document === 'undefined'
-      //     ? getAuth(getApp())
-      //     : initializeAuth(getApp(), {
-      //         persistence: [
-      //           indexedDBLocalPersistence,
-      //           browserLocalPersistence,
-      //           browserSessionPersistence,
-      //         ],
-      //       })
-      // ),
-      // provideDatabase(() => getDatabase()),
+
       NgProgressModule.withConfig({
         color: '#2dd4bf',
         spinner: false,
       }),
       NgProgressHttpModule
-    ),
-    importProvidersFrom(
-      provideMessaging(() => getMessaging()),
-      provideAuth(() =>
-        typeof document === 'undefined'
-          ? getAuth(getApp())
-          : initializeAuth(getApp(), {
-              persistence: [
-                indexedDBLocalPersistence,
-                browserLocalPersistence,
-                browserSessionPersistence,
-              ],
-            })
-      ),
-      provideDatabase(() => getDatabase()),
     ),
     { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig },
     {

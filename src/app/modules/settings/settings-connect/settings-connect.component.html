@@ -19,7 +19,7 @@
                         esa plataforma</div>
                     <div *ngIf="authUser.google" matListItemLine>Ya estás conectado!</div>
                     <!-- <google-button *ngIf="!authUser.google" [selectable]="isLoaded" matListItemMeta></google-button> -->
-                    <asl-google-signin-button *ngIf="!authUser.google" type='standard' size='large' width='200px'
+                    <asl-google-signin-button *ngIf="!authUser.google" type='standard' size='large' [width]='200'
                         theme='filled_blue' matListItemMeta>
                     </asl-google-signin-button>
                     <button *ngIf="authUser.google" (click)="onUnlink('google')" mat-stroked-button color="warn"
