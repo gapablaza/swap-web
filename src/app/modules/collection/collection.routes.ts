@@ -65,7 +65,6 @@ export const COLLECTION_ROUTES: Routes = [
       {
         path: 'manage',
         canActivate: [authorizedGuard],
-        title: 'Gestionar Colección - Intercambia Láminas',
         loadComponent: () =>
           import('./collection-manage/collection-manage.component').then(
             (c) => c.CollectionManageComponent
