@@ -2,7 +2,8 @@
   <div class="vertical-navigation-wrapper">
     <div class="vertical-navigation-content">
 
-      <div *ngIf="isAuth$ | async" class="vertical-navigation-group-item">
+      @if (isAuth$ | async) {
+      <div class="vertical-navigation-group-item">
         <div class="vertical-navigation-item-wrapper">
           <div class="vertical-navigation-item">
             <div class="vertical-navigation-item-title-wrapper">
@@ -18,9 +19,9 @@
 
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
-            <a [routerLink]="['./user/', authUser.id]" class="vertical-navigation-item">
+            <a [routerLink]="['./user/', (authUser$ | async)?.id]" class="vertical-navigation-item">
               <img class="vertical-navigation-user-image" [defaultImage]="defaultUserImage"
-                [lazyLoad]="authUser.image || defaultUserImage" [alt]="authUser.displayName"
+                [lazyLoad]="(authUser$ | async)?.image || defaultUserImage" [alt]="(authUser$ | async)?.displayName"
                 crossorigin="anonymous">
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
@@ -41,10 +42,10 @@
                 </div>
               </div>
               <!-- <div class="vertical-navigation-item-badge">
-                <div class="vertical-navigation-item-badge-content">
-                  100
-                </div>
-              </div> -->
+                  <div class="vertical-navigation-item-badge-content">
+                    100
+                  </div>
+                </div> -->
             </a>
           </div>
         </div>
@@ -58,11 +59,13 @@
                   <span>Conversaciones</span>
                 </div>
               </div>
-              <div *ngIf="unreadCount$ | async" class="vertical-navigation-item-badge">
+              @if (unreadCount$ | async) {
+              <div class="vertical-navigation-item-badge">
                 <div class="vertical-navigation-item-badge-content">
                   {{ unreadCount$ | async }}
                 </div>
               </div>
+              }
             </a>
           </div>
         </div>
@@ -95,7 +98,7 @@
 
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
-            <a [routerLink]="['./collaborate/']"class="vertical-navigation-item">
+            <a [routerLink]="['./collaborate/']" class="vertical-navigation-item">
               <mat-icon>volunteer_activism</mat-icon>
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
@@ -120,8 +123,10 @@
         </div>
 
       </div>
+      }
 
-      <div *ngIf="authUser.isMod" class="vertical-navigation-group-item">
+      @if ((authUser$ | async)?.isMod) {
+      <div class="vertical-navigation-group-item">
         <div class="vertical-navigation-item-wrapper">
           <div class="vertical-navigation-item">
             <div class="vertical-navigation-item-title-wrapper">
@@ -162,6 +167,7 @@
         </div>
 
       </div>
+      }
 
       <div class="vertical-navigation-group-item">
         <div class="vertical-navigation-item-wrapper">
@@ -229,7 +235,8 @@
           </div>
         </div>
 
-        <div *ngIf="!(isAuth$ | async)" class="vertical-navigation-basic-item">
+        @if (!(isAuth$ | async)) {
+        <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
             <a routerLink="/signup" class="vertical-navigation-signup">
               Regístrate gratis!
@@ -239,6 +246,7 @@
             </p>
           </div>
         </div>
+        }
 
       </div>
     </div>

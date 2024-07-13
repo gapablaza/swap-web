@@ -7,12 +7,9 @@
 <ng-progress aria-label="grado de avance de las peticiones al servidor"></ng-progress>
 <mat-sidenav-container hasBackdrop="false">
   <mat-sidenav #sidenav [mode]="navMode" [opened]="navOpened" role="navigation">
-    <app-sidenav-list (closeSidenav)="sidenav.close()"></app-sidenav-list>
+    <app-sidenav-list></app-sidenav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <!-- <header>
-        <app-header (sidenavToggle)="sidenav.toggle()"></app-header>
-      </header> -->
     <div class="page-outer-wrap">
       <div class="page-wrap">
         <main style="min-height: 900px;" #maincontent>

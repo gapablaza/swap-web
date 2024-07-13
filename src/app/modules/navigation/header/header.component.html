@@ -22,11 +22,15 @@
           [(ngModel)]="searchedText" autocomplete="off">
         <div class="suggestion-result-container">
           <div>
-            <p *ngIf="isSearching" class="searching">
+            @if (isSearching) {
+            <p class="searching">
               Buscando...
             </p>
-            <ul *ngIf="!isSearching && showSuggests" class="suggest-list">
-              <li *ngFor="let s of suggests" class="suggest-option">
+            }
+            @if (!isSearching && showSuggests) {
+            <ul class="suggest-list">
+              @for (s of suggests; track s.id) {
+              <li class="suggest-option">
                 <a [href]="s.url">
                   <div class="suggest-image-container">
                     <div class="suggest-image-extra" [class.user]="s.type == 'user'">
@@ -39,11 +43,13 @@
                   </div>
                 </a>
               </li>
+              }
               <li class="suggest-option">
                 <a [href]="'/search?q=' + myEncodeURIComponent(searchedText)" class="suggest-see-all">Ver todos los
                   resultados para "{{ searchedText }}"</a>
               </li>
             </ul>
+            }
           </div>
         </div>
       </div>
@@ -64,7 +70,7 @@
         <mat-icon>search</mat-icon>
       </a>
     </li>
-    <li *ngIf="!(isAuth$ | async)"><a routerLink="/login">Ingresar</a></li>
+    @if (!(isAuth$ | async)) { <li><a routerLink="/login">Ingresar</a></li> }
     <!-- <li *ngIf="isAuth">
       <a style="cursor:pointer" (click)="onLogout()">Salir</a>
     </li> -->

@@ -36,7 +36,6 @@ import { CollectionItemComponent } from '../../../shared/components/collection-i
 @Component({
   selector: 'app-explore-collections',
   templateUrl: './explore-collections.component.html',
-  styleUrls: ['./explore-collections.component.scss'],
   standalone: true,
   imports: [
     NgIf,

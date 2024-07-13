@@ -45,7 +45,6 @@ export interface IFilters {
 @Component({
   selector: 'app-trades',
   templateUrl: './trades.component.html',
-  styleUrls: ['./trades.component.scss'],
   standalone: true,
   imports: [
     MatProgressSpinnerModule,

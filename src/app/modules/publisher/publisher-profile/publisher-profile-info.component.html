@@ -1,0 +1,36 @@
+<div class="publisher-links">
+    <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+        <mat-icon>arrow_back</mat-icon> Volver
+    </a>
+    <a class="btn" (click)="onShare.emit()" mat-stroked-button>
+        <mat-icon>share</mat-icon> Compartir
+    </a>
+    <p></p>
+</div>
+
+<div class="publisher-profile card">
+    <div class="publisher-header">
+        <h1>{{ publisher().name }}</h1>
+        @if ((publisher().collections || 0) == 1) {
+        <p class="subtitle">1 colección disponible</p>
+        }
+        @if ((publisher().collections || 0) > 1) {
+        <p class="subtitle">{{ publisher().collections }} colecciones
+            disponibles</p>
+        }
+        @if (publisher().image) {
+        <img [src]="publisher().image" [alt]="'Logo de ' + publisher().name" crossorigin="anonymous"
+            fetchpriority="high">
+        }
+    </div>
+
+    @if (publisher().description || publisher().bio) {
+    <ng-container>
+        <div class="publisher-info" [innerHTML]="(publisher().bio || publisher().description) | markdown">
+        </div>
+    </ng-container>
+    }
+
+    <app-publisher-profile-collections [publisher]="publisher()"
+        [collections]="collections()"></app-publisher-profile-collections>
+</div>

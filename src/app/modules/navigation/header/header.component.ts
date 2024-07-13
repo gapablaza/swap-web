@@ -10,15 +10,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-
-import {
-  AuthService,
-  DEFAULT_USER_PROFILE_IMG,
-  SearchService,
-  Suggest,
-} from 'src/app/core';
-import { UIService } from 'src/app/shared';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -37,23 +29,26 @@ import {
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
+import {
+  DEFAULT_USER_PROFILE_IMG,
+  SearchService,
+  Suggest,
+} from 'src/app/core';
+import { UIService } from 'src/app/shared';
 import { authFeature } from '../../auth/store/auth.state';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    MatToolbarModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatIconModule,
     FormsModule,
     RouterLink,
-    NgIf,
-    NgFor,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatToolbarModule,
     AsyncPipe,
   ],
 })
@@ -66,12 +61,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isSearching = false;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
 
-  // isAuth = false;
   isAuth$ = this.store.select(authFeature.selectIsAuth);
   subs: Subscription = new Subscription();
 
   constructor(
-    // private authSrv: AuthService,
     private store: Store,
     private searchSrv: SearchService,
     private router: Router,
@@ -80,11 +73,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // this.authSrv.isAuth.subscribe((authState) => {
-    //   this.isAuth = authState;
-    //   this.cdr.markForCheck();
-    // });
-
     const focusoutSub = fromEvent(this.suggestInput.nativeElement, 'focusout')
       .pipe(delay(200))
       .subscribe(() => {

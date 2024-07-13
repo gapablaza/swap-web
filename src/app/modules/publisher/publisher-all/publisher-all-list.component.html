@@ -1,0 +1,71 @@
+<h1>
+    @if (managedPublishers().length != publishers.length) {
+    <span class="color-accent">
+        {{ managedPublishers().length }} de
+    </span>
+    }
+    {{ publishers().length }} Editoriales
+</h1>
+
+<div class="card publisher-list flex-full">
+
+    <div class="controls-std">
+        <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
+            <mat-form-field class="controls-search" appearance="outline">
+                <mat-label>Filtrar por editorial</mat-label>
+                <mat-icon matPrefix>search</mat-icon>
+                <input matInput type="text" [(ngModel)]="searchText">
+                @if (searchText()) {
+                <button matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
+                    <mat-icon>close</mat-icon>
+                </button>
+                }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Ordenar por</mat-label>
+                <mat-select (selectionChange)="onSort($event.value)" [(value)]="sortOptionSelected">
+                    @for (option of sortOptions; track option.selectValue) {
+                    <mat-option [value]="option.selectValue">
+                        {{ option.selectName }}
+                    </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+
+    @if (managedPublishers().length) {
+    <ul class="list-std">
+        @for (elem of managedPublishers(); track elem.id) {
+        <li class="list-std-item">
+            <div class="list-item-main">
+                <div class="list-item-image">
+                    @if (elem.image) {
+                    <a [routerLink]="['./', elem.id, elem.name | slugify]">
+                        <img [lazyLoad]="elem.image" alt="Logo de la editorial" crossorigin="anonymous">
+                    </a>
+                    }
+                </div>
+                <div class="list-item-content flex-full">
+                    <div class="list-item-title">
+                        <a [routerLink]="['./', elem.id, elem.name | slugify]">
+                            {{ elem.name }}
+                        </a>
+                    </div>
+                    <div class="list-item-meta custom-separator2">
+                        <span>Nº de colecciones: {{ elem.collections }}</span>
+                    </div>
+                </div>
+            </div>
+        </li>
+        }
+    </ul>
+    }
+
+    @if (!managedPublishers().length) {
+    <div class="empty-content">
+        <h2>(u‿u)</h2>
+        <p>No se encuentran editoriales para los filtros seleccionados</p>
+    </div>
+    }
+</div>

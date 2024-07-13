@@ -1,0 +1,18 @@
+@if((publisher().collections || 0) > 0) {
+<div class="publisher-collections">
+    <h2>Últimas colecciones publicadas ({{ collections().length }})</h2>
+    <div class="list-of-collections">
+        <div class="horizontal-card-grid">
+            @for (col of collections(); track col.id) {
+            <app-collection-item [collection]="col">
+            </app-collection-item>
+            }
+        </div>
+    </div>
+    @if ((publisher().collections || 0) > collections().length) {
+    <a mat-raised-button color="accent" routerLink="/collections" [queryParams]="{ publisher: publisher().id }">
+        <mat-icon>clear_all</mat-icon> Explorar las colecciones
+    </a>
+    }
+</div>
+}

@@ -1,0 +1,11 @@
+@if (isLoaded$ | async) {
+    <section class="publisher flex-full">
+        <app-publisher-all-list
+        [publishers]="(publishers$ | async)!">
+        </app-publisher-all-list>
+    </section>
+} @else {
+    <div class="loading-indicator">
+        <mat-spinner aria-label="cargando"></mat-spinner>
+    </div>
+}

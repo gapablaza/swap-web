@@ -1,108 +1,60 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription, filter, tap } from 'rxjs';
-
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { Store } from '@ngrx/store';
 
-import { MarkdownPipe, SanitizeHtmlPipe, SlugifyPipe, UIService } from 'src/app/shared';
-import { AdsModule } from 'src/app/shared/ads.module';
+import { SlugifyPipe, UIService } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
-import { CollectionItemComponent } from 'src/app/shared/components/collection-item/collection-item.component';
-import {
-  AuthService,
-  Collection,
-  Publisher,
-  PublisherService,
-  SEOService,
-  User,
-} from 'src/app/core';
+import { SEOService } from 'src/app/core';
+import { publisherFeature } from '../store/publisher.state';
+import { publisherActions } from '../store/publisher.actions';
+import { PublisherProfileInfoComponent } from './publisher-profile-info.component';
 
 @Component({
   selector: 'app-publisher-profile',
   templateUrl: './publisher-profile.component.html',
-  styleUrls: ['./publisher-profile.component.scss'],
   standalone: true,
-  imports: [
-    NgIf,
-    MatProgressSpinnerModule,
-    AdsModule,
-    NgFor,
-    CollectionItemComponent,
-    MatButtonModule,
-    MatIconModule,
-    RouterLink,
-    SanitizeHtmlPipe,
-    MarkdownPipe,
-  ],
+  imports: [MatProgressSpinnerModule, AsyncPipe, PublisherProfileInfoComponent],
 })
 export class PublisherProfileComponent implements OnInit, OnDestroy {
-  publisher: Publisher = {} as Publisher;
-  collections: Collection[] = [];
-  authUser = this.authSrv.getCurrentUser();
+  publisher$ = this.store.select(publisherFeature.selectPublisher);
+  collections$ = this.store.select(publisherFeature.selectLastCollections);
+  isLoaded$ = this.store.select(publisherFeature.selectIsOneLoaded);
 
-  isAdsLoaded = false;
-  isLoaded = false;
   subs: Subscription = new Subscription();
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private authSrv: AuthService,
-    private pubSrv: PublisherService,
     private SEOSrv: SEOService,
-    private uiSrv: UIService
+    private uiSrv: UIService,
+    private store: Store
   ) {}
 
   ngOnInit(): void {
-    // get possible auth User
-    // let authSub = this.authSrv.authUser
-    //   .pipe(
-    //     tap((user) => {
-    //       if (!user.id || user.accountTypeId == 1) {
-    //         this.loadAds();
-    //       }
-    //     }),
-    //     filter((user) => user.id != null)
-    //   )
-    //   .subscribe((user) => {
-    //     this.authUser = user;
-    //   });
-    // this.subs.add(authSub);
+    this.store.dispatch(
+      publisherActions.load({
+        publisherId: Number(this.activatedRoute.snapshot.params['publisherId']),
+      })
+    );
 
-    let pubSub = this.pubSrv
-      .get(Number(this.activatedRoute.snapshot.params['publisherId']))
+    let pubSub = this.publisher$
       .pipe(
+        filter((publisher) => publisher != null),
         tap((resp) => {
           this.SEOSrv.set({
-            title: `Detalle para la editorial ${resp.data.name} (${
-              resp.data.collections || 0
-            } colecciones) - Intercambia Láminas`,
-            description: `Revisa la información que tenemos disponible de la editorial ${
-              resp.data.name
-            } con ${
-              resp.data.collections || 0
-            } colecciones registradas en nuestro catálogo.`,
+            title: `Detalle para la editorial ${resp?.name} - Intercambia Láminas`,
+            description: `Revisa la información que tenemos disponible de la editorial ${resp?.name} y sus colecciones registradas en nuestro catálogo.`,
             url: `${environment.appUrl}/publishers/${
-              resp.data.id
-            }/${new SlugifyPipe().transform(resp.data.name)}`,
+              resp?.id
+            }/${new SlugifyPipe().transform(resp?.name)}`,
             isCanonical: true,
           });
         })
       )
-      .subscribe((resp) => {
-        this.publisher = resp.data;
-        this.collections = resp.lastCollections;
-        this.isLoaded = true;
-      });
+      .subscribe();
     this.subs.add(pubSub);
-  }
-
-  loadAds() {
-    this.uiSrv.loadAds().then(() => {
-      this.isAdsLoaded = true;
-    });
   }
 
   onShare(): void {
