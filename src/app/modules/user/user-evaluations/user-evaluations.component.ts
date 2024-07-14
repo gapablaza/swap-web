@@ -6,7 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { combineLatest, map, Subscription, tap } from 'rxjs';
-import orderBy from 'lodash/orderBy';
+import orderBy from 'lodash-es/orderBy';
 
 import {
   FormBuilder,

@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { combineLatest, map, Subscription, tap } from 'rxjs';
-import orderBy from 'lodash/orderBy';
+import orderBy from 'lodash-es/orderBy';
 import { Gallery, GalleryItem, ImageItem } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
