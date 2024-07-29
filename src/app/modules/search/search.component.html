@@ -1,7 +1,5 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-    <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="search">
+@if (isLoaded$ | async) {
+<section class="search">
     <div class="search-header">
         <div class="div search-input-container">
             <form (ngSubmit)="onSearch()" class="">
@@ -9,47 +7,39 @@
                     [(ngModel)]="searchTxt" required>
             </form>
         </div>
-        <h1>{{ searchedTxt }}</h1>
+        <h1>{{ vm$().query }}</h1>
 
-        <ng-container *ngIf="isAdsLoaded">
-            <ng-adsense
-                *ngIf="!authUser.id || (authUser.accountTypeId == 1)"
-                [adSlot]="3904547492"
-                [adFormat]="'auto'"
-                [display]="'block'"
-                [fullWidthResponsive]="true"
-                [className]="'bga-hor'"
-            ></ng-adsense>
-        </ng-container>
+        <app-ad-loader [adSlot]="3904547492" [className]="'bga-hor'"></app-ad-loader>
 
-        <div *ngIf="showSerchHint" class="empty-content">
+        @if (!(showResults$ | async)) {
+        <div class="empty-content">
             <h2>(˚Δ˚)</h2>
             <p>Ingresa un término acá arriba para buscar colecciones o usuarios!</p>
         </div>
+        }
     </div>
 
-    <mat-tab-group *ngIf="!showSerchHint" [(selectedIndex)]="selectedTabIndex"
-        (selectedTabChange)="onTabChanged($event);">
+    @if (showResults$ | async) {
+    <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedTabChange)="onTabChanged($event);">
         <mat-tab label="Colecciones">
             <ng-template matTabContent>
-                <app-search-collection [collections]="collections" [paginator]="paginator"
-                    (onPageSelected)="onPageChanged($event)"
-                    (onOrderSelected)="onOrderChanged($event)">
+                <app-search-collection [collections]="vm$().collections" [paginator]="vm$().paginator"
+                    (onPageSelected)="onPageChanged($event)" (onOrderSelected)="onOrderChanged($event)">
                 </app-search-collection>
             </ng-template>
         </mat-tab>
         <mat-tab label="Usuarios">
             <ng-template matTabContent>
-                <app-search-user [users]="users" [paginator]="paginator"
-                    (onPageSelected)="onPageChanged($event)"
-                    (onOrderSelected)="onOrderChanged($event)">
+                <app-search-user [users]="vm$().users" [paginator]="vm$().paginator"
+                    (onPageSelected)="onPageChanged($event)" (onOrderSelected)="onOrderChanged($event)">
                 </app-search-user>
             </ng-template>
         </mat-tab>
-        <!-- <mat-tab label="Editoriales">
-            <ng-template matTabContent>
-
-            </ng-template>
-        </mat-tab> -->
     </mat-tab-group>
+    }
 </section>
+} @else {
+<div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+}

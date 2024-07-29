@@ -1,9 +1,9 @@
 <div class="collection-visual">
     <div class="collection-links">
         @if (showBackButton) {
-            <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
-                <mat-icon>arrow_back</mat-icon> Volver
-            </a>
+        <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
+            <mat-icon>arrow_back</mat-icon> Volver
+        </a>
         }
         <a class="btn" mat-stroked-button (click)="onShare()">
             <mat-icon>share</mat-icon> Compartir
@@ -13,8 +13,7 @@
     <div class="collection-content">
         <div class="collection-imagen-container">
             <img class="collection-image" [src]="collection.image || defaultCollectionImage"
-                [alt]="collection.name + ' de ' + publisher.name" crossorigin="anonymous"
-                fetchpriority="high">
+                [alt]="collection.name + ' de ' + publisher.name" crossorigin="anonymous" fetchpriority="high">
             <!-- <img class="collection-image" [defaultImage]="defaultCollectionImage"
                 [lazyLoad]="collection.image || defaultCollectionImage"
                 [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous"> -->
@@ -25,7 +24,5 @@
         </div>
     </div>
 </div>
-<!-- <ng-container *ngIf="isAdsLoaded">
-    <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="2226581548" [adFormat]="'auto'"
-        [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-section-vert'"></ng-adsense>
-</ng-container> -->
+
+<app-ad-loader [adSlot]="2226581548" [className]="'bga-section-vert'"></app-ad-loader>

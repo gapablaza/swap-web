@@ -5,11 +5,6 @@
   <div class="collection-manage flex-full">
     <h1>Gestionar colección</h1>
 
-    <!-- <ng-container *ngIf="isAdsLoaded">
-        <ng-adsense *ngIf="!authUser.id || (authUser.accountTypeId == 1)" [adSlot]="7207150645" [adFormat]="'auto'"
-          [display]="'block'" [fullWidthResponsive]="true" [className]="'bga-hor'"></ng-adsense>
-      </ng-container> -->
-
     <app-collection-manage-form [publicComment]="(collection$ | async)?.userData?.publicComment!"
       [isProcessing]="(isProcessing$ | async)!" (onAddComment)="addComment($event)"
       (onDeleteComment)="deleteComment()"></app-collection-manage-form>

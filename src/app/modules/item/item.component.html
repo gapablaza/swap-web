@@ -1,172 +1,29 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-    <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="item item-section">
-    <!-- <app-collection-summary [showBackButton]="true"></app-collection-summary> -->
+@if (isLoaded$ | async) {
+<section class="item item-section">
     <div class="item-lists flex-full">
         <h1>
-            Ítem {{ item.name }}: {{ item.description }}
+            Ítem {{ (item$ | async)?.name }}: {{ (item$ | async)?.description }}
         </h1>
         <h2>
-            <a [routerLink]="['/c', collection.name + ' ' + collection.publisher.data.name | slugify, collection.id]">{{
-                collection.name }}</a>, {{
-            collection.publisher.data.name }}
+            <a
+                [routerLink]="['/c', (collection$ | async)?.name + ' ' + (collection$ | async)?.publisher?.data?.name | slugify, (collection$ | async)?.id]">{{
+                (collection$ | async)?.name }}</a>, {{
+            (collection$ | async)?.publisher?.data?.name }}
         </h2>
         <div class="card">
-
             <mat-tab-group>
-                <mat-tab [label]="usersTrading.length + ' Cambian'">
-
-                    <div class="empty-content" *ngIf="!usersTrading.length">
-                        <h2>(¬‿¬)</h2>
-                        <p>Nadie está cambiando este ítem... serás el primero?</p>
-                    </div>
-
-                    <div *ngIf="usersTrading.length" class="controls-std">
-                        <div class="controls-std-main">
-                            <div class="controls-std-settings">
-                                <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
-                                    <mat-icon>filter_list</mat-icon> Filtros
-                                </a>
-                            </div>
-                        </div>
-                        <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
-                            <mat-form-field class="controls-search" appearance="outline">
-                                <mat-label>Filtrar por nombre, ID, ciudad o descripción</mat-label>
-                                <mat-icon matPrefix>search</mat-icon>
-                                <input matInput type="text" [(ngModel)]="searchTradingText"
-                                    (ngModelChange)="onTradingFilter()">
-                                <button *ngIf="searchTradingText" matSuffix mat-icon-button aria-label="Clear"
-                                    (click)="onClearTradingFilter()">
-                                    <mat-icon>close</mat-icon>
-                                </button>
-                            </mat-form-field>
-                        </div>
-                    </div>
-
-                    <ul *ngIf="usersTrading.length" class="list-std">
-                        <li class="list-std-item" *ngFor="let user of showedUsersTrading; trackBy: trackByUsers"
-                            [ngClass]="{'pro-account': user.accountTypeId == 2}">
-                            <div class="list-item-main">
-                                <div class="list-item-image">
-                                    <a [routerLink]="['/user', user.id]">
-                                        <img [defaultImage]="defaultUserImage"
-                                            [lazyLoad]="user.image || defaultUserImage" alt="Imagen de perfil"
-                                            crossorigin="anonymous">
-                                    </a>
-                                </div>
-                                <div class="list-item-content flex-full">
-                                    <div class="list-item-title">
-                                        <a [routerLink]="['/user', user.id]">
-                                            {{ user.displayName }}
-                                            <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
-                                            <span *ngIf="user.userSummary?.positives" class="positives-label">+{{
-                                                user.userSummary?.positives }}</span>
-                                            <span *ngIf="user.userSummary?.negatives" class="negatives-label">-{{
-                                                user.userSummary?.negatives }}</span>
-                                        </a>
-                                    </div>
-                                    <div class="list-item-meta custom-separator">
-                                        <span>ID {{ user.id }}</span>
-                                        <span>{{ user.location || 'Sin especificar' }}</span>
-                                        <span appDaysSinceLogin="{{ user.daysSinceLogin }}" [preText]="'Visto '"></span>
-                                    </div>
-                                </div>
-                                <!-- <div class="list-item-statics">
-                                    <div>
-                                        <span class="list-item-title">{{ user.collectionData?.collectionWishing }}</span>
-                                        <span class="list-item-meta">Busca</span>
-                                    </div>
-                                    <div>
-                                        <span class="list-item-title">{{ user.collectionData?.collectionTrading }}</span>
-                                        <span class="list-item-meta">Cambia</span>
-                                    </div>
-                                </div> -->
-                            </div>
-                            <div *ngIf="user?.bio" class="list-item-desc">
-                                <p [innerHTML]="user?.bio | sanitizeHtml"></p>
-                            </div>
-                        </li>
-                    </ul>
-
+                <mat-tab [label]="(usersTrading$ | async)?.length + ' Cambian'">
+                    <app-item-users-list [users]="(usersTrading$ | async)!" [listType]="'trading'" />
                 </mat-tab>
-                <mat-tab [label]="usersWishing.length + ' Buscan'">
-
-                    <div class="empty-content" *ngIf="!usersWishing.length">
-                        <h2>(¬‿¬)</h2>
-                        <p>Nadie está buscando este ítem... serás el primero?</p>
-                    </div>
-
-                    <div *ngIf="usersWishing.length" class="controls-std">
-                        <div class="controls-std-main">
-                            <div class="controls-std-settings">
-                                <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
-                                    <mat-icon>filter_list</mat-icon> Filtros
-                                </a>
-                            </div>
-                        </div>
-                        <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
-                            <mat-form-field class="controls-search" appearance="outline">
-                                <mat-label>Filtrar por nombre, ID, ciudad o descripción</mat-label>
-                                <mat-icon matPrefix>search</mat-icon>
-                                <input matInput type="text" [(ngModel)]="searchWishingText"
-                                    (ngModelChange)="onWishingFilter()">
-                                <button *ngIf="searchWishingText" matSuffix mat-icon-button aria-label="Clear"
-                                    (click)="onClearWishingFilter()">
-                                    <mat-icon>close</mat-icon>
-                                </button>
-                            </mat-form-field>
-                        </div>
-                    </div>
-
-                    <ul *ngIf="usersWishing.length" class="list-std">
-                        <li class="list-std-item" *ngFor="let user of showedUsersWishing; trackBy: trackByUsers"
-                            [ngClass]="{'pro-account': user.accountTypeId == 2}">
-                            <div class="list-item-main">
-                                <div class="list-item-image">
-                                    <a [routerLink]="['/user', user.id]">
-                                        <img [defaultImage]="defaultUserImage"
-                                            [lazyLoad]="user.image || defaultUserImage" alt="Imagen de perfil"
-                                            crossorigin="anonymous">
-                                    </a>
-                                </div>
-                                <div class="list-item-content flex-full">
-                                    <div class="list-item-title">
-                                        <a [routerLink]="['/user', user.id]">
-                                            {{ user.displayName }}
-                                            <span *ngIf="user.accountTypeId == 2" class="pro-label">PRO</span>
-                                            <span *ngIf="user.userSummary?.positives" class="positives-label">+{{
-                                                user.userSummary?.positives }}</span>
-                                            <span *ngIf="user.userSummary?.negatives" class="negatives-label">-{{
-                                                user.userSummary?.negatives }}</span>
-                                        </a>
-                                    </div>
-                                    <div class="list-item-meta custom-separator">
-                                        <span>ID {{ user.id }}</span>
-                                        <span>{{ user.location || 'Sin especificar' }}</span>
-                                        <span appDaysSinceLogin="{{ user.daysSinceLogin }}" [preText]="'Visto '"></span>
-                                    </div>
-                                </div>
-                                <!-- <div class="list-item-statics">
-                                    <div>
-                                        <span class="list-item-title">{{ user.collectionData?.collectionWishing }}</span>
-                                        <span class="list-item-meta">Busca</span>
-                                    </div>
-                                    <div>
-                                        <span class="list-item-title">{{ user.collectionData?.collectionTrading }}</span>
-                                        <span class="list-item-meta">Cambia</span>
-                                    </div>
-                                </div> -->
-                            </div>
-                            <div *ngIf="user?.bio" class="list-item-desc">
-                                <p [innerHTML]="user?.bio | sanitizeHtml"></p>
-                            </div>
-                        </li>
-                    </ul>
-
+                <mat-tab [label]="(usersWishing$ | async)?.length + ' Buscan'">
+                    <app-item-users-list [users]="(usersWishing$ | async)!" [listType]="'wishing'" />
                 </mat-tab>
             </mat-tab-group>
-
         </div>
     </div>
 </section>
+} @else {
+<div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+}

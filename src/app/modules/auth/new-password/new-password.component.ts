@@ -1,13 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  Validators,
+  FormsModule,
+  NgForm,
+} from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { take } from 'rxjs';
-
-import { AuthService } from 'src/app/core';
-import { UIService } from 'src/app/shared';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { AsyncPipe } from '@angular/common';
+import { Store } from '@ngrx/store';
+
+import { UIService } from 'src/app/shared';
+import { authFeature } from '../store/auth.state';
+import { authActions } from '../store/auth.actions';
 
 export default class Validation {
   static match(controlName: string, checkControlName: string): ValidatorFn {
@@ -30,87 +40,64 @@ export default class Validation {
 }
 
 @Component({
-    selector: 'app-new-password',
-    templateUrl: './new-password.component.html',
-    styleUrls: ['./new-password.component.scss'],
-    standalone: true,
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        RouterLink,
-    ],
+  selector: 'app-new-password',
+  templateUrl: './new-password.component.html',
+  standalone: true,
+  imports: [
+    FormsModule,
+    RouterLink,
+    AsyncPipe,
+
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
 })
 export class NewPasswordComponent implements OnInit {
-  newPasswordForm: FormGroup = new FormGroup({
-    password: new FormControl(''),
-    repeatedPassword: new FormControl(''),
-  });
-  isLoading = false;
+  isProcessing$ = this.store.select(authFeature.selectIsProcessing);
+  actualParams = this.route.snapshot.queryParams;
+  newPasswordForm = new FormGroup(
+    {
+      password: new FormControl('', {
+        validators: [
+          Validators.required,
+          Validators.minLength(6),
+          Validators.maxLength(20),
+        ],
+      }),
+      repeatedPassword: new FormControl('', {
+        validators: [Validators.required],
+      }),
+    },
+    Validators.compose([Validation.match('password', 'repeatedPassword')])
+  );
 
   constructor(
-    private authSrv: AuthService,
-    private uiSrv: UIService,
-    private fb: FormBuilder,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private store: Store,
+    private uiSrv: UIService
   ) {}
 
   ngOnInit(): void {
-    this.newPasswordForm = this.fb.group(
-      {
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(6),
-            Validators.maxLength(20),
-          ],
-        ],
-        repeatedPassword: ['', Validators.required],
-      },
-      {
-        validators: [Validation.match('password', 'repeatedPassword')],
-      }
-    );
-
-    let actualParams = this.route.snapshot.queryParams;
     if (
-      !actualParams.hasOwnProperty('userId') ||
-      !actualParams.hasOwnProperty('hash')
+      !this.actualParams.hasOwnProperty('userId') ||
+      !this.actualParams.hasOwnProperty('hash')
     ) {
       this.uiSrv.showError(
-        'Por favor, vuelve a realizar la solicitud de reseteo de contraseña nuevamente'
+        'Por favor, realiza la solicitud de reseteo de contraseña nuevamente'
       );
       this.router.navigate(['/forgot-password']);
     }
   }
 
-  onSubmit() {
-    if (this.newPasswordForm.invalid) {
-      return;
-    }
-
-    this.isLoading = true;
-    this.authSrv
-      .setNewPassword(
-        this.newPasswordForm.controls['password'].value,
-        this.route.snapshot.queryParams['userId'],
-        this.route.snapshot.queryParams['hash']
-      )
-      .pipe(take(1))
-      .subscribe({
-        next: (resp) => {
-          this.uiSrv.showSuccess(resp);
-          this.router.navigate(['/login']);
-        },
-        error: (err) => {
-          console.log(err);
-          this.uiSrv.showError(err.message);
-          this.isLoading = false;
-        },
-      });
+  onSubmit(f: NgForm) {
+    this.store.dispatch(
+      authActions.newPassword({
+        newPassword: f.value.password,
+        userId: this.actualParams['userId'],
+        hash: this.actualParams['hash'],
+      })
+    );
   }
 }

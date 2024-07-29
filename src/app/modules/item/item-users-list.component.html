@@ -1,0 +1,78 @@
+@if (users().length) {
+<div class="controls-std">
+    <div class="controls-std-main">
+        <div class="controls-std-settings">
+            <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
+                <mat-icon>filter_list</mat-icon> Filtros
+            </a>
+        </div>
+    </div>
+    <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
+        <mat-form-field class="controls-search" appearance="outline">
+            <mat-label>Filtrar por nombre, ID, ciudad o descripción</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput type="text" [(ngModel)]="searchText">
+            @if (searchText()) {
+            <button matSuffix mat-icon-button aria-label="Clear" (click)="onClearTradingFilter()">
+                <mat-icon>close</mat-icon>
+            </button>
+            }
+        </mat-form-field>
+    </div>
+</div>
+} @else {
+<div class="empty-content">
+    <h2>(¬‿¬)</h2>
+    @if (listType() == 'wishing') {
+    <p>Nadie está buscando este ítem... serás el primero?</p>
+    }
+    @if (listType() == 'trading') {
+    <p>Nadie está cambiando este ítem... serás el primero?</p>
+    }
+</div>
+}
+
+@if (managedUsers().length) {
+<ul class="list-std">
+    @for (user of managedUsers(); track user.id) {
+    <li class="list-std-item" [ngClass]="{'pro-account': user.accountTypeId == 2}">
+        <div class="list-item-main">
+            <div class="list-item-image">
+                <a [routerLink]="['/user', user.id]">
+                    <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
+                        alt="Imagen de perfil" crossorigin="anonymous">
+                </a>
+            </div>
+            <div class="list-item-content flex-full">
+                <div class="list-item-title">
+                    <a [routerLink]="['/user', user.id]">
+                        {{ user.displayName }}
+                        @if (user.accountTypeId == 2) {
+                        <span class="pro-label">PRO</span>
+                        }
+                        @if (user.userSummary?.positives) {
+                        <span class="positives-label">+{{
+                            user.userSummary?.positives }}</span>
+                        }
+                        @if (user.userSummary?.negatives) {
+                        <span class="negatives-label">-{{
+                            user.userSummary?.negatives }}</span>
+                        }
+                    </a>
+                </div>
+                <div class="list-item-meta custom-separator">
+                    <span>ID {{ user.id }}</span>
+                    <span>{{ user.location || 'Sin especificar' }}</span>
+                    <span appDaysSinceLogin="{{ user.daysSinceLogin }}" [preText]="'Visto '"></span>
+                </div>
+            </div>
+        </div>
+        @if (user?.bio) {
+        <div class="list-item-desc">
+            <p [innerHTML]="user?.bio | sanitizeHtml"></p>
+        </div>
+        }
+    </li>
+    }
+</ul>
+}

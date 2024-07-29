@@ -3,12 +3,13 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
 
 import { DEFAULT_USER_PROFILE_IMG } from 'src/app/core';
 import { UIService } from 'src/app/shared';
 import { userFeature } from '../store/user.state';
+import { AdLoaderComponent } from 'src/app/shared/components/ad-loader/ad-loader.component';
 
 @Component({
   selector: 'app-user-summary',
@@ -17,10 +18,13 @@ import { userFeature } from '../store/user.state';
   standalone: true,
   imports: [
     RouterLink,
+    AsyncPipe,
+
     MatButtonModule,
     MatIconModule,
     LazyLoadImageModule,
-    AsyncPipe,
+
+    AdLoaderComponent,
   ],
 })
 export class UserSummaryComponent {

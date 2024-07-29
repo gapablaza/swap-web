@@ -1,94 +1,74 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-    <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="explore explore-section">
+@if ((isLoaded$ | async)) {
+<section class="explore explore-section">
     <div class="explore-collections flex-full">
         <h1>
-            Colecciones <span class="text-secondary">({{ paginator.total | number:'':'es' }})</span>
+            Colecciones <span class="text-secondary">({{ (vm$ | async)?.paginator?.total | number:'':'es' }})</span>
         </h1>
-        <ng-container *ngIf="isAdsLoaded">
-            <ng-adsense
-                *ngIf="!authUser.id || (authUser.accountTypeId == 1)"
-                [adSlot]="7864817385"
-                [adFormat]="'auto'"
-                [display]="'block'"
-                [fullWidthResponsive]="true"
-                [className]="'bga-hor'"
-            ></ng-adsense>
-        </ng-container>
+
+        <app-ad-loader [adSlot]="7864817385" [className]="'bga-hor'"></app-ad-loader>
+
         <div class="card">
-            <div *ngIf="collections.length" class="controls-std">
+            @if ((vm$ | async)?.collections?.length) {
+            <div class="controls-std">
                 <div class="controls-std-main">
                     <div class="controls-std-order">
                         <mat-form-field appearance="outline">
                             <mat-label>Ordenar por</mat-label>
-                            <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
-                                <mat-option *ngFor="let option of sortOptions" [value]="option.selectValue">
+                            <mat-select (selectionChange)="onSort($event.value)"
+                                [value]="(vm$ | async)?.sortOptionSelected">
+                                @for (option of sortOptions; track option.selectValue) {
+                                <mat-option [value]="option.selectValue">
                                     {{ option.selectName }}
                                 </mat-option>
+                                }
                             </mat-select>
                         </mat-form-field>
                     </div>
                     <div class="controls-std-settings">
-                        <button mat-icon-button [color]="isFiltered ? 'accent' : 'primary'" 
-                            aria-label="Button for show filter options"
-                            (click)="showFilters = !showFilters">
+                        <button mat-icon-button [color]="(vm$ | async)?.isFiltered ? 'accent' : 'primary'"
+                            aria-label="Button for show filter options" (click)="showFilters = !showFilters">
                             <mat-icon>filter_list</mat-icon>
                         </button>
                         <p>
-                            Registros {{ paginator.from | number:'':'es' }} a {{ paginator.to | number:'':'es' }}
+                            Registros {{ (vm$ | async)?.paginator?.from | number:'':'es' }} a {{ (vm$ |
+                            async)?.paginator?.to | number:'':'es' }}
                         </p>
                     </div>
                 </div>
                 <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
                     <mat-form-field appearance="outline">
                         <mat-label>Editorial</mat-label>
-                        <mat-select (selectionChange)="onPublisherChanged()" [(value)]="publisherSelected">
+                        <mat-select (selectionChange)="onPublisherChanged($event.value)"
+                            [value]="(vm$ | async)?.publisherSelected">
                             <mat-option value="">Todas</mat-option>
-                            <mat-option *ngFor="let pub of publishers" [value]="pub.id">
+                            @for (pub of (publishers$ | async); track pub.id) {
+                            <mat-option [value]="pub.id">
                                 {{ pub.name }}
                             </mat-option>
+                            }
                         </mat-select>
                     </mat-form-field>
                 </div>
             </div>
+            }
 
             <div class="list-of-collections">
                 <div class="horizontal-card-grid">
-                    <app-collection-item *ngFor="let col of collections" [collection]="col">
-                    </app-collection-item>
+                    @for (col of (vm$ | async)?.collections; track col.id) {
+                    <app-collection-item [collection]="col" />
+                    }
                 </div>
             </div>
 
-            <div class="pagination-wrapper">
-                <ul class="pagination">
-                    <li class="pagination-prev">
-                        <a role="button" 
-                            (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))" 
-                            [disabled]="pageSelected == 1"
-                            class="btn" mat-raised-button tabindex="-1">
-                            <mat-icon class="only-icon-button">navigate_before</mat-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <select name="" (change)="onPageChange(selectPage.value)" #selectPage>
-                            <option 
-                                *ngFor="let item of [].constructor(paginator.last_page); index as i" 
-                                [value]="i+1" [selected]="(i+1) == pageSelected">
-                                Página {{ i+1 }} de {{ paginator.last_page }}
-                            </option>
-                        </select>
-                    </li>
-                    <li class="pagination-next">
-                        <a role="button" 
-                            (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
-                            [disabled]="pageSelected == paginator.last_page" 
-                            class="btn" mat-raised-button>
-                            <mat-icon class="only-icon-button">navigate_next</mat-icon>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            @if ((vm$ | async)?.pageSelected) {
+            <app-pagination [pageSelected]="(vm$ | async)!.pageSelected" [lastPage]="(vm$ | async)!.paginator.last_page"
+                (pageChange)="onPageChange(($event.toString()))" />
+            }
         </div>
     </div>
 </section>
+} @else {
+<div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+}

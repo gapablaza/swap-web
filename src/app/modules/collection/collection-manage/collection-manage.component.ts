@@ -21,7 +21,6 @@ import { AsyncPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
 
 import { UIService } from 'src/app/shared';
-import { AdsModule } from 'src/app/shared/ads.module';
 import { collectionFeature } from '../store/collection.state';
 import { collectionActions } from '../store/collection.actions';
 import { CollectionSummaryComponent } from '../collection-summary/collection-summary.component';
@@ -35,12 +34,13 @@ import { CollectionManageFormComponent } from './collection-manage-form.componen
   imports: [
     RouterLink,
     RouterOutlet,
-    MatProgressSpinnerModule,
+    AsyncPipe,
+
     MatButtonModule,
     MatIconModule,
+    MatProgressSpinnerModule,
     MatTabsModule,
-    AsyncPipe,
-    AdsModule,
+
     CollectionSummaryComponent,
     CollectionManageFormComponent,
   ],
@@ -53,7 +53,6 @@ export class CollectionManageComponent implements OnInit, OnDestroy {
   totalWishing: number = 0;
   totalTrading: number = 0;
   actualPage = '';
-  isAdsLoaded = false;
   subs: Subscription = new Subscription();
 
   constructor(
@@ -91,17 +90,6 @@ export class CollectionManageComponent implements OnInit, OnDestroy {
         this.actualPage = data.url.split('/').pop() || '';
       });
     this.subs.add(routeSub);
-
-    // if (this.authUser.accountTypeId == 1) {
-    //   this.loadAds();
-    // }
-  }
-
-  // TO DO: Cargar Ads a los que no sean PRO
-  loadAds() {
-    this.uiSrv.loadAds().then(() => {
-      this.isAdsLoaded = true;
-    });
   }
 
   addComment(comment: string) {

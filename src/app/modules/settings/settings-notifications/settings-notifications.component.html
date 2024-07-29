@@ -1,36 +1,41 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-    <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="settings-section">
+@if (isLoaded$ | async) {
+<section class="settings-section">
     <div class="settings-notifications card2">
 
         <div class="update-notifications card">
             <h2>Alertas & Notificaciones</h2>
 
-            <mat-checkbox [(ngModel)]="authUser.notifyUnreadMessages" [disabled]="isSaving" (change)="onChange($event)">
+            <mat-checkbox [ngModel]="(authUser$ | async)?.notifyUnreadMessages" [disabled]="(isProcessing$ | async)!"
+                (change)="onChange($event.checked)">
                 Al tener mensajes sin leer</mat-checkbox>
         </div>
 
-        <div *ngIf="!authUser.email" class="update-email card">
+        @if (!(authUser$ | async)?.email) {
+        <div class="update-email card">
             <h2>Registra tu email</h2>
             <form [formGroup]="emailForm" (ngSubmit)="onUpdate()">
 
                 <mat-form-field appearance="outline">
                     <mat-label>Tú email</mat-label>
-                    <input type="email" matInput #email formControlName="email">
+                    <input type="email" matInput #email formControlName="email" [disabled]="(isProcessing$ | async)!">
                     <mat-hint align="start">
                         Registra tu email para que podamos enviarte notificaciones.
                     </mat-hint>
-                    <mat-error *ngIf="form['email'].errors">Campo obligatorio. Debe ser un email válido.
+                    @if (form['email'].errors) {
+                    <mat-error>Campo obligatorio. Debe ser un email válido.
                     </mat-error>
+                    }
                 </mat-form-field>
 
-                <button mat-raised-button [disabled]="isUpdating || emailForm.invalid" color="accent">Registrar</button>
+                <button mat-raised-button [disabled]="(isProcessing$ | async) || emailForm.invalid"
+                    color="accent">Registrar</button>
 
             </form>
         </div>
+        }
 
-        <div *ngIf="authUser.email" class="update-email card">
+        @if ((authUser$ | async)?.email) {
+        <div class="update-email card">
             <h2>Actualizar email</h2>
             <form [formGroup]="emailForm" (ngSubmit)="onUpdate()">
 
@@ -38,19 +43,29 @@
                     <mat-label>Nuevo email</mat-label>
                     <input type="email" matInput #email formControlName="email">
                     <mat-hint align="start">
-                        El email que tenemos actualmente asociado a tu cuenta es <strong>{{ authUser.email }}</strong>
+                        El email que tenemos actualmente asociado a tu cuenta es <strong>{{ (authUser$ | async)?.email
+                            }}</strong>
                         ¿No es el correcto? Puedes cambiarlo ingresando un nuevo email y presionando el botón
                         "Actualizar".
                     </mat-hint>
-                    <mat-error *ngIf="form['email'].errors">Campo obligatorio. Debe ser un email válido.
+                    @if (form['email'].errors) {
+                    <mat-error>Campo obligatorio. Debe ser un email válido.
                     </mat-error>
+                    }
                 </mat-form-field>
 
-                <button mat-raised-button [disabled]="isUpdating || emailForm.invalid"
+                <button mat-raised-button
+                    [disabled]="(isUpdateProcessing$ | async) || emailForm.invalid || (isUpdateRequested$ | async)"
                     color="accent">Actualizar</button>
 
             </form>
         </div>
+        }
 
     </div>
 </section>
+} @else {
+<div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+}

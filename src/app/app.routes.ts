@@ -1,10 +1,13 @@
 import { Routes } from '@angular/router';
+import { provideState } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
 
 import { authorizedGuard, unauthorizedGuard } from './core';
 import { locatedGuard } from './modules/trades/located.guard';
-import { HomeAuthResolver } from './modules/home/home-auth-resolver.service';
 import { ItemResolver } from './modules/item/item-resolver.service';
 import { TradesResolver } from './modules/trades/trades-resolver.service';
+import { itemFeature } from './modules/item/store/item.state';
+import { ItemEffects } from './modules/item/store/item.effect';
 
 export const APP_ROUTES: Routes = [
   {
@@ -12,9 +15,6 @@ export const APP_ROUTES: Routes = [
     pathMatch: 'full',
     loadComponent: () =>
       import('./modules/home/home.component').then((c) => c.HomeComponent),
-    resolve: {
-      isAuthenticated: HomeAuthResolver,
-    },
   },
   {
     path: 'login',
@@ -67,6 +67,11 @@ export const APP_ROUTES: Routes = [
   },
   {
     path: 'item/:id',
+    providers: [
+      ItemResolver,
+      provideState(itemFeature),
+      provideEffects(ItemEffects),
+    ],
     title: 'Detalle ítem - Intercambia Láminas',
     loadComponent: () =>
       import('./modules/item/item.component').then((c) => c.ItemComponent),
@@ -90,11 +95,6 @@ export const APP_ROUTES: Routes = [
       import('./modules/search/search.component').then(
         (c) => c.SearchComponent
       ),
-  },
-  {
-    path: 'explore',
-    loadChildren: () =>
-      import('./modules/explore/').then((m) => m.EXPLORE_ROUTES),
   },
   {
     path: 'trades',

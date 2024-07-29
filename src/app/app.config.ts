@@ -40,7 +40,7 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 
 import { CoreModule, errorInterceptor, tokenInterceptor } from './core';
 import { environment } from 'src/environments/environment';
-import { UIService } from './shared';
+import { SocialModule, UIService } from './shared';
 import APP_ROUTES from './app.routes';
 import { AuthEffects } from './modules/auth/store/auth.effects';
 import * as fromAuth from './modules/auth/store/auth.state';
@@ -95,6 +95,7 @@ export const appConfig: ApplicationConfig = {
 
       MatSnackBarModule, // UIService lo necesita
       MatBottomSheetModule, // UIService lo necesita
+      SocialModule,
 
       ServiceWorkerModule.register('ngsw-worker.js', {
         enabled: environment.production,

@@ -1,19 +1,19 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-    <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="settings-section">
+@if (isLoaded$ | async) {
+<section class="settings-section">
     <div class="settings-profile card">
 
         <div class="avatar-preview">
-            <img class="" [defaultImage]="defaultUserImage" [lazyLoad]="authUser.image || defaultUserImage"
-                [alt]="authUser.displayName" crossorigin="anonymous">
+            <img class="" [defaultImage]="defaultUserImage" [lazyLoad]="(authUser$ | async)?.image || defaultUserImage"
+                [alt]="(authUser$ | async)?.displayName" crossorigin="anonymous">
             <div class="avatar-actions">
                 <a class="btn" mat-raised-button color="accent" (click)="onNewImage()">
                     <mat-icon>upload</mat-icon> Nueva imagen
                 </a>
-                <a *ngIf="authUser.image" class="btn" mat-stroked-button (click)="onDeleteImage()">
+                @if ((authUser$ | async)?.image) {
+                <a class="btn" mat-stroked-button (click)="onDeleteImage()">
                     <mat-icon>delete</mat-icon> Eliminar
                 </a>
+                }
             </div>
         </div>
 
@@ -35,11 +35,14 @@
                         Asegúrate de usar un nombre por el cual los demás te puedan reconocer y buscar fácilmente.
                     </mat-hint>
                     <mat-hint align="end">{{name.value.length || 0}}/40</mat-hint>
-                    <mat-error *ngIf="form['name'].errors">Campo obligatorio. Debe tener entre 3 y 40 caracteres.
+                    @if (form['name'].errors) {
+                    <mat-error>Campo obligatorio. Debe tener entre 3 y 40 caracteres.
                     </mat-error>
+                    }
                 </mat-form-field>
 
-                <ng-container *ngIf="isApiLoaded">
+                @if (isApiLoaded) {
+                <ng-container>
                     <mat-form-field appearance="outline">
                         <mat-label>Ubicación</mat-label>
                         <input matInput formControlName="location" type="text" maxlength="100"
@@ -49,10 +52,13 @@
                             Indica la ciudad donde vives actualmente para que así los demás usuarios sepan cuán cerca
                             estás de ellos, lo que facilitará los futuros intercambios.
                         </mat-hint>
-                        <mat-error *ngIf="form['location'].errors">Campo obligatorio. Debes escribir y seleccionar una
+                        @if (form['location'].errors) {
+                        <mat-error>Campo obligatorio. Debes escribir y seleccionar una
                             ubicación del listado.</mat-error>
+                        }
                     </mat-form-field>
                 </ng-container>
+                }
 
                 <mat-form-field appearance="outline">
                     <mat-label>Descripción</mat-label>
@@ -62,21 +68,30 @@
                         (opcional).
                     </mat-hint>
                     <mat-hint align="end">{{bio.value.length || 0}}/400</mat-hint>
-                    <mat-error *ngIf="form['bio'].errors">Debes ingresar como máximo 400 caracteres.</mat-error>
+                    @if (form['bio'].errors) {
+                    <mat-error>Debes ingresar como máximo 400 caracteres.</mat-error>
+                    }
                 </mat-form-field>
 
-                <button mat-raised-button [disabled]="isSaving || updateForm.invalid" color="accent">Guardar</button>
+                <button mat-raised-button [disabled]="(isProcessing$ | async) || updateForm.invalid"
+                    color="accent">Guardar</button>
 
             </form>
         </div>
 
     </div>
 </section>
+} @else {
+<div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+}
+
 <ng-template #confirmDeleteDialog>
     <p matDialogContent>Estás seguro de eliminar tu foto de perfil?</p>
     <mat-dialog-actions align="end">
-        <button mat-button mat-dialog-close [disabled]="isDeleting">Cancelar</button>
-        <button mat-raised-button (click)="onConfirmDelete()" [disabled]="isDeleting" color="accent">
+        <button mat-button mat-dialog-close [disabled]="isProcessing$ | async">Cancelar</button>
+        <button mat-raised-button (click)="onConfirmDelete()" [disabled]="isProcessing$ | async" color="accent">
             Eliminar
         </button>
     </mat-dialog-actions>

@@ -502,7 +502,7 @@ export class CollectionEffects {
         ),
         map((action) => action.message),
         tap((message) => {
-          this.dialog.closeAll();
+          this.dialog.closeAll(); // TO DO: Close only in some cases
           this.uiSrv.showSuccess(message);
         })
       ),

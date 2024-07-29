@@ -1,48 +1,51 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { take } from 'rxjs';
-
-import { AuthService } from 'src/app/core';
-import { UIService } from 'src/app/shared';
-import { SettingsOnlyService } from '../settings-only.service';
-import { MatButtonModule } from '@angular/material/button';
+import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { take } from 'rxjs';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgIf } from '@angular/common';
+import { Store } from '@ngrx/store';
+
+import { UIService } from 'src/app/shared';
+import { AuthService } from 'src/app/core';
+import { authFeature } from '../../auth/store/auth.state';
+import { settingsFeature } from '../store/settings.state';
+import { settingsActions } from '../store/settings.actions';
 
 @Component({
-    selector: 'app-settings-delete',
-    templateUrl: './settings-delete.component.html',
-    styleUrls: ['./settings-delete.component.scss'],
-    standalone: true,
-    imports: [
-        NgIf,
-        MatProgressSpinnerModule,
-        RouterLink,
-        MatButtonModule,
-        MatDialogModule,
-    ],
+  selector: 'app-settings-delete',
+  templateUrl: './settings-delete.component.html',
+  standalone: true,
+  imports: [
+    RouterLink,
+    AsyncPipe,
+
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    MatDialogModule,
+  ],
 })
 export class SettingsDeleteComponent implements OnInit {
+  authUser$ = this.store.select(authFeature.selectUser);
+  isLoaded$ = this.store.select(settingsFeature.selectIsDeleteLoaded);
+  isProcessing$ = this.store.select(authFeature.selectIsProcessing);
+
   @ViewChild('confirmDeleteDialog') deleteDialog!: TemplateRef<any>;
-  authUser = this.authSrv.getCurrentUser();
+
+  // authUser = this.authSrv.getCurrentUser();
   isDeleting = false;
-  isLoaded = false;
+  // isLoaded = false;
 
   constructor(
+    private store: Store,
     private dialog: MatDialog,
     private authSrv: AuthService,
-    private uiSrv: UIService,
-    private setOnlySrv: SettingsOnlyService
+    private uiSrv: UIService
   ) {}
 
   ngOnInit(): void {
-    this.setOnlySrv.setTitles({
-      title: 'Eliminar cuenta',
-      subtitle: 'Eliminina de manera definitiva tus datos',
-    });
-
-    this.isLoaded = true;
+    this.store.dispatch(settingsActions.loadDelete());
   }
 
   onDelete() {

@@ -1,7 +1,5 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-    <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="settings-section">
+@if (isLoaded$ | async) {
+<section class="settings-section">
     <div class="settings-delete card">
 
         <div class="empty-content">
@@ -17,17 +15,23 @@
                 <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
                     Mejor no
                 </a>
-                <button mat-raised-button [disabled]="isDeleting" (click)="onDelete()">Eliminar mi cuenta</button>
+                <button mat-raised-button [disabled]="(isProcessing$ | async)" (click)="onDelete()">Eliminar mi
+                    cuenta</button>
             </div>
         </div>
 
     </div>
 </section>
+} @else {
+<div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+}
 <ng-template #confirmDeleteDialog>
     <p matDialogContent>Último aviso antes de eliminar tu cuenta de manera definitiva!</p>
     <mat-dialog-actions align="end">
-        <button mat-button mat-dialog-close [disabled]="isDeleting">Cancelar</button>
-        <button mat-raised-button (click)="onConfirmDelete()" [disabled]="isDeleting" color="accent">
+        <button mat-button mat-dialog-close [disabled]="(isProcessing$ | async)">Cancelar</button>
+        <button mat-raised-button (click)="onConfirmDelete()" [disabled]="(isProcessing$ | async)" color="accent">
             Eliminar
         </button>
     </mat-dialog-actions>

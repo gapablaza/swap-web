@@ -8,7 +8,7 @@ import {
 import { NgClass, DatePipe, AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { combineLatest, map, Subscription, tap } from 'rxjs';
+import { combineLatest, map, Subscription } from 'rxjs';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { Store } from '@ngrx/store';
 
@@ -21,11 +21,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { DEFAULT_USER_PROFILE_IMG } from 'src/app/core';
-import { AdsModule } from 'src/app/shared/ads.module';
 import { UIService } from 'src/app/shared';
 import { authFeature } from '../../auth/store/auth.state';
 import { messagesFeature } from '../store/message.state';
 import { messagesActions } from '../store/message.actions';
+import { AdLoaderComponent } from 'src/app/shared/components/ad-loader/ad-loader.component';
 
 @Component({
   selector: 'app-message-list',
@@ -36,17 +36,19 @@ import { messagesActions } from '../store/message.actions';
     NgClass,
     RouterLink,
     FormsModule,
-    MatProgressSpinnerModule,
+    DatePipe,
+    AsyncPipe,
+
+    MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
     MatOptionModule,
-    DatePipe,
-    AsyncPipe,
+    MatProgressSpinnerModule,
+    MatSelectModule,
     LazyLoadImageModule,
-    AdsModule,
+
+    AdLoaderComponent,
   ],
 })
 export class MessageListComponent implements OnInit, OnDestroy {
@@ -61,7 +63,6 @@ export class MessageListComponent implements OnInit, OnDestroy {
   typeSelected = '1';
 
   showFilters = true;
-  isAdsLoaded = false;
   loading$ = this.store.select(messagesFeature.selectLoading);
   subs: Subscription = new Subscription();
 
@@ -76,11 +77,6 @@ export class MessageListComponent implements OnInit, OnDestroy {
 
     let messagesSub = combineLatest([this.authUser$, this.messages$])
       .pipe(
-        tap(([authUser, messages]) => {
-          if (authUser.accountTypeId == 1) {
-            this.loadAds();
-          }
-        }),
         map(([authUser, messages]) => {
           return messages.map((payload) => {
             return {
@@ -111,12 +107,6 @@ export class MessageListComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       });
     this.subs.add(messagesSub);
-  }
-
-  loadAds() {
-    this.uiSrv.loadAds().then(() => {
-      this.isAdsLoaded = true;
-    });
   }
 
   onFilter() {

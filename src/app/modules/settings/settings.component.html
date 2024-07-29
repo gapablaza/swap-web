@@ -1,18 +1,16 @@
 <div class="settings-page">
-    <div *ngIf="!isLoaded" class="loading-indicator">
-        <mat-spinner aria-label="cargando"></mat-spinner>
-    </div>
-    <section *ngIf="isLoaded" class="settings">
+    @if (isLoaded$ | async) {
+    <section class="settings">
         <div class="settings-header">
-            <img class="" [defaultImage]="defaultUserImage" [lazyLoad]="authUser.image || defaultUserImage"
-                [alt]="authUser.displayName" crossorigin="anonymous">
+            <img class="" [defaultImage]="defaultUserImage" [lazyLoad]="(authUser$ | async)?.image || defaultUserImage"
+                [alt]="(authUser$ | async)?.displayName" crossorigin="anonymous">
             <div class="settings-title">
                 <h1>
-                    <a [routerLink]="['/user', authUser.id]">{{ authUser.displayName }}</a>
+                    <a [routerLink]="['/user', (authUser$ | async)?.id]">{{ (authUser$ | async)?.displayName }}</a>
                     <span>/</span>
-                    {{ title }}
+                    {{ title() }}
                 </h1>
-                <h2>{{ subtitle }}</h2>
+                <h2>{{ subtitle() }}</h2>
             </div>
         </div>
         <div class="settings-content">
@@ -41,4 +39,9 @@
             </div>
         </div>
     </section>
+    } @else {
+    <div class="loading-indicator">
+        <mat-spinner aria-label="cargando"></mat-spinner>
+    </div>
+    }
 </div>

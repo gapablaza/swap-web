@@ -6,9 +6,12 @@ import {
   catchError,
   exhaustMap,
   filter,
+  from,
   map,
   of,
   switchMap,
+  take,
+  takeUntil,
   tap,
   withLatestFrom,
 } from 'rxjs';
@@ -20,6 +23,12 @@ import {
 } from 'src/app/core';
 import { authFeature } from './auth.state';
 import { authActions } from './auth.actions';
+import {
+  FacebookLoginProvider,
+  SocialAuthService,
+} from '@abacritt/angularx-social-login';
+import { UIService } from 'src/app/shared';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable()
 export class AuthEffects {
@@ -48,7 +57,29 @@ export class AuthEffects {
     )
   );
 
-  // Inicia sesión con email / pass
+  // Si se carga login, esuchamos google
+  loginWithGoogle$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.loginPageOpened),
+      exhaustMap(() =>
+        this.socialSrv.authState.pipe(
+          takeUntil(this.actions$.pipe(ofType(authActions.loginPageDestroyed))),
+          tap((user) => console.log(user)),
+          filter((user) => user != null && user.provider == 'GOOGLE'),
+          switchMap((user) =>
+            this.authSrv.loginWithGoogleId(user.id).pipe(
+              map(({ user, token }) =>
+                authActions.authSuccess({ user, token, redirect: true })
+              ),
+              catchError((error) => of(authActions.authFailure()))
+            )
+          )
+        )
+      )
+    )
+  );
+
+  // Inicia sesión con email/pass
   loginWithEmail$ = createEffect(() =>
     this.actions$.pipe(
       ofType(authActions.loginWithEmail),
@@ -67,19 +98,123 @@ export class AuthEffects {
     )
   );
 
+  // Inicia sesión con facebook
+  loginWithFacebook$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.loginFacebook),
+      exhaustMap(() =>
+        from(this.socialSrv.signIn(FacebookLoginProvider.PROVIDER_ID)).pipe(
+          take(1),
+          filter((user) => user != null),
+          switchMap((user) =>
+            this.authSrv.loginWithFacebookId(user.id).pipe(
+              map((res) => {
+                return authActions.authSuccess({
+                  user: res.user,
+                  token: res.token,
+                  redirect: true,
+                });
+              }),
+              catchError((error) => of(authActions.authFailure()))
+            )
+          )
+        )
+      )
+    )
+  );
+
   // Si autentica, guarda token y redirige
   // si no está deshabilitado, intenta iniciar en Firebase
   authSuccess$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(authActions.authSuccess),
+      ofType(authActions.authSuccess, authActions.signupSuccess),
       tap(({ user, token, redirect }) => {
         this.jwtSrv.saveToken(token);
         if (redirect) {
-          this.router.navigate(['/']); // redirect to previous page
+          const returnUrl =
+            this.router.routerState.snapshot.root.queryParams['returnUrl'] ||
+            '/';
+          this.router.navigate([returnUrl]);
+          // this.router.navigate(['/']); // redirect to previous page
         }
       }),
       filter(({ user, token }) => !user.disabled),
       map(() => authActions.loginFirebase())
+    )
+  );
+
+  // Crea cuenta con email/pass
+  signupWithEmail$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.signupEmail),
+      exhaustMap((action) =>
+        this.authSrv
+          .signupWithEmail(action.name, action.email, action.password)
+          .pipe(
+            map(({ user, token }) =>
+              authActions.signupSuccess({
+                message: 'Cuenta creada exitosamente',
+                user,
+                token,
+                redirect: true,
+              })
+            ),
+            catchError((error) => {
+              let errorMsg = 'No se pudo crear la cuenta';
+              if (error.message) {
+                errorMsg += ': ';
+                for (var prop in error.message) {
+                  if (
+                    Object.prototype.hasOwnProperty.call(error.message, prop)
+                  ) {
+                    errorMsg +=
+                      '- ' + (error.message[prop] as []).join(' -') + '. ';
+                  }
+                }
+              }
+
+              return of(authActions.signupFailure({ error: errorMsg }));
+            })
+          )
+      )
+    )
+  );
+
+  // Si se carga signup, esuchamos google
+  signupWithGoogle$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.signupPageOpened),
+      exhaustMap(() =>
+        this.socialSrv.authState.pipe(
+          takeUntil(
+            this.actions$.pipe(ofType(authActions.signupPageDestroyed))
+          ),
+          tap((user) => console.log(user)),
+          filter((user) => user != null && user.provider == 'GOOGLE'),
+          switchMap((user) =>
+            this.authSrv
+              .signupWithGoogle(user.id, user.name, user.email, user.photoUrl)
+              .pipe(
+                map(({ user, token }) =>
+                  authActions.signupSuccess({
+                    message: 'Cuenta creada exitosamente',
+                    user,
+                    token,
+                    redirect: true,
+                  })
+                ),
+                catchError((error) => {
+                  let errorMsg = 'No se pudo crear la cuenta';
+                  if (error.error && error.error.message) {
+                    errorMsg += ' - ' + error.error.message;
+                  }
+
+                  return of(authActions.signupFailure({ error: errorMsg }));
+                })
+              )
+          )
+        )
+      )
     )
   );
 
@@ -131,6 +266,148 @@ export class AuthEffects {
     { dispatch: false }
   );
 
+  // reset password
+  resetPassword$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.resetPassword),
+      map((action) => action.email),
+      exhaustMap((email) =>
+        this.authSrv.resetPassword(email).pipe(
+          map((message) => authActions.resetPasswordSuccess({ message })),
+          catchError((error) =>
+            of(authActions.resetPasswordFailure({ error: error.message }))
+          )
+        )
+      )
+    )
+  );
+
+  // new password
+  newPassword$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.newPassword),
+      exhaustMap((action) =>
+        this.authSrv
+          .setNewPassword(action.newPassword, action.userId, action.hash)
+          .pipe(
+            map((message) => {
+              this.router.navigate(['/login']);
+              return authActions.newPasswordSuccess({ message });
+            }),
+            catchError((error) =>
+              of(authActions.newPasswordFailure({ error: error.message }))
+            )
+          )
+      )
+    )
+  );
+
+  // update profile
+  updateProfile$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.updateProfile),
+      exhaustMap((action) =>
+        this.authSrv
+          .updateProfile({
+            active: action.active,
+            name: action.name,
+            bio: action.bio,
+            addressComponents: action.addressComponents,
+          })
+          .pipe(
+            map(({ user, token }) => {
+              return authActions.updateProfileSuccess({
+                message: 'Perfil actualizado exitosamente',
+                user,
+                token,
+              });
+            }),
+            catchError((error) =>
+              of(
+                authActions.updateProfileFailure({
+                  error:
+                    'No se pudo actualizar tu perfil. Intenta nuevamente mas tarde por favor.',
+                })
+              )
+            )
+          )
+      )
+    )
+  );
+
+  // update avatar
+  updateAvatar$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.updateAvatar),
+      map((action) => action.image64),
+      exhaustMap((image) =>
+        this.authSrv.updateAvatar(image).pipe(
+          map(({ user, token }) => {
+            return authActions.updateAvatarSuccess({
+              message: 'Imagen cambiada con éxito',
+              user,
+              token,
+            });
+          }),
+          catchError((error) =>
+            of(
+              authActions.updateAvatarFailure({
+                error: 'No se pudo registrar la imagen',
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
+  // remove avatar
+  removeAvatar$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.removeAvatar),
+      exhaustMap(() =>
+        this.authSrv.removeAvatar().pipe(
+          map((message) => {
+            return authActions.removeAvatarSuccess({ message });
+          }),
+          catchError((error) =>
+            of(
+              authActions.removeAvatarFailure({
+                error: 'No se pudo remover tu imagen de perfil',
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
+  // unread notifications
+  unreadNotifications$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.unreadNotification),
+      map((action) => action.notifyUnreads),
+      exhaustMap((notifyUnreads) =>
+        this.authSrv.updateNotifications(notifyUnreads).pipe(
+          map((message) => {
+            return authActions.unreadNotificationSuccess({
+              message,
+              notifyUnreads,
+            });
+          }),
+          catchError((error) =>
+            of(
+              authActions.unreadNotificationFailure({
+                error:
+                  'No se pudo actualizar tu configuración. Intenta nuevamente mas tarde por favor.',
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
   // Cierra sesión
   logout$ = createEffect(
     () =>
@@ -138,7 +415,50 @@ export class AuthEffects {
         ofType(authActions.logout),
         tap(() => {
           this.jwtSrv.destroyToken();
+          this.socialSrv.signOut().catch(() => {});
           this.router.navigate(['/']);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  showSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(
+          authActions.signupSuccess,
+          authActions.resetPasswordSuccess,
+          authActions.newPasswordSuccess,
+          authActions.updateProfileSuccess,
+          authActions.updateAvatarSuccess,
+          authActions.removeAvatarSuccess,
+          authActions.unreadNotificationSuccess,
+        ),
+        map((action) => action.message),
+        tap((message) => {
+          this.dialog.closeAll(); // TO DO: Close only in some cases
+          this.uiSrv.showSuccess(message);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  showError$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(
+          authActions.signupFailure,
+          authActions.resetPasswordFailure,
+          authActions.newPasswordFailure,
+          authActions.updateProfileFailure,
+          authActions.updateAvatarFailure,
+          authActions.removeAvatarFailure,
+          authActions.unreadNotificationFailure,
+        ),
+        map((action) => action.error),
+        tap((error) => {
+          this.dialog.closeAll(); // TO DO: Close only in some cases
+          this.uiSrv.showError(error);
         })
       ),
     { dispatch: false }
@@ -149,7 +469,10 @@ export class AuthEffects {
     private store: Store,
     private router: Router,
     private jwtSrv: JwtService,
+    private socialSrv: SocialAuthService,
     private authSrv: AuthenticationService,
-    private messageSrv: MessageService
+    private messageSrv: MessageService,
+    private uiSrv: UIService,
+    private dialog: MatDialog
   ) {}
 }

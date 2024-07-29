@@ -13,10 +13,7 @@
             @if (typeSelected == '2') { <span class="text-secondary">Archivadas</span>}
         </h1>
 
-        @if (isAdsLoaded) {
-        <ng-adsense [adSlot]="6281081787" [adFormat]="'auto'" [display]="'block'" [fullWidthResponsive]="true"
-            [className]="'bga-hor'"></ng-adsense>
-        }
+        <app-ad-loader [adSlot]="6281081787" [className]="'bga-hor'"></app-ad-loader>
 
         <div class="card flex-full">
             <div class="controls-std">

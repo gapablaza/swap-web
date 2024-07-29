@@ -1,20 +1,25 @@
 import { Injectable } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
+import { environment } from 'src/environments/environment';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 
 @Injectable()
 export class UIService {
   loadingStateChanged = new Subject<boolean>();
   defaultSnackbarDuration = 3000;
+  errorSnackbarDuration = 5000;
   private _isGoogleMapsLoaded = false;
   private _isAdsSenseLoaded = false;
 
+  private _adsSenseLoadedSubject = new BehaviorSubject<boolean>(false);
+  isAdsSenseLoaded$ = this._adsSenseLoadedSubject.asObservable();
+
   constructor(
     private snackbar: MatSnackBar,
-    private bottomSheet: MatBottomSheet,
+    private bottomSheet: MatBottomSheet
   ) {}
 
   showSnackbar(
@@ -32,7 +37,7 @@ export class UIService {
   showError(message: string) {
     return this.snackbar.open(message, undefined, {
       panelClass: ['snackbar-error'],
-      duration: this.defaultSnackbarDuration,
+      duration: this.errorSnackbarDuration,
       horizontalPosition: 'right',
       verticalPosition: 'top',
     });
@@ -68,37 +73,55 @@ export class UIService {
     this._isGoogleMapsLoaded = status;
   }
 
+  // isAdsLoaded() {
+  //   return this._isAdsSenseLoaded;
+  // }
+
   isAdsLoaded() {
-    return this._isAdsSenseLoaded;
+    return this._adsSenseLoadedSubject.getValue();
   }
 
   setAdsStatus(status: boolean) {
     this._isAdsSenseLoaded = status;
   }
 
-  loadAds() {
+  loadScript(id: string, src: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (typeof window === 'undefined') {
-        reject(false);
+      if (document.getElementById(id)) {
+        resolve(); // El script ya está cargado
+        return;
       }
 
-      if (this._isAdsSenseLoaded) {
-        resolve(true);
-      } else {
-        const element = document.createElement('script');
-        // element.type = 'text/javascript';
-        element.id = 'google_ads_dynamic_script';
-        element.src = `//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js`;
-        element.onload = () => {
-          this._isAdsSenseLoaded = true;
-          resolve(true);
-        }
-        element.onerror = () => {
-          reject(false);
-        }
-        
-        document.getElementsByTagName('head')[0].appendChild(element);
-      }
+      const element = document.createElement('script');
+      element.id = id;
+      element.src = src;
+      element.onload = () => resolve();
+      element.onerror = () => reject();
+      document.head.appendChild(element);
+    });
+  }
+
+  loadGoogleMaps() {
+    if (this._isGoogleMapsLoaded) {
+      return Promise.resolve();
+    }
+
+    const src = `https://maps.googleapis.com/maps/api/js?key=${environment.google.apiKey}&libraries=places&language=en&loading=async`;
+    return this.loadScript('google-maps-script', src).then(() => {
+      this._isGoogleMapsLoaded = true;
+    });
+  }
+
+  loadAds() {
+    console.log('loadAds');
+    if (this._isAdsSenseLoaded) {
+      return Promise.resolve();
+    }
+
+    const src = `//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js`;
+    return this.loadScript('google-ads-script', src).then(() => {
+      this._isAdsSenseLoaded = true;
+      this._adsSenseLoadedSubject.next(true);
     });
   }
 }

@@ -1,15 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   registerLocaleData,
-  NgIf,
-  NgFor,
   DecimalPipe,
   NgClass,
+  AsyncPipe,
 } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import es from '@angular/common/locales/es';
-import { filter, Subscription, switchMap, take, tap } from 'rxjs';
+import { Subscription, tap } from 'rxjs';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,49 +17,41 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { AdsModule } from 'src/app/shared/ads.module';
-import { UIService } from 'src/app/shared';
-import {
-  AuthService,
-  Collection,
-  DEFAULT_COLLECTION_IMG,
-  Pagination,
-  Publisher,
-  PublisherService,
-  SearchService,
-  SEOService,
-  User,
-} from 'src/app/core';
+import { SEOService } from 'src/app/core';
 import { CollectionItemComponent } from '../../../shared/components/collection-item/collection-item.component';
+import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
+import { ExploreCollectionsStore } from './explore-collections.store';
+import { AdLoaderComponent } from 'src/app/shared/components/ad-loader/ad-loader.component';
 
 @Component({
   selector: 'app-explore-collections',
   templateUrl: './explore-collections.component.html',
   standalone: true,
+  providers: [ExploreCollectionsStore],
   imports: [
-    NgIf,
-    MatProgressSpinnerModule,
-    AdsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    NgFor,
-    NgClass,
-    MatOptionModule,
-    CollectionItemComponent,
-    MatButtonModule,
-    MatIconModule,
     FormsModule,
+    NgClass,
+    AsyncPipe,
     DecimalPipe,
+
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatOptionModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+
+    AdLoaderComponent,
+    CollectionItemComponent,
+    PaginationComponent,
   ],
 })
 export class ExploreCollectionsComponent implements OnInit, OnDestroy {
-  collections: Collection[] = [];
-  publishers: Publisher[] = [];
-  authUser: User = {} as User;
-  paginator: Pagination = {} as Pagination;
-  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
+  vm$ = this.exploreStore.vm$;
+  publishers$ = this.exploreStore.publishers$;
+  isLoaded$ = this.exploreStore.isLoaded$;
 
-  sortOptionSelected = 'published-DESC';
+  showFilters = false;
   sortOptions = [
     {
       selectName: 'Últimos publicados',
@@ -87,143 +78,67 @@ export class ExploreCollectionsComponent implements OnInit, OnDestroy {
       arrayOrders: ['desc', 'desc'],
     },
   ];
-  pageSelected = 1;
-  publisherSelected: number | undefined = undefined;
-  showFilters = false;
-  isFiltered = false;
 
-  isAdsLoaded = false;
-  isLoaded = false;
   subs: Subscription = new Subscription();
 
   constructor(
-    private searchSrv: SearchService,
-    private pubSrv: PublisherService,
+    private exploreStore: ExploreCollectionsStore,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private authSrv: AuthService,
-    private SEOSrv: SEOService,
-    private uiSrv: UIService
+    private route: ActivatedRoute,
+    private SEOSrv: SEOService
   ) {}
 
   ngOnInit(): void {
     registerLocaleData(es);
+    this.exploreStore.fetchPublishers();
 
-    // get possible auth User
-    let authSub = this.authSrv.authUser
-      .pipe(
-        tap((user) => {
-          if (!user.id || user.accountTypeId == 1) {
-            this.loadAds();
-          }
-        }),
-        filter((user) => user.id != null)
-      )
-      .subscribe((user) => {
-        this.authUser = user;
-      });
-    this.subs.add(authSub);
-
-    // process pagination params
-    this.activatedRoute.queryParamMap
+    const routeSub = this.route.queryParams
       .pipe(
         tap(() => {
           this.SEOSrv.set({
             title: 'Explorar Colecciones - Intercambia Láminas',
             description:
               'Revisa el listado completo de colecciones que tenemos disponible, marca tus repetidas/faltantes y encuentra con quién intercambiar!',
-            isCanonical: true,
+            isCanonical: false,
           });
-        }),
-        switchMap((paramMap) => {
-          this.isLoaded = false;
-          const page = paramMap.get('page');
-          const sortBy = paramMap.get('sortBy');
-          const publisher = paramMap.get('publisher');
-
-          // https://stackoverflow.com/a/24457420
-          if (page && /^\d+$/.test(page)) {
-            this.pageSelected = parseInt(page);
-          }
-
-          if (
-            sortBy &&
-            this.sortOptions.find((item) => item.selectValue == sortBy)
-          ) {
-            this.sortOptionSelected = sortBy;
-          }
-
-          if (publisher && /^\d+$/.test(publisher)) {
-            this.publisherSelected = parseInt(publisher);
-            this.isFiltered = true;
-          } else {
-            this.publisherSelected = undefined;
-            this.isFiltered = false;
-          }
-
-          return this.searchSrv
-            .exploreCollections({
-              page: this.pageSelected,
-              sortBy: this.sortOptionSelected,
-              ...(this.publisherSelected && {
-                publisher: this.publisherSelected,
-              }),
-            })
-            .pipe(take(1));
         })
       )
-      .subscribe((data) => {
-        this.collections = data.collections;
-        this.paginator = data.paginator;
-        this.isLoaded = true;
+      .subscribe((routeParams) => {
+        this.exploreStore.setPaginationParams(routeParams);
+        this.exploreStore.fetchCollections();
       });
-
-    // obtiene las editoriales
-    let pubsSub = this.pubSrv
-      .list()
-      .pipe(take(1))
-      .subscribe((pubs) => {
-        this.publishers = pubs.sort((a, b) => {
-          return (a.name || '').toLocaleLowerCase() >
-            (b.name || '').toLocaleLowerCase()
-            ? 1
-            : -1;
-        });
-      });
-    this.subs.add(pubsSub);
+    this.subs.add(routeSub);
   }
 
-  loadAds() {
-    this.uiSrv.loadAds().then(() => {
-      this.isAdsLoaded = true;
-    });
-  }
-
-  onSort() {
-    this.pageSelected = 1;
+  onRoute(queryParams: Params) {
     this.router.navigate(['/collections'], {
-      queryParams: {
-        // page: this.pageSelected,
-        sortBy: this.sortOptionSelected,
-        ...(this.publisherSelected && { publisher: this.publisherSelected }),
-      },
+      queryParams,
+      queryParamsHandling: 'merge',
     });
   }
 
-  onPublisherChanged() {
-    console.log(this.publisherSelected);
-    this.onSort();
+  onSort(selectedValue: string) {
+    const queryParams = { ...this.route.snapshot.queryParams };
+    queryParams['page'] = 1;
+    queryParams['sortBy'] = selectedValue;
+
+    this.onRoute(queryParams);
+  }
+
+  onPublisherChanged(selectedValue: string) {
+    const queryParams = { ...this.route.snapshot.queryParams };
+    queryParams['page'] = 1;
+    queryParams['publisher'] = selectedValue;
+
+    this.onRoute(queryParams);
   }
 
   onPageChange(e: string) {
-    this.pageSelected = parseInt(e);
-    this.router.navigate(['/collections'], {
-      queryParams: {
-        page: this.pageSelected,
-        sortBy: this.sortOptionSelected,
-        ...(this.publisherSelected && { publisher: this.publisherSelected }),
-      },
-    });
+    const pageSelected = parseInt(e);
+    const queryParams = { ...this.route.snapshot.queryParams };
+    queryParams['page'] = pageSelected;
+
+    this.onRoute(queryParams);
   }
 
   ngOnDestroy(): void {

@@ -17,7 +17,6 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { combineLatest, filter, map, Subscription, tap } from 'rxjs';
-
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {
@@ -51,21 +50,23 @@ import { userActions } from '../store/user.actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    LazyLoadImageModule,
-    MatButtonModule,
     RouterLink,
-    MatIconModule,
-    MatMenuModule,
-    DaysSinceLoginDirective,
-    MatExpansionModule,
     NgClass,
-    MatDialogModule,
-    MatProgressSpinnerModule,
     DecimalPipe,
     DatePipe,
+    AsyncPipe,
+
+    MatButtonModule,
+    MatDialogModule,
+    MatExpansionModule,
+    MatIconModule,
+    MatMenuModule,
+    MatProgressSpinnerModule,
+    LazyLoadImageModule,
+
+    DaysSinceLoginDirective,
     SanitizeHtmlPipe,
     SlugifyPipe,
-    AsyncPipe,
   ],
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
@@ -105,14 +106,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     registerLocaleData(es);
 
-    let dataSub = combineLatest([
-      this.authUser$, 
-      this.user$,
-      this.isLoaded$,
-    ])
+    let dataSub = combineLatest([this.authUser$, this.user$, this.isLoaded$])
       .pipe(
         // filter(([, user]) => user.id != null),
-        filter(([,,isLoaded]) => isLoaded),
+        filter(([, , isLoaded]) => isLoaded),
         tap(([authUser, user]) => {
           this.SEOSrv.set({
             title: `Perfil de ${user.displayName} (ID ${user.id}) - Intercambia Láminas`,

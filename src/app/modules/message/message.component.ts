@@ -29,6 +29,8 @@ export class MessageComponent implements AfterViewInit, OnDestroy {
   authUser: User = this.authSrv.getCurrentUser();
   subs: Subscription = new Subscription();
 
+  // TO DO: use store
+
   constructor(
     private authSrv: AuthService,
     private dialog: MatDialog,

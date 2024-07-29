@@ -1,52 +1,46 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, NgForm, Validators, FormsModule } from '@angular/forms';
-import { take } from 'rxjs';
-
-import { AuthService } from 'src/app/core';
-import { UIService } from 'src/app/shared';
+import { Component } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  NgForm,
+  Validators,
+  FormsModule,
+} from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { Store } from '@ngrx/store';
+
+import { authFeature } from '../store/auth.state';
+import { authActions } from '../store/auth.actions';
 
 @Component({
-    selector: 'app-reset-password',
-    templateUrl: './reset-password.component.html',
-    styleUrls: ['./reset-password.component.scss'],
-    standalone: true,
-    imports: [FormsModule, MatFormFieldModule, MatInputModule, NgIf, MatButtonModule, RouterLink]
+  selector: 'app-reset-password',
+  templateUrl: './reset-password.component.html',
+  standalone: true,
+  imports: [
+    FormsModule,
+    RouterLink,
+    AsyncPipe,
+
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
 })
-export class ResetPasswordComponent implements OnInit {
-  resetForm!: FormGroup;
-  isLoading = false;
+export class ResetPasswordComponent {
+  isProcessing$ = this.store.select(authFeature.selectIsProcessing);
+  resetForm = new FormGroup({
+    email: new FormControl('', {
+      validators: [Validators.required, Validators.email],
+    }),
+  });
 
-  constructor(
-    private authSrv: AuthService,
-    private uiSrv: UIService,
-  ) { }
-
-  ngOnInit(): void {
-    this.resetForm = new FormGroup({
-      email: new FormControl('', {
-        validators: [Validators.required, Validators.email],
-      })
-    });
-  }
+  constructor(private store: Store) {}
 
   onSubmit(f: NgForm) {
-    this.isLoading = true;
-    this.authSrv.resetPassword(f.value.email)
-    .pipe(take(1))
-    .subscribe({
-      next: (resp) => {
-        this.uiSrv.showSuccess(resp);
-      },
-      error: (err) => {
-        console.log('error', err);
-        this.uiSrv.showError(err.message);
-        this.isLoading = false;
-      }
-    })
+    this.store.dispatch(authActions.resetPassword({ email: f.value.email }));
   }
 }

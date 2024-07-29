@@ -1,0 +1,92 @@
+<div class="trades-details card">
+    <div class="trades-user">
+        <div class="trades-user-info" [ngClass]="{'pro-account': userData.accountTypeId == 2}">
+            <div class="trades-user-main">
+                <div class="trades-user-image">
+                    <a [routerLink]="['/user', userData.id]">
+                        <img [defaultImage]="defaultUserImage" [lazyLoad]="userData.image || defaultUserImage"
+                            alt="Imagen de Perfil" crossorigin="anonymous">
+                    </a>
+                </div>
+
+                <div class="trades-user-content flex-full">
+                    <div class="trades-user-title">
+                        <a [routerLink]="['/user', userData.id]">
+                            {{ userData.displayName }}
+                            @if (userData.accountTypeId == 2) {
+                            <span class="pro-label">PRO</span>
+                            }
+                            @if (userData.positives > 0) {
+                            <span class="positives-label">+{{
+                                userData.positives
+                                }}</span>
+                            }
+                            @if (userData.negatives > 0) {
+                            <span class="negatives-label">-{{
+                                userData.negatives
+                                }}</span>
+                            }
+                        </a>
+                    </div>
+                    <div class="trades-user-meta custom-separator">
+                        <span>ID {{ userData.id }}</span>
+                        <span>{{ userData.location_city }}, {{ userData.location_country }}</span>
+                        <span appDaysSinceLogin="{{ userData.daysSinceLogin }}"></span>
+                    </div>
+                </div>
+                <div class="trades-user-count">
+                    <a class="btn" mat-stroked-button>
+                        {{ userData.tradesWithUser | number:'':'es' }}
+                        <mat-icon class="only-icon-button">repeat</mat-icon>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    @for (col of user().collections; track col.collectionData.id) {
+    <div class="trades-collection">
+        <div class="trades-collection-info">
+            <a
+                [routerLink]="['/c', col.collectionData.name + ' ' + col.collectionData.publisherName | slugify, col.collectionData.id]">
+                <img [defaultImage]="defaultCollectionImage" [lazyLoad]="col.collectionData.image"
+                    [alt]="col.collectionData.name + ' de ' + col.collectionData.publisherName" crossorigin="anonymous">
+                <span>{{ col.collectionData.name }}</span>
+            </a>
+        </div>
+        <div class="trades-list">
+            @if (col.totalSearching) {
+            <div>
+                Tiene <strong>{{ col.totalSearching }}</strong> ítems que tú buscas:
+                @for (item of col.searching; track item.id; let isLast = $last) {
+                <span>
+                    <span [ngClass]="[authUserPro() ? 
+                            'item-difficulty-' + item.difficultyCategoryId : '', item.unique ? 'item-unique' : '']">{{
+                        item.name
+                        }}</span>
+                    @if (!isLast) { <span>, </span> }
+                </span>
+                }
+            </div>
+            }
+
+            @if (col.totalTrading) {
+            <div>
+                Busca <strong>{{ col.totalTrading }}</strong> ítems que tú cambias:
+                @for (item of col.trading; track item.id; let isLast = $last) {
+                <span>
+                    <span [ngClass]="authUserPro() ? 
+                            'item-difficulty-' + item.difficultyCategoryId : ''">{{
+                        item.name
+                        }}</span>
+                    @if (!isLast) { <span>, </span> }
+                </span>
+                }
+            </div>
+            }
+        </div>
+    </div>
+    }
+
+</div>

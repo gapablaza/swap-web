@@ -1,29 +1,38 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatSliderChange, MatSliderModule } from '@angular/material/slider';
-import { ImageCroppedEvent, ImageCropperComponent, ImageTransform, ImageCropperModule } from 'ngx-image-cropper';
-
-import { AuthService } from 'src/app/core';
-import { UIService } from 'src/app/shared';
+import {
+  ImageCroppedEvent,
+  ImageCropperComponent,
+  ImageTransform,
+  ImageCropperModule,
+} from 'ngx-image-cropper';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { Store } from '@ngrx/store';
+
+import { authFeature } from '../../auth/store/auth.state';
+import { authActions } from '../../auth/store/auth.actions';
 
 @Component({
-    selector: 'app-settings-profile-image',
-    templateUrl: './settings-profile-image.component.html',
-    styleUrls: ['./settings-profile-image.component.scss'],
-    standalone: true,
-    imports: [
-        MatDialogModule,
-        NgIf,
-        MatButtonModule,
-        ImageCropperModule,
-        MatIconModule,
-        MatSliderModule,
-    ],
+  selector: 'app-settings-profile-image',
+  templateUrl: './settings-profile-image.component.html',
+  styleUrls: ['./settings-profile-image.component.scss'],
+  standalone: true,
+  imports: [
+    AsyncPipe,
+
+    MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatSliderModule,
+
+    ImageCropperModule,
+  ],
 })
 export class SettingsProfileImageComponent implements OnInit {
+  isProcessing$ = this.store.select(authFeature.selectIsProcessing);
   @ViewChild(ImageCropperComponent) cropper!: ImageCropperComponent;
   imageChangedEvent: any = '';
   croppedImage: any = '';
@@ -31,12 +40,10 @@ export class SettingsProfileImageComponent implements OnInit {
   scale = 1;
   transform: ImageTransform = {};
   imageSelected = false;
-  isSaving = false;
 
   constructor(
+    private store: Store,
     private dialogRef: MatDialogRef<SettingsProfileImageComponent>,
-    private authSrv: AuthService,
-    private uiSrv: UIService
   ) {}
 
   ngOnInit(): void {}
@@ -104,24 +111,12 @@ export class SettingsProfileImageComponent implements OnInit {
   }
 
   onClose() {
-    if (!this.isSaving) {
-      this.dialogRef.close();
-    }
+    this.dialogRef.close();
   }
 
   onSaveImage() {
-    this.isSaving = true;
     const newAvatar = this.cropper.crop();
     this.croppedImage = newAvatar?.base64;
-
-    this.authSrv.updateAvatar(this.croppedImage as string).subscribe((res) => {
-      if (res) {
-        this.uiSrv.showSuccess('Imagen cambiada con éxito');
-        this.dialogRef.close();
-      } else {
-        this.uiSrv.showError('No se pudo registrar la imagen');
-        this.isSaving = false;
-      }
-    });
+    this.store.dispatch(authActions.updateAvatar({ image64: this.croppedImage as string }));
   }
 }

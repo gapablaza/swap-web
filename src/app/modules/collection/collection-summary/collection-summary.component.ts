@@ -6,13 +6,22 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { Collection, DEFAULT_COLLECTION_IMG } from 'src/app/core';
 import { UIService } from 'src/app/shared';
+import { AdLoaderComponent } from 'src/app/shared/components/ad-loader/ad-loader.component';
 
 @Component({
   selector: 'app-collection-summary',
   templateUrl: './collection-summary.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatButtonModule, RouterLink, MatIconModule, LazyLoadImageModule],
+  imports: [
+    RouterLink,
+
+    MatButtonModule,
+    MatIconModule,
+    
+    LazyLoadImageModule,
+    AdLoaderComponent,
+  ],
 })
 export class CollectionSummaryComponent {
   @Input() collection!: Collection;

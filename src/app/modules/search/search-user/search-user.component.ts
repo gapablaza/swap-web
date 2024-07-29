@@ -1,49 +1,48 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { NgClass, DecimalPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { DEFAULT_USER_PROFILE_IMG, Pagination, User } from 'src/app/core';
 import { SanitizeHtmlPipe } from '../../../shared/pipes/sanitize-html.pipe';
-import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { DaysSinceLoginDirective } from '../../../shared/directives/days-since-login.directive';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgIf, NgFor, NgClass, DecimalPipe } from '@angular/common';
+import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 
 @Component({
-    selector: 'app-search-user',
-    templateUrl: './search-user.component.html',
-    styleUrls: ['./search-user.component.scss'],
-    standalone: true,
-    imports: [
-        NgIf,
-        MatFormFieldModule,
-        MatSelectModule,
-        NgFor,
-        MatOptionModule,
-        NgClass,
-        RouterLink,
-        LazyLoadImageModule,
-        DaysSinceLoginDirective,
-        MatButtonModule,
-        MatIconModule,
-        FormsModule,
-        DecimalPipe,
-        SanitizeHtmlPipe,
-    ],
+  selector: 'app-search-user',
+  templateUrl: './search-user.component.html',
+  standalone: true,
+  imports: [
+    NgClass,
+    RouterLink,
+    FormsModule,
+    DecimalPipe,
+
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatOptionModule,
+    MatSelectModule,
+
+    LazyLoadImageModule,
+    DaysSinceLoginDirective,
+    SanitizeHtmlPipe,
+    PaginationComponent,
+  ],
 })
 export class SearchUserComponent implements OnInit {
-  @Input() users: User[] = [];
-  @Input() paginator!: Pagination;
+  users = input.required<User[]>();
+  paginator = input.required<Pagination>();
   @Output() onPageSelected = new EventEmitter<number>();
   @Output() onOrderSelected = new EventEmitter<string>();
-  showedUsers: User[] = [];
-  defaultUserImage = DEFAULT_USER_PROFILE_IMG;
-  pageSelected = 1;
 
+  defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   userSortOptionSelected = 'relevance';
   userSortOptions = [
     {
@@ -60,34 +59,24 @@ export class SearchUserComponent implements OnInit {
     },
   ];
 
-  constructor(
-    private route: ActivatedRoute
-  ) {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     let actualParams = this.route.snapshot.queryParams;
-    let tempSort = actualParams['sortBy'];
     let tempIndex = this.userSortOptions.findIndex(
-      (sort) => sort.selectValue == tempSort
+      (sort) => sort.selectValue == actualParams['sortBy']
     );
     this.userSortOptionSelected =
       tempIndex >= 0
         ? this.userSortOptions[tempIndex].selectValue
         : 'relevance';
-    this.pageSelected = this.paginator.current_page;
-    this.showedUsers = [...this.users];
-  }
-
-  trackByUser(index: number, item: User): number {
-    return item.id;
   }
 
   onCollectionSort() {
     this.onOrderSelected.emit(this.userSortOptionSelected);
   }
 
-  onPageChange(e: string) {
-    this.pageSelected = parseInt(e);
-    this.onPageSelected.emit(this.pageSelected);
+  onPageChange(e: number) {
+    this.onPageSelected.emit(e);
   }
 }

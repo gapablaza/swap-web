@@ -1,21 +1,14 @@
-@if (!isLoaded) {
-<div class="loading-indicator">
-    <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-} @else {
+@if (isLoaded$ | async) {
 <section class="trades trades-section">
     <div class="trades-full flex-full">
         <h1>
             <span class="color-accent">
-                {{ trades.totalTrades | number:'':'es' }}
+                {{ vm$().trades.totalTrades | number:'':'es' }}
             </span>
             Posibles cambios
         </h1>
 
-        @if (isAdsLoaded) {
-        <ng-adsense [adSlot]="4915176250" [adFormat]="'auto'" [display]="'block'" [fullWidthResponsive]="true"
-            [className]="'bga-hor'"></ng-adsense>
-        }
+        <app-ad-loader [adSlot]="4915176250" [className]="'bga-hor'"></app-ad-loader>
 
         <div class="card">
             <div class="controls-std">
@@ -23,7 +16,7 @@
                     <div class="controls-std-order">
                         <mat-form-field appearance="outline" class="users-last-seen">
                             <mat-label>Usuarios</mat-label>
-                            <mat-select [(value)]="usersLastSeenSelected">
+                            <mat-select [(value)]="selectedLastSeen">
                                 <mat-option value="90">Vistos hace no mas de 3 meses</mat-option>
                                 <mat-option value="30">Vistos hace no mas de 30 días</mat-option>
                                 <mat-option value="7">Vistos hace no mas de 7 días</mat-option>
@@ -31,7 +24,7 @@
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field appearance="outline">
-                            <mat-select [(value)]="usersFromSelected">
+                            <mat-select [(value)]="selectedFrom">
                                 <mat-option value="1">De todo el mundo!</mat-option>
                                 <mat-option value="2">De {{ (authUser$ | async)?.location_country }}</mat-option>
                                 <mat-option value="3">De {{ (authUser$ | async)?.location_city }}, {{ (authUser$ |
@@ -41,9 +34,9 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline">
                             <mat-label>Colección</mat-label>
-                            <mat-select [(value)]="userCollectionsSelected">
+                            <mat-select [(value)]="selectedCollections">
                                 <mat-option value="">Todas</mat-option>
-                                @for (col of incompleteCollections; track col.id) {
+                                @for (col of vm$().incompleteCollections; track col.id) {
                                 <mat-option [value]="''+col.id">
                                     {{ col.name }} [{{ col.publisher.data.name }}]
                                 </mat-option>
@@ -63,7 +56,7 @@
             </div>
         </div>
 
-        @if ((trades.totalUsers == 0) || (pageSelected > paginator.last_page)) {
+        @if ((vm$().trades.totalUsers == 0) || (vm$().pageSelected > vm$().paginator.last_page)) {
         <div class="card">
             <div class="empty-content">
                 <h2>(;—;)</h2>
@@ -72,8 +65,8 @@
         </div>
         }
 
-        @if ((trades.totalUsers > 0) && (pageSelected <= paginator.last_page)) { <div>
-            @if (trades.uniqueTrades > 0) {
+        @if ((vm$().trades.totalUsers > 0) && (vm$().pageSelected <= vm$().paginator.last_page)) { <div>
+            @if (vm$().trades.uniqueTrades > 0) {
             <div class="alert alert-info">
                 <div class="alert-container">
                     <div class="alert-content">
@@ -85,158 +78,22 @@
             </div>
             }
 
-            <div class="pagination-wrapper">
-                <ul class="pagination">
-                    <li class="pagination-prev">
-                        <a role="button" (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))"
-                            [disabled]="pageSelected == 1" class="btn" mat-raised-button tabindex="-1">
-                            <mat-icon class="only-icon-button">west</mat-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <select name="" (change)="onPageChange(selectPage.value)" #selectPage>
-                            <option *ngFor="let item of [].constructor(paginator.last_page); index as i" [value]="i+1"
-                                [selected]="(i+1) == pageSelected">
-                                Página {{ i+1 }} de {{ paginator.last_page }}
-                            </option>
-                        </select>
-                    </li>
-                    <li class="pagination-next">
-                        <a role="button"
-                            (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
-                            [disabled]="pageSelected == paginator.last_page" class="btn" mat-raised-button>
-                            <mat-icon class="only-icon-button">east</mat-icon>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            <app-pagination [pageSelected]="vm$().paginator.current_page" [lastPage]="vm$().paginator.last_page"
+                (pageChange)="onPageChange($event)" />
 
-            @for (user of trades.user; track user.userData.id) {
-            <div class="trades-details card">
-                <div class="trades-user">
-                    <div class="trades-user-info" [ngClass]="{'pro-account': user.userData.accountTypeId == 2}">
-                        <div class="trades-user-main">
-                            <div class="trades-user-image">
-                                <a [routerLink]="['/user', user.userData.id]">
-                                    <img [defaultImage]="defaultUserImage"
-                                        [lazyLoad]="user.userData.image || defaultUserImage" alt="Imagen de Perfil"
-                                        crossorigin="anonymous">
-                                </a>
-                            </div>
-
-                            <div class="trades-user-content flex-full">
-                                <div class="trades-user-title">
-                                    <a [routerLink]="['/user', user.userData.id]">
-                                        {{ user.userData.displayName }}
-                                        @if (user.userData.accountTypeId == 2) {
-                                        <span class="pro-label">PRO</span>
-                                        }
-                                        @if (user.userData.positives > 0) {
-                                        <span class="positives-label">+{{
-                                            user.userData.positives
-                                            }}</span>
-                                        }
-                                        @if (user.userData.negatives > 0) {
-                                        <span class="negatives-label">-{{
-                                            user.userData.negatives
-                                            }}</span>
-                                        }
-                                    </a>
-                                </div>
-                                <div class="trades-user-meta custom-separator">
-                                    <span>ID {{ user.userData.id }}</span>
-                                    <span>{{ user.userData.location_city }}, {{ user.userData.location_country }}</span>
-                                    <span appDaysSinceLogin="{{ user.userData.daysSinceLogin }}"></span>
-                                </div>
-                            </div>
-                            <div class="trades-user-count">
-                                <a class="btn" mat-stroked-button>
-                                    {{ user.userData.tradesWithUser | number:'':'es' }}
-                                    <mat-icon class="only-icon-button">repeat</mat-icon>
-                                </a>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                @for (col of user.collections; track col.collectionData.id) {
-                <div class="trades-collection">
-                    <div class="trades-collection-info">
-                        <a
-                            [routerLink]="['/c', col.collectionData.name + ' ' + col.collectionData.publisherName | slugify, col.collectionData.id]">
-                            <img [defaultImage]="defaultCollectionImage" [lazyLoad]="col.collectionData.image"
-                                [alt]="col.collectionData.name + ' de ' + col.collectionData.publisherName"
-                                crossorigin="anonymous">
-                            <span>{{ col.collectionData.name }}</span>
-                        </a>
-                    </div>
-                    <div class="trades-list">
-                        @if (col.totalSearching) {
-                        <div>
-                            Tiene <strong>{{ col.totalSearching }}</strong> ítems que tú buscas:
-                            @for (item of col.searching; track item.id; let isLast = $last) {
-                            <span>
-                                <span
-                                    [ngClass]="[(authUser$ | async)?.accountTypeId == 2 ? 
-                                                            'item-difficulty-' + item.difficultyCategoryId : '', item.unique ? 'item-unique' : '']">{{
-                                    item.name
-                                    }}</span>
-                                @if (!isLast) { <span>, </span> }
-                            </span>
-                            }
-                        </div>
-                        }
-
-                        @if (col.totalTrading) {
-                        <div>
-                            Busca <strong>{{ col.totalTrading }}</strong> ítems que tú cambias:
-                            @for (item of col.trading; track item.id; let isLast = $last) {
-                            <span>
-                                <span [ngClass]="(authUser$ | async)?.accountTypeId == 2 ? 
-                                                            'item-difficulty-' + item.difficultyCategoryId : ''">{{
-                                    item.name
-                                    }}</span>
-                                @if (!isLast) { <span>, </span> }
-                            </span>
-                            }
-                        </div>
-                        }
-                    </div>
-                </div>
-                }
-
-            </div>
+            @for (user of vm$().trades.user; track user.userData.id) {
+            <app-trades-item [user]="user" [authUserPro]="(authUser$ | async)?.accountTypeId == 2" />
             }
 
-            <div class="pagination-wrapper">
-                <ul class="pagination">
-                    <li class="pagination-prev">
-                        <a role="button" (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))"
-                            [disabled]="pageSelected == 1" class="btn" mat-raised-button tabindex="-1">
-                            <mat-icon class="only-icon-button">west</mat-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <select name="" (change)="onPageChange(selectPageDown.value)" #selectPageDown>
-                            <option *ngFor="let item of [].constructor(paginator.last_page); index as i" [value]="i+1"
-                                [selected]="(i+1) == pageSelected">
-                                Página {{ i+1 }} de {{ paginator.last_page }}
-                            </option>
-                        </select>
-                    </li>
-                    <li class="pagination-next">
-                        <a role="button"
-                            (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
-                            [disabled]="pageSelected == paginator.last_page" class="btn" mat-raised-button>
-                            <mat-icon class="only-icon-button">east</mat-icon>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            <app-pagination [pageSelected]="vm$().paginator.current_page" [lastPage]="vm$().paginator.last_page"
+                (pageChange)="onPageChange($event)" />
     </div>
     }
 
     </div>
 </section>
+} @else {
+<div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
 }

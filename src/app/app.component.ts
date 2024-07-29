@@ -23,7 +23,7 @@ import {
 
 import { environment } from 'src/environments/environment';
 import { AuthService, SEOService } from './core';
-import { UIService } from './shared';
+import { SocialModule, UIService } from './shared';
 import { FooterComponent } from './modules/navigation/footer/footer.component';
 import { SidenavListComponent } from './modules/navigation/sidenav-list/sidenav-list.component';
 import { HeaderComponent } from './modules/navigation/header/header.component';

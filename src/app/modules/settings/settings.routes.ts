@@ -2,10 +2,18 @@ import { Routes } from '@angular/router';
 
 import { authorizedGuard } from 'src/app/core';
 import { SettingsComponent } from './settings.component';
+import { provideState } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
+import { settingsFeature } from './store/settings.state';
+import { SettingsEffects } from './store/settings.effects';
 
 export const SETTINGS_ROUTE: Routes = [
   {
     path: '',
+    providers: [
+      provideState(settingsFeature),
+      provideEffects(SettingsEffects),
+    ],
     component: SettingsComponent,
     canActivate: [authorizedGuard],
     children: [
