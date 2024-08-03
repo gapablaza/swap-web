@@ -1,7 +1,5 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-    <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="settings-section">
+@if (isLoaded$ | async) {
+<section class="settings-section">
     <div class="settings-connect">
 
         <div class="card">
@@ -15,17 +13,23 @@
                         </svg>
                     </mat-icon>
                     <div matListItemTitle>Google</div>
-                    <div *ngIf="!authUser.google" matListItemLine>Conecta Google y podrás iniciar sesión con
+                    @if ((authUser$ | async)?.google) {
+                    <div matListItemLine>Ya estás conectado!</div>
+                    } @else {
+                    <div matListItemLine>Conecta Google y podrás iniciar sesión con
                         esa plataforma</div>
-                    <div *ngIf="authUser.google" matListItemLine>Ya estás conectado!</div>
-                    <!-- <google-button *ngIf="!authUser.google" [selectable]="isLoaded" matListItemMeta></google-button> -->
-                    <asl-google-signin-button *ngIf="!authUser.google" type='standard' size='large' [width]='200'
-                        theme='filled_blue' matListItemMeta>
-                    </asl-google-signin-button>
-                    <button *ngIf="authUser.google" (click)="onUnlink('google')" mat-stroked-button color="warn"
-                        [disabled]="isSaving" matListItemMeta style="color: #f44336">
+                    }
+
+                    @if ((authUser$ | async)?.google) {
+                    <button (click)="onUnlink('google')" mat-stroked-button color="warn"
+                        [disabled]="isProcessing$ | async" matListItemMeta style="color: #f44336">
                         <mat-icon>delete</mat-icon> Remover
                     </button>
+                    } @else {
+                    <asl-google-signin-button type='standard' size='large' [width]='200' theme='filled_blue'
+                        matListItemMeta>
+                    </asl-google-signin-button>
+                    }
                 </mat-list-item>
                 <mat-list-item>
                     <mat-icon matListItemIcon>
@@ -35,27 +39,33 @@
                         </svg>
                     </mat-icon>
                     <div matListItemTitle>Facebook</div>
-                    <div *ngIf="!authUser.facebook" matListItemLine>Conecta Facebook y podrás iniciar sesión con
+                    @if ((authUser$ | async)?.facebook) {
+                    <div matListItemLine>Ya estás conectado!</div>
+                    } @else {
+                    <div matListItemLine>Conecta Facebook y podrás iniciar sesión con
                         esa plataforma</div>
-                    <div *ngIf="authUser.facebook" matListItemLine>Ya estás conectado!</div>
-                    <button *ngIf="!authUser.facebook" (click)="onLinkFacebook()" mat-stroked-button color="accent"
-                        [disabled]="isSaving" matListItemMeta style="color: #45be9c">
-                        <mat-icon>link</mat-icon> Conectar
-                    </button>
-                    <button *ngIf="authUser.facebook" (click)="onUnlink('facebook')" mat-stroked-button color="warn"
-                        [disabled]="isSaving" matListItemMeta style="color: #f44336">
+                    }
+
+                    @if ((authUser$ | async)?.facebook) {
+                    <button (click)="onUnlink('facebook')" mat-stroked-button color="warn"
+                        [disabled]="isProcessing$ | async" matListItemMeta style="color: #f44336">
                         <mat-icon>delete</mat-icon> Remover
                     </button>
+                    } @else {
+                    <button (click)="onLinkFacebook()" mat-stroked-button color="accent"
+                        [disabled]="isProcessing$ | async" matListItemMeta style="color: #45be9c">
+                        <mat-icon>link</mat-icon> Conectar
+                    </button>
+                    }
+
                 </mat-list-item>
-                <!-- <mat-divider></mat-divider>
-                <div mat-subheader>Notes</div>
-                <mat-list-item *ngFor="let note of notes">
-                    <mat-icon mat-list-icon>note</mat-icon>
-                    <div mat-line>{{note.name}}</div>
-                    <div mat-line> {{note.updated | date}} </div>
-                </mat-list-item> -->
             </mat-list>
         </div>
 
     </div>
 </section>
+} @else {
+<div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+}

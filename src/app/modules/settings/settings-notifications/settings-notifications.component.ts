@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
 
 import { authFeature } from '../../auth/store/auth.state';
@@ -24,15 +24,15 @@ import { authActions } from '../../auth/store/auth.actions';
   templateUrl: './settings-notifications.component.html',
   standalone: true,
   imports: [
-    NgIf,
-    MatProgressSpinnerModule,
-    MatCheckboxModule,
     FormsModule,
     ReactiveFormsModule,
+    AsyncPipe,
+
+    MatButtonModule,
+    MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
-    AsyncPipe,
+    MatProgressSpinnerModule,
   ],
 })
 export class SettingsNotificationsComponent implements OnInit {

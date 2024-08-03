@@ -1,88 +1,41 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription, take } from 'rxjs';
-
-import { AuthService, User } from 'src/app/core';
-import { SettingsOnlyService } from '../settings-only.service';
-import { UIService } from 'src/app/shared';
+import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgIf, NgFor } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { Store } from '@ngrx/store';
+
+import { settingsActions } from '../store/settings.actions';
+import { settingsFeature } from '../store/settings.state';
 
 @Component({
-    selector: 'app-settings-blacklist',
-    templateUrl: './settings-blacklist.component.html',
-    styleUrls: ['./settings-blacklist.component.scss'],
-    standalone: true,
-    imports: [
-        NgIf,
-        MatProgressSpinnerModule,
-        MatListModule,
-        NgFor,
-        RouterLink,
-        MatButtonModule,
-        MatIconModule,
-    ],
+  selector: 'app-settings-blacklist',
+  templateUrl: './settings-blacklist.component.html',
+  standalone: true,
+  imports: [
+    AsyncPipe,
+    RouterLink,
+
+    MatButtonModule,
+    MatIconModule,
+    MatListModule,
+    MatProgressSpinnerModule,
+  ],
 })
-export class SettingsBlacklistComponent implements OnInit, OnDestroy {
-  authUser = this.authSrv.getCurrentUser();
-  blacklist: User[] = [];
+export class SettingsBlacklistComponent implements OnInit {
+  blacklist$ = this.store.select(settingsFeature.selectBlacklist);
+  isLoaded$ = this.store.select(settingsFeature.selectIsBlacklistLoaded);
+  isProcessing$ = this.store.select(settingsFeature.selectIsProcessing);
 
-  isSaving = false;
-  isLoaded = false;
-  subs: Subscription = new Subscription();
-
-  constructor(
-    private authSrv: AuthService,
-    private setOnlySrv: SettingsOnlyService,
-    private uiSrv: UIService
-  ) {}
+  constructor(private store: Store) {}
 
   ngOnInit(): void {
-    this.setOnlySrv.setTitles({
-      title: 'Bloqueados',
-      subtitle: 'Lista de usuarios bloqueados',
-    });
-
-    this.authSrv
-      .getBlacklist()
-      .pipe(take(1))
-      .subscribe({
-        next: (users) => {
-          this.blacklist = users;
-          this.isLoaded = true;
-        },
-        error: (err) => {
-          console.log('getBlacklist', err);
-          this.isLoaded = true;
-        },
-      });
+    this.store.dispatch(settingsActions.loadBlacklist());
   }
 
   onRemove(userId: number): void {
-    this.isSaving = true;
-
-    this.authSrv
-      .removeFromBlacklist(userId)
-      .pipe(take(1))
-      .subscribe({
-        next: (resp) => {
-          this.blacklist = [...this.blacklist.filter((user) => {
-            return user.id !== userId;
-          })];
-          this.uiSrv.showSuccess(resp);
-          this.isSaving = false;
-        },
-        error: (err) => {
-          console.log('removeFromBlacklist', err);
-          this.isSaving = false;
-        },
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.subs.unsubscribe();
+    this.store.dispatch(settingsActions.removeBlacklist({ userId }));
   }
 }

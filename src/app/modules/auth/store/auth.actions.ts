@@ -69,17 +69,51 @@ export const authActions = createActionGroup({
 
     // update avatar
     'Update Avatar': props<{ image64: string }>(),
-    'Update Avatar Success': props<{ message: string; user: User; token: string }>(),
+    'Update Avatar Success': props<{
+      message: string;
+      user: User;
+      token: string;
+    }>(),
     'Update Avatar Failure': props<{ error: string }>(),
 
     // remove avatar
     'Remove Avatar': emptyProps(),
-    'Remove Avatar Success': props<{ message: string }>(), 
+    'Remove Avatar Success': props<{ message: string }>(),
     'Remove Avatar Failure': props<{ error: string }>(),
+
+    // settings connect page opened / destroyed *** for Google
+    'Connect Page Opened': emptyProps(),
+    'Connect Page Destroyed': emptyProps(),
+    'Connect Page Success': props<{
+      message: string;
+      user: User;
+      token: string;
+    }>(),
+    'Connect Page Failure': props<{ error: string }>(),
+
+    // link Facebook
+    'Link Facebook': emptyProps(),
+    'Link Facebook Success': props<{
+      message: string;
+      user: User;
+      token: string;
+    }>(),
+    'Link Facebook Failure': props<{ error: string }>(),
+
+    // unlink network
+    'Unlink Network': props<{ network: 'facebook' | 'google' }>(),
+    'Unlink Network Success': props<{
+      message: string;
+      network: 'facebook' | 'google';
+    }>(),
+    'Unlink Network Failure': props<{ error: string }>(),
 
     // set unread notification
     'Unread Notification': props<{ notifyUnreads: boolean }>(),
-    'Unread Notification Success': props<{ message: string; notifyUnreads: boolean }>(),
+    'Unread Notification Success': props<{
+      message: string;
+      notifyUnreads: boolean;
+    }>(),
     'Unread Notification Failure': props<{ error: string }>(),
 
     // delete account

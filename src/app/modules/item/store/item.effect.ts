@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map, of } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { ItemService } from 'src/app/core';
 import { itemActions } from './item.actions';
@@ -21,11 +22,18 @@ export class ItemEffects {
               trading,
             })
           ),
-          catchError((error) => of(itemActions.loadDataFailure({ error })))
+          catchError((error) => {
+            this.router.navigate(['/not-found']);
+            return of(itemActions.loadDataFailure({ error }));
+          })
         )
       )
     )
   );
 
-  public constructor(private actions$: Actions, private itemSrv: ItemService) {}
+  public constructor(
+    private actions$: Actions,
+    private itemSrv: ItemService,
+    private router: Router
+  ) {}
 }

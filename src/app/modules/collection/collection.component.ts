@@ -32,7 +32,6 @@ export class CollectionComponent implements OnInit, OnDestroy {
       });
 
     this.subs.add(routeSub);
-    // TO DO: Manejar el caso cuando no se encuentre la colección solicitada
   }
 
   ngOnDestroy(): void {

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Auth, signInWithCustomToken } from '@angular/fire/auth';
+import { HttpParams } from '@angular/common/http';
+import { Auth, signInWithCustomToken, signOut } from '@angular/fire/auth';
 import { Observable, concatMap, from, map, take } from 'rxjs';
 
+import { User } from '../models';
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
-import { User } from '../models';
-import { HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class AuthenticationService {
@@ -130,6 +130,15 @@ export class AuthenticationService {
       );
   }
 
+  loginOnFirebase() {
+    return this.apiSrv.get('/v2/me/firebase').pipe(
+      take(1),
+      concatMap((data: any) => {
+        return from(signInWithCustomToken(this.firebaseAuth, data.tokenFB));
+      })
+    );
+  }
+
   me(): Observable<{ user: User; token: string }> {
     return this.apiSrv.get('/v2/me').pipe(
       map((data: { data: User; token: string }) => {
@@ -193,14 +202,68 @@ export class AuthenticationService {
     );
   }
 
+  linkGoogle(
+    id: string,
+    email: string,
+    image: string,
+  ): Observable<{ user: User; token: string }> {
+    return this.apiSrv
+      .post('/v2/auth/linkGoogleWithId', {
+        id,
+        email,
+        image,
+      })
+      .pipe(
+        take(1),
+        concatMap(() => {
+          return this.apiSrv.get('/v2/me').pipe(
+            map((data: { data: User; token: string }) => {
+              return {
+                user: data.data,
+                token: data.token,
+              };
+            })
+          );
+        })
+      );
+  }
+
+  linkFacebook(id: string, email: string): Observable<{ user: User; token: string }> {
+    return this.apiSrv
+      .post('/v2/auth/linkFacebookWithId', { id, email })
+      .pipe(
+        take(1),
+        concatMap(() => {
+          return this.apiSrv.get('/v2/me').pipe(
+            map((data: { data: User; token: string }) => {
+              return {
+                user: data.data,
+                token: data.token,
+              };
+            })
+          );
+        })
+      );
+  }
+
+  unlink(
+    provider: 'facebook' | 'google'
+  ): Observable<string> {
+    return this.apiSrv.post('/v2/auth/unlink', { provider }).pipe(
+      map(() => {
+        return `${provider} fue removido exitosamente`
+      })
+    );
+  }
+
   updateNotifications(notify: boolean): Observable<string> {
     return this.apiSrv
       .put('/v2/me/notify', {
         notify,
       })
       .pipe(
-        map(()=> {
-          return 'Configuración actualizada exitosamente'
+        map(() => {
+          return 'Configuración actualizada exitosamente';
         })
       );
   }
@@ -216,15 +279,6 @@ export class AuthenticationService {
         })
       )
       .pipe(map((data: { message: string }) => data.message));
-  }
-
-  loginOnFirebase() {
-    return this.apiSrv.get('/v2/me/firebase').pipe(
-      take(1),
-      concatMap((data: any) => {
-        return from(signInWithCustomToken(this.firebaseAuth, data.tokenFB));
-      })
-    );
   }
 
   resetPassword(email: string): Observable<string> {
@@ -245,6 +299,11 @@ export class AuthenticationService {
         hash,
       })
       .pipe(map((data: { message: string }) => data.message));
+  }
+
+  logoutFromFirebase() {
+    signOut(this.firebaseAuth).catch((error) => console.log(error));
+    // TO DO: handle remove notificationTokens on client/server
   }
 
   delete(): Observable<string> {

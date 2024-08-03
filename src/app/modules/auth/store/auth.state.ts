@@ -11,20 +11,18 @@ interface State {
   isFirebaseAuth: boolean;
   unreads: number;
 
-  loading: boolean;
   isProcessing: boolean;
   error: string | null;
 }
 
 const initialState: State = {
-  isInit: false, 
+  isInit: false,
   user: {} as User,
   token: null,
   isAuth: false,
   isFirebaseAuth: false,
   unreads: 0,
 
-  loading: false,
   isProcessing: false,
   error: null,
 };
@@ -37,17 +35,14 @@ export const authFeature = createFeature({
     // login
     on(authActions.autoLogin, (state) => ({
       ...state,
-      loading: true,
       isProcessing: true,
     })),
     on(authActions.loginWithEmail, (state) => ({
       ...state,
-      loading: true,
       isProcessing: true,
     })),
     on(authActions.loginFacebook, (state) => ({
       ...state,
-      loading: true,
       isProcessing: true,
     })),
     on(authActions.authSuccess, (state, { user, token }) => ({
@@ -56,7 +51,6 @@ export const authFeature = createFeature({
       user,
       token,
       isAuth: true,
-      loading: false,
       isProcessing: false,
     })),
     on(authActions.authFailure, (state) => ({
@@ -65,7 +59,6 @@ export const authFeature = createFeature({
       user: {} as User,
       token: null,
       isAuth: false,
-      loading: false,
       isProcessing: false,
     })),
 
@@ -80,7 +73,7 @@ export const authFeature = createFeature({
     })),
     on(authActions.loadUnreadsSuccess, (state, { unreads }) => ({
       ...state,
-      unreads
+      unreads,
     })),
 
     // Signup
@@ -175,6 +168,48 @@ export const authFeature = createFeature({
       isProcessing: false,
     })),
 
+    // link facebook
+    on(authActions.linkFacebook, (state) => ({
+      ...state,
+      isProcessing: true,
+    })),
+    on(authActions.linkFacebookSuccess, (state, { user, token }) => ({
+      ...state,
+      user,
+      token,
+      isProcessing: false,
+    })),
+    on(authActions.linkFacebookFailure, (state) => ({
+      ...state,
+      isProcessing: false,
+    })),
+
+    // link google
+    on(authActions.connectPageSuccess, (state, { user, token }) => ({
+      ...state,
+      user,
+      token,
+    })),
+
+    // unlink network
+    on(authActions.unlinkNetwork, (state) => ({
+      ...state,
+      isProcessing: true,
+    })),
+    on(authActions.unlinkNetworkSuccess, (state, { network }) => ({
+      ...state,
+      user: {
+        ...state.user,
+        facebook: network === 'facebook' ? null : state.user.facebook,
+        google: network === 'google' ? null : state.user.google,
+      },
+      isProcessing: false,
+    })),
+    on(authActions.unlinkNetworkFailure, (state) => ({
+      ...state,
+      isProcessing: false,
+    })),
+
     // unread notification
     on(authActions.unreadNotification, (state) => ({
       ...state,
@@ -217,7 +252,6 @@ export const authFeature = createFeature({
       isFirebaseAuth: false, // TO DO: log out from firebase
       unreads: 0,
       isProcessing: false,
-      loading: false,
     }))
   ),
 });

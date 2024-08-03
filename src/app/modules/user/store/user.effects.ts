@@ -17,6 +17,7 @@ import { userActions } from './user.actions';
 import { authFeature } from '../../auth/store/auth.state';
 import { userFeature } from './user.state';
 import { UIService } from 'src/app/shared';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class UserEffects {
@@ -32,7 +33,10 @@ export class UserEffects {
 
         return this.userSrv.profile(action.userId).pipe(
           map((user) => userActions.loadUserDataSuccess({ user })),
-          catchError((error) => of(userActions.loadUserDataFailure({ error })))
+          catchError((error) => {
+            this.router.navigate(['/not-found']);
+            return of(userActions.loadUserDataFailure({ error }))
+          })
         );
       })
     )
@@ -248,6 +252,7 @@ export class UserEffects {
     private userSrv: UserService,
     private mediaSrv: MediaService,
     private uiSrv: UIService,
+    private router: Router,
     private dialog: MatDialog
   ) {}
 }

@@ -1,11 +1,16 @@
 import { Routes } from '@angular/router';
+import { provideState } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
 
 import { authorizedGuard, moderatorGuard } from 'src/app/core';
 import { ModComponent } from './mod.component';
+import { modFeature } from './store/mod.state';
+import { ModEffects } from './store/mod.effects';
 
 export const MOD_ROUTES: Routes = [
   {
     path: '',
+    providers: [provideState(modFeature), provideEffects(ModEffects)],
     component: ModComponent,
     canActivate: [authorizedGuard, moderatorGuard],
     children: [

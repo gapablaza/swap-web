@@ -12,7 +12,6 @@ import { authFeature } from '../auth/store/auth.state';
   imports: [MatProgressSpinnerModule, AsyncPipe],
 })
 export class CollaborateComponent {
-  isLoading$ = this.store.select(authFeature.selectLoading);
   authUser$ = this.store.select(authFeature.selectUser);
 
   constructor(private store: Store) {}

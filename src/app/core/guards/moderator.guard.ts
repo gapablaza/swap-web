@@ -1,14 +1,17 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../services';
-import { map, take } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs';
+
+import { Store } from '@ngrx/store';
+import { authFeature } from 'src/app/modules/auth/store/auth.state';
 
 export const moderatorGuard = () => {
   const router = inject(Router);
-  const authSrv = inject(AuthService);
+  const store = inject(Store);
 
-  return authSrv.authUser.pipe(
-    take(1),
+  return store.select(authFeature.selectIsInit).pipe(
+    filter((isInit) => !!isInit),
+    switchMap(() => store.select(authFeature.selectUser)),
     map((user) => {
       if (user.isMod) {
         return true;

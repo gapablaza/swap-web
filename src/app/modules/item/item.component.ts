@@ -31,6 +31,5 @@ export class ItemComponent {
   usersWishing$ = this.store.select(itemFeature.selectWishing);
   usersTrading$ = this.store.select(itemFeature.selectTrading);
 
-  // TO DO: Manejar el caso cuando no se encuentre el ítem solicitado
   constructor(private store: Store) {}
 }

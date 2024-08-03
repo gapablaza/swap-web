@@ -189,7 +189,7 @@ export class AuthEffects {
           takeUntil(
             this.actions$.pipe(ofType(authActions.signupPageDestroyed))
           ),
-          tap((user) => console.log(user)),
+          // tap((user) => console.log(user)),
           filter((user) => user != null && user.provider == 'GOOGLE'),
           switchMap((user) =>
             this.authSrv
@@ -241,6 +241,7 @@ export class AuthEffects {
       withLatestFrom(this.store.select(authFeature.selectUser)),
       switchMap(([action, user]) =>
         this.messageSrv.unreads(user.id).pipe(
+          takeUntil(this.actions$.pipe(ofType(authActions.logout))),
           map((unreads) => {
             return authActions.loadUnreadsSuccess({ unreads });
           }),
@@ -382,6 +383,102 @@ export class AuthEffects {
     )
   );
 
+  // Si se carga connect, escuchamos google
+  linkGoogle$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.connectPageOpened),
+      exhaustMap(() =>
+        this.socialSrv.authState.pipe(
+          takeUntil(
+            this.actions$.pipe(ofType(authActions.connectPageDestroyed))
+          ),
+          withLatestFrom(this.store.select(authFeature.selectUser)),
+          // tap(([user, authUser]) => console.log(user, authUser)),
+          filter(([, authUser]) => authUser.google == null),
+          filter(([user]) => user != null && user.provider == 'GOOGLE'),
+          switchMap(([user]) =>
+            this.authSrv.linkGoogle(user.id, user.email, user.photoUrl).pipe(
+              map(({ user, token }) => {
+                this.socialSrv.signOut().catch(() => {});
+
+                return authActions.connectPageSuccess({
+                  message: 'Cuenta vinculada exitosamente',
+                  user,
+                  token,
+                });
+              }),
+              catchError((error) => {
+                let errorMsg = 'No se pudo vincular Google';
+                if (error.error && error.error.message) {
+                  errorMsg += ' - ' + error.error.message;
+                }
+
+                return of(authActions.connectPageFailure({ error: errorMsg }));
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
+  // Link facebook
+  linkFacebook$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.linkFacebook),
+      exhaustMap(() =>
+        from(this.socialSrv.signIn(FacebookLoginProvider.PROVIDER_ID)).pipe(
+          take(1),
+          filter((user) => user != null),
+          switchMap((user) =>
+            this.authSrv.linkFacebook(user.id, user.email).pipe(
+              map((res) => {
+                return authActions.linkFacebookSuccess({
+                  message: 'Cuenta vinculada exitosamente',
+                  user: res.user,
+                  token: res.token,
+                });
+              }),
+              catchError((error) => {
+                let errorMsg = 'No se pudo vincular Facebook';
+                if (error.error && error.error.message) {
+                  errorMsg += ' - ' + error.error.message;
+                }
+
+                return of(authActions.linkFacebookFailure({ error: errorMsg }));
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
+  // unlink network
+  unlinkNetwork$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.unlinkNetwork),
+      map((action) => action.network),
+      exhaustMap((network) =>
+        this.authSrv.unlink(network).pipe(
+          map((message) => {
+            return authActions.unlinkNetworkSuccess({
+              message,
+              network,
+            });
+          }),
+          catchError((error) =>
+            of(
+              authActions.unlinkNetworkFailure({
+                error: `No se pudo remover ${network} de tu perfil`,
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
   // unread notifications
   unreadNotifications$ = createEffect(() =>
     this.actions$.pipe(
@@ -408,12 +505,43 @@ export class AuthEffects {
     )
   );
 
+  // delete account
+  deleteAccount$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.deleteAccount),
+      exhaustMap(() =>
+        this.authSrv.delete().pipe(
+          map((message) => {
+            return authActions.deleteAccountSuccess({ message });
+          }),
+          catchError((error) =>
+            of(
+              authActions.deleteAccountFailure({
+                error: 'No se pudo eliminar tu cuenta',
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
+  // delete account success
+  deleteAccountSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.deleteAccountSuccess),
+      map(() => authActions.logout())
+    )
+  );
+
   // Cierra sesión
   logout$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(authActions.logout),
         tap(() => {
+          // TO DO: Logout from firebase & destroy notification token
+          this.authSrv.logoutFromFirebase();
           this.jwtSrv.destroyToken();
           this.socialSrv.signOut().catch(() => {});
           this.router.navigate(['/']);
@@ -432,7 +560,11 @@ export class AuthEffects {
           authActions.updateProfileSuccess,
           authActions.updateAvatarSuccess,
           authActions.removeAvatarSuccess,
+          authActions.connectPageSuccess,
+          authActions.linkFacebookSuccess,
+          authActions.unlinkNetworkSuccess,
           authActions.unreadNotificationSuccess,
+          authActions.deleteAccountSuccess
         ),
         map((action) => action.message),
         tap((message) => {
@@ -453,7 +585,11 @@ export class AuthEffects {
           authActions.updateProfileFailure,
           authActions.updateAvatarFailure,
           authActions.removeAvatarFailure,
+          authActions.connectPageFailure,
+          authActions.linkFacebookFailure,
+          authActions.unlinkNetworkFailure,
           authActions.unreadNotificationFailure,
+          authActions.deleteAccountFailure
         ),
         map((action) => action.error),
         tap((error) => {

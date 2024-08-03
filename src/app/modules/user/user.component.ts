@@ -30,7 +30,6 @@ export class UserComponent implements OnInit, OnDestroy {
       this.store.dispatch(userActions.loadUserData({ userId }));
     });
     this.subs.add(routeSub);
-    // TO DO: Manejar el caso cuando no se encuentre el usuario solicitado
   }
 
   ngOnDestroy(): void {

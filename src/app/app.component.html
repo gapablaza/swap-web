@@ -1,6 +1,4 @@
-@if (!(isInit$ | async)) {
-<div>Initializing...</div>
-} @else {
+@if (isInit$ | async) {
 <header>
   <app-header (sidenavToggle)="sidenav.toggle()"></app-header>
 </header>
@@ -20,4 +18,6 @@
     <app-footer></app-footer>
   </mat-sidenav-content>
 </mat-sidenav-container>
+} @else {
+<div>Initializing...</div>
 }

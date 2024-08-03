@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { catchError, filter, first, map, Observable, of, tap } from 'rxjs';
 
-import { ItemService, User } from 'src/app/core';
 import { itemFeature } from './store/item.state';
 import { itemActions } from './store/item.actions';
 
 @Injectable()
-export class ItemResolver  {
-  constructor(private store: Store, private itemSrv: ItemService, private router: Router) {}
+export class ItemResolver {
+  constructor(private store: Store) {}
 
   resolve(
     route: ActivatedRouteSnapshot,
@@ -21,21 +20,16 @@ export class ItemResolver  {
       return of(false);
     }
 
-    return this.store
-      .select(itemFeature.selectIsLoaded).pipe(
-        tap((isLoaded) => {
-          if (!isLoaded) {
-            this.store.dispatch(itemActions.loadData({ itemId: +itemId }));
-          }
-        }),
-        filter((isLoaded) => isLoaded),
-        map(() => true),
-        first(),
-        catchError(() => of(false))
-      )
-
-    // return this.itemSrv
-    //   .get(Number(route.params['id']))
-    //   .pipe(catchError((err) => this.router.navigateByUrl('/')));
+    return this.store.select(itemFeature.selectIsLoaded).pipe(
+      tap((isLoaded) => {
+        if (!isLoaded) {
+          this.store.dispatch(itemActions.loadData({ itemId: +itemId }));
+        }
+      }),
+      filter((isLoaded) => isLoaded),
+      map(() => true),
+      first(),
+      catchError(() => of(false))
+    );
   }
 }

@@ -7,7 +7,6 @@ import {
   TemplateRef,
   ViewChild,
   NgZone,
-  AfterViewInit,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -61,9 +60,7 @@ import { authActions } from '../../auth/store/auth.actions';
     LazyLoadImageModule,
   ],
 })
-export class SettingsProfileComponent
-  implements OnInit, OnDestroy, AfterViewInit
-{
+export class SettingsProfileComponent implements OnInit, OnDestroy {
   authUser$ = this.store.select(authFeature.selectUser);
   isLoaded$ = this.store.select(settingsFeature.selectIsProfileLoaded);
   isProcessing$ = this.store.select(authFeature.selectIsProcessing);
@@ -84,11 +81,6 @@ export class SettingsProfileComponent
 
     private ngZone: NgZone
   ) {}
-
-  ngAfterViewInit(): void {
-    console.log('ngAfterViewInit', this.isApiLoaded);
-    // this.configAutocomplete();
-  }
 
   configAutocomplete() {
     let timeout = setTimeout(() => {

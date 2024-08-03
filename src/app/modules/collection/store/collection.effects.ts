@@ -18,6 +18,7 @@ import { authFeature } from '../../auth/store/auth.state';
 import { collectionActions } from './collection.actions';
 import { collectionFeature } from './collection.state';
 import { CollectionMediaUploadComponent } from '../collection-media-upload/collection-media-upload.component';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class CollectionEffects {
@@ -49,9 +50,10 @@ export class CollectionEffects {
               lastMedia: collection.lastMedia,
             })
           ),
-          catchError((error) =>
-            of(collectionActions.loadDataFailure({ error }))
-          )
+          catchError((error) => {
+            this.router.navigate(['/not-found']);
+            return of(collectionActions.loadDataFailure({ error }));
+          })
         );
       })
     )
@@ -530,6 +532,7 @@ export class CollectionEffects {
     private mediaSrv: MediaService,
     private itemSrv: ItemService,
     private uiSrv: UIService,
+    private router: Router,
     private dialog: MatDialog
   ) {}
 }

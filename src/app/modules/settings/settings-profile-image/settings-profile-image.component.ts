@@ -18,7 +18,6 @@ import { authActions } from '../../auth/store/auth.actions';
 @Component({
   selector: 'app-settings-profile-image',
   templateUrl: './settings-profile-image.component.html',
-  styleUrls: ['./settings-profile-image.component.scss'],
   standalone: true,
   imports: [
     AsyncPipe,
@@ -43,7 +42,7 @@ export class SettingsProfileImageComponent implements OnInit {
 
   constructor(
     private store: Store,
-    private dialogRef: MatDialogRef<SettingsProfileImageComponent>,
+    private dialogRef: MatDialogRef<SettingsProfileImageComponent>
   ) {}
 
   ngOnInit(): void {}
@@ -117,6 +116,8 @@ export class SettingsProfileImageComponent implements OnInit {
   onSaveImage() {
     const newAvatar = this.cropper.crop();
     this.croppedImage = newAvatar?.base64;
-    this.store.dispatch(authActions.updateAvatar({ image64: this.croppedImage as string }));
+    this.store.dispatch(
+      authActions.updateAvatar({ image64: this.croppedImage as string })
+    );
   }
 }

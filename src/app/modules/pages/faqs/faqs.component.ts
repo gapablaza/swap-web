@@ -1,18 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
-    selector: 'app-faqs',
-    templateUrl: './faqs.component.html',
-    styleUrls: ['./faqs.component.scss'],
-    standalone: true,
-    imports: [MatExpansionModule]
+  selector: 'app-faqs',
+  templateUrl: './faqs.component.html',
+  standalone: true,
+  imports: [MatExpansionModule],
 })
-export class FaqsComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
-}
+export class FaqsComponent {}
