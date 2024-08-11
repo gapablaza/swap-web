@@ -1,13 +1,21 @@
 import { Routes } from '@angular/router';
+import { provideState } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
 
-import { authorizedGuard } from 'src/app/core';
+import { enabledUserGuard } from 'src/app/core';
 import { NewCollectionComponent } from './new-collection.component';
+import { newCollectionFeature } from './store/new-collection.state';
+import { NewCollectionEffects } from './store/new-collection.effects';
 
 export const NEW_COLLECTION_ROUTES: Routes = [
   {
     path: '',
+    providers: [
+      provideState(newCollectionFeature),
+      provideEffects(NewCollectionEffects),
+    ],
     component: NewCollectionComponent,
-    canActivate: [authorizedGuard],
+    canActivate: [enabledUserGuard],
     children: [
       {
         path: '',

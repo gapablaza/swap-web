@@ -64,3 +64,16 @@ export interface NewCollectionComment {
     data: User
   }
 }
+
+export interface NewCollectionForm {
+  id?: number;
+  name: string;
+  year: number;
+  released?: string;
+  publisher: number;
+  description: string;
+  details?: string;
+  numbers?: string;
+  image: number;
+  cover?: number;
+}

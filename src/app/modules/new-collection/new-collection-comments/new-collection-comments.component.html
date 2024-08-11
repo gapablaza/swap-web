@@ -1,0 +1,74 @@
+@let comments = comments$ | async;
+@if ((isLoaded$ | async) && comments) {
+<div class="card">
+    <h3>Comentarios ({{ comments.length }})</h3>
+
+    @if (comments.length > 0) {
+    <ul class="list-std">
+        @for (com of comments; track com.id) {
+        <li class="list-std-item" [ngClass]="{'pro-account': com.user.data.accountTypeId == 2}">
+            <div class="list-item-main">
+                <div class="list-item-image">
+                    <a [routerLink]="['/user', com.user.data.id]">
+                        <img [defaultImage]="defaultUserImage" [lazyLoad]="com.user.data.image || defaultUserImage"
+                            alt="Imagen de Perfil" crossorigin="anonymous">
+                    </a>
+                </div>
+                <div class="list-item-content flex-full">
+                    <div class="list-item-title">
+                        <a [routerLink]="['/user', com.user.data.id]">
+                            {{ com.user.data.displayName }}
+                            @if (com.user.data.accountTypeId == 2) {
+                            <span class="pro-label">PRO</span>
+                            }
+                        </a>
+                    </div>
+                    <div class="list-item-meta">
+                        {{ com.created * 1000 | date:'dd/MM/YYYY \'a las \'HH:mm \'hrs.\'' }}
+                    </div>
+                </div>
+            </div>
+            <div class="list-item-desc">
+                <p [innerHTML]="com.comment | linebreaks"></p>
+            </div>
+        </li>
+        }
+    </ul>
+    } @else {
+    <p>Sin comentarios registrados</p>
+    }
+</div>
+
+@let canComment = canComment$ | async;
+@if (canComment) {
+<div class="new-comment card">
+    <form [formGroup]="commentForm" (ngSubmit)="onComment()">
+        <h3>Agregar comentario</h3>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Comentario</mat-label>
+            <textarea #newComment matInput formControlName="newComment" maxlength="1000" rows="4"></textarea>
+            <mat-hint align="end">{{ newComment.value.length || 0 }}/1.000</mat-hint>
+        </mat-form-field>
+
+        <div class="alert alert-warning">
+            <div class="alert-container">
+                <div class="alert-content">
+                    <div class="alert-title">Atención</div>
+                    <div class="alert-message">Los comentarios no pueden ser modificados una vez registrados y son
+                        visibles públicamente.</div>
+                </div>
+            </div>
+        </div>
+
+        <button mat-raised-button color="accent" [disabled]="(isProcessing$ | async) || commentForm.invalid">
+            Agregar
+        </button>
+    </form>
+</div>
+}
+} @else {
+<div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+}

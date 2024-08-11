@@ -1,19 +1,20 @@
 import { Injectable } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
+
 import {
   ChecklistItem,
   History,
   NewChecklist,
   NewCollection,
   NewCollectionComment,
+  NewCollectionForm,
   Pagination,
   Publisher,
   User,
 } from '../models';
-
 import { ApiService } from './api.service';
-import { HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class NewCollectionService {
@@ -58,17 +59,7 @@ export class NewCollectionService {
       .pipe(map((data: { message: string; newId: number }) => data));
   }
 
-  add(data: {
-    name: string;
-    year: number;
-    released?: string;
-    publisher: number;
-    description: string;
-    details?: string;
-    numbers?: string;
-    image: number;
-    cover?: number;
-  }): Observable<{ message: string; newId: number }> {
+  add(data: NewCollectionForm): Observable<{ message: string; newId: number }> {
     return this.apiSrv
       .post('/v3/newCollections', {
         title: data.name,
@@ -84,18 +75,7 @@ export class NewCollectionService {
       .pipe(map((data: { message: string; newId: number }) => data));
   }
 
-  update(data: {
-    id: number;
-    name: string;
-    year: number;
-    released?: string;
-    publisher: number;
-    description: string;
-    details?: string;
-    numbers?: string;
-    image: number;
-    cover?: number;
-  }): Observable<string> {
+  update(data: NewCollectionForm): Observable<string> {
     return this.apiSrv
       .put(`/v3/newCollections/${data.id}`, {
         title: data.name,

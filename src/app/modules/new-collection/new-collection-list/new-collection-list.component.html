@@ -1,10 +1,9 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
-    <mat-spinner aria-label="cargando"></mat-spinner>
-</div>
-<section *ngIf="isLoaded" class="new-collections">
+@if (isLoaded$ | async) {
+@let params = routeParams();
+<section class="new-collections">
     <div class="collections-list flex-full">
         <h1>
-            Solicitudes de nuevas colecciones <span class="text-secondary">({{ paginator.total }})</span>
+            Solicitudes de nuevas colecciones <span class="text-secondary">({{ paginator().total }})</span>
         </h1>
 
         <div class="alert alert-warning">
@@ -25,7 +24,8 @@
                             de lo normal", o también, si tienes ideas o propuestas de mejora.
                         </p>
                         <p>
-                            También recuerda revisar si es que no existe una solicitud ya registrada para la colección que quieres agregar. Las solicitudes duplicadas serán rechazadas!
+                            También recuerda revisar si es que no existe una solicitud ya registrada para la colección
+                            que quieres agregar. Las solicitudes duplicadas serán rechazadas!
                         </p>
                     </div>
                 </div>
@@ -43,16 +43,18 @@
                     <div class="controls-std-order">
                         <mat-form-field appearance="outline">
                             <mat-label>Ordenar por</mat-label>
-                            <mat-select [(value)]="orderSelected">
-                                <mat-option *ngFor="let option of ordersOptions" [value]="option.selectValue">
+                            <mat-select [value]="params.sortBy" #orderSelect>
+                                @for (option of ordersOptions; track option.selectValue) {
+                                <mat-option [value]="option.selectValue">
                                     {{ option.selectName }}
                                 </mat-option>
+                                }
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field appearance="outline">
                             <mat-label>Filtrar por estado</mat-label>
-                            <mat-select [(value)]="statusSelected">
-                                <mat-option value="">Cualquiera</mat-option>
+                            <mat-select [value]="params.status.toString()" #statusSelect>
+                                <mat-option value="0">Cualquiera</mat-option>
                                 <mat-option value="1">Para revisión</mat-option>
                                 <mat-option value="2">Requiere info</mat-option>
                                 <mat-option value="3">Cancelada</mat-option>
@@ -62,15 +64,12 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline">
                             <mat-label>Filtrar por texto</mat-label>
-                            <input matInput type="text" [(ngModel)]="searchTxt">
+                            <input matInput type="text" [ngModel]="params.query" #searchInput>
                         </mat-form-field>
                     </div>
                     <div class="controls-std-settings">
-                        <!-- <p>
-                            Registros {{ paginator.from | number:'':'es' }} - {{ paginator.to | number:'':'es' }} de {{
-                            paginator.total | number:'':'es' }}
-                        </p> -->
-                        <a (click)="onFilter()" class="btn" mat-raised-button color="accent">
+                        <a (click)="onFilter(orderSelect.value, statusSelect.value, searchInput.value)" class="btn"
+                            mat-raised-button color="accent">
                             <mat-icon>manage_search</mat-icon> Filtrar
                         </a>
                     </div>
@@ -78,7 +77,8 @@
             </div>
 
             <ul class="list-nc">
-                <li *ngFor="let col of newCollections ; trackBy: trackByCollection" class="list-nc-item">
+                @for (col of newCollections$ | async; track col.id) {
+                <li class="list-nc-item">
                     <div class="nc-container">
                         <div class="nc-main flex-full">
                             <h2 class="nc-title">
@@ -88,18 +88,19 @@
                                 <span>ID {{ col.id }}</span>
                                 <span>{{ col.year }}</span>
                                 <span>{{ col.publisher.data.name }}</span>
-                                <span>{{ col.votesQty }} voto<ng-container
-                                        *ngIf="col.votesQty !== 1">s</ng-container></span>
+                                @let voteWord = col.votesQty !== 1 ? 'votos' : 'voto';
+                                <span>{{ col.votesQty }} {{ voteWord }}</span>
                             </div>
 
                             <div class="alert-small-container">
                                 <div [class]="'alert-small new-collection-status-' + col.statusId">
                                     {{ col.statusName }}
                                 </div>
-                                <div *ngIf="col.checklistsQty == 0 && [1,2].includes(col.statusId)"
-                                    class="alert-small alert-warning">
+                                @if (col.checklistsQty == 0 && [1,2].includes(col.statusId)) {
+                                <div class="alert-small alert-warning">
                                     Requiere Itemizado
                                 </div>
+                                }
                             </div>
 
                             <div class="nc-p">
@@ -125,33 +126,16 @@
                         </div>
                     </div>
                 </li>
+                }
             </ul>
 
-            <div *ngIf="paginator.last_page > 1" class="pagination-wrapper">
-                <ul class="pagination">
-                    <li class="pagination-prev">
-                        <a role="button" (click)="(pageSelected > 1) && onPageChange('' + (pageSelected - 1))"
-                            [disabled]="pageSelected == 1" class="btn" mat-raised-button tabindex="-1">
-                            <mat-icon class="only-icon-button">navigate_before</mat-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <select name="" (change)="onPageChange(selectPage.value)" #selectPage>
-                            <option *ngFor="let item of [].constructor(paginator.last_page); index as i" [value]="i+1"
-                                [selected]="(i+1) == pageSelected">
-                                Página {{ i+1 }} de {{ paginator.last_page }}
-                            </option>
-                        </select>
-                    </li>
-                    <li class="pagination-next">
-                        <a role="button"
-                            (click)="(pageSelected != paginator.last_page) && onPageChange('' + (pageSelected + 1))"
-                            [disabled]="pageSelected == paginator.last_page" class="btn" mat-raised-button>
-                            <mat-icon class="only-icon-button">navigate_next</mat-icon>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            <app-pagination [pageSelected]="paginator().current_page" [lastPage]="paginator().last_page"
+                (pageChange)="onPageChange($event)" />
         </div>
     </div>
 </section>
+} @else {
+<div class="loading-indicator">
+    <mat-spinner aria-label="cargando"></mat-spinner>
+</div>
+}

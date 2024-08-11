@@ -1,26 +1,18 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Subscription, combineLatest, take } from 'rxjs';
+import { Component, computed, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import * as XLSX from 'xlsx';
-
-import {
-  AuthService,
-  ChecklistItem,
-  ItemService,
-  ItemType,
-  NewCollection,
-  NewCollectionService,
-  Publisher,
-  User,
-} from 'src/app/core';
-import { UIService } from 'src/app/shared';
-import { LinebreaksPipe } from '../../../shared/pipes/linebreaks.pipe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgIf, NgFor } from '@angular/common';
+import * as XLSX from 'xlsx';
+
+import { ChecklistItem } from 'src/app/core';
+import { LinebreaksPipe } from '../../../shared/pipes/linebreaks.pipe';
+import { Store } from '@ngrx/store';
+import { authFeature } from '../../auth/store/auth.state';
+import { newCollectionFeature } from '../store/new-collection.state';
+import { newCollectionActions } from '../store/new-collection.actions';
 
 export interface CheckItem {
   NRO: string;
@@ -32,35 +24,47 @@ export interface CheckItem {
 }
 
 @Component({
-    selector: 'app-new-checklist',
-    templateUrl: './new-checklist.component.html',
-    styleUrls: ['./new-checklist.component.scss'],
-    standalone: true,
-    imports: [
-        NgIf,
-        MatProgressSpinnerModule,
-        MatButtonModule,
-        RouterLink,
-        MatIconModule,
-        NgFor,
-        MatTableModule,
-        MatSortModule,
-        LinebreaksPipe,
-    ],
+  selector: 'app-new-checklist',
+  templateUrl: './new-checklist.component.html',
+  standalone: true,
+  imports: [
+    RouterLink,
+
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatSortModule,
+    MatTableModule,
+
+    LinebreaksPipe,
+  ],
 })
-export class NewChecklistComponent implements OnInit, OnDestroy {
-  authUser: User = {} as User;
-  publishers: Publisher[] = [];
-  newCollection: NewCollection = {} as NewCollection;
-  votesQty = 0;
+export class NewChecklistComponent implements OnInit {
+  authUser = this.store.selectSignal(authFeature.selectUser);
+  canAddChecklist = this.store.selectSignal(
+    newCollectionFeature.selectCanAddChecklist
+  );
+  newCollection$$ = this.store.selectSignal(
+    newCollectionFeature.selectNewCollection
+  );
+  votes$$ = this.store.selectSignal(
+    newCollectionFeature.selectNewCollectionVotesOrdered
+  );
+  types = this.store.selectSignal(newCollectionFeature.selectItemTypes);
+  validTypes = computed(() => {
+    return this.types().map((t) => t.id);
+  });
 
-  types: ItemType[] = [];
-  validTypes: number[] = [];
-
-  canAddChecklist = false;
+  isProcessing = this.store.selectSignal(
+    newCollectionFeature.selectIsProcessing
+  );
+  isLoaded = this.store.selectSignal(
+    newCollectionFeature.selectIsNewCollectionLoaded
+  );
 
   errors: string[] = [];
   checklist: ChecklistItem[] = [];
+  fileName = '';
 
   displayedColumns: string[] = [
     'name',
@@ -74,44 +78,14 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
     this.dataSource.sort = sort;
   }
 
-  fileName = '';
-  isSaving = false;
-  isLoaded = false;
-  subs: Subscription = new Subscription();
-
-  constructor(
-    private newColSrv: NewCollectionService,
-    private itemSrv: ItemService,
-    private authSrv: AuthService,
-    private uiSrv: UIService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute
-  ) {}
+  constructor(private store: Store, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.authUser = this.authSrv.getCurrentUser();
-
-    let dataSub = combineLatest([
-      this.newColSrv.get(Number(this.activatedRoute.snapshot.params['id'])),
-      this.itemSrv.getTypes(),
-    ])
-      .pipe(take(1))
-      .subscribe(([colResp, typeResp]) => {
-        this.newCollection = colResp.newCollection;
-        this.votesQty = colResp.votes.length;
-        this.types = typeResp.sort((a, b) => a.sort - b.sort);
-        this.validTypes = typeResp.map((a) => a.id);
-
-        // Define si puede agregar un itemizado
-        this.canAddChecklist =
-          this.authUser.daysSinceRegistration >= 30 &&
-          ([1, 2].includes(this.newCollection.statusId) ||
-            ([1, 2, 3, 4].includes(this.newCollection.statusId) &&
-              this.authUser.id == 1));
-
-        this.isLoaded = true;
-      });
-    this.subs.add(dataSub);
+    this.store.dispatch(
+      newCollectionActions.loadCollection({
+        collectionId: Number(this.activatedRoute.snapshot.params['id']),
+      })
+    );
   }
 
   onFileChange(ev: any) {
@@ -237,7 +211,7 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
 
   checkTIPO(type: any): boolean {
     if (!Number.isInteger(type)) return false;
-    if (!this.validTypes.includes(type)) return false;
+    if (!this.validTypes().includes(type)) return false;
     return true;
   }
 
@@ -255,8 +229,8 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
 
   getTIPOName(type: any): string {
     if (!Number.isInteger(type)) return '';
-    if (!this.validTypes.includes(type)) return '';
-    return this.types.find((i) => i.id == Number(type))?.name || '';
+    if (!this.validTypes().includes(type)) return '';
+    return this.types().find((i) => i.id == Number(type))?.name || '';
   }
 
   cleanFileInput(file: HTMLInputElement): void {
@@ -267,22 +241,9 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
   }
 
   saveChecklist(): void {
-    if (this.errors.length > 0) return;
-
-    this.isSaving = true;
-    this.newColSrv
-      .addChecklist(this.newCollection.id, this.checklist)
-      .pipe(take(1))
-      .subscribe({
-        next: (resp) => {
-          this.uiSrv.showSuccess(resp.message);
-          this.router.navigate(['new-collection/', this.newCollection.id]);
-        },
-        error: (error) => {
-          console.log('saveChecklist error: ', error);
-          this.isSaving = false;
-        },
-      });
+    this.store.dispatch(
+      newCollectionActions.addChecklist({ checklistItems: this.checklist })
+    );
   }
 
   downloadTemplate(): void {
@@ -294,9 +255,5 @@ export class NewChecklistComponent implements OnInit, OnDestroy {
     document.body.appendChild(link);
     link.click();
     link.remove();
-  }
-
-  ngOnDestroy(): void {
-    this.subs.unsubscribe();
   }
 }

@@ -1,29 +1,37 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogModule,
+} from '@angular/material/dialog';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-
-import { ChecklistItem, ItemType, NewChecklist, NewCollection } from 'src/app/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgIf, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
+
+import {
+  ChecklistItem,
+  ItemType,
+  NewChecklist,
+  NewCollection,
+} from 'src/app/core';
 
 @Component({
-    selector: 'app-new-collection-checklist',
-    templateUrl: './new-collection-checklist.component.html',
-    styleUrls: ['./new-collection-checklist.component.scss'],
-    standalone: true,
-    imports: [
-        MatDialogModule,
-        NgIf,
-        MatProgressSpinnerModule,
-        MatTableModule,
-        MatSortModule,
-        RouterLink,
-        MatButtonModule,
-        DatePipe,
-    ],
+  selector: 'app-new-collection-checklist',
+  templateUrl: './new-collection-checklist.component.html',
+  standalone: true,
+  imports: [
+    DatePipe,
+    RouterLink,
+
+    MatButtonModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    MatSortModule,
+    MatTableModule,
+  ],
 })
 export class NewCollectionChecklistComponent implements OnInit {
   validTypes: number[] = [];
@@ -38,7 +46,6 @@ export class NewCollectionChecklistComponent implements OnInit {
   @ViewChild(MatSort, { static: false }) set content(sort: MatSort) {
     this.dataSource.sort = sort;
   }
-  isLoaded = true;
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
@@ -51,19 +58,19 @@ export class NewCollectionChecklistComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.validTypes = this.data.types.map(a => a.id);
-    this.dataSource.data = this.data.checklist.items.map(elem => {
+    this.validTypes = this.data.types.map((a) => a.id);
+    this.dataSource.data = this.data.checklist.items.map((elem) => {
       return {
         ...elem,
-        itemTypeDescription: this.getTIPOName(elem.itemTypeId)
-      }
+        itemTypeDescription: this.getTIPOName(elem.itemTypeId),
+      };
     });
   }
 
   getTIPOName(type: any): string {
     if (!Number.isInteger(type)) return '';
     if (!this.validTypes.includes(type)) return '';
-    return this.data.types.find(i => i.id == Number(type))?.name || '';
+    return this.data.types.find((i) => i.id == Number(type))?.name || '';
   }
 
   onClose() {

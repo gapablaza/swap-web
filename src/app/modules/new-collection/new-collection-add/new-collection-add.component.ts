@@ -1,17 +1,18 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { MatDialog, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
-import { Subscription, take } from 'rxjs';
-
+import { Component, computed, effect, OnDestroy, OnInit } from '@angular/core';
 import {
-  AuthService,
-  NewCollectionService,
-  Publisher,
-  User,
-} from 'src/app/core';
-import { UIService } from 'src/app/shared';
-import { NewCollectionImageComponent } from '../new-collection-image/new-collection-image.component';
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import {
+  MatDialog,
+  MatDialogConfig,
+  MatDialogModule,
+} from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -19,56 +20,71 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgIf, NgFor } from '@angular/common';
+import { Store } from '@ngrx/store';
+
+import { NewCollection } from 'src/app/core';
+import { NewCollectionImageComponent } from '../new-collection-image/new-collection-image.component';
+import { authFeature } from '../../auth/store/auth.state';
+import { newCollectionFeature } from '../store/new-collection.state';
+import { newCollectionActions } from '../store/new-collection.actions';
 
 @Component({
-    selector: 'app-new-collection-add',
-    templateUrl: './new-collection-add.component.html',
-    styleUrls: ['./new-collection-add.component.scss'],
-    standalone: true,
-    imports: [
-        NgIf,
-        MatProgressSpinnerModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatDialogModule,
-        NgFor,
-        MatOptionModule,
-        MatButtonModule,
-        MatIconModule,
-        RouterLink,
-    ],
+  selector: 'app-new-collection-add',
+  templateUrl: './new-collection-add.component.html',
+  standalone: true,
+  imports: [
+    RouterLink,
+    FormsModule,
+    ReactiveFormsModule,
+
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatOptionModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+  ],
 })
 export class NewCollectionAddComponent implements OnInit, OnDestroy {
-  authUser: User = {} as User;
-  publishers: Publisher[] = [];
+  authUser = this.store.selectSignal(authFeature.selectUser);
+  newCollection = this.store.selectSignal(
+    newCollectionFeature.selectNewCollection
+  );
+  publishers = this.store.selectSignal(
+    newCollectionFeature.selectPublishersOrdered
+  );
+  canUpdate = this.store.selectSignal(newCollectionFeature.selectCanUpdate);
+  canAddOrUpdate = computed(() => {
+    if (this.newColId) {
+      return this.canUpdate();
+    } else {
+      return this.authUser().daysSinceRegistration >= 30;
+    }
+  });
+
+  isLoaded = this.store.selectSignal(
+    newCollectionFeature.selectIsAddOrEditLoaded
+  );
+  isProcessing = this.store.selectSignal(
+    newCollectionFeature.selectIsProcessing
+  );
 
   title = 'Nueva solicitud';
   preview = '';
   coverPreview = '';
-
   newColId?: string;
-
   newCollectionForm!: FormGroup;
   selectedYear: number;
   selectedPublisher!: number;
   years: number[] = [];
 
-  canAddOrUpdate = false;
-
-  isSaving = false;
-  isLoaded = false;
   subs: Subscription = new Subscription();
 
   constructor(
-    private newColSrv: NewCollectionService,
-    private authSrv: AuthService,
-    private uiSrv: UIService,
+    private store: Store,
     private route: ActivatedRoute,
-    private router: Router,
     private dialog: MatDialog,
     private formBuilder: FormBuilder
   ) {
@@ -76,22 +92,29 @@ export class NewCollectionAddComponent implements OnInit, OnDestroy {
     for (let year = this.selectedYear; year >= 1940; year--) {
       this.years.push(year);
     }
+
+    effect(() => {
+      if (this.newColId && this.newCollection() !== null) {
+        this.updateForm(this.newCollection()!);
+      }
+    });
   }
 
   ngOnInit(): void {
-    this.authUser = this.authSrv.getCurrentUser();
     this.newColId = this.route.snapshot.params['id'];
+    this.store.dispatch(
+      newCollectionActions.loadAddOrEdit({
+        collectionId: this.route.snapshot.params['id'],
+      })
+    );
 
     this.newCollectionForm = this.formBuilder.group({
-      name: [
-        '',
-        [Validators.required, Validators.maxLength(100)],
-      ],
+      name: ['', [Validators.required, Validators.maxLength(100)]],
       year: [this.selectedYear, Validators.required],
       released: [
         `${this.selectedYear}-01-01`,
         [
-          ...(this.authUser.isMod
+          ...(this.authUser().isMod
             ? [
                 Validators.required,
                 Validators.pattern(
@@ -102,70 +125,32 @@ export class NewCollectionAddComponent implements OnInit, OnDestroy {
         ],
       ],
       publisher: [null, Validators.required],
-      description: [
-        '',
-        [Validators.required, Validators.maxLength(1000)],
-      ],
+      description: ['', [Validators.required, Validators.maxLength(1000)]],
       details: ['', Validators.maxLength(1000)],
       numbers: ['', Validators.maxLength(250)],
       image: [null, Validators.required],
       cover: [],
     });
+  }
 
-    let pubsSub = this.newColSrv
-      .getPublishers()
-      .pipe(take(1))
-      .subscribe((pubs) => {
-        this.publishers = pubs.sort((a, b) => {
-          return (a.name || '').toLocaleLowerCase() >
-            (b.name || '').toLocaleLowerCase()
-            ? 1
-            : -1;
-        });
-      });
-    this.subs.add(pubsSub);
-
-    // Estamos en modo edición
-    if (this.newColId) {
-      this.title = `Editar solicitud de colección ID ${this.newColId}`;
-
-      let newColSub = this.newColSrv
-        .get(Number(this.newColId))
-        .pipe(take(1))
-        .subscribe((resp) => {
-          this.newCollectionForm.patchValue({
-            name: resp.newCollection.name,
-            year: resp.newCollection.year,
-            released: resp.newCollection.released?.substring(0, 10) || null,
-            publisher: resp.newCollection.publisher.data.id,
-            description: resp.newCollection.description,
-            details: resp.newCollection.details || null,
-            numbers: resp.newCollection.checklistDescription || null,
-            image: resp.newCollection.image.data?.id || null,
-            cover: resp.newCollection.cover?.data?.id || null,
-          });
-          this.preview = resp.newCollection.image.data?.base64 || resp.newCollection.image.data?.url || '';
-          this.coverPreview = resp.newCollection.cover?.data?.base64 || resp.newCollection.cover?.data?.url || '';
-          this.selectedPublisher = resp.newCollection.publisher.data.id;
-
-          // Define si puede modificar la solicitud
-          this.canAddOrUpdate =
-            ([1, 2].includes(resp.newCollection.statusId) &&
-              this.authUser.isMod) ||
-            (resp.newCollection.statusId == 2 &&
-              this.authUser.id == resp.newCollection.user.data?.id) ||
-            ([1, 2, 3, 4].includes(resp.newCollection.statusId) &&
-              this.authUser.id == 1);
-
-          this.isLoaded = true;
-        });
-      this.subs.add(newColSub);
-    }
-    // Estamos en modo registro
-    else {
-      this.canAddOrUpdate = this.authUser.daysSinceRegistration >= 30;
-      this.isLoaded = true;
-    }
+  updateForm(newCollection: NewCollection) {
+    this.newCollectionForm.patchValue({
+      name: newCollection.name,
+      year: newCollection.year,
+      released: newCollection.released?.substring(0, 10) || null,
+      publisher: newCollection.publisher.data.id,
+      description: newCollection.description,
+      details: newCollection.details || null,
+      numbers: newCollection.checklistDescription || null,
+      image: newCollection.image.data?.id || null,
+      cover: newCollection.cover?.data?.id || null,
+    });
+    this.preview =
+      newCollection.image.data?.base64 || newCollection.image.data?.url || '';
+    this.coverPreview =
+      newCollection.cover?.data?.base64 || newCollection.cover?.data?.url || '';
+    this.selectedPublisher = newCollection.publisher.data.id || 0;
+    this.title = `Editar solicitud de colección ID ${newCollection.id}`;
   }
 
   get form() {
@@ -235,39 +220,18 @@ export class NewCollectionAddComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isSaving = true;
-
     if (this.newColId) {
-      this.newColSrv
-        .update({
-          ...this.newCollectionForm.value,
-          id: Number(this.newColId),
+      this.store.dispatch(
+        newCollectionActions.updateNewCollection({
+          newCollectionForm: this.newCollectionForm.value,
         })
-        .pipe(take(1))
-        .subscribe({
-          next: (resp) => {
-            this.uiSrv.showSuccess(resp);
-            this.router.navigate(['new-collection/', this.newColId]);
-          },
-          error: (error) => {
-            console.log('update error: ', error);
-            this.isSaving = false;
-          },
-        });
+      );
     } else {
-      this.newColSrv
-        .add(this.newCollectionForm.value)
-        .pipe(take(1))
-        .subscribe({
-          next: (resp) => {
-            this.uiSrv.showSuccess(resp.message);
-            this.router.navigate(['new-collection/', resp.newId]);
-          },
-          error: (error) => {
-            console.log('add error: ', error);
-            this.isSaving = false;
-          },
-        });
+      this.store.dispatch(
+        newCollectionActions.addNewCollection({
+          newCollectionForm: this.newCollectionForm.value,
+        })
+      );
     }
   }
 

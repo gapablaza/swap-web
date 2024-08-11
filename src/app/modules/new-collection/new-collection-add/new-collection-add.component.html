@@ -1,16 +1,22 @@
-<div *ngIf="!isLoaded" class="loading-indicator">
+@let isMod = authUser().isMod;
+@if (!isLoaded()) {
+<div class="loading-indicator">
     <mat-spinner aria-label="cargando"></mat-spinner>
 </div>
-<section *ngIf="isLoaded && canAddOrUpdate" class="new-collections">
+}
+@if (isLoaded() && canAddOrUpdate()) {
+<section class="new-collections">
     <h1>{{ title }}</h1>
 
-    <div *ngIf="newColId === undefined" class="alert alert-warning">
+    @if (newColId === undefined) {
+    <div class="alert alert-warning">
         <div class="alert-container">
             <div class="alert-content">
                 <div class="alert-title">Atención</div>
                 <div class="alert-message">
                     <p>
-                        Revisaste si es que no existe una solicitud ya registrada para la colección que quieres agregar? Las solicitudes duplicadas serán rechazadas!
+                        Revisaste si es que no existe una solicitud ya registrada para la colección que quieres agregar?
+                        Las solicitudes duplicadas serán rechazadas!
                     </p>
                     <p>
                         Puedes revisar la lógica y funcionamiento para esta opción de realizar solicitudes de
@@ -22,9 +28,9 @@
             </div>
         </div>
     </div>
+    }
 
     <div class="card">
-
         <div class="nc-form-container">
             <form [formGroup]="newCollectionForm" (ngSubmit)="onSubmit()">
 
@@ -36,43 +42,53 @@
                         la versión en idioma español.
                     </mat-hint>
                     <mat-hint align="end">{{name.value.length || 0}}/100</mat-hint>
-                    <mat-error *ngIf="form['name'].errors">Campo obligatorio. Debe tener entre 2 y 100 caracteres.
-                    </mat-error>
+                    @if (form['name'].errors) {
+                    <mat-error>Campo obligatorio. Debe tener entre 2 y 100 caracteres.</mat-error>
+                    }
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                     <mat-label>Año de publicación</mat-label>
                     <mat-select #year formControlName="year" [(value)]="selectedYear">
-                        <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+                        @for (year of years; track year) {
+                        <mat-option [value]="year">{{ year }}</mat-option>
+                        }
                     </mat-select>
                     <mat-hint align="start">
                         Selecciona el año de primera publicación independiente del país en que haya sido.
                     </mat-hint>
-                    <mat-error *ngIf="form['year'].errors">Campo obligatorio.
-                    </mat-error>
+                    @if (form['year'].errors) {
+                    <mat-error>Campo obligatorio.</mat-error>
+                    }
                 </mat-form-field>
 
-                <mat-form-field *ngIf="authUser.isMod" appearance="outline">
+                @if (isMod) {
+                <mat-form-field appearance="outline">
                     <mat-label>Fecha de publicación</mat-label>
                     <input type="date" matInput #released formControlName="released">
                     <mat-hint align="start">
                         Fecha estimativa. No necesariamente debe coincidir con el año de publicación.
                     </mat-hint>
-                    <mat-error *ngIf="form['released'].errors">Campo obligatorio.
-                    </mat-error>
+                    @if (form['released'].errors) {
+                    <mat-error>Campo obligatorio.</mat-error>
+                    }
                 </mat-form-field>
+                }
 
                 <mat-form-field appearance="outline">
                     <mat-label>Editorial</mat-label>
                     <mat-select #publisher formControlName="publisher" [(value)]="selectedPublisher">
-                        <mat-option *ngFor="let pub of publishers" [value]="pub.id">{{ pub.name }}</mat-option>
+                        @for (pub of publishers(); track pub.id) {
+                        <mat-option [value]="pub.id">{{ pub.name }}</mat-option>
+                        }
                     </mat-select>
                     <mat-hint align="start">
                         Sino se encuentra disponible la editorial escríbenos a contacto&#64;intercambialaminas.com para
                         agregarla.
                     </mat-hint>
-                    <mat-error *ngIf="form['publisher'].errors">Campo obligatorio.
-                    </mat-error>
+                    @if (form['publisher'].errors) {
+                    <mat-error>Campo obligatorio.</mat-error>
+                    }
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
@@ -83,11 +99,13 @@
                         sin problemas.
                     </mat-hint>
                     <mat-hint align="end">{{description.value.length || 0}}/1000</mat-hint>
-                    <mat-error *ngIf="form['description'].errors">Debes ingresar como máximo 1.000
-                        caracteres.</mat-error>
+                    @if (form['description'].errors) {
+                    <mat-error>Debes ingresar como máximo 1.000 caracteres.</mat-error>
+                    }
                 </mat-form-field>
 
-                <mat-form-field *ngIf="authUser.isMod" appearance="outline">
+                @if (isMod) {
+                <mat-form-field appearance="outline">
                     <mat-label>Detalles</mat-label>
                     <textarea #details matInput formControlName="details" maxlength="1000" rows="4"></textarea>
                     <mat-hint align="start">
@@ -95,49 +113,59 @@
                         publicar (opcional).
                     </mat-hint>
                     <mat-hint align="end">{{details.value.length || 0}}/1000</mat-hint>
-                    <mat-error *ngIf="form['details'].errors">Debes ingresar como máximo 1.000
-                        caracteres.</mat-error>
+                    @if (form['details'].errors) {
+                    <mat-error>Debes ingresar como máximo 1.000 caracteres.</mat-error>
+                    }
                 </mat-form-field>
+                }
 
                 <mat-form-field appearance="outline">
                     <mat-label>Numeración general</mat-label>
                     <textarea #numbers matInput formControlName="numbers" maxlength="250" rows="4"></textarea>
                     <mat-hint align="start">
-                        (opcional) Puedes indicar de manera general la numeración o itemizado utilizado por la colección. Por ej: De la 1 a la 100, de la A a la P (con la Ñ).
+                        (opcional) Puedes indicar de manera general la numeración o itemizado utilizado por la
+                        colección. Por ej: De la 1 a la 100, de la A a la P (con la Ñ).
                     </mat-hint>
                     <mat-hint align="end">{{numbers.value.length || 0}}/250</mat-hint>
-                    <mat-error *ngIf="form['numbers'].errors">Debes ingresar como máximo 250 caracteres.</mat-error>
+                    @if (form['numbers'].errors) {
+                    <mat-error>Debes ingresar como máximo 250 caracteres.</mat-error>
+                    }
                 </mat-form-field>
 
                 <div class="nc-form-file">
-                    <button type="button" *ngIf="preview == ''" mat-raised-button color="primary"
-                        (click)="onNewImage('proposed')">
+                    @if (preview == '') {
+                    <button type="button" mat-raised-button color="primary" (click)="onNewImage('proposed')">
                         <mat-icon>upload</mat-icon> Imagen de portada
                     </button>
-                    <button type="button" *ngIf="preview !== ''" mat-stroked-button color="warn"
-                        (click)="onRemoveImage('proposed')">
+                    } @else {
+                    <button type="button" mat-stroked-button color="warn" (click)="onRemoveImage('proposed')">
                         <mat-icon>delete</mat-icon> Eliminar imagen
                     </button>
-                    <div *ngIf="preview !== ''" class="nc-image-preview">
+                    <div class="nc-image-preview">
                         <img [src]="preview" />
                     </div>
+                    }
                 </div>
 
-                <div *ngIf="authUser.isMod" class="nc-form-file">
-                    <button type="button" *ngIf="coverPreview == ''" mat-raised-button color="primary"
-                        (click)="onNewImage('validated')">
+                @if (isMod) {
+                <div class="nc-form-file">
+                    @if (coverPreview == '') {
+                    <button type="button" mat-raised-button color="primary" (click)="onNewImage('validated')">
                         <mat-icon>upload</mat-icon> Imagen de portada validada
                     </button>
-                    <button type="button" *ngIf="coverPreview !== ''" mat-stroked-button color="warn"
-                        (click)="onRemoveImage('validated')">
+                    } @else {
+                    <button type="button" mat-stroked-button color="warn" (click)="onRemoveImage('validated')">
                         <mat-icon>delete</mat-icon> Eliminar imagen validada
                     </button>
-                    <div *ngIf="coverPreview !== ''" class="nc-image-preview">
+                    <div class="nc-image-preview">
                         <img [src]="coverPreview" />
                     </div>
+                    }
                 </div>
+                }
 
-                <div *ngIf="!authUser.isMod" class="alert alert-info">
+                @if (!isMod) {
+                <div class="alert alert-info">
                     <div class="alert-container">
                         <div class="alert-content">
                             <div class="alert-title">Atención!</div>
@@ -149,12 +177,14 @@
                         </div>
                     </div>
                 </div>
+                }
 
                 <div class="nc-links">
                     <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
                         <mat-icon>arrow_back</mat-icon> Volver sin guardar
                     </a>
-                    <button mat-raised-button [disabled]="newCollectionForm.invalid" color="accent">Guardar</button>
+                    <button mat-raised-button [disabled]="newCollectionForm.invalid || isProcessing()"
+                        color="accent">Guardar</button>
                 </div>
 
             </form>
@@ -162,7 +192,9 @@
 
     </div>
 </section>
-<section *ngIf="isLoaded && !canAddOrUpdate" class="new-collections">
+}
+@if (isLoaded() && !canAddOrUpdate()) {
+<section class="new-collections">
     <div class="nc-links">
         <a class="btn" mat-stroked-button color="primary" [routerLink]="['../']">
             <mat-icon>arrow_back</mat-icon> Volver
@@ -176,11 +208,14 @@
                     <div class="alert-title">Atención!</div>
                     <div class="alert-message">
                         En este momento no puedes realizar esta acción.
-                        <ng-container *ngIf="authUser.daysSinceRegistration < 30"><br />Recuerda que debes haberte
-                            registrado hace al menos 30 días para crear una nueva solicitud.</ng-container>
+                        @if (authUser().daysSinceRegistration
+                        < 30) { <br />Recuerda que debes haberte
+                        registrado hace al menos 30 días para crear una nueva solicitud.
+                        }
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+}

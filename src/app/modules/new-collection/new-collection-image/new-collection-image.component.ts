@@ -10,25 +10,23 @@ import {
   ImageTransform,
   ImageCropperModule,
 } from 'ngx-image-cropper';
-import { NewCollectionService } from 'src/app/core';
-import { UIService } from 'src/app/shared';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf } from '@angular/common';
+
+import { NewCollectionService } from 'src/app/core';
+import { UIService } from 'src/app/shared';
 
 @Component({
   selector: 'app-new-collection-image',
   templateUrl: './new-collection-image.component.html',
-  styleUrls: ['./new-collection-image.component.scss'],
   standalone: true,
   imports: [
-    MatDialogModule,
-    NgIf,
     MatButtonModule,
-    ImageCropperModule,
+    MatDialogModule,
     MatIconModule,
     MatSliderModule,
+    ImageCropperModule,
   ],
 })
 export class NewCollectionImageComponent {

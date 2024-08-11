@@ -1,9 +1,5 @@
 <mat-dialog-content>
-    <div *ngIf="!isLoaded" class="loading-indicator">
-        <mat-spinner aria-label="cargando"></mat-spinner>
-    </div>
-
-    <div *ngIf="isLoaded" class="user-collection-modal">
+    <div class="user-collection-modal">
         <div class="user-collection-modal-content">
             <div class="user-collection-modal-heading">
                 <p class="h2">
@@ -16,7 +12,7 @@
                     <span>{{ this.data.newCollection.publisher.data.name }}</span>
                 </div>
                 <div class="user-collection-modal-bg"
-                    [style.background-image]="'url(' + this.data.newCollection.image.data?.base64 + ')'">
+                    [style.background-image]="'url(' + (this.data.newCollection.image.data?.base64 || this.data.newCollection.image.data?.url) + ')'">
                     <div></div>
                 </div>
             </div>
