@@ -123,6 +123,9 @@ export const authActions = createActionGroup({
 
     'Login Redirect': props<{ url: string }>(),
 
-    Logout: emptyProps(),
+    // Logout: emptyProps(),
+    // logout
+    'Logout Start': emptyProps(),
+    'Logout Finish': emptyProps(),
   },
 });

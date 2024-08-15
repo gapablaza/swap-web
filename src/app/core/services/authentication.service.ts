@@ -1,19 +1,37 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Auth, signInWithCustomToken, signOut } from '@angular/fire/auth';
-import { Observable, concatMap, from, map, take } from 'rxjs';
+import {
+  deleteToken,
+  getToken,
+  isSupported,
+  Messaging,
+} from '@angular/fire/messaging';
+import { Database, ref, serverTimestamp, set } from '@angular/fire/database';
+import { Observable, concatMap, filter, from, map, take, tap } from 'rxjs';
 
 import { User } from '../models';
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class AuthenticationService {
+  private firebaseMessaging!: Messaging;
+
   constructor(
     private apiSrv: ApiService,
     private jwtSrv: JwtService,
-    private firebaseAuth: Auth
-  ) {}
+    private firebaseAuth: Auth,
+    private firebaseDB: Database,
+    private injector: Injector
+  ) {
+    isSupported().then((supported: boolean) => {
+      if (supported) {
+        this.firebaseMessaging = this.injector.get(Messaging);
+      }
+    });
+  }
 
   signupWithEmail(
     displayName: string,
@@ -139,6 +157,24 @@ export class AuthenticationService {
     );
   }
 
+  saveFirebaseToken(authUser: User) {
+    return from(
+      getToken(this.firebaseMessaging, {
+        vapidKey: environment.vapidKey,
+      })
+    ).pipe(
+      take(1),
+      filter((token) => !!token),
+      map((token) => {
+        const notificationTokenRef = ref(
+          this.firebaseDB,
+          `users/userId_${authUser.id}/notificationTokens/${token}`
+        );
+        return from(set(notificationTokenRef, serverTimestamp()));
+      })
+    );
+  }
+
   me(): Observable<{ user: User; token: string }> {
     return this.apiSrv.get('/v2/me').pipe(
       map((data: { data: User; token: string }) => {
@@ -205,7 +241,7 @@ export class AuthenticationService {
   linkGoogle(
     id: string,
     email: string,
-    image: string,
+    image: string
   ): Observable<{ user: User; token: string }> {
     return this.apiSrv
       .post('/v2/auth/linkGoogleWithId', {
@@ -228,30 +264,29 @@ export class AuthenticationService {
       );
   }
 
-  linkFacebook(id: string, email: string): Observable<{ user: User; token: string }> {
-    return this.apiSrv
-      .post('/v2/auth/linkFacebookWithId', { id, email })
-      .pipe(
-        take(1),
-        concatMap(() => {
-          return this.apiSrv.get('/v2/me').pipe(
-            map((data: { data: User; token: string }) => {
-              return {
-                user: data.data,
-                token: data.token,
-              };
-            })
-          );
-        })
-      );
+  linkFacebook(
+    id: string,
+    email: string
+  ): Observable<{ user: User; token: string }> {
+    return this.apiSrv.post('/v2/auth/linkFacebookWithId', { id, email }).pipe(
+      take(1),
+      concatMap(() => {
+        return this.apiSrv.get('/v2/me').pipe(
+          map((data: { data: User; token: string }) => {
+            return {
+              user: data.data,
+              token: data.token,
+            };
+          })
+        );
+      })
+    );
   }
 
-  unlink(
-    provider: 'facebook' | 'google'
-  ): Observable<string> {
+  unlink(provider: 'facebook' | 'google'): Observable<string> {
     return this.apiSrv.post('/v2/auth/unlink', { provider }).pipe(
       map(() => {
-        return `${provider} fue removido exitosamente`
+        return `${provider} fue removido exitosamente`;
       })
     );
   }
@@ -301,9 +336,38 @@ export class AuthenticationService {
       .pipe(map((data: { message: string }) => data.message));
   }
 
-  logoutFromFirebase() {
-    signOut(this.firebaseAuth).catch((error) => console.log(error));
-    // TO DO: handle remove notificationTokens on client/server
+  logoutFromFirebase(authUser: User) {
+    // si se habilitaron las notificaciones
+    // borramos el token del cliente y servidor
+    if (Notification.permission === 'granted') {
+      getToken(this.firebaseMessaging, {
+        vapidKey: environment.vapidKey,
+      })
+        .then((token) => {
+          if (token) {
+            const tokenRef = ref(
+              this.firebaseDB,
+              `users/userId_${authUser.id}/notificationTokens/${token}`
+            );
+
+            return deleteToken(this.firebaseMessaging).then(() =>
+              set(tokenRef, null)
+            );
+          } else {
+            return;
+          }
+        })
+        .then(() =>
+          signOut(this.firebaseAuth).catch((error) => console.log(error))
+        )
+        .catch((error) => {
+          console.error('Error deleting token', error);
+        });
+
+      // si no existe token en el navegador
+    } else {
+      signOut(this.firebaseAuth).catch((error) => console.log(error));
+    }
   }
 
   delete(): Observable<string> {

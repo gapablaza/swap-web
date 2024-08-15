@@ -1,43 +1,27 @@
 import { registerLocaleData, AsyncPipe, DecimalPipe } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, OnInit } from '@angular/core';
-import {
-  Database,
-  ref,
-  onValue,
-  set,
-  push,
-  list,
-  query,
-  orderByChild,
-  equalTo,
-  onDisconnect,
-  serverTimestamp,
-} from '@angular/fire/database';
-import { map, Observable } from 'rxjs';
-
-import { AuthService } from 'src/app/core';
-import { environment } from 'src/environments/environment';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
   standalone: true,
-  imports: [RouterLink, MatIconModule, AsyncPipe, DecimalPipe],
+  imports: [RouterLink, MatIconModule, DecimalPipe],
 })
 export class FooterComponent implements OnInit {
   version = environment.appVersion;
-  counter$!: Observable<number>;
 
-  constructor(
-    // private firebaseDB: Database, 
-    // private authSrv: AuthService
-  ) {}
+  constructor() {}
 
   ngOnInit(): void {
     registerLocaleData(es);
+
+    // TO DO: Agregar el despliegue de la cantidad de usuarios conectados
+    //        manejando los usuarios no registrados, y sin duplicar
 
     // this.counter$ = list(
     //   query(

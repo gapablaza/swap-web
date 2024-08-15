@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
   catchError,
+  exhaustMap,
   filter,
   map,
   of,
@@ -13,7 +14,7 @@ import {
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 
-import { MessageService } from 'src/app/core';
+import { AuthenticationService, MessageService } from 'src/app/core';
 import { messagesActions } from './message.actions';
 import { authFeature } from '../../auth/store/auth.state';
 import { UIService } from 'src/app/shared';
@@ -163,11 +164,36 @@ export class MessageEffects {
     )
   );
 
+  // Save messaging token
+  saveMessagingToken$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(messagesActions.saveMessagingToken),
+      withLatestFrom(this.store.select(authFeature.selectUser)),
+      exhaustMap(([, user]) => {
+        return this.authSrv.saveFirebaseToken(user).pipe(
+          map(() =>
+            messagesActions.saveMessagingTokenSuccess({
+              message: 'Token guardado exitosamente',
+            })
+          ),
+          catchError((error) =>
+            of(
+              messagesActions.saveMessagingTokenFailure({
+                error: 'No se pudo guardar el token',
+              })
+            )
+          )
+        );
+      })
+    )
+  );
+
   constructor(
     private actions$: Actions,
     private store: Store,
+    private authSrv: AuthenticationService,
     private messageSrv: MessageService,
     private uiSrv: UIService,
-    private router: Router
+    private router: Router,
   ) {}
 }

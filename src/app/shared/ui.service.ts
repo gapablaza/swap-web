@@ -73,10 +73,6 @@ export class UIService {
     this._isGoogleMapsLoaded = status;
   }
 
-  // isAdsLoaded() {
-  //   return this._isAdsSenseLoaded;
-  // }
-
   isAdsLoaded() {
     return this._adsSenseLoadedSubject.getValue();
   }
@@ -113,7 +109,6 @@ export class UIService {
   }
 
   loadAds() {
-    console.log('loadAds');
     if (this._isAdsSenseLoaded) {
       return Promise.resolve();
     }

@@ -31,7 +31,6 @@ import { LinebreaksPipe } from '../../../shared/pipes/linebreaks.pipe';
 import { NewCollectionChecklistComponent } from '../new-collection-checklist/new-collection-checklist.component';
 import { NewCollectionHistoryComponent } from '../new-collection-history/new-collection-history.component';
 import {
-  AuthService,
   DEFAULT_USER_PROFILE_IMG,
   NewCollection,
   User,

@@ -230,26 +230,23 @@ export const authFeature = createFeature({
       ...state,
       isProcessing: true,
     })),
-    // on(authActions.deleteAccountSuccess, (state) => ({
-    //   ...state,
-    //   user: {} as User,
-    //   token: null,
-    //   isAuth: false,
-    //   isProcessing: false,
-    // })),
     on(authActions.deleteAccountFailure, (state) => ({
       ...state,
       isProcessing: false,
     })),
 
-    // logout
-    on(authActions.logout, (state) => ({
+    // logout start
+    on(authActions.logoutStart, (state) => ({
+      ...state,
+      isProcessing: true,
+    })),
+    on(authActions.logoutFinish, (state) => ({
       ...state,
       isInit: true,
       user: {} as User,
       token: null,
       isAuth: false,
-      isFirebaseAuth: false, // TO DO: log out from firebase
+      isFirebaseAuth: false,
       unreads: 0,
       isProcessing: false,
     }))

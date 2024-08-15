@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import {
   ApiService,
   AuthenticationService,
-  AuthService,
   CollectionService,
   ItemService,
   JwtService,
@@ -23,7 +22,6 @@ import {
   imports: [CommonModule],
   providers: [
     ApiService,
-    AuthService,
     AuthenticationService,
     JwtService,
     SEOService,

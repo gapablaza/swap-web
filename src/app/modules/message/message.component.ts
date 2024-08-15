@@ -8,15 +8,15 @@ import {
 import { RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
-
 import {
   MatDialog,
   MatDialogConfig,
   MatDialogModule,
 } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { Store } from '@ngrx/store';
 
-import { AuthService, User } from 'src/app/core';
+import { messagesActions } from './store/message.actions';
 
 @Component({
   selector: 'app-message',
@@ -26,13 +26,10 @@ import { AuthService, User } from 'src/app/core';
 })
 export class MessageComponent implements AfterViewInit, OnDestroy {
   @ViewChild('customRequest') customRequest!: TemplateRef<any>;
-  authUser: User = this.authSrv.getCurrentUser();
   subs: Subscription = new Subscription();
 
-  // TO DO: use store
-
   constructor(
-    private authSrv: AuthService,
+    private store: Store,
     private dialog: MatDialog,
     private cookieSrv: CookieService
   ) {}
@@ -55,7 +52,7 @@ export class MessageComponent implements AfterViewInit, OnDestroy {
     let dialogRef = this.dialog.open(this.customRequest, dialogConfig);
     let dialogSub = dialogRef.afterClosed().subscribe((result) => {
       if (result === true) {
-        this.authSrv.saveFirebaseToken();
+        this.store.dispatch(messagesActions.saveMessagingToken());
       } else {
         this.cookieSrv.set('waitForPermission', 'true', { expires: 7 });
       }

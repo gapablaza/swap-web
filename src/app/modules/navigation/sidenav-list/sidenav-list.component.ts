@@ -26,6 +26,6 @@ export class SidenavListComponent {
   constructor(private store: Store) {}
 
   onLogout() {
-    this.store.dispatch(authActions.logout());
+    this.store.dispatch(authActions.logoutStart());
   }
 }

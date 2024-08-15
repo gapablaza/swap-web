@@ -36,5 +36,9 @@ export const messagesActions = createActionGroup({
     'Send Message': props<{ otherUser: User, message: string }>(),
     'Send Message Success': emptyProps(),
     'Send Message Failure': props<{ error: string }>(),
+
+    'Save Messaging Token': emptyProps(),
+    'Save Messaging Token Success': props<{ message: string }>(),
+    'Save Messaging Token Failure': props<{ error: string }>(),
   },
 });

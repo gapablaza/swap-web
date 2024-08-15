@@ -22,8 +22,8 @@ import {
 } from '@angular/material/sidenav';
 
 import { environment } from 'src/environments/environment';
-import { AuthService, SEOService } from './core';
-import { SocialModule, UIService } from './shared';
+import { SEOService } from './core';
+import { UIService } from './shared';
 import { FooterComponent } from './modules/navigation/footer/footer.component';
 import { SidenavListComponent } from './modules/navigation/sidenav-list/sidenav-list.component';
 import { HeaderComponent } from './modules/navigation/header/header.component';
@@ -55,9 +55,8 @@ export class AppComponent implements OnInit {
   isInit$ = this.store.select(authFeature.selectIsInit);
 
   constructor(
-    // private authSrv: AuthService,
     private SEOSrv: SEOService,
-    // private fbMessaging: Messaging,
+    private fbMessaging: Messaging,
     private uiSrv: UIService,
     private router: Router,
     private store: Store,
@@ -113,7 +112,11 @@ export class AppComponent implements OnInit {
           });
         }
 
-        if (typeof window !== 'undefined' && window.innerWidth < 768) {
+        if (
+          typeof window !== 'undefined' &&
+          window.innerWidth < 768 &&
+          this.sidenav
+        ) {
           this.sidenav.close();
         }
       }
@@ -140,14 +143,11 @@ export class AppComponent implements OnInit {
           scope: '__',
         })
         .then((ServiceWorkerRegistration) => {
-          // onMessage(this.fbMessaging, (payload) => {
-          //   console.log(payload);
-          //   this.uiSrv.showSnackbar('Tienes un nuevo mensaje!');
-          // });
+          onMessage(this.fbMessaging, (payload) => {
+            this.uiSrv.showSuccess('Tienes un nuevo mensaje!');
+          });
         });
     }
-
-    // this.authSrv.populate();
   }
 
   // Ajusta el modo de la sidenav dependiendo del ancho de la pantalla

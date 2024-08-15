@@ -15,6 +15,11 @@ import {
   tap,
   withLatestFrom,
 } from 'rxjs';
+import {
+  FacebookLoginProvider,
+  SocialAuthService,
+} from '@abacritt/angularx-social-login';
+import { MatDialog } from '@angular/material/dialog';
 
 import {
   AuthenticationService,
@@ -23,12 +28,7 @@ import {
 } from 'src/app/core';
 import { authFeature } from './auth.state';
 import { authActions } from './auth.actions';
-import {
-  FacebookLoginProvider,
-  SocialAuthService,
-} from '@abacritt/angularx-social-login';
 import { UIService } from 'src/app/shared';
-import { MatDialog } from '@angular/material/dialog';
 
 @Injectable()
 export class AuthEffects {
@@ -49,8 +49,6 @@ export class AuthEffects {
             catchError((error) => of(authActions.authFailure()))
           );
         } else {
-          this.jwtSrv.destroyToken();
-          // return of(authActions.logout());
           return of(authActions.authFailure());
         }
       })
@@ -64,7 +62,6 @@ export class AuthEffects {
       exhaustMap(() =>
         this.socialSrv.authState.pipe(
           takeUntil(this.actions$.pipe(ofType(authActions.loginPageDestroyed))),
-          tap((user) => console.log(user)),
           filter((user) => user != null && user.provider == 'GOOGLE'),
           switchMap((user) =>
             this.authSrv.loginWithGoogleId(user.id).pipe(
@@ -135,7 +132,6 @@ export class AuthEffects {
             this.router.routerState.snapshot.root.queryParams['returnUrl'] ||
             '/';
           this.router.navigate([returnUrl]);
-          // this.router.navigate(['/']); // redirect to previous page
         }
       }),
       filter(({ user, token }) => !user.disabled),
@@ -189,7 +185,6 @@ export class AuthEffects {
           takeUntil(
             this.actions$.pipe(ofType(authActions.signupPageDestroyed))
           ),
-          // tap((user) => console.log(user)),
           filter((user) => user != null && user.provider == 'GOOGLE'),
           switchMap((user) =>
             this.authSrv
@@ -241,7 +236,7 @@ export class AuthEffects {
       withLatestFrom(this.store.select(authFeature.selectUser)),
       switchMap(([action, user]) =>
         this.messageSrv.unreads(user.id).pipe(
-          takeUntil(this.actions$.pipe(ofType(authActions.logout))),
+          takeUntil(this.actions$.pipe(ofType(authActions.logoutStart))),
           map((unreads) => {
             return authActions.loadUnreadsSuccess({ unreads });
           }),
@@ -393,7 +388,6 @@ export class AuthEffects {
             this.actions$.pipe(ofType(authActions.connectPageDestroyed))
           ),
           withLatestFrom(this.store.select(authFeature.selectUser)),
-          // tap(([user, authUser]) => console.log(user, authUser)),
           filter(([, authUser]) => authUser.google == null),
           filter(([user]) => user != null && user.provider == 'GOOGLE'),
           switchMap(([user]) =>
@@ -530,7 +524,7 @@ export class AuthEffects {
   deleteAccountSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(authActions.deleteAccountSuccess),
-      map(() => authActions.logout())
+      map(() => authActions.logoutStart())
     )
   );
 
@@ -538,16 +532,22 @@ export class AuthEffects {
   logout$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(authActions.logout),
-        tap(() => {
-          // TO DO: Logout from firebase & destroy notification token
-          this.authSrv.logoutFromFirebase();
+        ofType(authActions.logoutStart),
+        withLatestFrom(
+          this.store.select(authFeature.selectIsFirebaseAuth),
+          this.store.select(authFeature.selectUser)
+        ),
+        tap(([action, isFirebaseAuth, authUser]) => {
+          if (isFirebaseAuth) {
+            this.authSrv.logoutFromFirebase(authUser);
+          }
           this.jwtSrv.destroyToken();
           this.socialSrv.signOut().catch(() => {});
           this.router.navigate(['/']);
-        })
-      ),
-    { dispatch: false }
+        }),
+        map(() => authActions.logoutFinish())
+      )
+    // { dispatch: false }
   );
 
   showSuccess$ = createEffect(
