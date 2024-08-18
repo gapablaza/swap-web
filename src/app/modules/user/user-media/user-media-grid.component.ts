@@ -17,7 +17,6 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -25,41 +24,39 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import { orderBy } from 'lodash-es';
 import { Gallery, GalleryItem, ImageItem } from 'ng-gallery';
-import { Lightbox, LightboxModule } from 'ng-gallery/lightbox';
+import { Lightbox } from 'ng-gallery/lightbox';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 
-import { Collection, Media } from 'src/app/core';
+import { Media } from 'src/app/core';
+import { SlugifyPipe } from 'src/app/shared';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-collection-media-grid',
-  templateUrl: './collection-media-grid.component.html',
+  selector: 'app-user-media-grid',
+  templateUrl: './user-media-grid.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    NgClass,
-    RouterLink,
-    FormsModule,
     DatePipe,
     DecimalPipe,
+    FormsModule,
+    NgClass,
+    RouterLink,
 
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatOptionModule,
     MatSelectModule,
     LazyLoadImageModule,
-    LightboxModule,
 
+    SlugifyPipe,
     PaginationComponent,
   ],
 })
-export class CollectionMediaGridComponent {
+export class UserMediaGridComponent {
   @Output() onToggleLike = new EventEmitter<Media>();
-  @Output() onNewImage = new EventEmitter<void>();
-  collection = input.required<Collection>();
   images = input.required<Media[]>();
 
   searchText = signal('');
@@ -94,13 +91,13 @@ export class CollectionMediaGridComponent {
     {
       selectName: 'Descripción',
       selectValue: 'description',
-      arrayFields: ['description', 'user.data.id'],
+      arrayFields: ['description', 'collection.data.id'],
       arrayOrders: ['asc', 'asc'],
     },
     {
-      selectName: 'Usuario',
-      selectValue: 'user',
-      arrayFields: ['user.data.display'],
+      selectName: 'Colección',
+      selectValue: 'collection',
+      arrayFields: ['collection.data.name'],
       arrayOrders: ['asc'],
     },
   ];
@@ -177,12 +174,17 @@ export class CollectionMediaGridComponent {
       image.description
         .toLocaleLowerCase()
         .indexOf(searchText.toLocaleLowerCase()) !== -1 ||
-      image.user?.data.displayName
+      image.collection?.data.name
         .toLocaleLowerCase()
         .indexOf(searchText.toLocaleLowerCase()) !== -1 ||
-      image.user?.data.id.toString().indexOf(searchText.toLocaleLowerCase()) !==
-        -1
+      image.collection?.data.id
+        .toString()
+        .indexOf(searchText.toLocaleLowerCase()) !== -1
     );
+  }
+
+  toggleLike(media: Media) {
+    this.onToggleLike.emit(media);
   }
 
   onPageChange(page: number) {

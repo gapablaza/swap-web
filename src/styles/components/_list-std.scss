@@ -82,6 +82,19 @@ ul.list-std {
     }
   }
 
+  .list-item-action {
+    a {
+      text-decoration: none;
+      margin: -0.75rem 2rem 1rem;
+      text-align: right;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      display: block;
+      cursor: pointer;
+    }
+  }
+
   .list-item-image {
     width: 50px;
 

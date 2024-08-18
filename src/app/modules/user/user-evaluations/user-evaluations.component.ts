@@ -2,15 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { combineLatest, map, Subscription, tap } from 'rxjs';
-import orderBy from 'lodash-es/orderBy';
-
+import { Subscription, tap } from 'rxjs';
 import {
   FormBuilder,
-  FormGroup,
   Validators,
   FormsModule,
   ReactiveFormsModule,
@@ -33,11 +31,13 @@ import {
 import { Store } from '@ngrx/store';
 
 import { DEFAULT_USER_PROFILE_IMG, Evaluation, SEOService } from 'src/app/core';
-import { UserSummaryComponent } from '../user-summary/user-summary.component';
-import { ReportComponent } from 'src/app/shared/components/report/report.component';
 import { authFeature } from '../../auth/store/auth.state';
 import { userFeature } from '../store/user.state';
 import { userActions } from '../store/user.actions';
+import { ReportComponent } from 'src/app/shared/components/report/report.component';
+import { UserSummaryComponent } from '../user-summary/user-summary.component';
+import { UserEvaluationsPreviousComponent } from './user-evaluations-previous.component';
+import { UserEvaluationsListComponent } from './user-evaluations-list.component';
 
 @Component({
   selector: 'app-user-evaluations',
@@ -45,40 +45,59 @@ import { userActions } from '../store/user.actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    MatProgressSpinnerModule,
-    UserSummaryComponent,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatDialogModule,
-    MatInputModule,
-    NgClass,
-    FormsModule,
-    RouterLink,
-    LazyLoadImageModule,
-    ReactiveFormsModule,
-    DatePipe,
     AsyncPipe,
+    DatePipe,
+    FormsModule,
+    NgClass,
+    ReactiveFormsModule,
+    RouterLink,
+
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatOptionModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    LazyLoadImageModule,
+
+    UserSummaryComponent,
+    UserEvaluationsListComponent,
   ],
 })
 export class UserEvaluationsComponent implements OnInit, OnDestroy {
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
 
-  isAuth$ = this.store.select(authFeature.selectIsAuth);
-  authUser$ = this.store.select(authFeature.selectUser);
   user$ = this.store.select(userFeature.selectUser);
+  isAuth$ = this.store.select(authFeature.selectIsAuth);
 
-  evaluations: Evaluation[] = [];
-  showedEvaluations: Evaluation[] = [];
-  disabled = true;
-  disabledData: any;
+  authUser = this.store.selectSignal(authFeature.selectUser);
+  evaluations = this.store.selectSignal(userFeature.selectEvaluations);
+  disabled = this.store.selectSignal(userFeature.selectEvalutionsDisabled);
+  disabledData = this.store.selectSignal(
+    userFeature.selectEvaluationsDisabledData
+  );
 
-  evaluationForm!: FormGroup;
-  searchText = '';
-  typeSelected = '0';
-  showFilters = false;
+  disabledForAntiquity = computed(() => {
+    if (this.disabled() && this.disabledData()?.disabledForAntiquity) {
+      return Number(this.disabledData()?.disabledForAntiquity);
+    } else {
+      return 0;
+    }
+  });
+  disabledForTime = computed(() => {
+    if (this.disabled() && this.disabledData()?.disabledForTime) {
+      return Number(this.disabledData()?.disabledForTime);
+    } else {
+      return 0;
+    }
+  });
+
+  evaluationForm = this.formBuilder.group({
+    type: ['', Validators.required],
+    comment: ['', [Validators.required, Validators.maxLength(255)]],
+  });
 
   isProcessing$ = this.store.select(userFeature.selectIsProcessing);
   isLoaded$ = this.store.select(userFeature.selectIsEvaluationsLoaded);
@@ -95,49 +114,20 @@ export class UserEvaluationsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.store.dispatch(userActions.loadUserEvaluations());
 
-    let evalSub = combineLatest([
-      this.user$,
-      this.store.select(userFeature.selectEvaluationsData),
-    ])
+    let evalSub = this.user$
       .pipe(
-        tap(([user]) => {
+        tap((user) => {
           this.SEOSrv.set({
             title: `Evaluaciones recibidas de ${user.displayName} (ID ${user.id}) - Intercambia Láminas`,
             description: `Revisa el detalle de las evaluaciones recibidas de ${user.displayName} (ID ${user.id}).`,
             isCanonical: true,
           });
-        }),
-        map(([, evaluationsData]) => evaluationsData)
+        })
       )
-      .subscribe((evaluationsData) => {
-        if (evaluationsData?.evaluations.length) {
-          this.evaluations = evaluationsData?.evaluations.map((e) => {
-            if (e.previousEvaluationsCounter) {
-              let prevEvalArray = [...(e.previousEvaluationsData || [])].sort(
-                (pa, pb) => {
-                  return pa.epochCreationTime < pb.epochCreationTime ? 1 : -1;
-                }
-              );
-              return { ...e, previousEvaluationsData: prevEvalArray };
-            } else {
-              return e;
-            }
-          });
-        }
-        this.showedEvaluations = [...this.evaluations];
-        this.sortShowedEvaluations();
-        if (evaluationsData) {
-          this.disabled = evaluationsData?.disabled;
-        }
-        this.disabledData = evaluationsData?.disabledData;
+      .subscribe(() => {
         this.cdr.markForCheck();
       });
     this.subs.add(evalSub);
-
-    this.evaluationForm = this.formBuilder.group({
-      type: ['', Validators.required],
-      comment: ['', [Validators.required, Validators.maxLength(255)]],
-    });
   }
 
   get form() {
@@ -149,7 +139,9 @@ export class UserEvaluationsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let typeId = +this.evaluationForm.value.type || 0;
+    let typeId = this.evaluationForm.value.type
+      ? +this.evaluationForm.value.type
+      : 0;
     let commentText = this.evaluationForm.value.comment || '';
 
     this.store.dispatch(
@@ -157,65 +149,7 @@ export class UserEvaluationsComponent implements OnInit, OnDestroy {
     );
   }
 
-  onFilter() {
-    this.filterShowedEvaluations();
-  }
-
-  onClearFilter() {
-    this.searchText = '';
-    this.filterShowedEvaluations();
-  }
-
-  onTypeFilter() {
-    this.onFilter();
-  }
-
-  sortShowedEvaluations() {
-    this.showedEvaluations = orderBy(
-      [...this.showedEvaluations],
-      ['creationTime'],
-      ['desc']
-    );
-  }
-
-  filterShowedEvaluations() {
-    let tempEvaluations = this.evaluations;
-    let type = parseInt(this.typeSelected);
-    // 1.- check filter by text
-    // check at least 2 chars for search
-    if (this.searchText.length > 1) {
-      tempEvaluations = [
-        ...this.evaluations.filter((elem: Evaluation) => {
-          return (
-            elem.description
-              .toLocaleLowerCase()
-              .indexOf(this.searchText.toLocaleLowerCase()) !== -1 ||
-            elem.user.data.displayName
-              .toLocaleLowerCase()
-              .indexOf(this.searchText.toLocaleLowerCase()) !== -1 ||
-            elem.user.data.id
-              .toString()
-              .indexOf(this.searchText.toLocaleLowerCase()) !== -1
-          );
-        }),
-      ];
-    }
-
-    // 2.- check filter by evaluation type
-    if (type) {
-      tempEvaluations = [
-        ...tempEvaluations.filter((elem) => {
-          return elem.evaluationTypeId == type;
-        }),
-      ];
-    }
-
-    this.showedEvaluations = [...tempEvaluations];
-    // 3.- sorting
-    this.sortShowedEvaluations();
-  }
-
-  navigateToForm() {
+  onNavigateToForm() {
     let x = document.querySelector('#evaluation');
     if (x) {
       x.scrollIntoView({ behavior: 'smooth' });
@@ -237,6 +171,22 @@ export class UserEvaluationsComponent implements OnInit, OnDestroy {
     };
 
     this.dialog.open(ReportComponent, dialogConfig);
+  }
+
+  onShowPreviousEvaluations(previousEvaluations: Evaluation[]) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = false;
+    dialogConfig.panelClass = ['previous-evaluations-dialog'];
+    dialogConfig.width = '80%';
+    dialogConfig.maxWidth = '1280px';
+
+    dialogConfig.data = {
+      evaluations: previousEvaluations,
+    };
+
+    this.dialog.open(UserEvaluationsPreviousComponent, dialogConfig);
   }
 
   ngOnDestroy(): void {

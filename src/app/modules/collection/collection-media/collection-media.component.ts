@@ -33,7 +33,7 @@ import { CollectionMediaModComponent } from './collection-media-mod.component';
   ],
 })
 export class CollectionMediaComponent implements OnInit, OnDestroy {
-  medias$ = this.store.select(collectionFeature.selectMediaPublished);
+  images = this.store.selectSignal(collectionFeature.selectImages);
   imagesForMod$ = this.store.select(
     collectionFeature.selectMediaForModFromAuthUser
   );

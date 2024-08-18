@@ -509,7 +509,7 @@ export const collectionFeature = createFeature({
 
   ),
   extraSelectors: ({ selectMedia }) => ({
-    selectMediaPublished: createSelector(selectMedia, (media) =>
+    selectImages: createSelector(selectMedia, (media) =>
       media.filter((e) => e.mediaTypeId == 1 && e.mediaStatusId == 2)
     ),
     selectMediaForModFromAuthUser: createSelector(

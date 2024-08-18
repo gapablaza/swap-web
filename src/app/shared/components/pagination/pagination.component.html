@@ -8,10 +8,10 @@
             </a>
         </li>
         <li>
-            <select name="" (change)="onPageChange(selectPage.value)" #selectPage>
-                @for (item of [].constructor(lastPage()); track item; let i = $index) {
-                <option [value]="i+1" [selected]="(i+1) == pageSelected()">
-                    Página {{ i+1 }} de {{ lastPage() }}
+            <select name="page-selected" (change)="onPageChange(selectPage.value)" #selectPage>
+                @for (item of pageNumbers(); track itemId($index, item)) {
+                <option [value]="item" [selected]="(item) == pageSelected()">
+                    Página {{ item }} de {{ lastPage() }}
                 </option>
                 }
             </select>

@@ -242,7 +242,7 @@ export const userFeature = createFeature({
       error,
     }))
   ),
-  extraSelectors: ({ selectTradesWithUser }) => ({
+  extraSelectors: ({ selectTradesWithUser, selectEvaluationsData, selectMedia }) => ({
     selectTradesShow: createSelector(selectTradesWithUser, (trades) => {
       if (trades?.showTrades) {
         return trades.showTrades;
@@ -264,5 +264,20 @@ export const userFeature = createFeature({
         return 0;
       }
     }),
+    selectEvaluations: createSelector(selectEvaluationsData, (data) => {
+      return data ? data.evaluations : [];
+    }),
+    selectEvalutionsDisabled: createSelector(selectEvaluationsData, (data) => {
+      return data ? data.disabled : true;
+    }),
+    selectEvaluationsDisabledData: createSelector(
+      selectEvaluationsData,
+      (data) => {
+        return data ? data.disabledData : undefined;
+      }
+    ),
+    selectImages: createSelector(selectMedia, (media) => {
+      return media.filter((m) => m.mediaTypeId == 1 && m.mediaStatusId == 2);
+    })
   }),
 });

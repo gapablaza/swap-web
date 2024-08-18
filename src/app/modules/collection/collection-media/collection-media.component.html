@@ -2,14 +2,11 @@
   <app-collection-summary [collection]="(collection$ | async)!" [showBackButton]="true"></app-collection-summary>
   @if (isLoaded$ | async) {
   <div class="collection-media flex-full">
-    <h1>Elementos multimedia</h1>
-
     <app-collection-media-mod [imagesForModeration]="(imagesForMod$ | async)!" [isProcessing]="(isProcessing$ | async)!"
       (onDeleteImage)="deleteImage($event)"></app-collection-media-mod>
 
-    <app-collection-media-grid [collection]="(collection$ | async)!" [media]="(medias$ | async)!"
-      [isProcessing]="(isProcessing$ | async)!" (onToggleLike)="toggleLike($event)"
-      (onNewImage)="newImage()"></app-collection-media-grid>
+    <app-collection-media-grid [collection]="(collection$ | async)!" [images]="images()"
+      (onToggleLike)="toggleLike($event)" (onNewImage)="newImage()"></app-collection-media-grid>
   </div>
   } @else {
   <div class="loading-indicator">

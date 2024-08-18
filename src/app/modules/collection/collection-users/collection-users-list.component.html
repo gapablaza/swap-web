@@ -1,5 +1,7 @@
+@let showedUsers = managedUsers();
+@let paginatedUsers = visibleUsers();
 <h1>
-    @if (showedUsers.length != users.length) {
+    @if (showedUsers.length != users().length) {
     <span class="color-accent">
         {{ showedUsers.length }} de
     </span>
@@ -7,22 +9,13 @@
     {{ collection.totalCollecting }} usuarios con esta colección
 </h1>
 <div class="card">
-    @if (!users.length) {
-    <div class="empty-content">
-        <h2>(¬‿¬)</h2>
-        <p>Todavía no hay nadie con esta colección... serás el primero?</p>
-        <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
-            <mat-icon>add</mat-icon> Agregar colección
-        </a>
-    </div>
-    }
-    @if (users.length) {
+    @if (users().length) {
     <div class="controls-std">
         <div class="controls-std-main">
             <div class="controls-std-order">
                 <mat-form-field appearance="outline">
                     <mat-label>Ordenar por</mat-label>
-                    <mat-select (selectionChange)="onSort()" [(value)]="sortOptionSelected">
+                    <mat-select (selectionChange)="onSort($event.value)" [(value)]="sortOptionSelected">
                         @for (option of sortOptions; track option.selectValue) {
                         <mat-option [value]="option.selectValue">
                             {{ option.selectName }}
@@ -31,18 +24,27 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="controls-std-settings">
+            <!-- <div class="controls-std-settings">
                 <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
                     <mat-icon>filter_list</mat-icon> Filtros
                 </a>
+            </div> -->
+            <div class="controls-std-settings">
+                <button mat-icon-button [color]="showFilters ? 'accent' : 'primary'"
+                    aria-label="Button for show filter options" (click)="showFilters = !showFilters">
+                    <mat-icon>filter_list</mat-icon>
+                </button>
+                <p>
+                    Registros {{ fromRecord() | number:'':'es' }} a {{ toRecord() | number:'':'es' }}
+                </p>
             </div>
         </div>
         <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
             <mat-form-field class="controls-search" appearance="outline">
                 <mat-label>Filtrar por nombre, ID, ciudad o descripción</mat-label>
                 <mat-icon matPrefix>search</mat-icon>
-                <input matInput type="text" [(ngModel)]="searchText" (ngModelChange)="onFilter()">
-                @if (searchText) {
+                <input matInput type="text" [(ngModel)]="searchText">
+                @if (searchText()) {
                 <button matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
                     <mat-icon>close</mat-icon>
                 </button>
@@ -50,10 +52,18 @@
             </mat-form-field>
         </div>
     </div>
+    } @else {
+    <div class="empty-content">
+        <h2>(¬‿¬)</h2>
+        <p>Todavía no hay nadie con esta colección... serás el primero?</p>
+        <a class="btn" mat-raised-button color="accent" [routerLink]="['../']">
+            <mat-icon>add</mat-icon> Agregar colección
+        </a>
+    </div>
     }
 
     <ul class="list-std">
-        @for (user of showedUsers; track user.id) {
+        @for (user of paginatedUsers; track user.id) {
         <li class="list-std-item" [ngClass]="{'pro-account': user.accountTypeId == 2}">
             <div class="list-item-main">
                 <div class="list-item-image">
@@ -108,9 +118,6 @@
                 </div>
                 }
             </div>
-            <!-- <div *ngIf="user?.bio" class="list-item-desc">
-                <p [innerHTML]="user?.bio | sanitizeHtml"></p>
-              </div> -->
             @if (user.collectionData?.publicComment) {
             <div class="list-item-desc">
                 <p [innerHTML]="user.collectionData?.publicComment | sanitizeHtml"></p>
@@ -119,4 +126,10 @@
         </li>
         }
     </ul>
+
+    @if (lastPage() > 1) {
+    <br />
+    <app-pagination [pageSelected]="pageSelected()" [lastPage]="lastPage()"
+        (pageChange)="onPageChange($event)"></app-pagination>
+    }
 </div>

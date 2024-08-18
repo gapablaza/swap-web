@@ -1,6 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
+  effect,
   EventEmitter,
   input,
   Output,
@@ -18,6 +20,10 @@ import { MatIconModule } from '@angular/material/icon';
 export class PaginationComponent {
   pageSelected = input(1);
   lastPage = input.required<number>();
+  pageNumbers = computed(() => {
+    return [...Array(this.lastPage()).keys()].map((i) => i + 1);
+  });
+
   @Output() pageChange = new EventEmitter<number>();
 
   onPageChange(page: string) {
@@ -25,5 +31,9 @@ export class PaginationComponent {
     if (!isNaN(pageNumber)) {
       this.pageChange.emit(pageNumber);
     }
+  }
+
+  itemId($index: number, item: number) {
+    return $index;
   }
 }

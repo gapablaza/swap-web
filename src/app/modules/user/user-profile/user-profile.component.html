@@ -210,8 +210,9 @@
       </li>
       <li>
         <a class="nav-vert-std-a" [routerLink]="['./media']">
+          @let imgTxt = (user$ | async)?.userSummary?.contributions == 1 ? 'imagen' : 'imágenes';
           <div>
-            Ha agregado <strong>{{ (user$ | async)?.userSummary?.contributions }}</strong> elemento(s) multimedia
+            Ha agregado <strong>{{ (user$ | async)?.userSummary?.contributions }}</strong> {{ imgTxt }}
           </div>
           <mat-icon>navigate_next</mat-icon>
         </a>
@@ -286,7 +287,7 @@
       <li>
         <a class="nav-vert-std-a" [routerLink]="['./media']">
           <div>
-            Ha agregado <strong>???</strong> elemento(s) multimedia
+            Ha agregado <strong>???</strong> imágenes
           </div>
           <mat-icon>navigate_next</mat-icon>
         </a>
