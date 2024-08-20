@@ -8,6 +8,8 @@ interface State {
   user: User;
   token: string | null;
   isAuth: boolean;
+
+  isFirebaseInit: boolean;
   isFirebaseAuth: boolean;
   unreads: number;
 
@@ -20,6 +22,8 @@ const initialState: State = {
   user: {} as User,
   token: null,
   isAuth: false,
+
+  isFirebaseInit: false,
   isFirebaseAuth: false,
   unreads: 0,
 
@@ -65,10 +69,12 @@ export const authFeature = createFeature({
     // Firebase
     on(authActions.loginFirebaseSuccess, (state) => ({
       ...state,
+      isFirebaseInit: true,
       isFirebaseAuth: true,
     })),
     on(authActions.loginFirebaseFailure, (state) => ({
       ...state,
+      isFirebaseInit: true,
       isFirebaseAuth: false,
     })),
     on(authActions.loadUnreadsSuccess, (state, { unreads }) => ({
@@ -235,7 +241,7 @@ export const authFeature = createFeature({
       isProcessing: false,
     })),
 
-    // logout start
+    // logout
     on(authActions.logoutStart, (state) => ({
       ...state,
       isProcessing: true,
@@ -246,8 +252,11 @@ export const authFeature = createFeature({
       user: {} as User,
       token: null,
       isAuth: false,
+
+      isFirebaseInit: true,
       isFirebaseAuth: false,
       unreads: 0,
+
       isProcessing: false,
     }))
   ),

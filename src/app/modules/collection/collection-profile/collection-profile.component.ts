@@ -40,7 +40,7 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
   collection$ = this.store.select(collectionFeature.selectCollection);
   lastCollectors$ = this.store.select(collectionFeature.selectLastCollectors);
   lastMedia$ = this.store.select(collectionFeature.selectLastMedia);
-  items$ = this.store.select(collectionFeature.selectItems);
+  items$ = this.store.select(collectionFeature.selectItemsSorted);
   isAuth$ = this.store.select(authFeature.selectIsAuth);
 
   isProcessing$ = this.store.select(collectionFeature.selectIsProcessing);

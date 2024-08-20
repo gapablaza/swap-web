@@ -14,7 +14,7 @@ export const userActions = createActionGroup({
 
     // load profile data
     'Load User Data': props<{ userId: number }>(),
-    'Load User Data Success': props<{ user: User }>(),
+    'Load User Data Success': props<{ user: User; reset?: boolean }>(),
     'Load User Data Failure': props<{ error: string }>(),
 
     // load trades

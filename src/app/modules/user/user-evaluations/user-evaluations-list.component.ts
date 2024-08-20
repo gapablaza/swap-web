@@ -52,6 +52,7 @@ import { PaginationComponent } from 'src/app/shared/components/pagination/pagina
 export class UserEvaluationsListComponent {
   authUser = input<User>({} as User);
   disabled = input<boolean>(true);
+  evaluatedRecently = input<boolean>(false);
   evaluations = input.required<Evaluation[]>();
 
   managedEvaluations = computed(() => {

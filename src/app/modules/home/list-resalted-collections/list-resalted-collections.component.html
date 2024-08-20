@@ -1,24 +1,7 @@
 <div class="list-of-collections">
-  <!-- <div class="list-header header-card">
-    <h2 class="header-card-title">Populares</h2>
-  </div> -->
   <div class="horizontal-card-grid">
-    <app-collection-item *ngFor="let col of collections" [collection]="col"></app-collection-item>
-    <!-- <div *ngFor="let col of collections" class="horizontal-card module">
-      <a [routerLink]="['/c', col.name | slugify, col.id]">
-        <img [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image" alt="" class="horizontal-card-image">
-      </a>
-      <div class="horizontal-card-content">
-        <div class="horizontal-card-info">
-          <mat-chip-list aria-label="Year">
-            <mat-chip>{{ col.publisher.data.name }}</mat-chip>
-            <mat-chip>{{ col.year }}</mat-chip>
-          </mat-chip-list>
-        </div>
-        <a [routerLink]="['/c', col.name | slugify, col.id]">
-          <h3 class="horizontal-card-title">{{ col.name }}</h3>
-        </a>
-      </div>
-    </div> -->
+    @for (col of collections; track col.id) {
+    <app-collection-item [collection]="col"></app-collection-item>
+    }
   </div>
 </div>

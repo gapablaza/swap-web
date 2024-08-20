@@ -74,6 +74,7 @@ export class UserEvaluationsComponent implements OnInit, OnDestroy {
 
   authUser = this.store.selectSignal(authFeature.selectUser);
   evaluations = this.store.selectSignal(userFeature.selectEvaluations);
+  evaluatedRecently = this.store.selectSignal(userFeature.selectEvaluatedRecently);
   disabled = this.store.selectSignal(userFeature.selectEvalutionsDisabled);
   disabledData = this.store.selectSignal(
     userFeature.selectEvaluationsDisabledData

@@ -2,7 +2,8 @@
   <app-user-summary [showBackButton]="true"></app-user-summary>
   @if (isLoaded$ | async) {
   <div class="user-evaluations flex-full">
-    <app-user-evaluations-list [evaluations]="evaluations()" [disabled]="disabled()" [authUser]="authUser()"
+    <app-user-evaluations-list [evaluations]="evaluations()" [disabled]="disabled()"
+      [evaluatedRecently]="evaluatedRecently()" [authUser]="authUser()"
       (onShowPreviousEvaluations)="onShowPreviousEvaluations($event)" (onShowReportDialog)="onShowReportDialog($event)"
       (onNavigateToForm)="onNavigateToForm()"></app-user-evaluations-list>
 
@@ -44,7 +45,7 @@
       </div>
       }
 
-      @if (!disabled()) {
+      @if (!disabled() && !evaluatedRecently()) {
       <div class="card">
         <form [formGroup]="evaluationForm" (ngSubmit)="onSubmit()">
           <h3>Agregar evaluación</h3>

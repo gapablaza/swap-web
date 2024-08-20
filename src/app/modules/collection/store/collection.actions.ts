@@ -14,6 +14,7 @@ export const collectionActions = createActionGroup({
       collection: Collection;
       lastCollectors: User[];
       lastMedia: Media[];
+      reset?: boolean;
     }>(),
     'Load Data Failure': props<{ error: string }>(),
 
@@ -57,7 +58,7 @@ export const collectionActions = createActionGroup({
 
     // add comment
     'Add Comment': props<{ publicComment: string }>(),
-    'Add Comment Success': props<{ message: string, publicComment: string }>(),
+    'Add Comment Success': props<{ message: string; publicComment: string }>(),
     'Add Comment Failure': props<{ error: string }>(),
 
     // remove comment
@@ -85,28 +86,78 @@ export const collectionActions = createActionGroup({
     'Remove Image Failure': props<{ error: string }>(),
 
     // Item add
-    'Item Add': props<{ item: Item, listType: 'wishlist' | 'tradelist' }>(),
-    'Item Add Success': props<{ message: string, item: Item, listType: 'wishlist' | 'tradelist' }>(),
-    'Item Add Failure': props<{ error: string, item: Item, listType: 'wishlist' | 'tradelist' }>(),
-    
+    'Item Add': props<{ item: Item; listType: 'wishlist' | 'tradelist' }>(),
+    'Item Add Success': props<{
+      message: string;
+      item: Item;
+      listType: 'wishlist' | 'tradelist';
+    }>(),
+    'Item Add Failure': props<{
+      error: string;
+      item: Item;
+      listType: 'wishlist' | 'tradelist';
+    }>(),
+
     // Item increment
-    'Item Increment': props<{ item: Item, listType: 'wishlist' | 'tradelist' }>(),
-    'Item Increment Success': props<{ message: string, item: Item, newQuantity: number, listType: 'wishlist' | 'tradelist' }>(),
-    'Item Increment Failure': props<{ error: string, item: Item, listType: 'wishlist' | 'tradelist' }>(),
-    
+    'Item Increment': props<{
+      item: Item;
+      listType: 'wishlist' | 'tradelist';
+    }>(),
+    'Item Increment Success': props<{
+      message: string;
+      item: Item;
+      newQuantity: number;
+      listType: 'wishlist' | 'tradelist';
+    }>(),
+    'Item Increment Failure': props<{
+      error: string;
+      item: Item;
+      listType: 'wishlist' | 'tradelist';
+    }>(),
+
     // Item decrement
-    'Item Decrement': props<{ item: Item, listType: 'wishlist' | 'tradelist' }>(),
-    'Item Decrement Success': props<{ message: string, item: Item, newQuantity: number, listType: 'wishlist' | 'tradelist' }>(),
-    'Item Decrement Failure': props<{ error: string, item: Item, listType: 'wishlist' | 'tradelist' }>(),
-    
+    'Item Decrement': props<{
+      item: Item;
+      listType: 'wishlist' | 'tradelist';
+    }>(),
+    'Item Decrement Success': props<{
+      message: string;
+      item: Item;
+      newQuantity: number;
+      listType: 'wishlist' | 'tradelist';
+    }>(),
+    'Item Decrement Failure': props<{
+      error: string;
+      item: Item;
+      listType: 'wishlist' | 'tradelist';
+    }>(),
+
     // Item remove
-    'Item Remove': props<{ item: Item, listType: 'wishlist' | 'tradelist' }>(),
-    'Item Remove Success': props<{ message: string, item: Item, listType: 'wishlist' | 'tradelist' }>(),
-    'Item Remove Failure': props<{ error: string, item: Item, listType: 'wishlist' | 'tradelist' }>(),
+    'Item Remove': props<{ item: Item; listType: 'wishlist' | 'tradelist' }>(),
+    'Item Remove Success': props<{
+      message: string;
+      item: Item;
+      listType: 'wishlist' | 'tradelist';
+    }>(),
+    'Item Remove Failure': props<{
+      error: string;
+      item: Item;
+      listType: 'wishlist' | 'tradelist';
+    }>(),
 
     // Update list items
-    'Update List': props<{ listText: string, listType: 'wishlist' | 'tradelist' }>(),
-    'Update List Success': props<{ message: string, items: Item[], listType: 'wishlist' | 'tradelist' }>(),
-    'Update List Failure': props<{ error: string, listType: 'wishlist' | 'tradelist' }>(),
+    'Update List': props<{
+      listText: string;
+      listType: 'wishlist' | 'tradelist';
+    }>(),
+    'Update List Success': props<{
+      message: string;
+      items: Item[];
+      listType: 'wishlist' | 'tradelist';
+    }>(),
+    'Update List Failure': props<{
+      error: string;
+      listType: 'wishlist' | 'tradelist';
+    }>(),
   },
 });

@@ -14,8 +14,10 @@ interface State {
   tradesWithUser: TradesWithUser | null;
   evaluationsData: EvaluationsApiResponse | null;
   collections: Collection[];
-  collectionDetails: Collection | null;
   media: Media[];
+
+  evaluatedRecently: boolean;
+  collectionDetails: Collection | null;
 
   isLoaded: boolean;
   isEvaluationsLoaded: boolean;
@@ -31,8 +33,10 @@ const initialState: State = {
   tradesWithUser: null,
   evaluationsData: null,
   collections: [],
-  collectionDetails: null,
   media: [],
+
+  evaluatedRecently: false,
+  collectionDetails: null,
 
   isLoaded: false,
   isEvaluationsLoaded: false,
@@ -52,15 +56,29 @@ export const userFeature = createFeature({
     // load profile data
     on(userActions.loadUserData, (state) => ({
       ...state,
-      // user: {} as User,
       isLoaded: false,
       error: null,
     })),
-    on(userActions.loadUserDataSuccess, (state, { user }) => ({
-      ...state,
-      user,
-      isLoaded: true,
-    })),
+    on(userActions.loadUserDataSuccess, (state, { user, reset }) => {
+      if (reset) {
+        return {
+          ...state,
+          user,
+          tradesWithUser: null,
+          evaluationsData: null,
+          collections: [],
+          media: [],
+          evaluatedRecently: false,
+          isLoaded: true,
+        };
+      }
+
+      return {
+        ...state,
+        user,
+        isLoaded: true,
+      };
+    }),
     on(userActions.loadUserDataFailure, (state, { error }) => ({
       ...state,
       user: {} as User,
@@ -71,7 +89,6 @@ export const userFeature = createFeature({
     // load trades
     on(userActions.loadTradesWithAuthUser, (state) => ({
       ...state,
-      tradesWithUser: null,
     })),
     on(
       userActions.loadTradesWithAuthUserSuccess,
@@ -80,6 +97,11 @@ export const userFeature = createFeature({
         tradesWithUser,
       })
     ),
+    on(userActions.loadTradesWithAuthUserFailure, (state, { error }) => ({
+      ...state,
+      tradesWithUser: null,
+      error,
+    })),
 
     // toggle blacklist
     on(userActions.toggleBlacklist, (state) => ({
@@ -104,7 +126,6 @@ export const userFeature = createFeature({
     // User evaluations
     on(userActions.loadUserEvaluations, (state) => ({
       ...state,
-      evaluationsData: null,
       isEvaluationsLoaded: false,
       error: null,
     })),
@@ -145,6 +166,8 @@ export const userFeature = createFeature({
     })),
     on(userActions.addEvaluationSuccess, (state) => ({
       ...state,
+      evaluatedRecently: true,
+      isProcessing: false,
     })),
     on(userActions.addEvaluationFailure, (state, { error }) => ({
       ...state,
@@ -155,7 +178,6 @@ export const userFeature = createFeature({
     // Load collections
     on(userActions.loadUserCollections, (state) => ({
       ...state,
-      collections: [],
       isCollectionsLoaded: false,
       error: null,
     })),
@@ -196,7 +218,6 @@ export const userFeature = createFeature({
     // Load media
     on(userActions.loadUserMedia, (state) => ({
       ...state,
-      media: [],
       isMediaLoaded: false,
       error: null,
     })),
@@ -242,7 +263,11 @@ export const userFeature = createFeature({
       error,
     }))
   ),
-  extraSelectors: ({ selectTradesWithUser, selectEvaluationsData, selectMedia }) => ({
+  extraSelectors: ({
+    selectTradesWithUser,
+    selectEvaluationsData,
+    selectMedia,
+  }) => ({
     selectTradesShow: createSelector(selectTradesWithUser, (trades) => {
       if (trades?.showTrades) {
         return trades.showTrades;
@@ -278,6 +303,6 @@ export const userFeature = createFeature({
     ),
     selectImages: createSelector(selectMedia, (media) => {
       return media.filter((m) => m.mediaTypeId == 1 && m.mediaStatusId == 2);
-    })
+    }),
   }),
 });

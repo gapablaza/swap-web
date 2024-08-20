@@ -11,13 +11,13 @@ import {
   withLatestFrom,
 } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 import { MediaService, UserService } from 'src/app/core';
 import { userActions } from './user.actions';
 import { authFeature } from '../../auth/store/auth.state';
 import { userFeature } from './user.state';
 import { UIService } from 'src/app/shared';
-import { Router } from '@angular/router';
 
 @Injectable()
 export class UserEffects {
@@ -31,11 +31,12 @@ export class UserEffects {
           return of(userActions.loadUserDataSuccess({ user }));
         }
 
+        // si no, obtenemos el usuario y reseteamos los demás datos
         return this.userSrv.profile(action.userId).pipe(
-          map((user) => userActions.loadUserDataSuccess({ user })),
+          map((user) => userActions.loadUserDataSuccess({ user, reset: true })),
           catchError((error) => {
             this.router.navigate(['/not-found']);
-            return of(userActions.loadUserDataFailure({ error }))
+            return of(userActions.loadUserDataFailure({ error }));
           })
         );
       })
@@ -47,15 +48,23 @@ export class UserEffects {
       ofType(userActions.loadTradesWithAuthUser),
       withLatestFrom(
         this.store.select(userFeature.selectUser),
-        this.store.select(authFeature.selectUser)
+        this.store.select(authFeature.selectUser),
+        this.store.select(userFeature.selectTradesWithUser)
       ),
-      map(([action, user, authUser]) => [user, authUser]),
       filter(
-        ([user, authUser]) =>
+        ([action, user, authUser, tradesWithUser]) =>
           authUser.accountTypeId == 2 && authUser.id != user.id
       ),
-      exhaustMap(([user]) =>
-        this.userSrv.getTradesWithAuthUser(user.id).pipe(
+      exhaustMap(([action, user, authUser, tradesWithUser]) => {
+        // si están en los cambios en el Store
+        if (tradesWithUser) {
+          return of(
+            userActions.loadTradesWithAuthUserSuccess({ tradesWithUser })
+          );
+        }
+
+        // si no, obtenemos los trades
+        return this.userSrv.getTradesWithAuthUser(user.id).pipe(
           map((tradesWithUser) => {
             return userActions.loadTradesWithAuthUserSuccess({
               tradesWithUser,
@@ -64,8 +73,8 @@ export class UserEffects {
           catchError((error) =>
             of(userActions.loadTradesWithAuthUserFailure({ error }))
           )
-        )
-      )
+        );
+      })
     )
   );
 
@@ -118,18 +127,28 @@ export class UserEffects {
   loadUserEvaluations$ = createEffect(() =>
     this.actions$.pipe(
       ofType(userActions.loadUserEvaluations),
-      withLatestFrom(this.store.select(userFeature.selectUser)),
-      //   filter(([, user]) => user.id != null),
-      exhaustMap(([, user]) =>
-        this.userSrv.getEvaluations(user.id).pipe(
+      withLatestFrom(
+        this.store.select(userFeature.selectUser),
+        this.store.select(userFeature.selectEvaluationsData)
+      ),
+      exhaustMap(([, user, evaluationsData]) => {
+        // si ya están las evaluaciones en el Store
+        if (evaluationsData) {
+          return of(
+            userActions.loadUserEvaluationsSuccess({ evaluationsData })
+          );
+        }
+
+        // si no, obtenemos las evaluaciones
+        return this.userSrv.getEvaluations(user.id).pipe(
           map((evaluationsData) =>
             userActions.loadUserEvaluationsSuccess({ evaluationsData })
           ),
           catchError((error) =>
             of(userActions.loadUserEvaluationsFailure({ error }))
           )
-        )
-      )
+        );
+      })
     )
   );
 
@@ -150,23 +169,40 @@ export class UserEffects {
     )
   );
 
-  addEvaluationSuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(userActions.addEvaluationSuccess),
-        tap((action) => {
-          this.uiSrv.showSuccess(action.message);
-          this.store.dispatch(userActions.loadUserEvaluations());
-        })
-      ),
-    { dispatch: false }
+  addEvaluationSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(userActions.addEvaluationSuccess),
+      withLatestFrom(this.store.select(userFeature.selectUser)),
+      tap(([action]) => {
+        this.uiSrv.showSuccess(action.message);
+      }),
+      exhaustMap(([action, user]) => {
+        return this.userSrv.getEvaluations(user.id).pipe(
+          map((evaluationsData) =>
+            userActions.loadUserEvaluationsSuccess({ evaluationsData })
+          ),
+          catchError((error) =>
+            of(userActions.loadUserEvaluationsFailure({ error }))
+          )
+        );
+      })
+    )
   );
 
   loadUserCollections$ = createEffect(() =>
     this.actions$.pipe(
       ofType(userActions.loadUserCollections),
-      withLatestFrom(this.store.select(userFeature.selectUser)),
-      exhaustMap(([, user]) => {
+      withLatestFrom(
+        this.store.select(userFeature.selectUser),
+        this.store.select(userFeature.selectCollections)
+      ),
+      exhaustMap(([, user, collections]) => {
+        // si las colecciones ya están en el store
+        if (collections.length > 0) {
+          return of(userActions.loadUserCollectionsSuccess({ collections }));
+        }
+
+        // si no, las obtenemos
         return this.userSrv.getCollections(user.id).pipe(
           map((resp) =>
             userActions.loadUserCollectionsSuccess({
@@ -203,8 +239,17 @@ export class UserEffects {
   loadUserMedia$ = createEffect(() =>
     this.actions$.pipe(
       ofType(userActions.loadUserMedia),
-      withLatestFrom(this.store.select(userFeature.selectUser)),
-      exhaustMap(([, user]) => {
+      withLatestFrom(
+        this.store.select(userFeature.selectUser),
+        this.store.select(userFeature.selectMedia)
+      ),
+      exhaustMap(([, user, media]) => {
+        // si la media ya está en el Store
+        if (media.length > 0) {
+          return of(userActions.loadUserMediaSuccess({ media }));
+        }
+
+        // si no, la obtenemos
         return this.userSrv.getMedia(user.id).pipe(
           map((media) => userActions.loadUserMediaSuccess({ media })),
           catchError((error) => of(userActions.loadUserMediaFailure({ error })))

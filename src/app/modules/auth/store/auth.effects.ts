@@ -134,8 +134,13 @@ export class AuthEffects {
           this.router.navigate([returnUrl]);
         }
       }),
-      filter(({ user, token }) => !user.disabled),
-      map(() => authActions.loginFirebase())
+      map(({ user }) => {
+        if (!user.disabled) {
+          return authActions.loginFirebase();
+        } else {
+          return authActions.loginFirebaseFailure();
+        }
+      })
     )
   );
 

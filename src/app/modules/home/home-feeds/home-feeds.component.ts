@@ -1,11 +1,4 @@
-import {
-  DatePipe,
-  NgClass,
-  NgFor,
-  NgIf,
-  NgSwitch,
-  NgSwitchCase,
-} from '@angular/common';
+import { DatePipe, NgClass, NgSwitch, NgSwitchCase } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import {
   Database,
@@ -22,20 +15,8 @@ import { SlugifyPipe } from 'src/app/shared';
 @Component({
   selector: 'app-home-feeds',
   standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    NgClass,
-    NgSwitch,
-    NgSwitchCase,
-
-    MatIconModule,
-    RouterLink,
-    DatePipe,
-    SlugifyPipe,
-  ],
+  imports: [DatePipe, NgClass, RouterLink, MatIconModule, SlugifyPipe],
   templateUrl: './home-feeds.component.html',
-  styleUrl: './home-feeds.component.scss',
 })
 export class HomeFeedsComponent implements OnInit, OnDestroy {
   feeds: any[] = [];

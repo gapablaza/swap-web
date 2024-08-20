@@ -32,7 +32,11 @@ export class UserEvaluationsPreviousComponent {
     private dialogRef: MatDialogRef<UserEvaluationsPreviousComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.evaluations = data.evaluations;
+    this.evaluations = [...(data.evaluations as Evaluation[])].sort(
+      (a: Evaluation, b: Evaluation) => {
+        return b.epochCreationTime - a.epochCreationTime;
+      }
+    );
   }
 
   onClose() {

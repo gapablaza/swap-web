@@ -9,7 +9,7 @@ export const fbAuthorizedGuard = () => {
   const router = inject(Router);
   const store = inject(Store);
 
-  return store.select(authFeature.selectIsInit).pipe(
+  return store.select(authFeature.selectIsFirebaseInit).pipe(
     filter((isInit) => !!isInit),
     switchMap(() => store.select(authFeature.selectIsFirebaseAuth)),
     map((isAuth) => {

@@ -8,7 +8,7 @@
 </h1>
 
 <div class="card">
-    @if (!disabled()) {
+    @if (!disabled() && !evaluatedRecently()) {
     <div class="main-action">
         <a class="btn" mat-raised-button color="accent" (click)="onNavigateToForm.emit()">
             <mat-icon>library_books</mat-icon> Registrar evaluación

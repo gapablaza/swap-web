@@ -11,6 +11,7 @@ import {
   withLatestFrom,
 } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 import { CollectionService, ItemService, MediaService } from 'src/app/core';
 import { UIService } from 'src/app/shared';
@@ -18,7 +19,6 @@ import { authFeature } from '../../auth/store/auth.state';
 import { collectionActions } from './collection.actions';
 import { collectionFeature } from './collection.state';
 import { CollectionMediaUploadComponent } from '../collection-media-upload/collection-media-upload.component';
-import { Router } from '@angular/router';
 
 @Injectable()
 export class CollectionEffects {
@@ -42,12 +42,14 @@ export class CollectionEffects {
           );
         }
 
+        // si no, obtenemos la colección y reseteamos los demás datos
         return this.colSrv.get(action.collectionId).pipe(
           map((collection) =>
             collectionActions.loadDataSuccess({
               collection: collection.collection,
               lastCollectors: collection.lastCollectors,
               lastMedia: collection.lastMedia,
+              reset: true,
             })
           ),
           catchError((error) => {
@@ -72,14 +74,9 @@ export class CollectionEffects {
           return of(collectionActions.loadItemsSuccess({ items }));
         }
 
+        // si no, obtenemos los items
         return this.colSrv.getItems(collection!.id).pipe(
-          map((items) =>
-            collectionActions.loadItemsSuccess({
-              items: items.sort(
-                (a, b) => (a.position || 0) - (b.position || 0)
-              ),
-            })
-          ),
+          map((items) => collectionActions.loadItemsSuccess({ items })),
           catchError((error) =>
             of(collectionActions.loadItemsFailure({ error }))
           )
@@ -143,30 +140,48 @@ export class CollectionEffects {
   public loadTops$ = createEffect(() =>
     this.actions$.pipe(
       ofType(collectionActions.loadTops),
-      withLatestFrom(this.store.select(collectionFeature.selectCollection)),
-      exhaustMap(([action, collection]) =>
-        this.colSrv.getTops(collection!.id).pipe(
+      withLatestFrom(
+        this.store.select(collectionFeature.selectCollection),
+        this.store.select(collectionFeature.selectTops)
+      ),
+      exhaustMap(([action, collection, tops]) => {
+        // si los tops ya están en el Store
+        if (tops) {
+          return of(collectionActions.loadTopsSuccess({ tops }));
+        }
+
+        // si no, obtenemos los tops
+        return this.colSrv.getTops(collection!.id).pipe(
           map((tops) => collectionActions.loadTopsSuccess({ tops })),
           catchError((error) =>
             of(collectionActions.loadTopsFailure({ error }))
           )
-        )
-      )
+        );
+      })
     )
   );
 
   public loadUsers$ = createEffect(() =>
     this.actions$.pipe(
       ofType(collectionActions.loadUsers),
-      withLatestFrom(this.store.select(collectionFeature.selectCollection)),
-      exhaustMap(([action, collection]) =>
-        this.colSrv.getUsers(collection!.id).pipe(
+      withLatestFrom(
+        this.store.select(collectionFeature.selectCollection),
+        this.store.select(collectionFeature.selectUsers)
+      ),
+      exhaustMap(([action, collection, users]) => {
+        // si los users ya están en el Store
+        if (users.length > 0) {
+          return of(collectionActions.loadUsersSuccess({ users }));
+        }
+
+        // si no, obtenemos los users
+        return this.colSrv.getUsers(collection!.id).pipe(
           map((users) => collectionActions.loadUsersSuccess({ users })),
           catchError((error) =>
             of(collectionActions.loadUsersFailure({ error }))
           )
-        )
-      )
+        );
+      })
     )
   );
 
@@ -183,6 +198,7 @@ export class CollectionEffects {
           return of(collectionActions.loadMediaSuccess({ media }));
         }
 
+        // si no, obtenemos los media
         return this.colSrv.getMedia(collection!.id).pipe(
           map((media) => collectionActions.loadMediaSuccess({ media })),
           catchError((error) =>

@@ -1,5 +1,6 @@
 <ul class="user-card-list">
-  <li *ngFor="let user of users" class="user-card card">
+  @for (user of users; track user.id) {
+  <li class="user-card card">
     <a [routerLink]="['/user', user.id]">
       <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || '/assets/img/profile_user.png'"
         [alt]="'Perfil público de ' + user.displayName" [title]="'Perfil público de ' + user.displayName"
@@ -7,11 +8,21 @@
       <h3 class="user-card-title">{{ user.displayName }}</h3>
     </a>
     <p class="user-card-subtitle">{{ user.location }}</p>
-    <hr *ngIf="showObject" />
-    <div *ngIf="showObject" class="user-card-info">
-      <span *ngIf="type == 'media'"><strong class="color-accent">{{ user.contributions | number:'':'es' }}</strong> media</span>
-      <span *ngIf="type == 'item'"><strong class="color-accent">{{ user.totalItems | number:'':'es' }}</strong> ítems</span>
-      <span *ngIf="type == 'positives'"><strong class="color-accent">+{{ (user.userSummary?.positives || 0) | number:'':'es' }}</strong> positivas</span>
+    @if (showObject) {
+    <hr />
+    <div class="user-card-info">
+      @if (type == 'media') {
+      <span><strong class="color-accent">{{ user.contributions | number:'':'es' }}</strong> media</span>
+      }
+      @if (type == 'item') {
+      <span><strong class="color-accent">{{ user.totalItems | number:'':'es' }}</strong> ítems</span>
+      }
+      @if (type == 'positives') {
+      <span><strong class="color-accent">+{{ (user.userSummary?.positives || 0) | number:'':'es' }}</strong>
+        positivas</span>
+      }
     </div>
+    }
   </li>
+  }
 </ul>

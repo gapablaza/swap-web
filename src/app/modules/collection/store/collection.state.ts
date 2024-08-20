@@ -81,13 +81,29 @@ export const collectionFeature = createFeature({
     })),
     on(
       collectionActions.loadDataSuccess,
-      (state, { collection, lastCollectors, lastMedia }) => ({
-        ...state,
-        collection,
-        lastCollectors,
-        lastMedia,
-        isLoaded: true,
-      })
+      (state, { collection, lastCollectors, lastMedia, reset }) => {
+        if (reset) {
+          return {
+            ...state,
+            collection,
+            lastCollectors,
+            lastMedia,
+            items: [],
+            media: [],
+            tops: null,
+            users: [],
+            isLoaded: true,
+          };
+        }
+
+        return {
+          ...state,
+          collection,
+          lastCollectors,
+          lastMedia,
+          isLoaded: true,
+        };
+      }
     ),
     on(collectionActions.loadDataFailure, (state, { error }) => ({
       ...state,
@@ -449,15 +465,12 @@ export const collectionFeature = createFeature({
         }),
       })
     ),
-    on(
-      collectionActions.itemDecrementFailure,
-      (state, { error, item }) => ({
-        ...state,
-        items: updateItemState(state.items, item.id, { isSaving: false }),
-        error,
-      })
-    ),
-    
+    on(collectionActions.itemDecrementFailure, (state, { error, item }) => ({
+      ...state,
+      items: updateItemState(state.items, item.id, { isSaving: false }),
+      error,
+    })),
+
     // Item remove
     on(collectionActions.itemRemove, (state, { item }) => ({
       ...state,
@@ -494,8 +507,14 @@ export const collectionFeature = createFeature({
         ...state.collection!,
         userData: {
           ...state.collection?.userData!,
-          wishing: items.reduce((total, item) => total + (item.wishlist ? 1 : 0), 0),
-          trading: items.reduce((total, item) => total + (item.tradelist ? 1 : 0), 0),
+          wishing: items.reduce(
+            (total, item) => total + (item.wishlist ? 1 : 0),
+            0
+          ),
+          trading: items.reduce(
+            (total, item) => total + (item.tradelist ? 1 : 0),
+            0
+          ),
         },
       },
       items,
@@ -505,10 +524,9 @@ export const collectionFeature = createFeature({
       ...state,
       isProcessing: false,
       error,
-    })),
-
+    }))
   ),
-  extraSelectors: ({ selectMedia }) => ({
+  extraSelectors: ({ selectItems, selectMedia }) => ({
     selectImages: createSelector(selectMedia, (media) =>
       media.filter((e) => e.mediaTypeId == 1 && e.mediaStatusId == 2)
     ),
@@ -529,5 +547,8 @@ export const collectionFeature = createFeature({
         return [];
       }
     ),
+    selectItemsSorted: createSelector(selectItems, (items) => {
+      return [...items].sort((a, b) => (a.position || 0) - (b.position || 0));
+    }),
   }),
 });
