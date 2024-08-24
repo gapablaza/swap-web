@@ -31,7 +31,7 @@
     {
       "name": "images-cdn-col",
       "urls": [
-        "**/tr:n-il_col_wm/collections/*.*",
+        "**/tr:n-il_col_bwm/prod/collections/*.*",
         "**/t_il_col_wm/collections/*.*",
         "cdn.intercambialaminas.com/collections/*.*"
       ],
@@ -44,7 +44,8 @@
     {
       "name": "images-cdn-media",
       "urls": [
-        "**/t_il_media_wm/prod/collectionMedia/*.*"
+        "**/t_il_media_wm/prod/collectionMedia/*.*",
+        "**/t_il_full_media_wm/prod/collectionMedia/*.*"
       ],
       "cacheConfig": {
         "strategy": "performance",

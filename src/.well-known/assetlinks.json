@@ -1,0 +1,22 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.intercambialaminas.intercambia",
+      "sha256_cert_fingerprints": [
+        "DD:C5:F8:67:6C:61:E0:26:D4:4E:7E:13:EB:A6:28:3A:CA:67:4D:75:DC:C1:18:0B:EE:D5:54:EC:E1:6F:46:F6"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.intercambialaminas.intercambia",
+      "sha256_cert_fingerprints": [
+        "29:0B:E9:C6:53:F6:33:A3:CF:A9:D3:3B:02:6A:B6:9A:33:C4:C2:08:98:4C:6A:11:EE:63:D1:B1:CC:F4:9F:3E"
+      ]
+    }
+  }
+]
