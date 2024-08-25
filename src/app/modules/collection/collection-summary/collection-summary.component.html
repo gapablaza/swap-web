@@ -5,18 +5,16 @@
             <mat-icon>arrow_back</mat-icon> Volver
         </a>
         }
-        <a class="btn" mat-stroked-button (click)="onShare()">
+        <button mat-stroked-button aria-label="Compartir" (click)="onShare()">
             <mat-icon>share</mat-icon> Compartir
-        </a>
+        </button>
     </div>
 
     <div class="collection-content">
         <div class="collection-imagen-container">
             <img class="collection-image" [src]="collection.image || defaultCollectionImage"
-                [alt]="collection.name + ' de ' + publisher.name" crossorigin="anonymous" fetchpriority="high">
-            <!-- <img class="collection-image" [defaultImage]="defaultCollectionImage"
-                [lazyLoad]="collection.image || defaultCollectionImage"
-                [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous"> -->
+                [alt]="collection.name + ' de ' + publisher.name" fetchpriority="high" loading="eager"
+                crossorigin="anonymous">
         </div>
         <div class="collection-data">
             <h1 class="">{{ collection.name }}</h1>

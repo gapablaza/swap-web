@@ -24,7 +24,7 @@
     </div>
 
     <ul class="list-std">
-        @for (col of collections(); track col.id) {
+        @for (col of collections(); track col.id; let i = $index) {
         <li class="list-std-item" [ngClass]="{'completed': col.userData?.completed}">
             <div class="list-item-main">
                 <div class="list-item-content flex-full">
@@ -39,8 +39,17 @@
                         <span>{{ col.publisher.data.name }}</span>
                     </div>
                 </div>
-                <div class="list-item-bg" [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image">
-                    <div></div>
+                <div class="list-item-bg">
+                    <div class="list-item-bg-img">
+                        @if (i < 8) { 
+                        <img [src]="col.image" alt="Portada colección" loading="eager"
+                            crossorigin="anonymous">
+                        } @else {
+                        <img [src]="col.image" alt="Portada colección" loading="lazy" 
+                            crossorigin="anonymous">
+                        }
+                    </div>
+                    <div class="list-item-bg-gradient"></div>
                 </div>
             </div>
         </li>

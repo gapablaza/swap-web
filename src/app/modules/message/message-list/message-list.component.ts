@@ -9,7 +9,6 @@ import { NgClass, DatePipe, AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { combineLatest, map, Subscription } from 'rxjs';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { Store } from '@ngrx/store';
 
 import { MatOptionModule } from '@angular/material/core';
@@ -46,7 +45,6 @@ import { AdLoaderComponent } from 'src/app/shared/components/ad-loader/ad-loader
     MatOptionModule,
     MatProgressSpinnerModule,
     MatSelectModule,
-    LazyLoadImageModule,
 
     AdLoaderComponent,
   ],

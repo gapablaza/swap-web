@@ -3,7 +3,6 @@ import { Component, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import {
   DEFAULT_COLLECTION_IMG,
@@ -25,7 +24,6 @@ import { DaysSinceLoginDirective, SlugifyPipe } from 'src/app/shared';
     MatButtonModule,
     MatIconModule,
 
-    LazyLoadImageModule,
     DaysSinceLoginDirective,
     SlugifyPipe,
   ],

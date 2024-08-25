@@ -26,7 +26,6 @@ import { RouterLink } from '@angular/router';
 import { orderBy } from 'lodash-es';
 import { Gallery, GalleryItem, ImageItem } from 'ng-gallery';
 import { Lightbox, LightboxModule } from 'ng-gallery/lightbox';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { Collection, Media } from 'src/app/core';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
@@ -50,7 +49,6 @@ import { environment } from 'src/environments/environment';
     MatInputModule,
     MatOptionModule,
     MatSelectModule,
-    LazyLoadImageModule,
     LightboxModule,
 
     PaginationComponent,

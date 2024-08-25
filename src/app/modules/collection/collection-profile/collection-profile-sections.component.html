@@ -39,16 +39,12 @@
     @for (user of lastCollectors; track user.id) {
     <li class="user-card card">
         <a [routerLink]="['/user', user.id]">
-            <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || '/assets/img/profile_user.png'"
-                [alt]="'Perfil público de ' + user.displayName" [title]="'Perfil público de ' + user.displayName"
-                class="user-card-image" crossorigin="anonymous">
+            <img [src]="user.image || defaultUserImage" [alt]="'Perfil público de ' + user.displayName"
+                [title]="'Perfil público de ' + user.displayName" class="user-card-image" crossorigin="anonymous"
+                loading="lazy">
             <h3 class="user-card-title">{{ user.displayName }}</h3>
         </a>
         <p class="user-card-subtitle">{{ user.location }}</p>
-        <!-- <hr />
-        <div class="user-card-info">
-        <span appDaysSinceLogin="{{ user.daysSinceLogin }}" [preText]="'Actualizado '"></span>
-        </div> -->
     </li>
     }
     <li class="user-card placeholder-link card">
@@ -76,13 +72,10 @@
     @for (image of lastMedia; track image.id; let i = $index) {
     <div class="images-grid-card">
         <div class="images-grid-content">
-            <img [lazyLoad]="baseImageUrl + image.id"
+            <img [src]="baseImageUrl + image.id"
                 [alt]="image.description + ' en ' + collection.name + ' de ' + collection.publisher.data.name"
-                class="images-grid-image" crossorigin="anonymous">
-            <!-- <p class="images-grid-author">
-                por <a [routerLink]="['/user', image.user?.data?.id]">{{ image.user?.data?.displayName }}</a> el {{
-                image.created * 1000 | date:'dd/MM/yy' }}
-            </p> -->
+                [title]="image.description + ' en ' + collection.name + ' de ' + collection.publisher.data.name"
+                class="images-grid-image" crossorigin="anonymous" loading="lazy">
         </div>
         <p class="images-grid-title">
             #{{ i + 1 }} - {{ image.description }}

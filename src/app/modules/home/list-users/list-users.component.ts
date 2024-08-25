@@ -1,7 +1,6 @@
 import { registerLocaleData, DecimalPipe } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { Component, Input, OnInit } from '@angular/core';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { RouterLink } from '@angular/router';
 
 import { DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
@@ -10,7 +9,10 @@ import { DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
   selector: 'app-list-users',
   templateUrl: './list-users.component.html',
   standalone: true,
-  imports: [RouterLink, LazyLoadImageModule, DecimalPipe],
+  imports: [
+    DecimalPipe,
+    RouterLink, 
+  ],
 })
 export class ListUsersComponent implements OnInit {
   @Input() users: User[] = [];

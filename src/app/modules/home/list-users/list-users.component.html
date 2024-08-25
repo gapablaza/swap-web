@@ -2,9 +2,11 @@
   @for (user of users; track user.id) {
   <li class="user-card card">
     <a [routerLink]="['/user', user.id]">
-      <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || '/assets/img/profile_user.png'"
-        [alt]="'Perfil público de ' + user.displayName" [title]="'Perfil público de ' + user.displayName"
-        class="user-card-image" crossorigin="anonymous">
+      <div class="user-card-image-container">
+        <img [src]="user.image || defaultUserImage" [alt]="'Perfil público de ' + user.displayName"
+          [title]="'Perfil público de ' + user.displayName" class="user-card-image" loading="lazy"
+          crossorigin="anonymous">
+      </div>
       <h3 class="user-card-title">{{ user.displayName }}</h3>
     </a>
     <p class="user-card-subtitle">{{ user.location }}</p>

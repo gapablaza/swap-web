@@ -45,8 +45,7 @@
                     <div class="list-item-main">
                         <div class="list-item-image">
                             <a [routerLink]="['/message', elem.withUserId]">
-                                <img [defaultImage]="defaultUserImage"
-                                    [lazyLoad]="elem.withUserImage || defaultUserImage" alt="Imagen de perfil"
+                                <img [src]="elem.withUserImage || defaultUserImage" alt="Imagen de perfil"
                                     crossorigin="anonymous">
                             </a>
                         </div>

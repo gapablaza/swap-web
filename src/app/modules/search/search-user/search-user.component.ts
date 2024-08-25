@@ -7,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { DEFAULT_USER_PROFILE_IMG, Pagination, User } from 'src/app/core';
 import { SanitizeHtmlPipe } from '../../../shared/pipes/sanitize-html.pipe';
@@ -30,7 +29,6 @@ import { PaginationComponent } from 'src/app/shared/components/pagination/pagina
     MatOptionModule,
     MatSelectModule,
 
-    LazyLoadImageModule,
     DaysSinceLoginDirective,
     SanitizeHtmlPipe,
     PaginationComponent,

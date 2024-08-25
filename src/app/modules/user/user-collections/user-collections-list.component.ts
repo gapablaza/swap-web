@@ -22,7 +22,6 @@ import {
 } from '@angular/material/slide-toggle';
 import { RouterLink } from '@angular/router';
 import { orderBy } from 'lodash-es';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import {
   Collection,
@@ -49,7 +48,6 @@ import { PaginationComponent } from 'src/app/shared/components/pagination/pagina
     MatIconModule,
     MatInputModule,
     MatSlideToggleModule,
-    LazyLoadImageModule,
 
     SanitizeHtmlPipe,
     SlugifyPipe,

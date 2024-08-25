@@ -27,7 +27,6 @@ import {
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { Store } from '@ngrx/store';
 
 import {
@@ -62,7 +61,6 @@ import { userActions } from '../store/user.actions';
     MatIconModule,
     MatMenuModule,
     MatProgressSpinnerModule,
-    LazyLoadImageModule,
 
     DaysSinceLoginDirective,
     SanitizeHtmlPipe,

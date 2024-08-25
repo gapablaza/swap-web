@@ -31,11 +31,16 @@
     text-decoration: none;
     color: black;
 
-    .user-card-image {
-      border-radius: 9999px;
+    .user-card-image-container {
+      position: relative;
       width: 8rem;
       height: 8rem;
-
+    }
+    .user-card-image {
+      border-radius: 9999px;
+      width: 100%;
+      // width: 8rem;
+      // height: 8rem;
     }
   }
 

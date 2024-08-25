@@ -112,6 +112,11 @@ section.collection {
         bottom: -1.5rem;
         right: -1.5rem;
         left: -1.5rem;
+        overflow-y: hidden;
+
+        img {
+          width: 100%;
+        }
       }
 
       .collection-subheader {

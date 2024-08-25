@@ -1,15 +1,15 @@
 <div class="collection-header">
-    <!-- <div class="collection-image-background" [lazyLoad]="collection.image || defaultCollectionImage"></div> -->
-    <div class="collection-image-background"
-        [style]="'background-image: url(' + (collection.image || defaultCollectionImage) + ');'"></div>
+    <div class="collection-image-background">
+        <img class="collection-image" [src]="collection.image"
+            [alt]="collection.name + ' de ' + collection.publisher.data.name"
+            [title]="collection.name + ' de ' + collection.publisher.data.name" fetchpriority="high" loading="eager"
+            crossorigin="anonymous">
+    </div>
     <div class="collection-subheader">
         <div class="collection-image-container">
-            <img class="collection-image" [src]="collection.image || defaultCollectionImage"
-                [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous"
-                fetchpriority="high">
-            <!-- <img class="collection-image" [defaultImage]="defaultCollectionImage"
-          [lazyLoad]="collection.image || defaultCollectionImage"
-          [alt]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous" fetchpriority="high"> -->
+            <img class="collection-image" [src]="collection.image"
+                [alt]="collection.name + ' de ' + collection.publisher.data.name"
+                [title]="collection.name + ' de ' + collection.publisher.data.name" crossorigin="anonymous">
 
             @if (isCompleted) {
             <div class="ribbon up">

@@ -56,19 +56,19 @@
         @for (image of showedImages(); track image.id; let i = $index) {
         <div class="images-grid-card">
             <div class="images-grid-content">
-                <img [lazyLoad]="baseImageUrl + image.id"
+                <img [src]="baseImageUrl + image.id"
                     [alt]="image.description + ' en ' + image.collection?.data?.name + ' de ' + image.collection?.data?.publisher?.data?.name"
-                    class="images-grid-image" crossorigin="anonymous">
+                    class="images-grid-image" loading="lazy" crossorigin="anonymous">
                 <p class="images-grid-author">
                     publicado en <a
                         [routerLink]="['/c', image.collection?.data?.name + ' ' + image.collection?.data?.publisher?.data?.name | slugify, image.collection?.data?.id]">{{
                         image.collection?.data?.name }}</a> el {{ image.created * 1000 | date:'dd/MM/yy' }}
                 </p>
                 <div class="images-grid-details">
-                    <a class="btn" mat-raised-button color="accent"
+                    <button mat-raised-button color="accent"
                         (click)="lightbox.open(i, 'lightbox', {panelClass: 'fullscreen'})">
                         <mat-icon>zoom_in</mat-icon> Zoom
-                    </a>
+                    </button>
                 </div>
                 <div (click)="toggleLike(image)" class="images-grid-likes" [ngClass]="{'likes': image.likes }">
                     <mat-icon aria-hidden="false" aria-label="Number of likes">favorite</mat-icon>

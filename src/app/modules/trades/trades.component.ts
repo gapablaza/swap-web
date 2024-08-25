@@ -16,7 +16,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Store } from '@ngrx/store';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { SlugifyPipe } from '../../shared/pipes/slugify.pipe';
 import { DaysSinceLoginDirective } from '../../shared/directives/days-since-login.directive';
@@ -53,7 +52,6 @@ export interface IFilters {
     MatProgressSpinnerModule,
     MatSelectModule,
 
-    LazyLoadImageModule,
     SlugifyPipe,
     DaysSinceLoginDirective,
     TradesItemComponent,

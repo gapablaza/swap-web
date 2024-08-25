@@ -1,22 +1,28 @@
+@let collection = collection_();
+@let publisher = collection_().publisher.data;
 <div class="row-item collection-item">
     <div class="row-item-image">
-        <a [routerLink]="['/c', collection.name + ' ' + collection.publisher.data.name | slugify, collection.id]"
+        <a [routerLink]="['/c', collection.name + ' ' + publisher.name | slugify, collection.id]"
             class="row-item-image-url">
-            <img [defaultImage]="defaultCollectionImage" [lazyLoad]="collection.image"
-                [alt]="collection.name + ' de ' + collection.publisher.data.name"
-                [title]="collection.name + ' de ' + collection.publisher.data.name" width="400" height="510"
-                crossorigin="anonymous">
+            @if (priority()) {
+            <img [src]="collection.image" [alt]="collection.name + ' de ' + publisher.name"
+                [title]="collection.name + ' de ' + publisher.name" width="400" height="510" fetchpriority="high"
+                loading="eager" crossorigin="anonymous">
+            } @else {
+            <img [src]="collection.image" [alt]="collection.name + ' de ' + publisher.name"
+                [title]="collection.name + ' de ' + publisher.name" width="400" height="510" fetchpriority="auto"
+                loading="lazy" crossorigin="anonymous">
+            }
         </a>
     </div>
     <div class="row-item-text">
         <h3 class="meta-title">
-            <a [routerLink]="['/c', collection.name + ' ' + collection.publisher.data.name | slugify, collection.id]">
+            <a [routerLink]="['/c', collection.name + ' ' + publisher.name | slugify, collection.id]">
                 {{ collection.name }}
             </a>
         </h3>
         <p class="meta-subtitle">
-            <!-- <a href="">{{ collection.publisher.data.name }}</a> -->
-            <span>{{ collection.publisher.data.name }}</span>
+            <span>{{ publisher.name }}</span>
             <span>, {{ collection.year }}</span>
         </p>
     </div>

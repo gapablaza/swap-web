@@ -6,7 +6,6 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { DEFAULT_USER_PROFILE_IMG, Evaluation } from 'src/app/core';
 
@@ -21,7 +20,6 @@ import { DEFAULT_USER_PROFILE_IMG, Evaluation } from 'src/app/core';
 
     MatDialogModule,
     MatButtonModule,
-    LazyLoadImageModule,
   ],
 })
 export class UserEvaluationsPreviousComponent {

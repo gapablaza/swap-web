@@ -65,9 +65,8 @@
 
                 <div class="list-item-image">
                     <a [routerLink]="['/user', evaluation.user.data.id]">
-                        <img [defaultImage]="defaultUserImage"
-                            [lazyLoad]="evaluation.user.data.image || defaultUserImage" alt="Imagen de Perfil"
-                            crossorigin="anonymous">
+                        <img [src]="evaluation.user.data.image || defaultUserImage" alt="Imagen de Perfil"
+                            loading="lazy" crossorigin="anonymous">
                     </a>
                 </div>
 
@@ -95,16 +94,18 @@
                     }">
                         <p>{{ evaluation.description }}</p>
                         @if ((authUser().id) && (authUser().id != evaluation.user.data.id)) {
-                        <a class="btn" mat-icon-button (click)="showReportDialog(evaluation.id)">
+                        <button aria-label="Reportar evaluación" mat-icon-button
+                            (click)="showReportDialog(evaluation.id)">
                             <mat-icon class="only-icon-button">priority_high</mat-icon>
-                        </a>
+                        </button>
                         }
                     </div>
                     @let prevQ = evaluation.previousEvaluationsData?.length || 0;
                     @if (prevQ > 0 && evaluation.previousEvaluationsData) {
                     <div class="list-item-action">
-                        <a (click)="showPreviousEvaluations(evaluation.previousEvaluationsData)">Ver evaluaciones
-                            previas: {{ prevQ }}</a>
+                        <button mat-button (click)="showPreviousEvaluations(evaluation.previousEvaluationsData)">Ver
+                            evaluaciones
+                            previas: {{ prevQ }}</button>
                     </div>
                     }
                     @if (evaluation.evaluationTypeId == 1) {

@@ -7,7 +7,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { Collection, DEFAULT_COLLECTION_IMG, Pagination } from 'src/app/core';
 import { SlugifyPipe } from '../../../shared/pipes/slugify.pipe';
@@ -29,7 +28,6 @@ import { PaginationComponent } from 'src/app/shared/components/pagination/pagina
     MatSelectModule,
     MatOptionModule,
 
-    LazyLoadImageModule,
     SlugifyPipe,
     PaginationComponent,
   ],

@@ -83,16 +83,14 @@ ul.list-std {
   }
 
   .list-item-action {
-    a {
+    a, button {
       text-decoration: none;
       margin: -0.75rem 2rem 1rem;
       text-align: right;
       font-style: italic;
-      font-size: 0.9rem;
       color: var(--text-secondary);
       display: block;
       float: right;
-      cursor: pointer;
     }
   }
 
@@ -123,17 +121,31 @@ ul.list-std {
     background-size: 180px auto;
     background-repeat: no-repeat;
     border-top-right-radius: 4px;
+    overflow-y: hidden;
 
     @media (min-width: 576px) {
       width: 235px;
       background-size: 235px auto;
     } 
 
-    div {
+    .list-item-bg-img {
+      position: absolute;
+      z-index: 10;
+      width: 100%;
+
+      img {
+        width: 100%;
+      }
+    }
+
+    .list-item-bg-gradient {
       background: -webkit-gradient(linear, left top, right top, color-stop(0, #fff), color-stop(50%, rgba(255, 255, 255, .25)), to(rgba(255, 255, 255, 0)));
       background: linear-gradient(to right, #fff 0, rgba(255, 255, 255, .25) 50%, rgba(255, 255, 255, 0) 100%);
       width: 100%;
       height: 100%;
+
+      position: absolute;
+      z-index: 20;
     }
   }
 

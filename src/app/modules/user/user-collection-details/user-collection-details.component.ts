@@ -29,14 +29,16 @@ import { userActions } from '../store/user.actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
+    AsyncPipe,
+    DatePipe,
+    RouterLink,
+
+    MatButtonModule,
     MatDialogModule,
     MatProgressSpinnerModule,
-    MatButtonModule,
-    RouterLink,
-    DatePipe,
+    
     SanitizeHtmlPipe,
     SlugifyPipe,
-    AsyncPipe,
   ],
 })
 export class UserCollectionDetailsComponent implements OnInit {

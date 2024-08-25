@@ -19,5 +19,11 @@
   </mat-sidenav-content>
 </mat-sidenav-container>
 } @else {
-<div>Initializing...</div>
+<div class="preload" style="display: flex; flex-direction: column; flex-grow: 1; min-height: 100vh;">
+  <div class="preload-content"
+    style="position: absolute; top: calc(50% - 1rem); left: 0; right: 0; text-align: center;">
+    <h1>INTERCAMBIA</h1>
+    <span>Esto podría tomar algunos momentos...</span>
+  </div>
+</div>
 }

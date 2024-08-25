@@ -11,8 +11,7 @@
                     <mat-icon>keyboard_backspace</mat-icon>
                 </button>
                 <div class="chat-header-user">
-                    <img [defaultImage]="defaultUserImage" [lazyLoad]="otherUser.image || defaultUserImage"
-                        alt="Imagen de Perfil" crossorigin="anonymous">
+                    <img [src]="otherUser.image || defaultUserImage" alt="Imagen de Perfil" crossorigin="anonymous">
                     <h3>{{ otherUser.displayName }}</h3>
                 </div>
                 <button class="last" mat-icon-button [matMenuTriggerFor]="menu">
@@ -28,20 +27,20 @@
             <div class="chat-content">
                 <div class="chat-messages">
                     @for (message of usersMessages$ | async; track message.timestamp) {
-                        @if (message.newDate) {
-                        <div class="chat-date-separator">
-                            <div class="chat-date-separator-line"></div>
-                            <span>{{ message.timestamp | date:'dd/MM/YYYY' }}</span>
-                            <div class="chat-date-separator-line"></div>
+                    @if (message.newDate) {
+                    <div class="chat-date-separator">
+                        <div class="chat-date-separator-line"></div>
+                        <span>{{ message.timestamp | date:'dd/MM/YYYY' }}</span>
+                        <div class="chat-date-separator-line"></div>
+                    </div>
+                    }
+                    <div class="chat-message"
+                        [ngClass]="message.fromUserId == (authUser$ | async)?.id ? 'me' : 'other'">
+                        <div class="chat-message-text">
+                            <span>{{ message.body }}</span>
                         </div>
-                        }
-                        <div class="chat-message"
-                            [ngClass]="message.fromUserId == (authUser$ | async)?.id ? 'me' : 'other'">
-                            <div class="chat-message-text">
-                                <span>{{ message.body }}</span>
-                            </div>
-                            <div class="chat-message-date">{{ message.timestamp | date:'HH:mm' }}</div>
-                        </div>
+                        <div class="chat-message-date">{{ message.timestamp | date:'HH:mm' }}</div>
+                    </div>
                     }
 
                     @if (!(usersMessages$ | async)?.length) {

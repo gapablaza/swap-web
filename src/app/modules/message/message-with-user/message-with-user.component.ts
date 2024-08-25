@@ -8,7 +8,6 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { combineLatest, map } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -26,16 +25,16 @@ import { messagesActions } from '../store/message.actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
+    AsyncPipe,
+    DatePipe,
+    FormsModule,
     NgClass,
     RouterLink,
-    FormsModule,
+
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
     MatProgressSpinnerModule,
-    DatePipe,
-    AsyncPipe,
-    LazyLoadImageModule,
   ],
 })
 export class MessageWithUserComponent implements OnInit, OnDestroy {

@@ -10,8 +10,7 @@
                     <li class="list-std-item" [ngClass]="{'pro-account': evaluation.user.data.accountTypeId == 2}">
                         <div class="list-item-main">
                             <div class="list-item-image">
-                                <img [defaultImage]="defaultUserImage"
-                                    [lazyLoad]="evaluation.user.data.image || defaultUserImage" alt="Imagen de Perfil"
+                                <img [src]="evaluation.user.data.image || defaultUserImage" alt="Imagen de Perfil"
                                     crossorigin="anonymous">
                             </div>
 

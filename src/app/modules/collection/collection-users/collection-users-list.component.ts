@@ -18,7 +18,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import { orderBy } from 'lodash-es';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { Collection, DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
 import { DaysSinceLoginDirective, SanitizeHtmlPipe } from 'src/app/shared';
@@ -41,7 +40,6 @@ import { PaginationComponent } from 'src/app/shared/components/pagination/pagina
     MatFormFieldModule,
     MatOptionModule,
     MatSelectModule,
-    LazyLoadImageModule,
 
     PaginationComponent,
     DaysSinceLoginDirective,

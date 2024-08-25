@@ -13,7 +13,6 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { RouterLink } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
@@ -30,7 +29,7 @@ import {
 } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 
-import { DEFAULT_USER_PROFILE_IMG, Evaluation, SEOService } from 'src/app/core';
+import { Evaluation, SEOService } from 'src/app/core';
 import { authFeature } from '../../auth/store/auth.state';
 import { userFeature } from '../store/user.state';
 import { userActions } from '../store/user.actions';
@@ -60,15 +59,12 @@ import { UserEvaluationsListComponent } from './user-evaluations-list.component'
     MatOptionModule,
     MatProgressSpinnerModule,
     MatSelectModule,
-    LazyLoadImageModule,
 
     UserSummaryComponent,
     UserEvaluationsListComponent,
   ],
 })
 export class UserEvaluationsComponent implements OnInit, OnDestroy {
-  defaultUserImage = DEFAULT_USER_PROFILE_IMG;
-
   user$ = this.store.select(userFeature.selectUser);
   isAuth$ = this.store.select(authFeature.selectIsAuth);
 

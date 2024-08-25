@@ -12,7 +12,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { LinebreaksPipe } from 'src/app/shared';
 import { newCollectionFeature } from '../store/new-collection.state';
@@ -25,18 +24,17 @@ import { newCollectionActions } from '../store/new-collection.actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    NgClass,
-    RouterLink,
+    AsyncPipe,
     DatePipe,
     FormsModule,
+    NgClass,
     ReactiveFormsModule,
-    AsyncPipe,
+    RouterLink,
 
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
     MatProgressSpinnerModule,
-    LazyLoadImageModule,
 
     LinebreaksPipe,
   ],

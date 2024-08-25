@@ -15,13 +15,14 @@ import { HomePlaceholderComponent } from './home-placeholder.component';
   standalone: true,
   providers: [HomeStore],
   imports: [
-    NgIf,
     AsyncPipe,
-    ListCollectionsComponent,
-    ListUsersComponent,
-    ListResaltedCollectionsComponent,
-    HomePlaceholderComponent,
+    NgIf,
+
     HomeFeedsComponent,
+    HomePlaceholderComponent,
+    ListCollectionsComponent,
+    ListResaltedCollectionsComponent,
+    ListUsersComponent,
   ],
 })
 export class HomeComponent implements OnInit {

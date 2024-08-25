@@ -3,7 +3,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { DEFAULT_USER_PROFILE_IMG } from 'src/app/core';
 import { authFeature } from '../../auth/store/auth.state';
@@ -14,7 +13,7 @@ import { authActions } from '../../auth/store/auth.actions';
   templateUrl: './sidenav-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [RouterLink, LazyLoadImageModule, MatIconModule, AsyncPipe],
+  imports: [AsyncPipe, RouterLink, MatIconModule],
 })
 export class SidenavListComponent {
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;

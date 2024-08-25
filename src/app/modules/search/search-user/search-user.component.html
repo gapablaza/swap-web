@@ -24,13 +24,18 @@
     </div>
 
     <ul class="list-std">
-        @for (user of users(); track user.id) {
+        @for (user of users(); track user.id; let i = $index) {
         <li class="list-std-item" [ngClass]="{'pro-account': user.accountTypeId == 2}">
             <div class="list-item-main">
                 <div class="list-item-image">
                     <a [routerLink]="['/user', user.id]">
-                        <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
-                            alt="Imagen de Perfil" crossorigin="anonymous">
+                        @if (i < 8) {
+                        <img [src]="user.image || defaultUserImage"
+                            alt="Imagen de Perfil" loading="eager" crossorigin="anonymous">
+                        } @else {
+                        <img [src]="user.image || defaultUserImage"
+                            alt="Imagen de Perfil" loading="lazy" crossorigin="anonymous">
+                        }
                     </a>
                 </div>
 

@@ -3,16 +3,14 @@
   <div class="user-info card">
 
     <div class="user-header">
-      <!-- <div class="user-image-background" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"> -->
-      <div class="user-image-background"
-        [style]="'background-image: url(' + ((user$ | async)?.image || defaultUserImage) + ');'">
+      <div class="user-image-background">
+        <img class="user-image" [src]="(user$ | async)?.image || defaultUserImage" [alt]="(user$ | async)?.displayName"
+          crossorigin="anonymous" fetchpriority="high" loading="eager">
       </div>
       <div class="user-subheader">
         <div class="user-image-container">
           <img class="user-image" [src]="(user$ | async)?.image || defaultUserImage"
-            [alt]="(user$ | async)?.displayName" crossorigin="anonymous" fetchpriority="high">
-          <!-- <img class="user-image" [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
-              [alt]="user.displayName" crossorigin="anonymous"> -->
+            [alt]="(user$ | async)?.displayName" crossorigin="anonymous">
           @if ((user$ | async)?.accountTypeId == 2) {
           <span class="pro-label">PRO</span>
           }
@@ -28,9 +26,9 @@
             <mat-icon>edit</mat-icon> Editar
           </a>
           }
-          <a class="btn" mat-stroked-button [matMenuTriggerFor]="menu">
+          <button mat-stroked-button aria-label="Opciones" [matMenuTriggerFor]="menu">
             <mat-icon class="only-icon-button">more_vert</mat-icon>
-          </a>
+          </button>
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onShare()">Compartir</button>
             @if ((isAuth$ | async) && !isSameUser && !(user$ | async)?.inBlacklist) {
@@ -124,8 +122,8 @@
       <div class="trades-collection">
         <div class="trades-collection-info">
           <a [routerLink]="['/c', col.name + ' ' + col.publisherName | slugify, col.id]">
-            <img [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image || defaultCollectionImage"
-              [alt]="col.name + ' de ' + col.publisherName" crossorigin="anonymous">
+            <img [src]="col.image" [alt]="col.name + ' de ' + col.publisherName"
+              [title]="col.name + ' de ' + col.publisherName" crossorigin="anonymous" loading="lazy">
             <span>{{ col.name }}</span>
           </a>
         </div>
@@ -234,11 +232,12 @@
   <div class="user-info card">
 
     <div class="user-header">
-      <div class="user-image-background" style="background-image: url('/assets/img/profile_user.png');">
+      <div class="user-image-background">
+        <img class="user-image" [src]="defaultUserImage" fetchpriority="high" loading="eager">
       </div>
       <div class="user-subheader">
         <div class="user-image-container">
-          <img class="user-image" src="/assets/img/profile_user.png">
+          <img class="user-image" [src]="defaultUserImage">
         </div>
         <div class="user-actions">
           <a class="btn" mat-stroked-button aria-label="Opciones">

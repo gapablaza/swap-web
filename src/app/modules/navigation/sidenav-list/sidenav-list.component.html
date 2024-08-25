@@ -20,9 +20,8 @@
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
             <a [routerLink]="['./user/', (authUser$ | async)?.id]" class="vertical-navigation-item">
-              <img class="vertical-navigation-user-image" [defaultImage]="defaultUserImage"
-                [lazyLoad]="(authUser$ | async)?.image || defaultUserImage" [alt]="(authUser$ | async)?.displayName"
-                crossorigin="anonymous">
+              <img class="vertical-navigation-user-image" [src]="(authUser$ | async)?.image || defaultUserImage"
+                [alt]="(authUser$ | async)?.displayName" crossorigin="anonymous">
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">
                   <span>Mi Perfil</span>
@@ -111,7 +110,7 @@
 
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
-            <a style="cursor:pointer" (click)="onLogout()" class="vertical-navigation-item">
+            <a routerLink="/" (click)="onLogout()" class="vertical-navigation-item">
               <mat-icon>logout</mat-icon>
               <div class="vertical-navigation-item-title-wrapper">
                 <div class="vertical-navigation-item-title">

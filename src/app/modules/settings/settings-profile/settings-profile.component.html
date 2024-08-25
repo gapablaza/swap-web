@@ -3,7 +3,7 @@
     <div class="settings-profile card">
 
         <div class="avatar-preview">
-            <img class="" [defaultImage]="defaultUserImage" [lazyLoad]="(authUser$ | async)?.image || defaultUserImage"
+            <img class="" [src]="(authUser$ | async)?.image || defaultUserImage"
                 [alt]="(authUser$ | async)?.displayName" crossorigin="anonymous">
             <div class="avatar-actions">
                 <a class="btn" mat-raised-button color="accent" (click)="onNewImage()">

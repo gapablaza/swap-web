@@ -2,9 +2,9 @@
 <div class="controls-std">
     <div class="controls-std-main">
         <div class="controls-std-settings">
-            <a class="btn" mat-stroked-button color="primary" (click)="showFilters = !showFilters">
+            <button mat-stroked-button color="primary" (click)="showFilters = !showFilters">
                 <mat-icon>filter_list</mat-icon> Filtros
-            </a>
+            </button>
         </div>
     </div>
     <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
@@ -34,13 +34,18 @@
 
 @if (managedUsers().length) {
 <ul class="list-std">
-    @for (user of managedUsers(); track user.id) {
+    @for (user of managedUsers(); track user.id; let i = $index) {
     <li class="list-std-item" [ngClass]="{'pro-account': user.accountTypeId == 2}">
         <div class="list-item-main">
             <div class="list-item-image">
                 <a [routerLink]="['/user', user.id]">
-                    <img [defaultImage]="defaultUserImage" [lazyLoad]="user.image || defaultUserImage"
-                        alt="Imagen de perfil" crossorigin="anonymous">
+                    @if (i < 8) { 
+                    <img [src]="user.image || defaultUserImage" alt="Imagen de perfil" loading="eager"
+                        crossorigin="anonymous">
+                    } @else {
+                    <img [src]="user.image || defaultUserImage" alt="Imagen de perfil" loading="lazy"
+                        crossorigin="anonymous">
+                    }
                 </a>
             </div>
             <div class="list-item-content flex-full">

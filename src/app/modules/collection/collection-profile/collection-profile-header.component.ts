@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -14,13 +15,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 
-import { Collection, DEFAULT_COLLECTION_IMG } from 'src/app/core';
+import { Collection } from 'src/app/core';
 
 @Component({
   selector: 'app-collection-profile-header',
   templateUrl: 'collection-profile-header.component.html',
   standalone: true,
-  imports: [RouterLink, MatButtonModule, MatIconModule, MatMenuModule, MatDialogModule],
+  imports: [
+    NgOptimizedImage,
+    RouterLink,
+
+    MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatMenuModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionProfileHeaderComponent {
@@ -33,7 +42,6 @@ export class CollectionProfileHeaderComponent {
   @Output() onShare = new EventEmitter<void>();
 
   @ViewChild('confirmDeleteDialog') deleteDialog!: TemplateRef<any>;
-  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
   dialog = inject(MatDialog);
 
   get isCollecting() {

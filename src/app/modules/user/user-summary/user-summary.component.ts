@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,7 +21,6 @@ import { AdLoaderComponent } from 'src/app/shared/components/ad-loader/ad-loader
 
     MatButtonModule,
     MatIconModule,
-    LazyLoadImageModule,
 
     AdLoaderComponent,
   ],

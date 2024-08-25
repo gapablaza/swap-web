@@ -1,7 +1,8 @@
 <div class="list-of-collections">
   <div class="horizontal-card-grid">
-    @for (col of collections; track col.id) {
-    <app-collection-item [collection]="col"></app-collection-item>
+    @for (col of collections; track col.id; let i = $index) {
+    @let priorize = i < 2 ? true : false; 
+    <app-collection-item [collection]="col" [priority]="priorize" />
     }
   </div>
 </div>

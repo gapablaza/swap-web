@@ -5,16 +5,15 @@
             <mat-icon>arrow_back</mat-icon> Volver
         </a>
         }
-        <a class="btn" mat-stroked-button (click)="onShare()">
+        <button mat-stroked-button aria-label="Compartir" (click)="onShare()">
             <mat-icon>share</mat-icon> Compartir
-        </a>
+        </button>
     </div>
 
     <div class="user-content">
         <div class="user-imagen-container">
-            <img class="user-image" [defaultImage]="defaultUserImage"
-                [lazyLoad]="(user$ | async)?.image || defaultUserImage" [alt]="(user$ | async)?.displayName"
-                crossorigin="anonymous">
+            <img class="user-image" [src]="(user$ | async)?.image || defaultUserImage"
+                [alt]="(user$ | async)?.displayName" fetchpriority="high" loading="eager" crossorigin="anonymous">
         </div>
         <div class="user-data">
             @if ((user$ | async)?.accountTypeId == 2) {

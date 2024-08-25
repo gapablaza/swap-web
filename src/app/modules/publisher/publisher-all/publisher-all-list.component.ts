@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { Publisher } from 'src/app/core';
 import { SlugifyPipe } from 'src/app/shared';
@@ -27,12 +26,13 @@ interface sortOption {
     FormsModule,
     NgClass,
     RouterLink,
+
     MatButtonModule,
     MatIconModule,
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
-    LazyLoadImageModule,
+    
     SlugifyPipe,
   ],
 })

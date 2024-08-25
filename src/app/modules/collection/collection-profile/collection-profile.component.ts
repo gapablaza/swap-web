@@ -1,4 +1,8 @@
-import { registerLocaleData, AsyncPipe } from '@angular/common';
+import {
+  registerLocaleData,
+  AsyncPipe,
+  NgOptimizedImage,
+} from '@angular/common';
 import es from '@angular/common/locales/es';
 import {
   ChangeDetectionStrategy,
@@ -9,9 +13,14 @@ import {
 } from '@angular/core';
 import { combineLatest, filter, Subscription, tap } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { Store } from '@ngrx/store';
 
-import { SEOService } from 'src/app/core';
+import {
+  DEFAULT_COLLECTION_IMG,
+  DEFAULT_USER_PROFILE_IMG,
+  SEOService,
+} from 'src/app/core';
 import { SlugifyPipe, UIService } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
 import { collectionFeature } from '../store/collection.state';
@@ -28,8 +37,12 @@ import { CollectionProfileTradesComponent } from './collection-profile-trades.co
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    MatIconModule,
     AsyncPipe,
+    NgOptimizedImage,
+
+    MatButtonModule,
+    MatIconModule,
+
     CollectionProfileHeaderComponent,
     CollectionProfileSectionsComponent,
     CollectionProfileFooterComponent,
@@ -45,6 +58,8 @@ export class CollectionProfileComponent implements OnInit, OnDestroy {
 
   isProcessing$ = this.store.select(collectionFeature.selectIsProcessing);
   isLoaded$ = this.store.select(collectionFeature.selectIsLoaded);
+  defaultCollectionImage = DEFAULT_COLLECTION_IMG;
+  defaultProfileImage = DEFAULT_USER_PROFILE_IMG;
   subs: Subscription = new Subscription();
 
   constructor(

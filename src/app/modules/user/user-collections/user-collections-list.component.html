@@ -94,8 +94,11 @@
                     </div>
                     }
                 </div>
-                <div class="list-item-bg" [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image">
-                    <div></div>
+                <div class="list-item-bg">
+                    <div class="list-item-bg-img">
+                        <img [src]="col.image" alt="Portada colección" loading="lazy">
+                    </div>
+                    <div class="list-item-bg-gradient"></div>
                 </div>
                 @if (showEditButton()) {
                 <a class="btn" mat-raised-button color="accent"

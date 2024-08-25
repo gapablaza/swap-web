@@ -26,7 +26,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { Store } from '@ngrx/store';
@@ -44,9 +43,9 @@ import { authActions } from '../../auth/store/auth.actions';
   templateUrl: './settings-profile.component.html',
   standalone: true,
   imports: [
+    AsyncPipe,
     FormsModule,
     ReactiveFormsModule,
-    AsyncPipe,
 
     MatButtonModule,
     MatDialogModule,
@@ -57,7 +56,6 @@ import { authActions } from '../../auth/store/auth.actions';
     MatSlideToggleModule,
 
     GoogleMapsModule,
-    LazyLoadImageModule,
   ],
 })
 export class SettingsProfileComponent implements OnInit, OnDestroy {

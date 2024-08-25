@@ -36,13 +36,19 @@
 
     @if (managedPublishers().length) {
     <ul class="list-std">
-        @for (elem of managedPublishers(); track elem.id) {
+        @for (elem of managedPublishers(); track elem.id; let i = $index) {
         <li class="list-std-item">
             <div class="list-item-main">
                 <div class="list-item-image">
                     @if (elem.image) {
                     <a [routerLink]="['./', elem.id, elem.name | slugify]">
-                        <img [lazyLoad]="elem.image" alt="Logo de la editorial" crossorigin="anonymous">
+                        @if (elem.image && (i < 8)) { 
+                            <img [src]="elem.image" alt="Logo de la editorial" loading="eager"
+                            crossorigin="anonymous">
+                        } @else {
+                            <img [src]="elem.image" alt="Logo de la editorial" loading="lazy" 
+                            crossorigin="anonymous">
+                        }
                     </a>
                     }
                 </div>

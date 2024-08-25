@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { RouterLink } from '@angular/router';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
+
 import { DEFAULT_USER_PROFILE_IMG, User } from 'src/app/core';
 import { DaysSinceLoginDirective, SanitizeHtmlPipe } from 'src/app/shared';
 
@@ -23,7 +23,6 @@ import { DaysSinceLoginDirective, SanitizeHtmlPipe } from 'src/app/shared';
     MatIconModule,
     MatInputModule,
     MatFormFieldModule,
-    LazyLoadImageModule,
 
     SanitizeHtmlPipe,
     DaysSinceLoginDirective,
@@ -40,7 +39,6 @@ export class ItemUsersListComponent {
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
   showFilters = false;
 
-//   onTradingFilter() {}
   onClearTradingFilter(): void {
     this.searchText.set('');
   }

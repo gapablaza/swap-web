@@ -25,7 +25,6 @@ import { RouterLink } from '@angular/router';
 import { orderBy } from 'lodash-es';
 import { Gallery, GalleryItem, ImageItem } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { Media } from 'src/app/core';
 import { SlugifyPipe } from 'src/app/shared';
@@ -49,7 +48,6 @@ import { environment } from 'src/environments/environment';
     MatIconModule,
     MatInputModule,
     MatSelectModule,
-    LazyLoadImageModule,
 
     SlugifyPipe,
     PaginationComponent,

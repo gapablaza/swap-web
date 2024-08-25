@@ -2,13 +2,15 @@
 <div class="pagination-wrapper">
     <ul class="pagination">
         <li class="pagination-prev">
-            <a role="button" (click)="(pageSelected() > 1) && onPageChange('' + (pageSelected() - 1))"
+            <button aria-label="Página anterior"
+                (click)="(pageSelected() > 1) && onPageChange('' + (pageSelected() - 1))"
                 [disabled]="pageSelected() == 1" class="btn" mat-raised-button tabindex="-1">
                 <mat-icon class="only-icon-button">navigate_before</mat-icon>
-            </a>
+            </button>
         </li>
         <li>
-            <select name="page-selected" (change)="onPageChange(selectPage.value)" #selectPage>
+            <select aria-label="Seleccionar página" name="page-selected" (change)="onPageChange(selectPage.value)"
+                #selectPage>
                 @for (item of pageNumbers(); track itemId($index, item)) {
                 <option [value]="item" [selected]="(item) == pageSelected()">
                     Página {{ item }} de {{ lastPage() }}
@@ -17,10 +19,11 @@
             </select>
         </li>
         <li class="pagination-next">
-            <a role="button" (click)="(pageSelected() != lastPage()) && onPageChange('' + (pageSelected() + 1))"
+            <button aria-label="Página siguiente"
+                (click)="(pageSelected() != lastPage()) && onPageChange('' + (pageSelected() + 1))"
                 [disabled]="pageSelected() == lastPage()" class="btn" mat-raised-button>
                 <mat-icon class="only-icon-button">navigate_next</mat-icon>
-            </a>
+            </button>
         </li>
     </ul>
 </div>

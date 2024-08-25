@@ -110,6 +110,11 @@ section.user {
         background-size: cover;
         filter: blur(4px);
         opacity: 0.6;
+        overflow-y: hidden;
+
+        img {
+          width: 100%;
+        }
       }
 
       .user-subheader {
@@ -295,7 +300,7 @@ section.user {
     // margin: 0.25rem 0 0.75rem;
     position: relative;
 
-    a {
+    button {
       position: absolute;
       top: -12px;
       right: -42px;

@@ -1,15 +1,15 @@
 <div class="list-of-collections">
   <div class="mini-card-grid">
     @for (col of collections; track col.id) {
+    @let publisher = col.publisher.data;
     <div class="mini-card module">
-      <a [routerLink]="['/c', col.name + ' ' + col.publisher.data.name | slugify, col.id]">
-        <img [defaultImage]="defaultCollectionImage" [lazyLoad]="col.image"
-          [alt]="col.name + ' de ' + col.publisher.data.name" [title]="col.name + ' de ' + col.publisher.data.name"
-          height="250" class="mini-card-image" crossorigin="anonymous">
+      <a [routerLink]="['/c', col.name + ' ' + publisher.name | slugify, col.id]">
+        <img [src]="col.image" [alt]="col.name + ' de ' + publisher.name" [title]="col.name + ' de ' + publisher.name"
+          loading="lazy" class="mini-card-image" crossorigin="anonymous">
         <h3 class="mini-card-title">{{ col.name }}</h3>
       </a>
       <div class="mini-card-info">
-        <a href="">{{ col.publisher.data.name }}</a>
+        <a href="">{{ publisher.name }}</a>
         <span>, {{ col.year }}</span>
       </div>
     </div>

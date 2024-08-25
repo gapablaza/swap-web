@@ -2,7 +2,7 @@
     @if (isLoaded$ | async) {
     <section class="settings">
         <div class="settings-header">
-            <img class="" [defaultImage]="defaultUserImage" [lazyLoad]="(authUser$ | async)?.image || defaultUserImage"
+            <img class="" [src]="(authUser$ | async)?.image || defaultUserImage"
                 [alt]="(authUser$ | async)?.displayName" crossorigin="anonymous">
             <div class="settings-title">
                 <h1>

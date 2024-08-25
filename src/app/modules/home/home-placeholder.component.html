@@ -1,7 +1,8 @@
 <section class="home">
     <div class="site-title">
         <div class="site-title-main">
-            <img src="/assets/img/logo-icon-40x40.svg" alt="Logo Intercambialaminas.com">
+            <img src="/assets/img/logo-icon-40x40.svg" title="Logo Intercambialaminas.com"
+                alt="Logo Intercambialaminas.com" width="60" height="60">
             <h1>Intercambia stickers y completa tus álbumes</h1>
         </div>
         <p>Encuentra fácilmente con quién cambiar láminas / stickers / figuritas / pegatinas / cromos / estampas /
@@ -18,8 +19,8 @@
             <div class="row-item collection-item">
                 <div class="row-item-image">
                     <a class="row-item-image-url">
-                        <img src="/assets/img/profile_collection.jpeg" alt="Imagen de ejemplo para una colección"
-                            title="Imagen de ejemplo para una colección" width="400" height="510">
+                        <img [src]="defaultCollectionImage" alt="Imagen de ejemplo para una colección"
+                            title="Imagen de ejemplo para una colección" width="400" height="510" priority>
                     </a>
                 </div>
                 <div class="row-item-text">
@@ -36,8 +37,8 @@
             <div class="row-item collection-item">
                 <div class="row-item-image">
                     <a class="row-item-image-url">
-                        <img src="/assets/img/profile_collection.jpeg" alt="Imagen de ejemplo para una colección"
-                            title="Imagen de ejemplo para una colección" width="400" height="510">
+                        <img [src]="defaultCollectionImage" alt="Imagen de ejemplo para una colección"
+                            title="Imagen de ejemplo para una colección" width="400" height="510" priority>
                     </a>
                 </div>
                 <div class="row-item-text">
@@ -54,8 +55,8 @@
             <div class="row-item collection-item">
                 <div class="row-item-image">
                     <a class="row-item-image-url">
-                        <img src="/assets/img/profile_collection.jpeg" alt="Imagen de ejemplo para una colección"
-                            title="Imagen de ejemplo para una colección" width="400" height="510">
+                        <img [src]="defaultCollectionImage" alt="Imagen de ejemplo para una colección"
+                            title="Imagen de ejemplo para una colección" width="400" height="510" priority>
                     </a>
                 </div>
                 <div class="row-item-text">
@@ -72,8 +73,8 @@
             <div class="row-item collection-item">
                 <div class="row-item-image">
                     <a class="row-item-image-url">
-                        <img src="/assets/img/profile_collection.jpeg" alt="Imagen de ejemplo para una colección"
-                            title="Imagen de ejemplo para una colección" width="400" height="510">
+                        <img [src]="defaultCollectionImage" alt="Imagen de ejemplo para una colección"
+                            title="Imagen de ejemplo para una colección" width="400" height="510" priority>
                     </a>
                 </div>
                 <div class="row-item-text">
@@ -90,8 +91,8 @@
             <div class="row-item collection-item">
                 <div class="row-item-image">
                     <a class="row-item-image-url">
-                        <img src="/assets/img/profile_collection.jpeg" alt="Imagen de ejemplo para una colección"
-                            title="Imagen de ejemplo para una colección" width="400" height="510">
+                        <img [src]="defaultCollectionImage" alt="Imagen de ejemplo para una colección"
+                            title="Imagen de ejemplo para una colección" width="400" height="510" priority>
                     </a>
                 </div>
                 <div class="row-item-text">
@@ -108,8 +109,8 @@
             <div class="row-item collection-item">
                 <div class="row-item-image">
                     <a class="row-item-image-url">
-                        <img src="/assets/img/profile_collection.jpeg" alt="Imagen de ejemplo para una colección"
-                            title="Imagen de ejemplo para una colección" width="400" height="510">
+                        <img [src]="defaultCollectionImage" alt="Imagen de ejemplo para una colección"
+                            title="Imagen de ejemplo para una colección" width="400" height="510" priority>
                     </a>
                 </div>
                 <div class="row-item-text">
@@ -126,8 +127,8 @@
             <div class="row-item collection-item">
                 <div class="row-item-image">
                     <a class="row-item-image-url">
-                        <img src="/assets/img/profile_collection.jpeg" alt="Imagen de ejemplo para una colección"
-                            title="Imagen de ejemplo para una colección" width="400" height="510">
+                        <img [src]="defaultCollectionImage" alt="Imagen de ejemplo para una colección"
+                            title="Imagen de ejemplo para una colección" width="400" height="510" priority>
                     </a>
                 </div>
                 <div class="row-item-text">
@@ -144,8 +145,8 @@
             <div class="row-item collection-item">
                 <div class="row-item-image">
                     <a class="row-item-image-url">
-                        <img src="/assets/img/profile_collection.jpeg" alt="Imagen de ejemplo para una colección"
-                            title="Imagen de ejemplo para una colección" width="400" height="510">
+                        <img [src]="defaultCollectionImage" alt="Imagen de ejemplo para una colección"
+                            title="Imagen de ejemplo para una colección" width="400" height="510" priority>
                     </a>
                 </div>
                 <div class="row-item-text">
@@ -169,7 +170,10 @@
     <ul class="user-card-list">
         <li class="user-card card">
             <a>
-                <img src="/assets/img/profile_user.png" alt="Imagen de ejemplo para un usuario" class="user-card-image">
+                <div class="user-card-image-container">
+                    <img [src]="defaultProfileImage" title="Imagen de ejemplo para un usuario"
+                        alt="Imagen de ejemplo para un usuario" class="user-card-image">
+                </div>
                 <h3 class="user-card-title">Cargando...</h3>
             </a>
             <p class="user-card-subtitle">Cargando...</p>
@@ -180,7 +184,10 @@
         </li>
         <li class="user-card card">
             <a>
-                <img src="/assets/img/profile_user.png" alt="Imagen de ejemplo para un usuario" class="user-card-image">
+                <div class="user-card-image-container">
+                    <img [src]="defaultProfileImage" title="Imagen de ejemplo para un usuario"
+                        alt="Imagen de ejemplo para un usuario" class="user-card-image">
+                </div>
                 <h3 class="user-card-title">Cargando...</h3>
             </a>
             <p class="user-card-subtitle">Cargando...</p>
@@ -191,7 +198,10 @@
         </li>
         <li class="user-card card">
             <a>
-                <img src="/assets/img/profile_user.png" alt="Imagen de ejemplo para un usuario" class="user-card-image">
+                <div class="user-card-image-container">
+                    <img [src]="defaultProfileImage" title="Imagen de ejemplo para un usuario"
+                        alt="Imagen de ejemplo para un usuario" class="user-card-image">
+                </div>
                 <h3 class="user-card-title">Cargando...</h3>
             </a>
             <p class="user-card-subtitle">Cargando...</p>
@@ -202,7 +212,10 @@
         </li>
         <li class="user-card card">
             <a>
-                <img src="/assets/img/profile_user.png" alt="Imagen de ejemplo para un usuario" class="user-card-image">
+                <div class="user-card-image-container">
+                    <img [src]="defaultProfileImage" title="Imagen de ejemplo para un usuario"
+                        alt="Imagen de ejemplo para un usuario" class="user-card-image">
+                </div>
                 <h3 class="user-card-title">Cargando...</h3>
             </a>
             <p class="user-card-subtitle">Cargando...</p>
@@ -213,7 +226,10 @@
         </li>
         <li class="user-card card">
             <a>
-                <img src="/assets/img/profile_user.png" alt="Imagen de ejemplo para un usuario" class="user-card-image">
+                <div class="user-card-image-container">
+                    <img [src]="defaultProfileImage" title="Imagen de ejemplo para un usuario"
+                        alt="Imagen de ejemplo para un usuario" class="user-card-image">
+                </div>
                 <h3 class="user-card-title">Cargando...</h3>
             </a>
             <p class="user-card-subtitle">Cargando...</p>

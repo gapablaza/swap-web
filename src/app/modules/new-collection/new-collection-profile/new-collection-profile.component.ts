@@ -24,7 +24,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { Store } from '@ngrx/store';
 
 import { LinebreaksPipe } from '../../../shared/pipes/linebreaks.pipe';
@@ -47,11 +46,11 @@ import { NewCollectionCommentsComponent } from '../new-collection-comments/new-c
   standalone: true,
   imports: [
     AsyncPipe,
-    RouterLink,
-    NgClass,
-    FormsModule,
-    ReactiveFormsModule,
     DatePipe,
+    FormsModule,
+    NgClass,
+    ReactiveFormsModule,
+    RouterLink,
 
     MatButtonModule,
     MatDialogModule,
@@ -59,7 +58,6 @@ import { NewCollectionCommentsComponent } from '../new-collection-comments/new-c
     MatIconModule,
     MatInputModule,
     MatProgressSpinnerModule,
-    LazyLoadImageModule,
 
     LinebreaksPipe,
     NewCollectionCommentsComponent,

@@ -14,7 +14,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { RouterLink } from '@angular/router';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { DEFAULT_ITEM_IMG, Item } from 'src/app/core';
 
@@ -24,14 +23,14 @@ import { DEFAULT_ITEM_IMG, Item } from 'src/app/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    RouterLink,
     FormsModule,
+    RouterLink,
+
     MatBadgeModule,
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    LazyLoadImageModule,
   ],
 })
 export class CollectionManageItemsListComponent {

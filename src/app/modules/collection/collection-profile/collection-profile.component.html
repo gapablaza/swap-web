@@ -23,11 +23,12 @@
   <div class="collection-info card">
 
     <div class="collection-header">
-      <div class="collection-image-background" style="background-image: url('/assets/img/profile_collection.jpeg')">
+      <div class="collection-image-background">
+        <img [src]="defaultCollectionImage" fetchpriority="high" loading="eager">
       </div>
       <div class="collection-subheader">
         <div class="collection-image-container">
-          <img class="collection-image" src="/assets/img/profile_collection.jpeg">
+          <img class="collection-image" [src]="defaultCollectionImage">
         </div>
         <div class="collection-actions">
           <button mat-stroked-button aria-label="Opciones">
@@ -67,42 +68,42 @@
     <ul class="user-card-list">
       <li class="user-card card">
         <a>
-          <img src="/assets/img/profile_user.png" class="user-card-image">
+          <img [src]="defaultProfileImage" class="user-card-image">
           <h3 class="user-card-title">Cargando nombre</h3>
         </a>
         <p class="user-card-subtitle">Cargando ubicación</p>
       </li>
       <li class="user-card card">
         <a>
-          <img src="/assets/img/profile_user.png" class="user-card-image">
+          <img [src]="defaultProfileImage" class="user-card-image">
           <h3 class="user-card-title">Cargando nombre</h3>
         </a>
         <p class="user-card-subtitle">Cargando ubicación</p>
       </li>
       <li class="user-card card">
         <a>
-          <img src="/assets/img/profile_user.png" class="user-card-image">
+          <img [src]="defaultProfileImage" class="user-card-image">
           <h3 class="user-card-title">Cargando nombre</h3>
         </a>
         <p class="user-card-subtitle">Cargando ubicación</p>
       </li>
       <li class="user-card card">
         <a>
-          <img src="/assets/img/profile_user.png" class="user-card-image">
+          <img [src]="defaultProfileImage" class="user-card-image">
           <h3 class="user-card-title">Cargando nombre</h3>
         </a>
         <p class="user-card-subtitle">Cargando ubicación</p>
       </li>
       <li class="user-card card">
         <a>
-          <img src="/assets/img/profile_user.png" class="user-card-image">
+          <img [src]="defaultProfileImage" class="user-card-image">
           <h3 class="user-card-title">Cargando nombre</h3>
         </a>
         <p class="user-card-subtitle">Cargando ubicación</p>
       </li>
       <li class="user-card card">
         <a>
-          <img src="/assets/img/profile_user.png" class="user-card-image">
+          <img [src]="defaultProfileImage" class="user-card-image">
           <h3 class="user-card-title">Cargando nombre</h3>
         </a>
         <p class="user-card-subtitle">Cargando ubicación</p>

@@ -22,7 +22,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { DEFAULT_USER_PROFILE_IMG, Evaluation, User } from 'src/app/core';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
@@ -44,7 +43,6 @@ import { PaginationComponent } from 'src/app/shared/components/pagination/pagina
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
-    LazyLoadImageModule,
 
     PaginationComponent,
   ],

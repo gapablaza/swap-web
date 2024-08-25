@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import {
   Collection,
@@ -15,7 +14,7 @@ import { environment } from 'src/environments/environment';
   selector: 'app-collection-profile-sections',
   templateUrl: 'collection-profile-sections.component.html',
   standalone: true,
-  imports: [RouterLink, MatIconModule, LazyLoadImageModule],
+  imports: [RouterLink, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionProfileSectionsComponent {
