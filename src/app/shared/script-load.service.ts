@@ -37,7 +37,6 @@ export class ScriptLoadService {
   // name should match the name value from the above array.
   // if the script is in assets folder you can send the relative path to this function
   loadScript(name: string) {
-    console.log('loadScrip service');
     return new Promise((resolve, reject) => {
       // resolve if already loaded
       if (this.scripts[name].loaded) {

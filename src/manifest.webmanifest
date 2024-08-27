@@ -55,6 +55,29 @@
         "sizes": "512x512",
         "type": "image/png"
       }
+    ],
+    "shortcuts": [
+      {
+        "name": "Posibles Cambios",
+        "short_name": "Cambios",
+        "description": "Revisa tus posibles cambios",
+        "url": "/trades?utm_source=homescreen",
+        "icons": [{ "src": "assets/icons/icon-grey-192x192.png", "sizes": "192x192", "type": "image/png" }]
+      },
+      {
+        "name": "Conversaciones",
+        "short_name": "Conversaciones",
+        "description": "Revisa tus conversaciones con los demás coleccionistas",
+        "url": "/message?utm_source=homescreen",
+        "icons": [{ "src": "assets/icons/icon-grey-192x192.png", "sizes": "192x192", "type": "image/png" }]
+      },
+      {
+        "name": "Configuraciones",
+        "short_name": "Configuración",
+        "description": "Ajusta tu configuración",
+        "url": "/settings?utm_source=homescreen",
+        "icons": [{ "src": "assets/icons/icon-grey-192x192.png", "sizes": "192x192", "type": "image/png" }]
+      }
     ]
   }
   

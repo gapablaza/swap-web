@@ -261,7 +261,6 @@ export class AuthEffects {
         ofType(authActions.loginRedirect),
         map((action) => action.url),
         tap((url) => {
-          console.log(url);
           this.router.navigate(['/login'], {
             queryParams: { returnUrl: url },
           });

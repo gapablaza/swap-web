@@ -37,7 +37,6 @@ export class AdLoaderComponent {
 
   shouldShowAd = toSignal(
     this.store.select(authFeature.selectUser).pipe(
-      //   tap((user) => console.log(user, this.uiSrv.isAdsLoaded())),
       filter((user) => !user.id || user.accountTypeId === 1),
       switchMap((user) =>
         this.uiSrv.isAdsSenseLoaded$.pipe(

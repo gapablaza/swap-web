@@ -53,7 +53,6 @@ export class FooterComponent implements OnInit {
 
   // Almacena la cantidad de pestañas abiertas en el localStorage
   setTabCountWithExpiration(value: number, ttl: number) {
-    console.log(value);
     const now = new Date();
 
     // Objeto que contendrá tanto el valor como el tiempo de expiración
