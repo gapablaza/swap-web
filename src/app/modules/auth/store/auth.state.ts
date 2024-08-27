@@ -12,6 +12,7 @@ interface State {
   isFirebaseInit: boolean;
   isFirebaseAuth: boolean;
   unreads: number;
+  onlineUsers: number;
 
   isProcessing: boolean;
   error: string | null;
@@ -26,6 +27,7 @@ const initialState: State = {
   isFirebaseInit: false,
   isFirebaseAuth: false,
   unreads: 0,
+  onlineUsers: 0,
 
   isProcessing: false,
   error: null,
@@ -258,6 +260,12 @@ export const authFeature = createFeature({
       unreads: 0,
 
       isProcessing: false,
-    }))
+    })),
+
+    // online Users
+    on(authActions.setOnlineUsersCount, (state, { count }) => ({
+      ...state,
+      onlineUsers: count,
+    })),
   ),
 });

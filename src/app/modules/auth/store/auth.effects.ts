@@ -4,11 +4,14 @@ import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
   catchError,
+  EMPTY,
   exhaustMap,
   filter,
   from,
+  interval,
   map,
   of,
+  startWith,
   switchMap,
   take,
   takeUntil,
@@ -546,13 +549,77 @@ export class AuthEffects {
           if (isFirebaseAuth) {
             this.authSrv.logoutFromFirebase(authUser);
           }
+          this.authSrv.setAuthOnlineStatus(authUser.id, false);
           this.jwtSrv.destroyToken();
           this.socialSrv.signOut().catch(() => {});
+
           this.router.navigate(['/']);
         }),
         map(() => authActions.logoutFinish())
       )
     // { dispatch: false }
+  );
+
+  // set online status
+  setOnlineUsersStatus$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(
+          authActions.setOnlineStatus,
+          authActions.authSuccess,
+          authActions.authFailure
+        ),
+        withLatestFrom(
+          this.store.select(authFeature.selectIsAuth),
+          this.store.select(authFeature.selectUser)
+        ),
+        map(([, isAuth, user]) => {
+          if (isAuth) {
+            this.authSrv.setAuthOnlineStatus(user.id, true);
+          } else {
+            this.authSrv.setAnonymousOnlineStatus(true);
+          }
+        })
+      ),
+    { dispatch: false }
+  );
+
+  // set offline status
+  setOfflineUsersStatus$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(authActions.setOfflineStatus),
+        withLatestFrom(
+          this.store.select(authFeature.selectIsAuth),
+          this.store.select(authFeature.selectUser)
+        ),
+        map(([, isAuth, user]) => {
+          if (isAuth) {
+            this.authSrv.setAuthOnlineStatus(user.id, false);
+          } else {
+            this.authSrv.setAnonymousOnlineStatus(false);
+          }
+        })
+      ),
+    { dispatch: false }
+  );
+
+  // online users count
+  onlineUsersCount$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.getOnlineUsersCount),
+      switchMap(() =>
+        interval(1000).pipe(
+          startWith(0),
+          switchMap(() =>
+            this.authSrv.onlineUsersCount().pipe(
+              map((count) => authActions.setOnlineUsersCount({ count })),
+              catchError((error) => of(error))
+            )
+          )
+        )
+      )
+    )
   );
 
   showSuccess$ = createEffect(

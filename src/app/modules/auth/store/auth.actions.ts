@@ -123,9 +123,14 @@ export const authActions = createActionGroup({
 
     'Login Redirect': props<{ url: string }>(),
 
-    // Logout: emptyProps(),
     // logout
     'Logout Start': emptyProps(),
     'Logout Finish': emptyProps(),
+
+    // online Users
+    'Set Online Status': emptyProps(),
+    'Set Offline Status': emptyProps(),
+    'Get Online Users Count': emptyProps(),
+    'Set Online Users Count': props<{ count: number }>(),
   },
 });

@@ -7,8 +7,8 @@ import {
   isSupported,
   Messaging,
 } from '@angular/fire/messaging';
-import { Database, ref, serverTimestamp, set } from '@angular/fire/database';
-import { Observable, concatMap, filter, from, map, take, tap } from 'rxjs';
+import { Database, list, ref, serverTimestamp, set, update } from '@angular/fire/database';
+import { Observable, concatMap, filter, from, map, of, take, tap } from 'rxjs';
 
 import { User } from '../models';
 import { ApiService } from './api.service';
@@ -374,5 +374,50 @@ export class AuthenticationService {
     return this.apiSrv
       .delete('/v2/me')
       .pipe(map((data: { message: string }) => data.message));
+  }
+
+  setAuthOnlineStatus(userId: number, status: boolean) {
+    const updates: { [key: string]: any } = {};
+    const authStatusPath = `onlineUsers/userId_${userId}`;
+    const prevStatusPath = `onlineUsers/${this.getAnonymousId()}`;
+    
+    if (status) {
+      updates[authStatusPath] = serverTimestamp();
+      updates[prevStatusPath] = null;
+    } else {
+      updates[authStatusPath] = null;
+      updates[prevStatusPath] = serverTimestamp();
+    }
+
+    update(ref(this.firebaseDB), updates).catch((error) => console.log(error));
+  }
+
+  setAnonymousOnlineStatus(status: boolean) {
+    const anonymousUserId = this.getAnonymousId();
+
+    if (anonymousUserId) {
+      const statusRef = ref(this.firebaseDB, `onlineUsers/${anonymousUserId}`);
+      if (status) {
+        set(statusRef, serverTimestamp()).catch((error) => console.log(error));
+      } else {
+        set(statusRef, null).catch((error) => console.log(error));
+      }
+    }
+  }
+  
+  getAnonymousId(): String {
+    if (!localStorage.getItem('anonymousId')) {
+      const now = new Date().getTime();
+      const random = Math.floor(Math.random() * 1000000);
+      localStorage.setItem('anonymousId', `userId_${now}${random}`);
+    }
+
+    return localStorage.getItem('anonymousId') || '';
+  }
+
+  onlineUsersCount(): Observable<number> {
+    return list(ref(this.firebaseDB, 'onlineUsers')).pipe(
+      map((list) => list.length)
+    );
   }
 }
