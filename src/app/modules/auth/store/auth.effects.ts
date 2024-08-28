@@ -4,7 +4,6 @@ import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
   catchError,
-  EMPTY,
   exhaustMap,
   filter,
   from,
@@ -608,7 +607,7 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(authActions.getOnlineUsersCount),
       switchMap(() =>
-        interval(1000).pipe(
+        interval(15000).pipe(
           startWith(0),
           switchMap(() =>
             this.authSrv.onlineUsersCount().pipe(

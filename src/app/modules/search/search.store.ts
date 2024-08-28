@@ -4,7 +4,6 @@ import {
   catchError,
   EMPTY,
   exhaustMap,
-  filter,
   tap,
   withLatestFrom,
 } from 'rxjs';
@@ -59,28 +58,34 @@ export class SearchStore extends ComponentStore<SearchState> {
         this.select((state) => state.typeSelected),
         this.select((state) => state.query)
       ),
-      filter(([, , , , query]) => query != ''),
       tap(() => this.setLoading()),
-      exhaustMap(([, page, sortBy, type, query]) =>
-        this.searchSrv
-          .search({
-            query,
-            page,
-            type,
-            sortBy,
-            // ...(publisher && { publisher }),
-          })
-          .pipe(
-            tap({
-              next: ({ collections, users, paginator }) =>
-                this.load({ collections, users, paginator }),
-              error: (error) => {
-                console.log(error);
-                this.patchState({ isLoaded: true });
-              },
-            }),
-            catchError(() => EMPTY)
-          )
+      exhaustMap(([, page, sortBy, type, query]) => {
+        if (query.trim() == '') {
+          this.patchState({ isLoaded: true });
+          return EMPTY;
+        }
+
+        return this.searchSrv
+        .search({
+          query,
+          page,
+          type,
+          sortBy,
+          // ...(publisher && { publisher }),
+        })
+        .pipe(
+          tap({
+            next: ({ collections, users, paginator }) =>
+              this.load({ collections, users, paginator }),
+            error: (error) => {
+              console.log(error);
+              this.patchState({ isLoaded: true });
+            },
+          }),
+          catchError(() => EMPTY)
+        )
+      }
+        
       )
     )
   );
