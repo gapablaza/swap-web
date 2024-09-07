@@ -1,8 +1,11 @@
+@let nativeAlert = this.isNative ? 'N' : 'B';
 <div class="alert alert-warning">
     <div class="alert-container">
         <div class="alert-content">
-            <div class="alert-title">Atención</div>
-            <div class="alert-message">Contenido en desarrollo, pronto estará disponible!</div>
+            <div class="alert-title">
+                Atención
+            </div>
+            <div class="alert-message">Contenido en desarrollo, pronto estará disponible! ({{ nativeAlert }})</div>
         </div>
     </div>
 </div>

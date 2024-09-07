@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription, map } from 'rxjs';
@@ -8,6 +8,8 @@ import { collectionActions } from './store/collection.actions';
 @Component({
   selector: 'app-collection',
   templateUrl: './collection.component.html',
+  styles: `@import './src/styles/pages/_collection.scss';`,
+  encapsulation: ViewEncapsulation.None,
   standalone: true,
   imports: [RouterOutlet],
 })

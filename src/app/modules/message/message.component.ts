@@ -4,6 +4,7 @@ import {
   OnDestroy,
   TemplateRef,
   ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -21,6 +22,8 @@ import { messagesActions } from './store/message.actions';
 @Component({
   selector: 'app-message',
   templateUrl: './message.component.html',
+  styles: `@import './src/styles/pages/_message.scss';`,
+  encapsulation: ViewEncapsulation.None,
   standalone: true,
   imports: [RouterOutlet, MatDialogModule, MatButtonModule],
 })

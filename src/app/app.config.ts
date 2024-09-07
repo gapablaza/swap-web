@@ -28,20 +28,17 @@ import {
   getAuth,
 } from '@angular/fire/auth';
 import { getMessaging, provideMessaging } from '@angular/fire/messaging';
-import { NgProgressHttpModule } from 'ngx-progressbar/http';
-import { NgProgressModule } from 'ngx-progressbar';
 
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { provideState, provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { progressInterceptor } from 'ngx-progressbar/http';
 
-import { CoreModule, errorInterceptor, tokenInterceptor } from './core';
-import { environment } from 'src/environments/environment';
-import { SocialModule, UIService } from './shared';
 import APP_ROUTES from './app.routes';
+import { environment } from 'src/environments/environment';
+import { CoreModule, errorInterceptor, tokenInterceptor } from './core';
+import { SocialModule } from './shared';
 import { AuthEffects } from './modules/auth/store/auth.effects';
 import * as fromAuth from './modules/auth/store/auth.state';
 
@@ -59,7 +56,13 @@ export class MyHammerConfig extends HammerGestureConfig {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(withInterceptors([tokenInterceptor, errorInterceptor])),
+    provideHttpClient(
+      withInterceptors([
+        tokenInterceptor,
+        errorInterceptor,
+        progressInterceptor,
+      ])
+    ),
     // provideClientHydration(withNoHttpTransferCache()),
     provideRouter(APP_ROUTES),
     provideAnimations(),
@@ -92,9 +95,6 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(
       CoreModule,
       HammerModule,
-
-      MatSnackBarModule, // UIService lo necesita
-      MatBottomSheetModule, // UIService lo necesita
       SocialModule,
 
       ServiceWorkerModule.register('ngsw-worker.js', {
@@ -102,13 +102,7 @@ export const appConfig: ApplicationConfig = {
         // Register the ServiceWorker as soon as the application is stable
         // or after 30 seconds (whichever comes first).
         registrationStrategy: 'registerWhenStable:30000',
-      }),
-
-      NgProgressModule.withConfig({
-        color: '#2dd4bf',
-        spinner: false,
-      }),
-      NgProgressHttpModule
+      })
     ),
     { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig },
     {
@@ -118,6 +112,5 @@ export const appConfig: ApplicationConfig = {
         subscriptSizing: 'dynamic',
       },
     },
-    UIService,
   ],
 };

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 
@@ -8,6 +8,8 @@ import { Subscription, map } from 'rxjs';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
+  styles: `@import './src/styles/pages/_user.scss';`,
+  encapsulation: ViewEncapsulation.None,
   standalone: true,
   imports: [RouterOutlet],
 })

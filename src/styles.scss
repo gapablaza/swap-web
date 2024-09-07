@@ -23,61 +23,21 @@
   'styles/base/helpers';
 
 
-
-// $titles-font-family: 'Lato, serif';
-// $base-typography-config: mat.define-typography-config(
-//     $font-family: 'Inter, sans-serif',
-//     $display-4:     mat.define-typography-level(112px, 112px, 700, $titles-font-family),
-//     $display-3:     mat.define-typography-level(56px, 56px, 700, $titles-font-family),
-//     $display-2:     mat.define-typography-level(45px, 48px, 700, $titles-font-family),
-//     $display-1:     mat.define-typography-level(34px, 40px, 700, $titles-font-family),
-//     $headline:      mat.define-typography-level(clamp(2rem,2rem + 1.2vw,3rem), 1.1, 700, $titles-font-family),
-//     $title:         mat.define-typography-level(clamp(1.8rem,1.8rem + .2vw,3rem), 1.1, 700, $titles-font-family),
-//     $subheading-2:  mat.define-typography-level(2rem, 1.1, 500, $titles-font-family),
-//     $subheading-1:  mat.define-typography-level(1.5rem, 1.1, 500, $titles-font-family),
-//     $body-2:        mat.define-typography-level(16px, 1.7, 500),
-//     $body-1:        mat.define-typography-level(16px, 1.7, 400),
-//     $caption:       mat.define-typography-level(14px, 18px, 400),
-//     $button:        mat.define-typography-level(16px, 14px, 500),
-//     $input:         mat.define-typography-level(16px, 1.25, 400)
-// );
-
-// $base-font-config: mat.define-legacy-typography-config($font-family: 'Inter, sans-serif');
-
-  // Typography config based on the default, but using "Comic Sans" as the
-  // default font family for all levels.
-  $my-theme-typography: mat.m2-define-typography-config(
-    $font-family: 'Inter, sans-serif',
-  );
-
 // always include only once per project
-// TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
-//  The following line adds:
-//    1. Default typography styles for all components
-//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
-//  If you specify typography styles for the components you use elsewhere, you should delete this line.
-//  If you don't need the default component typographies but still want the hierarchy styles,
-//  you can delete this line and instead use:
-//    `@include mat.legacy-typography-hierarchy($base-font-config);`
-// @include mat.all-legacy-component-typographies($base-font-config); COMENTADO
-// @include mat.legacy-core(); COMENTADO
 @include mat.core();
 
+// Typography config based on the default, but using "Comic Sans" as the
+// default font family for all levels.
+$my-theme-typography: mat.m2-define-typography-config(
+  $font-family: 'Inter, sans-serif',
+);
+
 // define 3 theme color
-// mat-palette accepts $palette-name, main, lighter and darker variants
-
-// $my-theme-primary: mat.define-palette(mat.$blue-gray-palette, 700, 300, 900);
-// $my-theme-accent: mat.define-palette(mat.$teal-palette, 800, 100, 900);
-// $my-theme-warn: mat.define-palette(mat.$deep-orange-palette, A200);
-
-@import
-  'styles/themes/palette';
-
+@import 'styles/themes/palette';
 $my-theme-primary: mat.m2-define-palette($swap-primary-v2, 900);
 $my-theme-accent: mat.m2-define-palette($swap-accent-v2, 300);
 $my-theme-warn: mat.m2-define-palette($swap-warn-v1, A200);
   
-
 // create theme (use mat-dark-theme for themes with dark backgrounds)
 $my-theme: mat.m2-define-light-theme((
   color: (
@@ -85,16 +45,51 @@ $my-theme: mat.m2-define-light-theme((
     accent: $my-theme-accent,
     // warning: $my-theme-warn,
   ),
-  // typography: $base-typography-config,
-  // typography: $base-font-config,
   typography: $my-theme-typography,
 ));
 
 // specify theme class eg: <body class="swap-theme"> ... </body>
 .swap-theme {
-  // @include mat.core-theme($my-theme);
-  // @include mat.all-legacy-component-themes($my-theme); COMENTADO
-  @include mat.all-component-themes($my-theme);
+  // Emit theme-dependent styles for common features used across multiple components.
+  @include mat.core-theme($my-theme);
+  // @include mat.card-theme($my-theme);
+  // @include mat.progress-bar-theme($my-theme);
+  // @include mat.tooltip-theme($my-theme);
+  @include mat.form-field-theme($my-theme);
+  @include mat.input-theme($my-theme);
+  @include mat.select-theme($my-theme);
+  // @include mat.autocomplete-theme($my-theme);
+  @include mat.dialog-theme($my-theme);
+  // @include mat.chips-theme($my-theme);
+  @include mat.slide-toggle-theme($my-theme);
+  // @include mat.radio-theme($my-theme);
+  @include mat.slider-theme($my-theme);
+  @include mat.menu-theme($my-theme);
+  @include mat.list-theme($my-theme);
+  // @include mat.paginator-theme($my-theme);
+  @include mat.tabs-theme($my-theme);
+  @include mat.checkbox-theme($my-theme);
+  @include mat.button-theme($my-theme);
+  @include mat.icon-button-theme($my-theme);
+  // @include mat.fab-theme($my-theme);
+  @include mat.snack-bar-theme($my-theme);
+  @include mat.table-theme($my-theme);
+  @include mat.progress-spinner-theme($my-theme);
+  @include mat.badge-theme($my-theme);
+  @include mat.bottom-sheet-theme($my-theme);
+  // @include mat.button-toggle-theme($my-theme);
+  // @include mat.datepicker-theme($my-theme);
+  // @include mat.divider-theme($my-theme);
+  @include mat.expansion-theme($my-theme);
+  // @include mat.grid-list-theme($my-theme);
+  @include mat.icon-theme($my-theme);
+  @include mat.sidenav-theme($my-theme);
+  // @include mat.stepper-theme($my-theme);
+  @include mat.sort-theme($my-theme);
+  @include mat.toolbar-theme($my-theme);
+  // @include mat.tree-theme($my-theme);
+
+  // @include mat.all-component-themes($my-theme);
 
   .mat-drawer-container {
     background-color: inherit;
@@ -109,7 +104,6 @@ $my-theme: mat.m2-define-light-theme((
     --mdc-protected-button-label-text-color: #fff;
   }
 }
-
 
 
 // 4. Layout-related sections
@@ -137,21 +131,22 @@ $my-theme: mat.m2-define-light-theme((
 
 // 6. Page-specific styles
 @import
-  'styles/pages/collection',
+  // 'styles/pages/collection',
   'styles/pages/error',
   'styles/pages/explore',
   'styles/pages/home',
   'styles/pages/item',
   'styles/pages/login',
-  'styles/pages/message',
+  // 'styles/pages/message',
   'styles/pages/moderation',
-  'styles/pages/new-collection',
+  // 'styles/pages/new-collection',
   'styles/pages/pages',
   'styles/pages/publisher',
   'styles/pages/search',
-  'styles/pages/settings',
-  'styles/pages/trades',
-  'styles/pages/user';
+  // 'styles/pages/settings',
+  'styles/pages/trades'
+  // 'styles/pages/user'
+  ;
 
 // 7. Themes
 @import

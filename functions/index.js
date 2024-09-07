@@ -18,7 +18,7 @@ const db = admin.database();
 
 // Cut off time. Child nodes older than this will be deleted.
 const CUT_OFF_TIME = 2 * 60 * 60 * 1000; // 2 Hours in milliseconds.
-const ONLINE_USERS_CUT_OFF_TIME = 2 * 24 * 60 * 60 * 1000; // 2 Days in milliseconds.
+const ONLINE_USERS_CUT_OFF_TIME = 2 * 60 * 60 * 1000; // 2 Hours in milliseconds.
 
 // Max older conversations. Child nodes older than this will be deleted.
 const MAX_OLDER_CONVERSATIONS_TIME = 365 * 24 * 60 * 60 * 1000; // 365 days in milliseconds.
@@ -289,8 +289,8 @@ exports.cleanFeed2ndGen = onRequest(
 
 
 // 2nd Gen
-// Función para eliminar registros antiguos del /onlineUsers
-exports.cleanOnlineUsers2ndGen = onRequest(
+// Función para eliminar registros antiguos del /onlineUsers RESPALDO
+exports.cleanOnlineUsers2ndGenBackup = onRequest(
   { cors: true, timeoutSeconds: 300 },
   async (req, res) => {
     const onlineUsersRef = db.ref('/onlineUsers');
@@ -310,6 +310,57 @@ exports.cleanOnlineUsers2ndGen = onRequest(
       let tempNode = child.val();
       if (tempNode.status === 'online') {
         updates[child.key] = null;
+      }
+    });
+    logger.info('Updates count: ', Object.keys(updates).length);
+
+    // execute all updates in one go and return the result to end the function
+    await onlineUsersRef.update(updates).catch((error) => {
+      return res.status(400).json({
+        status: 'error',
+        message: error.message,
+      });
+    });
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Clean Online Users Successful',
+      data: Object.keys(updates).length,
+    });
+  }
+);
+
+
+// 2nd Gen
+// Función para eliminar registros antiguos del /onlineUsers con NUEVO FORMATO
+exports.cleanOnlineUsers2ndGen = onRequest(
+  { cors: true, timeoutSeconds: 300 },
+  async (req, res) => {
+    const onlineUsersRef = db.ref('/onlineUsers');
+    const now = Date.now();
+    const cutoff = now - ONLINE_USERS_CUT_OFF_TIME;
+    const onlineUsersQuery = onlineUsersRef
+      // .orderByValue('lastUpdated')
+      // .endAt(cutoff)
+      .limitToFirst(1000);
+
+    const snapshot = await onlineUsersQuery.once('value');
+    logger.info('number of nodes: ', snapshot.numChildren());
+
+    // create a map with all children that need to be removed
+    const updates = {};
+    snapshot.forEach((child) => {
+      let key = child.key;
+      let value = child.val();
+
+      // si el registro no comienza con el formato requerido, borramos
+      if (/^(?!userId_).*$/.test(key)) {
+        updates[key] = null; // Mark for deletion
+      } else {
+        // si tiene el formato pero el registro es de hace mas de 1 día, borramos
+        if (value < cutoff) {
+          updates[child.key] = null;
+        }
       }
     });
     logger.info('Updates count: ', Object.keys(updates).length);

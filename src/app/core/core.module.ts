@@ -16,6 +16,7 @@ import {
   SEOService,
   UserService,
 } from './services';
+import { UIService } from '../shared';
 
 @NgModule({
   declarations: [],
@@ -25,6 +26,7 @@ import {
     AuthenticationService,
     JwtService,
     SEOService,
+    UIService,
 
     CollectionService,
     ItemService,
