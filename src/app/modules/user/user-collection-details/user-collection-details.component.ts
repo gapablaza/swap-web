@@ -22,6 +22,7 @@ import { SlugifyPipe } from '../../../shared/pipes/slugify.pipe';
 import { SanitizeHtmlPipe } from '../../../shared/pipes/sanitize-html.pipe';
 import { userFeature } from '../store/user.state';
 import { userActions } from '../store/user.actions';
+import { offlineActions } from '../../offline/store/offline.actions';
 
 @Component({
   selector: 'app-user-collection-details',
@@ -71,6 +72,8 @@ export class UserCollectionDetailsComponent implements OnInit {
       )
       .subscribe((col) => {
         if (col !== null) {
+          this.store.dispatch(offlineActions.saveOfflineUserCollection({ collection: col }));
+
           this.collection = col;
           this.userWishing =
             [...(col.userData?.wishlist || [])].sort(

@@ -40,6 +40,10 @@ export const authActions = createActionGroup({
     'Auth Success': props<{ user: User; token: string; redirect: boolean }>(),
     'Auth Failure': emptyProps(),
 
+    'Local Auth Success': props<{ user: User; token: string; redirect: boolean }>(),
+    'Sync Auth User': emptyProps(),
+    'Sync Auth User Success': props<{ user: User; token: string }>(),
+
     // login page opened / destroyed
     'Login Page Opened': emptyProps(),
     'Login Page Destroyed': emptyProps(),
@@ -132,5 +136,9 @@ export const authActions = createActionGroup({
     'Set Offline Status': emptyProps(),
     'Get Online Users Count': emptyProps(),
     'Set Online Users Count': props<{ count: number }>(),
+
+    // connection status
+    'Go Online': emptyProps(),
+    'Go Offline': emptyProps(),
   },
 });

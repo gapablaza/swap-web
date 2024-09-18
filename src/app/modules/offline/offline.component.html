@@ -1,0 +1,177 @@
+<section class="offline offline-section">
+    @if (isLoaded()) {
+    <div class="offline-collections flex-full">
+
+        <h1>
+            @if (managedCollections().length != collections().length) {
+            <span class="color-accent">
+                {{ managedCollections().length }} de
+            </span>
+            }
+            {{ collections().length }} colecciones sin conexión
+        </h1>
+
+        @let needQ = needSync().length + needDelete().length;
+        <div class="alert alert-warning">
+            <div class="alert-container">
+                <div class="alert-content">
+                    <div class="alert-title">Atención</div>
+                    <div class="alert-message">
+                        <p>
+                            Con esta opción, podrás consultar las colecciones que hayas sincronizado, sin tener acceso a
+                            internet.
+                        </p>
+                        <p>
+                            Ten en consideración que esta nueva funcionalidad, si bien se encuentra totalmente
+                            operativa, estamos monitoreando su correcto funcionamiento y podrían ocurrir problemas
+                            inesperados. Por lo que solicitamos tu ayuda para informarnos cuando detectes algo "fuera
+                            de lo normal", o también, si tienes ideas o propuestas de mejora.
+                        </p>
+                        @if (needQ == 1) {
+                        <p>
+                            Hay {{ needQ }} colección que no las has guardado para tu acceso sin conexión
+                            o que necesita ser sincronizada.
+                        </p>
+                        }
+                        @if (needQ > 1) {
+                        <p>
+                            Hay {{ needQ }} colecciones que no las has guardado para tu acceso sin conexión
+                            o que necesitan ser sincronizadas.
+                        </p>
+                        }
+                        @if (needQ) {
+                        <p>
+                            <button mat-raised-button (click)="onSync()" [disabled]="isProcessing()"
+                                color="accent">Sincronizar</button>
+                        </p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            @if (collections().length) {
+            <div class="controls-std">
+                <div class="controls-std-main">
+                    <div class="controls-std-order">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Ordenar por</mat-label>
+                            <mat-select [(value)]="sortOptionSelected">
+                                @for (option of sortOptions; track option.selectValue) {
+                                <mat-option [value]="option.selectValue">
+                                    {{ option.selectName }}
+                                </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="controls-std-settings">
+                        <button mat-icon-button [color]="showFilters ? 'accent' : 'primary'"
+                            aria-label="Button for show filter options" (click)="showFilters = !showFilters">
+                            <mat-icon>filter_list</mat-icon>
+                        </button>
+                        <p>
+                            Registros {{ fromRecord() | number:'':'es' }} a {{ toRecord() | number:'':'es' }}
+                        </p>
+                    </div>
+                </div>
+                <div class="constrols-std-filters" [ngClass]="{ 'show': showFilters }">
+                    <mat-form-field class="controls-search" appearance="outline">
+                        <mat-label>Filtrar por nombre, ID o editorial</mat-label>
+                        <mat-icon matPrefix>search</mat-icon>
+                        <input matInput type="text" [(ngModel)]="searchText">
+                        @if (searchText()) {
+                        <button matSuffix mat-icon-button aria-label="Clear" (click)="onClearFilter()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                        }
+                    </mat-form-field>
+                    <mat-slide-toggle class="ml-auto" (change)="onToggleCompleted($event)" (checked)="hideCompleted()">
+                        Ocultar completos
+                    </mat-slide-toggle>
+                </div>
+
+            </div>
+
+            <ul class="list-std">
+                @for (col of showedCollections(); track col.id) {
+                <li class="list-std-item" [ngClass]="{'completed': col.userData?.completed}">
+                    <div class="list-item-main">
+                        <div class="list-item-content flex-full">
+                            <div class="list-item-title">
+                                <a [routerLink]="['./']" (click)="onOpenDetails(col)">
+                                    {{ col.name }}
+                                </a>
+                            </div>
+                            <div class="list-item-meta custom-separator">
+                                <span>{{ col.year }}</span>
+                                <span>{{ col.items || '???' }} ítems</span>
+                                <span>{{ col.publisher.data.name }}</span>
+                            </div>
+                            <div class="list-item-meta custom-separator">
+                                <span>Busca {{ col.userData?.wishing }} ítems</span>
+                                <span>Cambia {{ col.userData?.trading }} ítems</span>
+                            </div>
+                            <div class="list-item-meta">
+                                <span>Actualizado el {{ col.updated | date:'dd/MM/YYYY \'a las\' HH:mm \'hrs.\''
+                                    }}</span>
+                            </div>
+                            <!-- @if (col.userData?.publicComment) {
+                            <div class="list-item-desc">
+                                <p [innerHTML]="col.userData?.publicComment | sanitizeHtml"></p>
+                            </div>
+                            } -->
+
+                            @if (col.userData?.completed) {
+                            <div class="ribbon up">
+                                <div class="content">
+                                    <svg width="24px" height="24px" aria-hidden="true" focusable="false"
+                                        data-prefix="fas" data-icon="check" class="svg-inline--fa fa-check fa-w-16"
+                                        role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                        <path fill="currentColor"
+                                            d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z">
+                                        </path>
+                                    </svg>
+                                </div>
+                            </div>
+                            }
+                        </div>
+                        <div class="list-item-bg">
+                            <div class="list-item-bg-img">
+                                <img [src]="col.image" alt="Portada colección" loading="lazy">
+                            </div>
+                            <div class="list-item-bg-gradient"></div>
+                        </div>
+                        <a class="btn" mat-raised-button color="accent" [routerLink]="['./']"
+                            (click)="onOpenDetails(col)">
+                            <mat-icon>search</mat-icon> Info
+                        </a>
+                        <!-- <div class="list-item-progress" [style]="'width: ' + col.userData?.progress + '%;'"></div> -->
+                    </div>
+                </li>
+                }
+            </ul>
+
+            @if (lastPage() > 1) {
+            <br />
+            <app-pagination [pageSelected]="pageSelected()" [lastPage]="lastPage()"
+                (pageChange)="onPageChange($event)"></app-pagination>
+            }
+            } @else {
+            <div class="empty-content">
+                <h2>(u.u)</h2>
+                <p>No tienes ninguna colección sincronizada</p>
+            </div>
+            }
+        </div>
+
+
+
+    </div>
+    } @else {
+    <div class="loading-indicator">
+        <mat-spinner aria-label="cargando"></mat-spinner>
+    </div>
+    }
+</section>

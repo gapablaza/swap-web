@@ -71,6 +71,19 @@
 
         <div class="vertical-navigation-basic-item">
           <div class="vertical-navigation-item-wrapper">
+            <a color="accent" [routerLink]="['./offline/']" class="vertical-navigation-item">
+              <mat-icon>cloud_off</mat-icon>
+              <div class="vertical-navigation-item-title-wrapper">
+                <div class="vertical-navigation-item-title">
+                  <span>Sin conexión</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+        
+        <div class="vertical-navigation-basic-item">
+          <div class="vertical-navigation-item-wrapper">
             <a [routerLink]="['./settings/']" class="vertical-navigation-item">
               <mat-icon>settings</mat-icon>
               <div class="vertical-navigation-item-title-wrapper">

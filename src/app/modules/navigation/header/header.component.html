@@ -15,6 +15,17 @@
 
   <span class="example-spacer"></span>
 
+  <ul class="navigation-items">
+    @if (showOffline()) {
+      <li class="">
+        <a mat-icon-button routerLink="/offline" color="accent" aria-label="Sin conexión">
+          <mat-icon>cloud_off</mat-icon>
+        </a>
+      </li>
+    }
+  </ul>
+
+
   <div class="suggestion-search-container d-none d-md-block">
     <form (ngSubmit)="onSearch()">
       <div class="suggestion-input-container">
@@ -70,9 +81,6 @@
         <mat-icon>search</mat-icon>
       </a>
     </li>
-    @if (!(isAuth$ | async)) { <li><a routerLink="/login">Ingresar</a></li> }
-    <!-- <li *ngIf="isAuth">
-      <a style="cursor:pointer" (click)="onLogout()">Salir</a>
-    </li> -->
+    @if (!isAuth()) { <li><a routerLink="/login">Ingresar</a></li> }
   </ul>
 </mat-toolbar>

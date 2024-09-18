@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   ElementRef,
   EventEmitter,
   OnDestroy,
@@ -43,13 +44,14 @@ import { authFeature } from '../../auth/store/auth.state';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
+    AsyncPipe,
     FormsModule,
     RouterLink,
+
     MatButtonModule,
-    MatIconModule,
     MatFormFieldModule,
+    MatIconModule,
     MatToolbarModule,
-    AsyncPipe,
   ],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
@@ -61,7 +63,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isSearching = false;
   defaultUserImage = DEFAULT_USER_PROFILE_IMG;
 
-  isAuth$ = this.store.select(authFeature.selectIsAuth);
+  isAuth = this.store.selectSignal(authFeature.selectIsAuth);
+  isConnected = this.store.selectSignal(authFeature.selectIsConnected);
+  showOffline = computed(() => this.isAuth() && !this.isConnected());
+
   subs: Subscription = new Subscription();
 
   constructor(

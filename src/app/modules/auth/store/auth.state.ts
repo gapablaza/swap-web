@@ -5,30 +5,32 @@ import { authActions } from './auth.actions';
 
 interface State {
   isInit: boolean;
+  isConnected: boolean;
   user: User;
   token: string | null;
   isAuth: boolean;
-
+  
   isFirebaseInit: boolean;
   isFirebaseAuth: boolean;
   unreads: number;
   onlineUsers: number;
-
+  
   isProcessing: boolean;
   error: string | null;
 }
 
 const initialState: State = {
   isInit: false,
+  isConnected: false,
   user: {} as User,
   token: null,
   isAuth: false,
-
+  
   isFirebaseInit: false,
   isFirebaseAuth: false,
   unreads: 0,
   onlineUsers: 0,
-
+  
   isProcessing: false,
   error: null,
 };
@@ -37,6 +39,23 @@ export const authFeature = createFeature({
   name: 'auth',
   reducer: createReducer(
     initialState,
+
+    // connection status
+    on(authActions.goOnline, (state) => ({
+      ...state,
+      isConnected: true,
+    })),
+    on(authActions.goOffline, (state) => ({
+      ...state,
+      isConnected: false,
+    })),
+
+    // sync user
+    on(authActions.syncAuthUserSuccess, (state, { user, token }) => ({
+      ...state,
+      user,
+      token,
+    })),
 
     // login
     on(authActions.autoLogin, (state) => ({
@@ -51,14 +70,19 @@ export const authFeature = createFeature({
       ...state,
       isProcessing: true,
     })),
-    on(authActions.authSuccess, (state, { user, token }) => ({
-      ...state,
-      isInit: true,
-      user,
-      token,
-      isAuth: true,
-      isProcessing: false,
-    })),
+    on(
+      authActions.authSuccess,
+      authActions.localAuthSuccess,
+      (state, { user, token }) => ({
+        ...state,
+        isInit: true,
+        user,
+        token,
+        isAuth: true,
+        isProcessing: false,
+      })
+    ),
+
     on(authActions.authFailure, (state) => ({
       ...state,
       isInit: true,

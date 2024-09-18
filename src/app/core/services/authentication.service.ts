@@ -8,7 +8,7 @@ import {
   Messaging,
 } from '@angular/fire/messaging';
 import { Database, list, ref, serverTimestamp, set, update } from '@angular/fire/database';
-import { Observable, concatMap, filter, from, map, of, take, tap } from 'rxjs';
+import { Observable, concatMap, filter, from, map, take } from 'rxjs';
 
 import { User } from '../models';
 import { ApiService } from './api.service';

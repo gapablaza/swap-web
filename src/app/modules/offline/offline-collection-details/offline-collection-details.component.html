@@ -1,10 +1,9 @@
+@let collection = collection$();
 <mat-dialog-content>
-    @if (isLoaded$ | async) {
-    <div class="user-collection-modal">
-        <div class="user-collection-modal-content">
-            <div class="user-collection-modal-heading">
+    <div class="offline-collection-modal">
+        <div class="offline-collection-modal-content">
+            <div class="offline-collection-modal-heading">
                 <p class="h2">
-                    Listados de <strong>{{ (user$ | async)?.displayName }}</strong> en<br />
                     <strong>{{ collection.name }}</strong>
                 </p>
                 <div class="collection-meta custom-separator">
@@ -13,15 +12,15 @@
                     <span>{{ collection.publisher.data.name }}</span>
                 </div>
                 @if (collection.userData?.publicComment) {
-                <div class="user-collection-modal-desc">
+                <div class="offline-collection-modal-desc">
                     <p [innerHTML]="collection.userData?.publicComment | sanitizeHtml"></p>
                 </div>
                 }
-                <div class="user-collection-modal-bg" [style]="'background-image: url(' + collection.image + ');'">
+                <div class="offline-collection-modal-bg" [style]="'background-image: url(' + collection.image + ');'">
                     <div></div>
                 </div>
             </div>
-            <p class="user-collection-modal-wishing">
+            <p class="offline-collection-modal-wishing">
                 Está buscando <strong>{{ collection.userData?.wishing }}</strong> ítems:
                 @for (item of userWishing; track item.id; let isLast = $last) {
                 <span>
@@ -32,33 +31,27 @@
                 </span>
                 }
             </p>
-            <p class="user-collection-modal-trading">
+            <p class="offline-collection-modal-trading">
                 Tiene <strong>{{ collection.userData?.trading }}</strong> ítems para cambiar:
                 @for (item of userTrading; track item.id; let isLast = $last) {
                 <span>
-                    <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span> -->
                     <span>{{ item.name }}@if (item.quantity && (item.quantity > 1))
                         {<span>({{item.quantity }})</span>}</span>
                     @if (!isLast) { <span>, </span> }
                 </span>
                 }
             </p>
-            <p class="user-collection-modal-udpate">
+            <p class="offline-collection-modal-udpate">
                 Actualizado el {{ collection.updated | date:'dd/MM/YYYY \'a las\' HH:mm \'hrs.\'' }}
             </p>
         </div>
     </div>
-    } @else {
-    <div class="loading-indicator">
-        <mat-spinner aria-label="cargando"></mat-spinner>
-    </div>
-    }
 </mat-dialog-content>
 
 <mat-dialog-actions>
     <button mat-raised-button (click)="onClose()">Cerrar</button>
-    <a mat-raised-button mat-dialog-close color="accent"
+    <!-- <a mat-raised-button mat-dialog-close color="accent"
         [routerLink]="['/c', collection.name + ' ' + collection.publisher.data.name | slugify, collection.id]">
         Ir a la colección
-    </a>
+    </a> -->
 </mat-dialog-actions>

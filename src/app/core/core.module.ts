@@ -5,15 +5,18 @@ import {
   ApiService,
   AuthenticationService,
   CollectionService,
+  ConnectionService,
   ItemService,
   JwtService,
   MediaService,
   MessageService,
   NewCollectionService,
+  OfflineService,
   PublisherService,
   ReportService,
   SearchService,
   SEOService,
+  UserPersistenceService,
   UserService,
 } from './services';
 import { UIService } from '../shared';
@@ -24,7 +27,9 @@ import { UIService } from '../shared';
   providers: [
     ApiService,
     AuthenticationService,
+    ConnectionService,
     JwtService,
+    OfflineService,
     SEOService,
     UIService,
 
@@ -36,6 +41,7 @@ import { UIService } from '../shared';
     PublisherService,
     ReportService,
     SearchService,
+    UserPersistenceService,
     UserService,
   ],
 })

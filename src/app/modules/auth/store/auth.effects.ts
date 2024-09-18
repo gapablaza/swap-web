@@ -25,8 +25,10 @@ import { MatDialog } from '@angular/material/dialog';
 
 import {
   AuthenticationService,
+  ConnectionService,
   JwtService,
   MessageService,
+  UserPersistenceService,
 } from 'src/app/core';
 import { authFeature } from './auth.state';
 import { authActions } from './auth.actions';
@@ -34,25 +36,73 @@ import { UIService } from 'src/app/shared';
 
 @Injectable()
 export class AuthEffects {
+  // Monitorea la disponibilidad de internet
+  monitorConnection$ = createEffect(() =>
+    this.connectionSrv.isOnline$.pipe(
+      map((isOnline) =>
+        isOnline ? authActions.goOnline() : authActions.goOffline()
+      )
+    )
+  );
+
+  // Sincroniza los datos, si hay internet
+  syncAuthUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.goOnline, authActions.syncAuthUser),
+      withLatestFrom(
+        this.store.select(authFeature.selectIsConnected),
+        this.store.select(authFeature.selectIsAuth)
+      ),
+      filter(([_, isConnected, isAuth]) => isConnected && isAuth),
+      exhaustMap(() => {
+        return this.authSrv.me().pipe(
+          map((res) => {
+            return authActions.syncAuthUserSuccess({
+              user: res.user,
+              token: res.token,
+            });
+          }),
+          catchError((error) => of(authActions.authFailure()))
+        );
+      })
+    )
+  );
+
   // Si existe token, intenta autenticar automáticamente
   autoLogin$ = createEffect(() =>
     this.actions$.pipe(
       ofType(authActions.autoLogin),
       exhaustMap(() => {
-        if (this.jwtSrv.getToken()) {
-          return this.authSrv.me().pipe(
-            map((res) => {
-              return authActions.authSuccess({
-                user: res.user,
-                token: res.token,
-                redirect: false,
-              });
-            }),
-            catchError((error) => of(authActions.authFailure()))
-          );
-        } else {
-          return of(authActions.authFailure());
-        }
+        const token = this.jwtSrv.getToken();
+        if (!token) return of(authActions.authFailure());
+
+        return from(this.localUserSrv.loadUser()).pipe(
+          exhaustMap((localUser) => {
+            // si están los datos en el local storage, autenticamos
+            if (localUser) {
+              // TO DO: Verificar la validez de los datos del usuario local
+              return of(
+                authActions.localAuthSuccess({
+                  user: localUser,
+                  token: token as string,
+                  redirect: false,
+                })
+              );
+            }
+
+            return this.authSrv.me().pipe(
+              map((res) => {
+                return authActions.authSuccess({
+                  user: res.user,
+                  token: res.token,
+                  redirect: false,
+                });
+              }),
+              catchError((error) => of(authActions.authFailure()))
+            );
+          }),
+          catchError(() => of(authActions.authFailure())) // Captura cualquier error en la carga del usuario desde localStorage
+        );
       })
     )
   );
@@ -129,12 +179,38 @@ export class AuthEffects {
       ofType(authActions.authSuccess, authActions.signupSuccess),
       tap(({ user, token, redirect }) => {
         this.jwtSrv.saveToken(token);
+        this.localUserSrv.saveUser(user); // guardamos el usuario localmente
         if (redirect) {
           const returnUrl =
             this.router.routerState.snapshot.root.queryParams['returnUrl'] ||
             '/';
           this.router.navigate([returnUrl]);
         }
+      }),
+      map(({ user }) => {
+        if (!user.disabled) {
+          return authActions.loginFirebase();
+        } else {
+          return authActions.loginFirebaseFailure();
+        }
+      })
+    )
+  );
+
+  // Luego de autenticar localmente, intenta sincronizar con los datos del servidor
+  localAuthSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.localAuthSuccess),
+      tap(({ user, token, redirect }) => {
+        if (redirect) {
+          const returnUrl =
+            this.router.routerState.snapshot.root.queryParams['returnUrl'] ||
+            '/';
+          this.router.navigate([returnUrl]);
+        }
+
+        // intenta sincronizar
+        this.store.dispatch(authActions.syncAuthUser());
       }),
       map(({ user }) => {
         if (!user.disabled) {
@@ -549,6 +625,7 @@ export class AuthEffects {
           }
           this.authSrv.setAuthOnlineStatus(authUser.id, false);
           this.jwtSrv.destroyToken();
+          this.localUserSrv.forgetUser(); // elimina el perfil del usuario del local storage
           this.socialSrv.signOut().catch(() => {});
 
           this.router.navigate(['/']);
@@ -675,8 +752,10 @@ export class AuthEffects {
     private store: Store,
     private router: Router,
     private jwtSrv: JwtService,
+    private connectionSrv: ConnectionService,
     private socialSrv: SocialAuthService,
     private authSrv: AuthenticationService,
+    private localUserSrv: UserPersistenceService,
     private messageSrv: MessageService,
     private uiSrv: UIService,
     private dialog: MatDialog

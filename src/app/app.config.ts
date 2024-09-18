@@ -39,8 +39,10 @@ import APP_ROUTES from './app.routes';
 import { environment } from 'src/environments/environment';
 import { CoreModule, errorInterceptor, tokenInterceptor } from './core';
 import { SocialModule } from './shared';
+import { authFeature } from './modules/auth/store/auth.state';
+import { offlineFeature } from './modules/offline/store/offline.state';
 import { AuthEffects } from './modules/auth/store/auth.effects';
-import * as fromAuth from './modules/auth/store/auth.state';
+import { OfflineEffects } from './modules/offline/store/offline.effects';
 
 @Injectable()
 export class MyHammerConfig extends HammerGestureConfig {
@@ -68,8 +70,9 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
 
     provideStore(),
-    provideState(fromAuth.authFeature),
-    provideEffects(AuthEffects),
+    provideState(authFeature),
+    provideState(offlineFeature),
+    provideEffects([AuthEffects, OfflineEffects]),
     provideStoreDevtools({
       maxAge: 25, // Retains last 25 states
       logOnly: !isDevMode(), // Restrict extension to log-only mode

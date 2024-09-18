@@ -8,6 +8,7 @@ import { ItemResolver } from './modules/item/item-resolver.service';
 import { TradesResolver } from './modules/trades/trades-resolver.service';
 import { itemFeature } from './modules/item/store/item.state';
 import { ItemEffects } from './modules/item/store/item.effect';
+import { OfflineComponent } from './modules/offline/offline.component';
 
 export const APP_ROUTES: Routes = [
   {
@@ -95,6 +96,21 @@ export const APP_ROUTES: Routes = [
       import('./modules/search/search.component').then(
         (c) => c.SearchComponent
       ),
+  },
+  // {
+  //   path: 'offline',
+  //   title: 'Contenido sin conexión - Intercambia Láminas',
+  //   canActivate: [authorizedGuard],
+  //   loadComponent: () =>
+  //     import('./modules/offline/offline.component').then(
+  //       (c) => c.OfflineComponent
+  //     ),
+  // },
+  {
+    path: 'offline',
+    title: 'Contenido sin conexión - Intercambia Láminas',
+    canActivate: [authorizedGuard],
+    component: OfflineComponent
   },
   {
     path: 'trades',

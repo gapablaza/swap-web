@@ -139,6 +139,38 @@ export class UserService {
       );
   }
 
+  getMultipleCollectionsInfo(
+    userId: number,
+    collectionIds: string
+  ): Observable<Collection[]> {
+    return this.apiSrv
+      .get(
+        `/v2/users/${userId}/multipleCollections?list=${collectionIds}&include=publisher`
+      )
+      .pipe(
+        map((response: any) => {
+          return response.data.map((data: any) => {
+            const tempCollectionUserData: CollectionUserData = {
+              collecting: data.info.collecting,
+              completed: data.info.completed,
+              wishing: data.info.wishing,
+              trading: data.info.trading,
+              publicComment: data.info.public_comment,
+              updated: data.info.updated,
+              tradelist: data.tradelist,
+              wishlist: data.wishlist,
+            };
+  
+            return {
+              ...(data.info as Collection),
+              userData: tempCollectionUserData,
+            } as Collection;
+          });
+        })
+      );
+  }
+  
+
   getEvaluations(userId: number): Observable<EvaluationsApiResponse> {
     return this.apiSrv
       .get('/v2/users/' + userId + '/evaluations?include=user')
