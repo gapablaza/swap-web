@@ -29,14 +29,17 @@
             (press)="onRemove(mItem)">
             {{ mItem.name }}
         </button> -->
+
         <button mat-raised-button
-          [color]="mItem.wishlist && mItem.tradelist ? 'warn' : mItem[listType()] ? 'accent' : 'basic'"
-          [matBadge]="getItemQuantity(mItem, listType())" 
-          [matBadgeHidden]="!mItem[listType()]" 
-          (mousedown)="onMouseDown($event, mItem)"
-          (mouseup)="onMouseUp($event, mItem)"
-          (contextmenu)="onHandleRemove($event, mItem)">
-          {{ mItem.name }}
+            [color]="mItem.wishlist && mItem.tradelist ? 'warn' : mItem[listType()] ? 'accent' : 'basic'"
+            [matBadge]="getItemQuantity(mItem, listType())" 
+            [matBadgeHidden]="!mItem[listType()]" 
+            (mousedown)="onPressStart($event, mItem)"
+            (mouseup)="onPressEnd($event, mItem)"
+            (touchstart)="onPressStart($event, mItem)"
+            (touchend)="onPressEnd($event, mItem)"
+            (contextmenu)="onHandleRemove($event, mItem)">
+            {{ mItem.name }}
         </button>
         }
     </div>

@@ -20,9 +20,10 @@ import { CollectionManageListControlsComponent } from './collection-manage-list-
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    MatIconModule,
-    MatButtonModule,
     MatBadgeModule,
+    MatButtonModule,
+    MatIconModule,
+
     CollectionManageListControlsComponent,
   ],
 })
@@ -106,25 +107,38 @@ export class CollectionManageListButtonsComponent {
     }
   }
 
-  onHandleRemove(event: MouseEvent, item: Item) {
-    event.preventDefault();
-    this.onRemove(item);
-  }
-
-  onMouseDown(event: MouseEvent, item: Item) {
-    if (event.button === 0) {
-      this.isLongPress = false;
-      this.longPressTimeout = setTimeout(() => {
-        this.isLongPress = true;
-        this.onRemove(item);
-      }, 500); // Ajusta el tiempo de la pulsación larga según sea necesario
+  onHandleRemove(event: MouseEvent | TouchEvent, item: Item) {
+    if (event instanceof MouseEvent && event.button === 2) {
+      event.preventDefault();
+      this.onRemove(item);
     }
   }
 
-  onMouseUp(event: MouseEvent, item: Item) {
+  onPressStart(event: MouseEvent | TouchEvent, item: Item) {
+    // Ignoramos si no es el botón izquierdo del mouse
+    if (event instanceof MouseEvent && event.button !== 0) {
+      return;
+    }
+
+    event.preventDefault();
+    this.isLongPress = false;
+
+    this.longPressTimeout = setTimeout(() => {
+      this.isLongPress = true;
+      this.onRemove(item);
+    }, 500); // Ajusta el tiempo de la pulsación larga según sea necesario
+  }
+
+  onPressEnd(event: MouseEvent | TouchEvent, item: Item) {
+    event.preventDefault();
     clearTimeout(this.longPressTimeout);
 
-    if (!this.isLongPress && event.button === 0) {
+    if (!this.isLongPress) {
+      // Ignoramos si no es el botón izquierdo del mouse
+      if (event instanceof MouseEvent && event.button !== 0) {
+        return;
+      }
+
       this.onAdd(item);
     }
   }

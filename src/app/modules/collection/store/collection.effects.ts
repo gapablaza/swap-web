@@ -7,7 +7,9 @@ import {
   exhaustMap,
   map,
   of,
+  switchMap,
   tap,
+  timer,
   withLatestFrom,
 } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -404,15 +406,32 @@ export class CollectionEffects {
           listType == 'wishlist'
             ? this.itemSrv.decrementWishlist(item.id)
             : this.itemSrv.decrementTradelist(item.id);
+        const startTime = Date.now();
+
         return method.pipe(
-          map(({ message, newQuantity }) =>
-            collectionActions.itemDecrementSuccess({
-              message,
-              item,
-              newQuantity,
-              listType,
-            })
-          ),
+          // map(({ message, newQuantity }) =>
+          //   collectionActions.itemDecrementSuccess({
+          //     message,
+          //     item,
+          //     newQuantity,
+          //     listType,
+          //   })
+          // ),
+          switchMap(({ message, newQuantity }) => {
+            const elapsedTime = Date.now() - startTime;
+            const remainingTime = Math.max(1200 - elapsedTime, 0);
+
+            return timer(remainingTime).pipe(
+              map(() =>
+                collectionActions.itemDecrementSuccess({
+                  message,
+                  item,
+                  newQuantity,
+                  listType,
+                })
+              )
+            );
+          }),
           catchError((error) =>
             of(
               collectionActions.itemDecrementFailure({ error, item, listType })
@@ -431,11 +450,22 @@ export class CollectionEffects {
           listType == 'wishlist'
             ? this.itemSrv.removeFromWishlist(item.id)
             : this.itemSrv.removeFromTradelist(item.id);
+        const startTime = Date.now();
 
         return method.pipe(
-          map((message) =>
-            collectionActions.itemRemoveSuccess({ message, item, listType })
-          ),
+          // map((message) =>
+          //   collectionActions.itemRemoveSuccess({ message, item, listType })
+          // ),
+          switchMap((message) => {
+            const elapsedTime = Date.now() - startTime;
+            const remainingTime = Math.max(1200 - elapsedTime, 0);
+
+            return timer(remainingTime).pipe(
+              map(() =>
+                collectionActions.itemRemoveSuccess({ message, item, listType })
+              )
+            );
+          }),
           catchError((error) =>
             of(collectionActions.itemRemoveFailure({ error, item, listType }))
           )
