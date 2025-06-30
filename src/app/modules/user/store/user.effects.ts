@@ -53,7 +53,8 @@ export class UserEffects {
       ),
       filter(
         ([action, user, authUser, tradesWithUser]) =>
-          authUser.accountTypeId == 2 && authUser.id != user.id
+          // authUser.accountTypeId == 2 && authUser.id != user.id
+          authUser.id != user.id
       ),
       exhaustMap(([action, user, authUser, tradesWithUser]) => {
         // si están en los cambios en el Store

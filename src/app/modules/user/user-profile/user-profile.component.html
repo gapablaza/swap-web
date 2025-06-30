@@ -103,12 +103,12 @@
       }
     </div>
 
-    @if ((isAuth$ | async) && !isSameUser && !(showTrades$ | async)) {
+    <!-- @if ((isAuth$ | async) && !isSameUser && !(showTrades$ | async)) {
     <div class="become-pro">
       <p>Usuarios <span class="pro-label">PRO</span> pueden ver los posibles cambios</p>
       <a [routerLink]="['/collaborate']">+&nbsp;INFO</a>
     </div>
-    }
+    } -->
 
     @if ((isAuth$ | async) && (showTrades$ | async)) {
     <mat-expansion-panel class="trades-details">
@@ -133,7 +133,10 @@
             Tiene <strong>{{ col.totalSearching }}</strong> ítems que tú buscas:
             @for (item of col.searching; track item.id; let isLast = $last) {
             <span>
-              <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span>
+              <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span> -->
+              <span
+                [ngClass]="(authUser$ | async)?.accountTypeId == 2 ? 'item-difficulty-' + item.difficultyCategoryId : ''">{{
+                item.name }}</span>
               @if (!isLast) { <span>, </span> }
             </span>
             }
@@ -144,7 +147,10 @@
             Busca <strong>{{ col.totalTrading }}</strong> ítems que tú cambias:
             @for (item of col.trading; track item.id; let isLast = $last) {
             <span>
-              <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span>
+              <!-- <span [ngClass]="'item-difficulty-' + item.difficultyCategoryId">{{ item.name }}</span> -->
+              <span
+                [ngClass]="(authUser$ | async)?.accountTypeId == 2 ? 'item-difficulty-' + item.difficultyCategoryId : ''">{{
+                item.name }}</span>
               @if (!isLast) { <span>, </span> }
             </span>
             }
@@ -154,7 +160,16 @@
       </div>
       }
 
-
+      @if ((authUser$ | async)?.accountTypeId !== 2) {
+      <div class="difficulty-explanation">
+        <p>
+          <a [routerLink]="['/collaborate']">
+            Los usuarios <span class="pro-label">PRO</span> pueden ver los ítems categorizados por dificultad
+          </a>
+        </p>
+        <!-- <a [routerLink]="['/collaborate']">+&nbsp;INFO</a> -->
+      </div>
+      } @else {
       <div class="difficulty-explanation">
         <p>
           Los colores sirven para indicar la dificultad de conseguir el ítem de acuerdo a lo siguiente:
@@ -167,12 +182,14 @@
           y <span class="item-difficulty-0">Por categorizar</span>.
         </p>
         <p>
-          Revisa <a
-            href="https://trello.com/c/QRvIcc3x/8-ayudar-a-hacer-mejores-cambios-indicando-la-dificultad-de-las-l%C3%A1minas-en-los-posibles-cambios"
-            target="_blank" rel="noopener noreferrer">aquí</a> para ver mas detalles de la lógica usada para categorizar
+          <a href="https://trello.com/c/QRvIcc3x/8-ayudar-a-hacer-mejores-cambios-indicando-la-dificultad-de-las-l%C3%A1minas-en-los-posibles-cambios"
+            target="_blank" rel="noopener noreferrer">Revisa aquí</a> para ver mas detalles de la lógica usada para
+          categorizar
           los ítems de la colección por dificultad.
         </p>
       </div>
+      }
+
     </mat-expansion-panel>
     }
 

@@ -25,7 +25,8 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline">
                             <mat-select [(value)]="selectedFrom">
-                                <mat-option value="1">De todo el mundo!</mat-option>
+                                <!-- <mat-option value="1">De todo el mundo!</mat-option> -->
+                                <mat-option value="1" [disabled]="(authUser$ | async)?.accountTypeId !== 2">De todo el mundo! <span class="pro-label">PRO</span></mat-option>
                                 <mat-option value="2">De {{ (authUser$ | async)?.location_country }}</mat-option>
                                 <mat-option value="3">De {{ (authUser$ | async)?.location_city }}, {{ (authUser$ |
                                     async)?.location_country }}
