@@ -41,6 +41,7 @@ export interface User {
   location_country: string | null; //OK
   notifyUnreadMessages: boolean; //OK
   registration: string; //OK - CON TZ
+  trustScore: number | null; //OK
 
   address_components?: string; //OK - SETTINGS
   email?: string; //OK - SETTINGS
@@ -50,6 +51,7 @@ export interface User {
   contributions?: number; //OK - HOME MEDIA
   totalItems?: number; //OK - HOME ITEMS
 
+  voteStatus?: number;
   inBlacklist?: boolean; // PERFIL USUARIO
 
   collectionData?: UserCollection;

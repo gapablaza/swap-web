@@ -54,7 +54,7 @@ $my-theme: mat.m2-define-light-theme((
   @include mat.core-theme($my-theme);
   // @include mat.card-theme($my-theme);
   // @include mat.progress-bar-theme($my-theme);
-  // @include mat.tooltip-theme($my-theme);
+  @include mat.tooltip-theme($my-theme);
   @include mat.form-field-theme($my-theme);
   @include mat.input-theme($my-theme);
   @include mat.select-theme($my-theme);
@@ -77,7 +77,7 @@ $my-theme: mat.m2-define-light-theme((
   @include mat.progress-spinner-theme($my-theme);
   @include mat.badge-theme($my-theme);
   @include mat.bottom-sheet-theme($my-theme);
-  // @include mat.button-toggle-theme($my-theme);
+  @include mat.button-toggle-theme($my-theme);
   // @include mat.datepicker-theme($my-theme);
   // @include mat.divider-theme($my-theme);
   @include mat.expansion-theme($my-theme);

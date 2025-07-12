@@ -275,6 +275,14 @@ export class UserService {
       .pipe(map((data: { message: string }) => data.message));
   }
 
+  setUserVote(userId: number, voteId: number): Observable<string> {
+    return this.apiSrv
+      .post(`/v2/me/voteUser/${userId}`,  {
+        vote: voteId
+      })
+      .pipe(map((data: { message: string }) => data.message));
+  }
+
   getTradesWithAuthUser(userId: number): Observable<TradesWithUser> {
     return this.apiSrv
       .get('/v2/users/' + userId + '/collections?include=publisher')

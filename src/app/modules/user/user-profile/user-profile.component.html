@@ -6,6 +6,10 @@
       <div class="user-image-background">
         <img class="user-image" [src]="(user$ | async)?.image || defaultUserImage" [alt]="(user$ | async)?.displayName"
           crossorigin="anonymous" fetchpriority="high" loading="eager">
+        @if ((isAuth$ | async) && !isSameUser) {
+        <app-user-vote class="user-vote" [voteStatus]="(user$ | async)?.voteStatus"
+          [isProcessing]="isProcessing$ | async" (voteChange)="onVoteChange($event)" />
+        }
       </div>
       <div class="user-subheader">
         <div class="user-image-container">
@@ -240,7 +244,7 @@
       <p>Busca <strong>{{ (user$ | async)?.userSummary?.wishing | number:'':'es' }}</strong> ítems, cambia <strong>{{
           (user$ | async)?.userSummary?.trading |
           number:'':'es' }}</strong> ítems</p>
-      <p>Cuenta creada el {{ (user$ | async)?.registration | date:'dd/MM/YYYY' }}</p>
+      <p>Cuenta creada el {{ (user$ | async)?.registration | date:'dd/MM/YYYY' }} {{ (user$ | async)?.trustScore }}</p>
     </div>
   </div>
 </section>

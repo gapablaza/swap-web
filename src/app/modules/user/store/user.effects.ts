@@ -292,6 +292,30 @@ export class UserEffects {
     )
   );
 
+  setUserVote$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(userActions.setVote),
+      map((action) => action.vote),
+      withLatestFrom(
+        this.store.select(authFeature.selectIsAuth),
+        this.store.select(userFeature.selectUser)
+      ),
+      tap(([, isAuth]) => {
+        if (!isAuth)
+          this.uiSrv.showError(
+            'Debes iniciar sesión para realizar esta acción'
+          );
+      }),
+      filter(([, isAuth]) => isAuth),
+      exhaustMap(([vote, , user]) => {
+        return this.userSrv.setUserVote(user.id, vote).pipe(
+          map((message) => userActions.setVoteSuccess({ vote, message })),
+          catchError((error) => of(userActions.setVoteFailure({ error })))
+        );
+      })
+    )
+  );
+
   constructor(
     private actions$: Actions,
     private store: Store,

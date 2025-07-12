@@ -39,6 +39,7 @@ import { SlugifyPipe } from '../../../shared/pipes/slugify.pipe';
 import { SanitizeHtmlPipe } from '../../../shared/pipes/sanitize-html.pipe';
 import { DaysSinceLoginDirective } from '../../../shared/directives/days-since-login.directive';
 import { ReportComponent } from 'src/app/shared/components/report/report.component';
+import { UserVoteComponent } from '../user-vote/user-vote.component';
 import { authFeature } from '../../auth/store/auth.state';
 import { userFeature } from '../store/user.state';
 import { userActions } from '../store/user.actions';
@@ -62,6 +63,7 @@ import { userActions } from '../store/user.actions';
     MatMenuModule,
     MatProgressSpinnerModule,
 
+    UserVoteComponent,
     DaysSinceLoginDirective,
     SanitizeHtmlPipe,
     SlugifyPipe,
@@ -155,6 +157,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   toggleBlacklist(blacklist: boolean): void {
     this.store.dispatch(userActions.toggleBlacklist({ blacklist }));
   }
+
+  onVoteChange(vote: number): void {
+    this.store.dispatch(userActions.setVote({ vote }));
+  }
+
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();

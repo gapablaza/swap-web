@@ -261,7 +261,27 @@ export const userFeature = createFeature({
       ...state,
       isProcessing: false,
       error,
-    }))
+    })),
+
+    // set user vote
+    on(userActions.setVote, (state) => ({
+      ...state,
+      isProcessing: true,
+      error: null,
+    })),
+    on(userActions.setVoteSuccess, (state, { vote }) => ({
+      ...state,
+      user: {
+        ...state.user,
+        voteStatus: vote,
+      },
+      isProcessing: false,
+    })),
+    on(userActions.setVoteFailure, (state, { error }) => ({
+      ...state,
+      isProcessing: false,
+      error,
+    })),
   ),
   extraSelectors: ({
     selectTradesWithUser,

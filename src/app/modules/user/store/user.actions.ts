@@ -67,5 +67,10 @@ export const userActions = createActionGroup({
       message: string;
     }>(),
     'Toggle Media Like Failure': props<{ error: string }>(),
+
+    // set user vote
+    'Set Vote': props<{ vote: number }>(),
+    'Set Vote Success': props<{ message: string; vote: number }>(),
+    'Set Vote Failure': props<{ error: string }>(),
   },
 });
